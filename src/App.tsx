@@ -1,11 +1,23 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import reactLogo from "./assets/react.svg";
 import {invoke} from "@tauri-apps/api/core";
 import "./App.css";
+import {useDatabase} from "./hooks/database.hook.ts";
+import {appDataDir} from "@tauri-apps/api/path";
 
 function App() {
     const [greetMsg, setGreetMsg] = useState("");
     const [name, setName] = useState("");
+    const {database} = useDatabase();
+
+    useEffect(() => {
+        if (database) {
+            appDataDir().then((dir) => console.log(dir));
+            database.select("SELECT * FROM users").then((users: unknown[]) => {
+                setName(users[0].name);
+            });
+        }
+    }, [database]);
 
     async function greet() {
         // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
