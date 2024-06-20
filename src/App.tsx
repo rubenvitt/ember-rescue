@@ -14,7 +14,7 @@ function App() {
         if (database) {
             appDataDir().then((dir) => console.log(dir));
             database.select("SELECT * FROM users").then((users: unknown[]) => {
-                setName(users[0].name);
+                console.log(users);
             });
         }
     }, [database]);
