@@ -11,6 +11,7 @@ fn main() {
     println!("Hello from src-tauri/main.rs");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
