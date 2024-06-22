@@ -1,39 +1,40 @@
-import { createFileRoute } from '@tanstack/react-router';
-import React, { useState } from 'react';
+import { createFileRoute, useLocation } from '@tanstack/react-router';
+import React, { useMemo, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
+  BookOpenIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
   HomeIcon,
-  UsersIcon,
+  InformationCircleIcon,
+  MapIcon,
+  PlusIcon,
+  UserGroupIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 import { UserProfileDropdown } from '../../components/atomic/molecules/UserProfileDropdown.js';
+import { Link } from '../../components/catalyst-components/link.js';
 
 export const Route = createFileRoute('/_layout/_layout-app')({
   component: LayoutApp,
 });
 
 
-const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
+const mainNavigation = [
+  { name: 'Dashboard', href: '/app', icon: HomeIcon, current: true },
+  { name: 'Einsatztagebuch', href: '/app/einsatztagebuch', icon: BookOpenIcon, current: false },
+  { name: 'Kräfteübersicht', href: '/app/kraefte', icon: UserGroupIcon, current: false },
+  { name: 'Patienten', href: '/app/patienten', icon: PlusIcon, current: false },
+  { name: 'Lagekarte', href: '/app/lagekarte', icon: MapIcon, current: false },
+  { name: 'Einsatzdaten', href: '/app/einsatzdaten', icon: InformationCircleIcon, current: false },
 ];
 const teams = [
-  { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
+  { id: 1, name: 'Heroicons', href: '#', initial: 'H' },
+  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T' },
+  { id: 3, name: 'Workcation', href: '#', initial: 'W' },
 ];
 const userNavigation = [
   { name: 'Abmelden', href: '/auth/signout' },
@@ -41,6 +42,10 @@ const userNavigation = [
 
 export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  let { pathname } = useLocation();
+  const navigation = useMemo(() => {
+    return mainNavigation.map(item => ({ ...item, current: item.href === pathname }));
+  }, [mainNavigation, pathname]);
 
   return (
     <>
@@ -70,7 +75,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    src="/logo.png"
                     alt="Your Company"
                   />
                 </div>
@@ -78,10 +83,10 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
+                        {navigation.map((item) =>
                           <li key={item.name}>
-                            <a
-                              href={item.href}
+                            <Link
+                              to={item.href}
                               className={clsx(
                                 item.current
                                   ? 'bg-gray-800 text-white'
@@ -91,9 +96,8 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                             >
                               <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
                               {item.name}
-                            </a>
-                          </li>
-                        ))}
+                            </Link>
+                          </li>)}
                       </ul>
                     </li>
                     <li>
@@ -101,8 +105,8 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                       <ul role="list" className="-mx-2 mt-2 space-y-1">
                         {teams.map((team) => (
                           <li key={team.name}>
-                            <a
-                              href={team.href}
+                            <Link
+                              to={team.href}
                               className={clsx(
                                 team.current
                                   ? 'bg-gray-800 text-white'
@@ -115,19 +119,19 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                                 {team.initial}
                               </span>
                               <span className="truncate">{team.name}</span>
-                            </a>
+                            </Link>
                           </li>
                         ))}
                       </ul>
                     </li>
                     <li className="mt-auto">
-                      <a
-                        href="#"
+                      <Link
+                        to="#"
                         className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                       >
                         <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                         Settings
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </nav>
@@ -143,7 +147,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
             <div className="flex h-16 shrink-0 items-center">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="/logo.png"
                 alt="Your Company"
               />
             </div>
@@ -153,8 +157,8 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
-                          href={item.href}
+                        <Link
+                          to={item.href}
                           className={clsx(
                             item.current
                               ? 'bg-gray-800 text-white'
@@ -164,7 +168,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                         >
                           <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
                           {item.name}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -174,8 +178,8 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
                     {teams.map((team) => (
                       <li key={team.name}>
-                        <a
-                          href={team.href}
+                        <Link
+                          to={team.href}
                           className={clsx(
                             team.current
                               ? 'bg-gray-800 text-white'
@@ -188,19 +192,19 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                             {team.initial}
                           </span>
                           <span className="truncate">{team.name}</span>
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
                 </li>
                 <li className="mt-auto">
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                     <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                     Settings
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>

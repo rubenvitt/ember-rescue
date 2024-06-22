@@ -16,7 +16,7 @@ export const Link = forwardRef(function Link(
 ) {
   return (
     <Headless.DataInteractive>
-      <RouterLink {...props} ref={ref} />
+      <RouterLink {...props} ref={ref} preload="intent" />
     </Headless.DataInteractive>
   );
 });

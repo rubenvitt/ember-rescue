@@ -15,7 +15,7 @@ function SignInRoute() {
     if (bearbeiter?.id) {
       navigate({ to: '/app/' });
     }
-  });
+  }, [bearbeiter]);
 
   return (
     <SignIn />
