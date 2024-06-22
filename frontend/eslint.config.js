@@ -7,6 +7,7 @@ export default [
   },
   {
     rules: {
+      'no-const-assign': 'warn',
       'no-undef': 'warn',
       'no-unused-vars': 'warn',
       'prefer-const': 'warn',
