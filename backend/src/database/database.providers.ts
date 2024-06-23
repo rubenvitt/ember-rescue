@@ -9,10 +9,8 @@ export const databaseProviders: Provider[] = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'sqlite',
-        database: 'database.sqlite',
-        entities: [
-          __dirname + '/../**/*.entity{.ts,.js}',
-        ],
+        database: 'database.db',
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: process.env.NODE_ENV === 'development',
       });
 

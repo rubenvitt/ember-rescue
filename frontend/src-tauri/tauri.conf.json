@@ -11,9 +11,9 @@
   "app": {
     "windows": [
       {
-        "title": "project-rescue",
-        "width": 800,
-        "height": 600
+        "title": "[DEV] Project Rescue",
+        "width": 1600,
+        "height": 1000
       }
     ],
     "security": {

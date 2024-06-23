@@ -4,7 +4,7 @@ import { Bearbeiter, NewBearbeiter } from '../types.js';
 import { ComboInput } from '../components/catalyst-components/combobox.js';
 
 export function SignIn() {
-  const { saveBearbeiter } = useBearbeiter();
+  const { saveBearbeiter, allBearbeiter: { data: allBearbeiter } } = useBearbeiter();
 
   let form = useForm<{ bearbeiter: Bearbeiter | NewBearbeiter }>({
     defaultValues: {
@@ -48,13 +48,13 @@ export function SignIn() {
               }}
               children={(field) => (<>
                   <ComboInput
-                    items={[{ id: '1', label: 'Alice' }, { id: '2', label: 'Bob' }, { id: '3', label: 'Charlie' }]}
+                    items={allBearbeiter || []}
                     errors={field.state.meta.errors}
                     labelText="Anmelden als:"
                     inputProps={{
                       name: field.name,
                       onBlur: field.handleBlur,
-                      onChange: (e) => field.handleChange({ id: e?.id || 'test', name: e?.label ?? '' }),
+                      onChange: (e) => field.handleChange({ id: e?.id || 'test', name: e?.name ?? '' }),
                       required: true,
                       placeholder: 'Bearbeiter auswählen',
                     }}

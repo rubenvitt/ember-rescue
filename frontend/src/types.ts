@@ -17,4 +17,4 @@ export type NavItem = {
 
 export type NavItems = NavItem[]
 
-export type IdentifiableLabel = { id: string, label: string };
+export type IdentifiableLabel = { id: string, name: string };

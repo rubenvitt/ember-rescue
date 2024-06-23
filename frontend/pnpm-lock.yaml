@@ -47,6 +47,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
       framer-motion:
         specifier: ^11.2.11
         version: 11.2.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -63,6 +66,9 @@ importers:
         specifier: ^4.5.2
         version: 4.5.2(@types/react@18.3.3)(react@18.3.1)
     devDependencies:
+      '@common-dtos/*':
+        specifier: ../common-dtos
+        version: link:../common-dtos
       '@eslint/js':
         specifier: ^9.5.0
         version: 9.5.0
@@ -1216,6 +1222,9 @@ packages:
   date-fns@2.30.0:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
+
+  date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
   debug@4.3.5:
     resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
@@ -3447,6 +3456,8 @@ snapshots:
   date-fns@2.30.0:
     dependencies:
       '@babel/runtime': 7.24.7
+
+  date-fns@3.6.0: {}
 
   debug@4.3.5:
     dependencies:

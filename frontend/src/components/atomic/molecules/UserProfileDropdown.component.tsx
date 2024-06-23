@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { NavItems } from '../../../types.js';
 
-export function UserProfileDropdown({ menuItems }: { menuItems: NavItems }) {
+export function UserProfileDropdownComponent({ menuItems }: { menuItems: NavItems }) {
   const { bearbeiter } = useBearbeiter();
 
   return <Menu as="div" className="relative">

@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { createId } from '@paralleldrive/cuid2';
 
 @Entity()
@@ -6,6 +6,10 @@ export class Bearbeiter {
   @PrimaryColumn('varchar')
   id = createId();
 
-  @PrimaryColumn('varchar')
+  @Column('varchar')
+  @Index('name', { unique: true })
   name: string;
+
+  @Column('boolean')
+  active: boolean = true;
 }

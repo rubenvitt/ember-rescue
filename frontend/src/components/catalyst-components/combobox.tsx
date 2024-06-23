@@ -29,7 +29,7 @@ export function ComboInput<T extends IdentifiableLabel>({
     query === ''
       ? items
       : items.filter((item) => {
-        return item.label.toLowerCase().includes(query.toLowerCase());
+        return item.name.toLowerCase().includes(query.toLowerCase());
       });
 
   const cleanedErrors = useMemo(() => {
@@ -64,7 +64,7 @@ export function ComboInput<T extends IdentifiableLabel>({
           )}
           onChange={(event) => setQuery(event.target.value)}
           onBlur={() => setQuery('')}
-          displayValue={(item: T) => item?.label}
+          displayValue={(item: T) => item?.name}
         />
         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <ChevronUpDownIcon className={clsx('h-5 w-5', hasErrors ? 'text-red-500' : 'text-gray-400')}
@@ -74,9 +74,9 @@ export function ComboInput<T extends IdentifiableLabel>({
         {((filteredItems.length > 0) || (allowCustom && query.length > 0)) && (
           <ComboboxOptions
             className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {allowCustom && query.length > 0 && !filteredItems.find(value => value.label === query) && (
+            {allowCustom && query.length > 0 && !filteredItems.find(value => value.name === query) && (
               <ComboboxOption
-                value={{ id: null, label: query }}
+                value={{ id: null, name: query }}
                 className={({ focus }) =>
                   clsx(
                     'relative cursor-default select-none py-2 pl-3 pr-9',
@@ -116,7 +116,7 @@ export function ComboInput<T extends IdentifiableLabel>({
               >
                 {({ focus, selected }) => (
                   <>
-                    <span className={clsx('block truncate', selected && 'font-semibold')}>{item.label}</span>
+                    <span className={clsx('block truncate', selected && 'font-semibold')}>{item.name}</span>
 
                     {selected && (
                       <span

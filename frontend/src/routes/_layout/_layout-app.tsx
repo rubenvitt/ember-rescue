@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
-import { UserProfileDropdown } from '../../components/atomic/molecules/UserProfileDropdown.js';
+import { UserProfileDropdownComponent } from '../../components/atomic/molecules/UserProfileDropdown.component.js';
 import { Link } from '../../components/catalyst-components/link.js';
 
 export const Route = createFileRoute('/_layout/_layout-app')({
@@ -249,7 +249,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
 
                 {/* Profile dropdown */}
-                <UserProfileDropdown menuItems={userNavigation} />
+                <UserProfileDropdownComponent menuItems={userNavigation} />
               </div>
             </div>
           </div>
