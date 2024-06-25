@@ -15,6 +15,27 @@ export type NavItem = {
   href: ToPathOption;
 }
 
+export type EinsatztagebuchEintragType =
+  'GENERISCH' |
+  'RESSOURCEN' |
+  'KOMMUNIKATION' |
+  'LAGE' |
+  'PATIENTEN';
+
+export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
+  bearbeiter: Bearbeiter;
+  type: EinsatztagebuchEintragType;
+  content: string;
+  absender: string;
+  empfaenger: string;
+};
+
 export type NavItems = NavItem[]
 
-export type IdentifiableLabel = { id: string, name: string };
+export type Identifiable = { id: string };
+export type WithTimestamp = { timestamp: string };
+export type WithBearbeiter = { bearbeiter: Bearbeiter };
+
+export type IdentifiableWithTimestamp = Identifiable & WithTimestamp;
+export type IdentifiableWithTimestampAndBearbeiter = Identifiable & WithTimestamp & WithBearbeiter;
+export type IdentifiableLabel = Identifiable & { name: string };
