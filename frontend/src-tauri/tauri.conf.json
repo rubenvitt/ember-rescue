@@ -1,7 +1,7 @@
 {
   "productName": "project-rescue",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "dev.rubeen.project-rescue",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",

@@ -85,6 +85,7 @@ export function DropdownItem({
       {'href' in props ? (
         <Link {...props} className={classes} />
       ) : (
+        // @ts-ignore
         <button type="button" {...props} className={classes} />
       )}
     </Headless.MenuItem>

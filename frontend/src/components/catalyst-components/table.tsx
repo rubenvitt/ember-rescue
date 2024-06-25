@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import type React from 'react';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 import { Link } from './link.js';
 
 const TableContext = createContext<{ bleed: boolean; dense: boolean; grid: boolean; striped: boolean }>({
@@ -98,11 +98,11 @@ export function TableHeader({ className, ...props }: React.ComponentPropsWithout
 export function TableCell({ className, children, ...props }: React.ComponentPropsWithoutRef<'td'>) {
   let { bleed, dense, grid, striped } = useContext(TableContext);
   let { href, target, title } = useContext(TableRowContext);
-  let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
+  //let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
 
   return (
     <td
-      ref={href ? setCellRef : undefined}
+      // ref={href ? setCellRef : undefined}
       {...props}
       className={clsx(
         className,
@@ -116,10 +116,10 @@ export function TableCell({ className, children, ...props }: React.ComponentProp
       {href && (
         <Link
           data-row-link
-          href={href}
+          to={href}
           target={target}
           aria-label={title}
-          tabIndex={cellRef?.previousElementSibling === null ? 0 : -1}
+          // tabIndex={cellRef?.previousElementSibling === null ? 0 : -1}
           className="absolute inset-0 focus:outline-none"
         />
       )}

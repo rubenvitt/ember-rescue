@@ -108,7 +108,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                             <Link
                               to={team.href}
                               className={clsx(
-                                team.current
+                                pathname === team.href
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -181,7 +181,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                         <Link
                           to={team.href}
                           className={clsx(
-                            team.current
+                            pathname === team.href
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
