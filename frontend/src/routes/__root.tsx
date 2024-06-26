@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../style/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
+import { Theme } from '../components/atomic/atoms/Theme.compoent.js';
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ export const Route = createRootRoute({
 
     return (
       <QueryClientProvider client={queryClient}>
+        <Theme />
         <Outlet />
         <TanStackRouterDevtools />
         <ReactQueryDevtools initialIsOpen />
