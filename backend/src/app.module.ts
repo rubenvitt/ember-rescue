@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
 import { ConfigModule } from '@nestjs/config';
+import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -16,7 +17,7 @@ import * as Joi from 'joi';
     }),
     envFilePath: ['.env.development.local', '.env.development', '.env'],
     isGlobal: true,
-  })],
+  }), EinsatztagebuchModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,15 +1,22 @@
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryColumn } from 'typeorm';
 import { createId } from '@paralleldrive/cuid2';
+import { EinsatztagebuchEintrag } from '../einsatztagebuch/einsatztagebuch.entity';
 
-@Entity()
+@Entity({ name: 'bearbeiter' })
 export class Bearbeiter {
   @PrimaryColumn('varchar')
   id = createId();
 
   @Column('varchar')
-  @Index('name', { unique: true })
+  @Index('bearbeiter_name', { unique: true })
   name: string;
 
   @Column('boolean')
   active: boolean = true;
+
+  @OneToMany(
+    () => EinsatztagebuchEintrag,
+    (einsatztagebuchEintrag) => einsatztagebuchEintrag.bearbeiter,
+  )
+  einsatzTagebuchEintraege: EinsatztagebuchEintrag[];
 }

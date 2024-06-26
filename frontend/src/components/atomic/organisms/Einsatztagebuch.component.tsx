@@ -1,76 +1,64 @@
 import { EinsatztagebuchEintrag } from '../../../types.js';
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { format, subMinutes } from 'date-fns';
+import { format } from 'date-fns';
 import { natoDateTime } from '../../../lib/time.js';
 import clsx from 'clsx';
-import { useReducer, useState } from 'react';
-
-
-const entries: EinsatztagebuchEintrag[] = [
-  {
-    id: '1',
-    timestamp: subMinutes(new Date(), Math.random() * 1000).toISOString(),
-    bearbeiter: { id: '1', name: 'Max Mustermann' },
-    type: 'GENERISCH',
-    content: 'Eintrag 1',
-    absender: '40-12-1',
-    empfaenger: 'Einsatztagebuch',
-  },
-  {
-    id: '2',
-    timestamp: subMinutes(new Date(), Math.random() * 1000).toISOString(),
-    bearbeiter: { id: '1', name: 'Max Mustermann' },
-    type: 'RESSOURCEN',
-    content: 'Eintrag 2',
-    absender: '40-12-1',
-    empfaenger: 'Einsatztagebuch',
-  },
-];
+import { useState } from 'react';
+import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
+import { BadgeButton } from '../../catalyst-components/badge.js';
+import { invoke } from '@tauri-apps/api/core';
 
 const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
   columnHelper.accessor('timestamp', {
     header: 'Zeitpunkt',
-    cell: (row) => format(row.getValue(), natoDateTime),
+    cell: (context) => format(context.getValue(), natoDateTime),
   }),
   columnHelper.accessor('absender', {
     header: 'Absender',
-    cell: (row) => row.getValue(),
+    cell: (context) => context.getValue(),
     enableGrouping: true,
   }),
   columnHelper.accessor('empfaenger', {
     header: 'Empfänger',
-    cell: (row) => row.getValue(),
+    cell: (context) => context.getValue(),
     enableGrouping: true,
   }),
   columnHelper.accessor('content', {
     header: 'Inhalt',
-    cell: (row) => row.getValue(),
+    meta: { classNames: 'text-gray-900' },
+    cell: (context) => {
+      return context.getValue();
+    },
   }),
   columnHelper.accessor('type', {
     header: 'Typ',
-    cell: (row) => row.getValue(),
+    cell: (context) => context.getValue(),
+  }),
+  columnHelper.display({
+    header: 'Aktionen',
+    cell: (context) => {
+      let contextId = context.row.original.id;
+      return (<>
+          <BadgeButton color="orange" onClick={() => invoke('log_message', { message: `clicked ${contextId}` })}>
+            Bearbeiten
+          </BadgeButton>
+          <BadgeButton color="red" onClick={() => invoke('log_message', { message: `clicked ${contextId}` })}>
+            Löschen
+          </BadgeButton>
+        </>
+      );
+    },
+    enableGrouping: true,
   }),
 ];
 
 export function EinsatztagebuchComponent() {
   //remodel entries using useReducer
-  const [reducedEntries, reduce] = useReducer<
-    (state: EinsatztagebuchEintrag[], action: {
-      type: 'ADD_ENTRY';
-      payload: EinsatztagebuchEintrag
-    }) => EinsatztagebuchEintrag[]
-  >((state, action) => {
-    switch (action.type) {
-      case 'ADD_ENTRY':
-        return [...state, action.payload];
-      default:
-        return state;
-    }
-  }, entries);
+  const { einsatztagebuch, createEinsatztagebuchEintrag } = useEinsatztagebuch();
 
   const table = useReactTable<EinsatztagebuchEintrag>({
-    data: reducedEntries, columns, getCoreRowModel: getCoreRowModel(),
+    data: einsatztagebuch ?? [], columns, getCoreRowModel: getCoreRowModel(),
   });
 
   const [inputVisible, setInputVisible] = useState(false);
@@ -127,20 +115,9 @@ export function EinsatztagebuchComponent() {
             </div>
             <div className="sm:col-span-2">
               <button
-                onClick={() => {
+                onClick={async () => {
                   setInputVisible(false);
-                  reduce({
-                    type: 'ADD_ENTRY',
-                    payload: {
-                      id: String(Math.random()),
-                      timestamp: new Date().toISOString(),
-                      bearbeiter: { id: '1', name: 'Max Mustermann' },
-                      type: 'GENERISCH',
-                      content: 'Eintrag 3',
-                      absender: '40-12-1',
-                      empfaenger: 'Einsatztagebuch',
-                    },
-                  });
+                  await createEinsatztagebuchEintrag();
                 }}
                 type="button"
                 className="block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -159,7 +136,7 @@ export function EinsatztagebuchComponent() {
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="divide-x divide-gray-200">
                   {headerGroup.headers.map((header, idx) => (
-                    <th id={header.id} scope="col"
+                    <th key={header.id} id={header.id} scope="col"
                         className={clsx(
                           'px-4 text-left text-sm font-semibold text-gray-900',
                           idx === 0 && 'py-3.5 sm:pl-0',
@@ -186,6 +163,7 @@ export function EinsatztagebuchComponent() {
                       idx === 0 && 'sm:pl-0',
                       idx > 0 && idx < row.getVisibleCells.length - 1 && '',
                       idx === row.getVisibleCells.length - 1 && 'sm:pr-0',
+                      (cell.column.columnDef.meta as any)?.['classNames'],
                     )}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

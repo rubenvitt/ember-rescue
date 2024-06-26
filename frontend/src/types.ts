@@ -1,4 +1,5 @@
 import { ToPathOption } from '@tanstack/react-router';
+import { EinsatztagebuchEintragType } from '@common-dtos/einsatztagebuch.dto';
 
 export type Bearbeiter = {
   id: string;
@@ -14,13 +15,6 @@ export type NavItem = {
   name: string;
   href: ToPathOption;
 }
-
-export type EinsatztagebuchEintragType =
-  'GENERISCH' |
-  'RESSOURCEN' |
-  'KOMMUNIKATION' |
-  'LAGE' |
-  'PATIENTEN';
 
 export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   bearbeiter: Bearbeiter;
