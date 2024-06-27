@@ -7,6 +7,7 @@ export function useBearbeiter() {
   const { setBearbeiter, bearbeiter, removeBearbeiter } = useStore();
   const allBearbeiter = useQuery<Bearbeiter[]>({
     queryKey: ['bearbeiter'],
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       return await fetch('http://localhost:3000/bearbeiter').then((res) => res.json());
     },

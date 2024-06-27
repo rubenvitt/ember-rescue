@@ -4,7 +4,7 @@ import { fetch } from '@tauri-apps/plugin-http';
 
 export function useEinsatztagebuch() {
   const queryClient = useQueryClient();
-  const { data, refetch } = useQuery<EinsatztagebuchEintrag[]>({
+  const { data } = useQuery<EinsatztagebuchEintrag[]>({
     queryKey: ['einsatztagebuch'],
     queryFn: async () => {
       return await fetch('http://localhost:3000/einsatztagebuch').then((res) => {

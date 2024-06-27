@@ -55,14 +55,14 @@ export function DropdownMenu({
 export function DropdownItem({
                                className,
                                ...props
-                             }: { className?: string } & (
+                             }: { className?: string, href?: string } & (
   | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   | Omit<React.ComponentPropsWithoutRef<'button'>, 'className'>
   )) {
   let classes = clsx(
     className,
     // Base styles
-    'group cursor-default rounded-lg px-3.5 py-2.5 focus:outline-none sm:px-3 sm:py-1.5',
+    'group cursor-pointer rounded-lg px-3.5 py-2.5 focus:outline-none sm:px-3 sm:py-1.5',
     // Text styles
     'text-left text-base/6 text-zinc-950 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
     // Focus
@@ -83,7 +83,7 @@ export function DropdownItem({
   return (
     <Headless.MenuItem>
       {'href' in props ? (
-        <Link {...props} className={classes} />
+        <Link {...props} className={classes} to={props.href} />
       ) : (
         // @ts-ignore
         <button type="button" {...props} className={classes} />

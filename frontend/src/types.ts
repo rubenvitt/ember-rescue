@@ -1,5 +1,7 @@
 import { ToPathOption } from '@tanstack/react-router';
 import { EinsatztagebuchEintragType } from '@common-dtos/einsatztagebuch.dto';
+import React from 'react';
+import { XOR } from '@headlessui/react/dist/types.js';
 
 export type Bearbeiter = {
   id: string;
@@ -24,7 +26,18 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   empfaenger: string;
 };
 
-export type NavItems = NavItem[]
+export type ﬂNavItems = NavItem[]
+
+export type DropdownItem = {
+  name: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+} & XOR<{
+  onClick: () => void;
+}, {
+  href: ToPathOption;
+}>
+
+export type DropdownItems = DropdownItem[];
 
 export type Identifiable = { id: string };
 export type WithTimestamp = { timestamp: string };

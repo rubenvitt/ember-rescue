@@ -39,14 +39,14 @@ const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
     header: 'Aktionen',
     cell: (context) => {
       let contextId = context.row.original.id;
-      return (<>
+      return (<div className="flex gap-2">
           <BadgeButton color="orange" onClick={() => invoke('log_message', { message: `clicked ${contextId}` })}>
             Bearbeiten
           </BadgeButton>
           <BadgeButton color="red" onClick={() => invoke('log_message', { message: `clicked ${contextId}` })}>
             Löschen
           </BadgeButton>
-        </>
+        </div>
       );
     },
     enableGrouping: true,
@@ -154,7 +154,7 @@ export function EinsatztagebuchComponent() {
                 </tr>
               ))}
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-gray-200">
               {table.getRowModel().rows.map(row => (
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell, idx) => (

@@ -7,8 +7,16 @@ html, body, #root {
     width: 100%;
 }
 
+html.dark {
+    background-color: black;
+}
+
+html.dark body {
+    background-color: rgb(17 24 39 / 0.8);
+}
+
+
 .container {
     width: 100%;
     height: 100%;
-    background: green;
 }
