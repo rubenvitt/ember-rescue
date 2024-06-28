@@ -8,8 +8,8 @@ export const databaseProviders: Provider[] = [
     provide: PROVIDERS.DATA_SOURCE,
     useFactory: async () => {
       const dataSource = new DataSource({
-        type: 'sqlite',
-        database: 'database.db',
+        type: 'postgres',
+        url: process.env.DATABASE_URL,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: process.env.NODE_ENV === 'development',
       });

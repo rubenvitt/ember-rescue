@@ -23,10 +23,10 @@ export class EinsatzEinheit {
   @ManyToOne(() => Einheit, (einheit) => einheit.einsatzEinheiten)
   einheit: Einheit;
 
-  @Column('datetime')
+  @Column('timestamp')
   einsatzbeginn: Date;
 
-  @Column('datetime', { nullable: true })
+  @Column('timestamp', { nullable: true })
   einsatzende: Date;
 
   @OneToMany(() => EinsatzEinheitKraft, (kraft) => kraft.einsatzEinheit)

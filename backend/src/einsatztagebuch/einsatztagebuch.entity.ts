@@ -20,7 +20,7 @@ export class EinsatztagebuchEintrag {
   @ManyToOne(() => Einsatz, (einsatz) => einsatz.tagebuchEintraege)
   einsatz: Einsatz;
 
-  @Column('datetime')
+  @Column('timestamp')
   zeitpunkt: Date;
 
   @Column('varchar')

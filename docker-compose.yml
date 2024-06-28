@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    ports:
+      - "9901:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: project-rescue
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "9900:3000"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/project-rescue
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:

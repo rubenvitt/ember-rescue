@@ -18,10 +18,10 @@ export class Einsatz {
   @PrimaryColumn('varchar')
   id = createId();
 
-  @Column('datetime')
+  @Column('timestamp')
   beginn: Date;
 
-  @Column('datetime', { nullable: true })
+  @Column('timestamp', { nullable: true })
   ende: Date;
 
   @ManyToOne(() => Bearbeiter, (bearbeiter) => bearbeiter.einsaetze)

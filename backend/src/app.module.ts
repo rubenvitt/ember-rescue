@@ -8,18 +8,22 @@ import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module'
 import * as Joi from 'joi';
 
 @Module({
-  imports: [DatabaseModule, BearbeiterModule, ConfigModule.forRoot({
-    validationSchema: Joi.object({
-      NODE_ENV: Joi.string()
-        .valid('development', 'production', 'test')
-        .default('development'),
-      PORT: Joi.number().default(3000),
+  imports: [
+    DatabaseModule,
+    BearbeiterModule,
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
+        PORT: Joi.number().default(3000),
+      }),
+      envFilePath: ['.env.development.local', '.dev.env', '.env'],
+      isGlobal: true,
     }),
-    envFilePath: ['.env.development.local', '.env.development', '.env'],
-    isGlobal: true,
-  }), EinsatztagebuchModule],
+    EinsatztagebuchModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -23,7 +23,7 @@ export class EinheitStatusHistorie {
   @ManyToOne(() => Status, (status) => status.statusHistorien)
   status: Status;
 
-  @Column('datetime')
+  @Column('timestamp')
   zeitpunkt: Date;
 
   @ManyToOne(() => Bearbeiter, (bearbeiter) => bearbeiter.statusHistorien)

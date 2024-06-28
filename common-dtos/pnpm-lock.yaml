@@ -7,7 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       typescript:
         specifier: ^5.5.2
         version: 5.5.2
