@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form';
-import { useBearbeiter } from '../../hooks/bearbeiter.hook.js';
-import { Bearbeiter, NewBearbeiter } from '../../types.js';
-import { ComboInput } from '../catalyst-components/combobox.js';
+import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
+import { Bearbeiter, NewBearbeiter } from '../../../types.js';
+import { ComboInput } from '../../catalyst-components/combobox.js';
 
 export function SignIn() {
   const { saveBearbeiter, allBearbeiter: { data: allBearbeiter } } = useBearbeiter();

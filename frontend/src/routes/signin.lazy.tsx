@@ -1,5 +1,5 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { SignIn } from '../components/templates/SignIn.js';
+import { SignIn } from '../components/atomic/templates/SignIn.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEffect } from 'react';
 

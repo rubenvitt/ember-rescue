@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Bearbeiter } from '../types.js';
 import storage from '../lib/storage.js';
+import { ContextualNavigation } from '../components/atomic/organisms/Sidebar.component.js';
 
 type Store = {
   bearbeiter: Bearbeiter | null;
@@ -12,6 +13,9 @@ type Store = {
     setDark: (dark: ((old: boolean) => boolean) | boolean) => void;
     setAuto: (dark?: boolean) => void;
   }
+
+  contextualNavigation?: ContextualNavigation;
+  setContextualNavigation: (contextualNavigation: ContextualNavigation | undefined) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -41,4 +45,5 @@ export const useStore = create<Store>((set, get) => ({
       }));
     },
   },
+  setContextualNavigation: (contextualNavigation) => set({ contextualNavigation }),
 }));

@@ -9,7 +9,15 @@ export class EinsatztagebuchController {
 
   @Get()
   async getEinsatztagebuch() {
-    return this.service.getEinsatztagebuch();
+    return this.service.getEinsatztagebuch().then((einsatztagebuch) => {
+      // produce much more entries for testing purposes
+      return einsatztagebuch.concat(
+        Array.from({ length: 10000 }, () => ({
+          ...einsatztagebuch[0],
+          content: (einsatztagebuch[0].content + ' ').repeat(200),
+        })),
+      );
+    });
   }
 
   @Post()

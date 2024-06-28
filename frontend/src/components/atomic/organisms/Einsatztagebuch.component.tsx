@@ -1,12 +1,14 @@
 import { EinsatztagebuchEintrag } from '../../../types.js';
-import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { natoDateTime } from '../../../lib/time.js';
-import clsx from 'clsx';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { BadgeButton } from '../../catalyst-components/badge.js';
 import { invoke } from '@tauri-apps/api/core';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
+import { Button } from '../../catalyst-components/button.js';
 
 const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
@@ -54,14 +56,22 @@ const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
 ];
 
 export function EinsatztagebuchComponent() {
-  //remodel entries using useReducer
   const { einsatztagebuch, createEinsatztagebuchEintrag } = useEinsatztagebuch();
+  const [inputVisible, setInputVisible] = useState(false);
+  const parentRef = useRef<HTMLDivElement>(null);
 
-  const table = useReactTable<EinsatztagebuchEintrag>({
-    data: einsatztagebuch ?? [], columns, getCoreRowModel: getCoreRowModel(),
+  const table = useReactTable({
+    data: einsatztagebuch ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
 
-  const [inputVisible, setInputVisible] = useState(false);
+  const virtualizer = useVirtualizer({
+    count: einsatztagebuch?.length ?? 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 34,
+    overscan: 150,
+  });
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -114,80 +124,21 @@ export function EinsatztagebuchComponent() {
               />
             </div>
             <div className="sm:col-span-2">
-              <button
-                onClick={async () => {
-                  setInputVisible(false);
-                  await createEinsatztagebuchEintrag();
-                }}
-                type="button"
-                className="block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Eintrag anlegen
-              </button>
+              <Button className="cursor-pointer" onClick={async () => {
+                setInputVisible(false);
+                await createEinsatztagebuchEintrag();
+              }} color="blue">Eintrag anlegen</Button>
             </div>
           </div>
         </div>
       )}
-      <div className="mt-8 flow-root">
+      <div ref={parentRef} className="mt-8 flow-root" style={{
+        height: '800px',
+        overflow: 'auto',
+      }}>
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="divide-x divide-gray-200">
-                  {headerGroup.headers.map((header, idx) => (
-                    <th key={header.id} id={header.id} scope="col"
-                        className={clsx(
-                          'px-4 text-left text-sm font-semibold text-gray-900',
-                          idx === 0 && 'py-3.5 sm:pl-0',
-                          idx > 0 && idx < headerGroup.headers.length - 1 && 'py-3.5',
-                          idx === headerGroup.headers.length - 1 && 'pl-4 sm:pr-0',
-                        )}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-              {table.getRowModel().rows.map(row => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell, idx) => (
-                    <td key={cell.id} className={clsx(
-                      'whitespace-nowrap p-4 text-sm text-gray-500',
-                      idx === 0 && 'sm:pl-0',
-                      idx > 0 && idx < row.getVisibleCells.length - 1 && '',
-                      idx === row.getVisibleCells.length - 1 && 'sm:pr-0',
-                      (cell.column.columnDef.meta as any)?.['classNames'],
-                    )}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-              </tbody>
-              <tfoot>
-              {table.getFooterGroups().map(footerGroup => (
-                <tr key={footerGroup.id}>
-                  {footerGroup.headers.map(header => (
-                    <th key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext(),
-                        )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-              </tfoot>
-            </table>
+            <VirtualizedTable table={table} virtualizer={virtualizer} />
           </div>
         </div>
       </div>

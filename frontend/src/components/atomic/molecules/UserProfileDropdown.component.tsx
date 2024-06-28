@@ -13,7 +13,7 @@ export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems:
   const { bearbeiter } = useBearbeiter();
 
   return <Dropdown>
-    <DropdownButton className="flex items-center p-1.5" plain={true}>
+    <DropdownButton className="flex items-center p-1.5 cursor-pointer" plain={true}>
       <span className="sr-only">Open user menu</span>
       <span className="w-5"><UserIcon aria-hidden="true" /></span>
       <span className="text-sm font-semibold" aria-hidden="true">
@@ -30,7 +30,7 @@ export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems:
             href={item['href']}
             key={item.name}
           >
-            <item.Icon className="w-5 h-5 mr-2" />
+            <item.icon className="w-5 h-5 mr-2" />
             <DropdownLabel>{item.name}</DropdownLabel>
           </DropdownItem>;
         }
@@ -38,7 +38,7 @@ export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems:
           key={item.name}
           onClick={item.onClick}
         >
-          <item.Icon className="w-5 h-5 mr-2" />
+          <item.icon className="w-5 h-5 mr-2" />
           <DropdownLabel>{item.name}</DropdownLabel>
         </DropdownItem>;
       })}
