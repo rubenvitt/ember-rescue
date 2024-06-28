@@ -7,6 +7,7 @@ import { Input } from '../../components/catalyst-components/input.js';
 import { Select } from '../../components/catalyst-components/select.js';
 import { Field, Label } from '@headlessui/react';
 import { BellIcon } from '@heroicons/react/24/outline';
+import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 
 export const Route = createLazyFileRoute('/app/kraefte')({
   component: Kraefte,
@@ -110,6 +111,8 @@ function Kraefte() {
           color: 'red',
         }}
       />
+
+      <EinheitenlisteComponent />
     </LayoutApp>
   );
 }

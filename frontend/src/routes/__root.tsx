@@ -6,7 +6,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import { Theme } from '../components/atomic/atoms/Theme.compoent.js';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: false,
+      refetchInterval: 5000,
+    },
+  },
+});
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
   import('@tanstack/react-query-devtools/production').then((d) => ({

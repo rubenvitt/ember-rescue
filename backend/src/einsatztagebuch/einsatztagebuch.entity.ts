@@ -21,7 +21,7 @@ export class EinsatztagebuchEintrag {
   einsatz: Einsatz;
 
   @Column('timestamp')
-  zeitpunkt: Date;
+  timestamp: Date;
 
   @Column('varchar')
   @Index('type')

@@ -7,8 +7,10 @@ export function useEinsatztagebuch() {
   const { data } = useQuery<EinsatztagebuchEintrag[]>({
     queryKey: ['einsatztagebuch'],
     queryFn: async () => {
-      return await fetch('http://localhost:3000/einsatztagebuch').then((res) => {
-        return res.json();
+      return await fetch('http://localhost:3000/einsatztagebuch').then(async (res) => {
+        let promise = res.json();
+        console.log('json', await promise);
+        return promise;
       });
     },
   });

@@ -20,7 +20,7 @@ export class EinsatztagebuchService {
       content: 'test',
       absender: 'test',
       empfaenger: 'test',
-      zeitpunkt: new Date(),
+      timestamp: new Date(),
     });
     return this.repository.save(eintrag);
   }
