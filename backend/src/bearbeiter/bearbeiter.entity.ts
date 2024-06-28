@@ -10,10 +10,6 @@ import {
 import { createId } from '@paralleldrive/cuid2';
 import { EinsatztagebuchEintrag } from '../einsatztagebuch/einsatztagebuch.entity';
 import { Einsatz } from '../einsatz/einsatz.entity';
-import { Person } from '../person/person.entity';
-import { Einheit } from '../einheit/einheit.entity';
-import { Qualifikation } from '../person/qualifikation.entity';
-import { Status } from '../einheit/status.entity';
 import { EinheitStatusHistorie } from '../einheit/einheit-status-historie.entity';
 
 @Entity({ name: 'bearbeiter' })
@@ -36,18 +32,6 @@ export class Bearbeiter {
 
   @OneToMany(() => Einsatz, (einsatz) => einsatz.bearbeiter)
   einsaetze: Einsatz[];
-
-  @OneToMany(() => Person, (person) => person.bearbeiter)
-  personen: Person[];
-
-  @OneToMany(() => Einheit, (einheit) => einheit.bearbeiter)
-  einheiten: Einheit[];
-
-  @OneToMany(() => Qualifikation, (qualifikation) => qualifikation.bearbeiter)
-  qualifikationen: Qualifikation[];
-
-  @OneToMany(() => Status, (status) => status.bearbeiter)
-  statusse: Status[];
 
   @OneToMany(() => EinheitStatusHistorie, (historie) => historie.bearbeiter)
   statusHistorien: EinheitStatusHistorie[];
