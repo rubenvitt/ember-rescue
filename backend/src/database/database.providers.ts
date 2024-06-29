@@ -12,6 +12,9 @@ export const databaseProviders: Provider[] = [
         url: process.env.DATABASE_URL,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: process.env.NODE_ENV === 'development',
+        applicationName: 'project-rescue-backend',
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: true,
       });
 
       return dataSource.initialize();

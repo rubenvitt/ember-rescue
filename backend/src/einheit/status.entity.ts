@@ -15,6 +15,9 @@ export class Status {
   @PrimaryColumn('varchar')
   id = createId();
 
+  @Column('integer')
+  code: number;
+
   @Column('varchar')
   bezeichnung: string;
 
