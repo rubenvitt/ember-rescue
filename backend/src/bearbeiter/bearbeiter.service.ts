@@ -1,34 +1,32 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Bearbeiter } from './bearbeiter.entity';
-import { PROVIDERS } from '../constants';
+import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../database/prisma/prisma.service';
 
 @Injectable()
 export class BearbeiterService {
   private logger = new Logger(BearbeiterService.name);
 
-  constructor(
-    @Inject(PROVIDERS.BEARBEITER_REPOSITORY)
-    private readonly bearbeiterRepository: Repository<Bearbeiter>,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
-  async findAll(): Promise<Bearbeiter[]> {
-    return this.bearbeiterRepository.find({
+  async findAll() {
+    return this.prismaService.bearbeiter.findMany({
       where: { active: true },
       select: { name: true, id: true, active: false },
     });
   }
 
   async findByNameOrCreate(name: string) {
-    console.log('Environment: ', process.env.NODE_ENV);
-    const bearbeiter = await this.bearbeiterRepository.findOneBy({ name });
-    this.logger.debug(JSON.stringify(bearbeiter));
-    if (bearbeiter) {
-      return bearbeiter;
-    } else {
-      console.log('Creating bearbeiter: ', name);
-      const newBearbeiter = this.bearbeiterRepository.create({ name: name });
-      return await this.bearbeiterRepository.save(newBearbeiter);
-    }
+    const bearbeiter = this.prismaService.bearbeiter.upsert({
+      where: { name: name },
+      update: { active: true },
+      select: { name: true, id: true, active: false },
+      create: { name: name, active: true },
+    });
+
+    this.logger.log(
+      'BearbeiterService.findByNameOrCreate(), Using Bearbeiter: ',
+      bearbeiter,
+    );
+
+    return bearbeiter;
   }
 }

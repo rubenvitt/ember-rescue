@@ -18,13 +18,14 @@ COPY common-dtos/package.json common-dtos/pnpm-lock.yaml ./common-dtos/
 # Installation der Abhängigkeiten
 RUN pnpm install --frozen-lockfile --recursive
 
+
 # Kopieren des Quellcodes
 COPY backend backend
 COPY common-dtos common-dtos
 
 WORKDIR /usr/src/app/backend
+RUN pnpx prisma generate
 
-RUN pwd
 # Bauen der Anwendung
 RUN pnpm run build
 
@@ -33,13 +34,20 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
+# Installation von pnpm und Prisma CLI
+RUN npm install -g pnpm
+ENV PNPM_HOME=/usr/src/app/.pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN pnpm add -g prisma
+
 # Kopieren der gebauten Anwendung und der Abhängigkeiten
 COPY --from=build /usr/src/app/backend/dist ./dist
 COPY --from=build /usr/src/app/backend/node_modules ./node_modules
 COPY --from=build /usr/src/app/backend/package.json ./
+COPY --from=build /usr/src/app/backend/prisma ./prisma
 
 # Exponieren des Ports, auf dem die Anwendung läuft
 EXPOSE 3000
 
 # Starten der Anwendung
-CMD ["node", "dist/main"]
+CMD ["npm", "run", "start:migrate:prod"]

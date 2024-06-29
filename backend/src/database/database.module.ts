@@ -1,9 +1,9 @@
-import {Module} from '@nestjs/common';
-import {databaseProviders} from "./database.providers";
+import { Module } from '@nestjs/common';
+import { databaseProviders } from './database.providers';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
-    providers: [...databaseProviders],
-    exports: [...databaseProviders],
+  providers: [...databaseProviders, PrismaService],
+  exports: [...databaseProviders],
 })
-export class DatabaseModule {
-}
+export class DatabaseModule {}

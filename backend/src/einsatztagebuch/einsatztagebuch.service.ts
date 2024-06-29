@@ -1,27 +1,25 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { EinsatztagebuchEintrag } from './einsatztagebuch.entity';
-import { PROVIDERS } from '../constants';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class EinsatztagebuchService {
-  constructor(
-    @Inject(PROVIDERS.EINSATZTAGEBUCH_REPOSITORY)
-    private readonly repository: Repository<EinsatztagebuchEintrag>,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   getEinsatztagebuch() {
-    return this.repository.find({});
+    return this.prismaService.einsatztagebuchEintrag.findMany();
   }
 
   createEinsatztagebuchEintrag() {
-    const eintrag = this.repository.create({
-      type: 'GENERISCH',
-      content: 'test',
-      absender: 'test',
-      empfaenger: 'test',
-      timestamp: new Date(),
+    const eintrag = this.prismaService.einsatztagebuchEintrag.create({
+      data: {
+        type: 'GENERISCH',
+        content: 'test',
+        absender: 'test',
+        empfaenger: 'test',
+        timestamp: new Date(),
+      },
     });
-    return this.repository.save(eintrag);
+
+    return eintrag;
   }
 }

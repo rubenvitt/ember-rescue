@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Bearbeiter {
+  id                      String                   @id() @default(cuid())
+  name                    String                   @unique
+  active                  Boolean                  @default(true)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  einheit_status_historie EinheitStatusHistorie[]
+  einsatz                 Einsatz[]
+  einsatztagebuch_eintrag EinsatztagebuchEintrag[]
+}
+
+model Einheit {
+  id                      String                  @id() @default(cuid())
+  funkrufname             String
+  typ                     String
+  kapazitaet              Int
+  istTemporaer            Boolean
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  aktuellerStatusId       String?
+  status                  Status?                 @relation(fields: [aktuellerStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einheit_status_historie EinheitStatusHistorie[]
+  einsatz_einheit         EinsatzEinheit[]
+}
+
+model EinheitStatusHistorie {
+  id           String      @id() @default(cuid())
+  zeitpunkt    DateTime
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  einheitId    String?
+  statusId     String?
+  bearbeiterId String?
+  einsatzId    String?
+  bearbeiter   Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status       Status?     @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einheit      Einheit?    @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Einsatz {
+  id                      String                   @id() @default(cuid())
+  beginn                  DateTime
+  ende                    DateTime?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  bearbeiterId            String?
+  einheit_status_historie EinheitStatusHistorie[]
+  bearbeiter              Bearbeiter?              @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_einheit         EinsatzEinheit[]
+  einsatztagebuch_eintrag EinsatztagebuchEintrag[]
+}
+
+model EinsatzEinheit {
+  id                    String                 @id() @default(cuid())
+  einsatzbeginn         DateTime
+  einsatzende           DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  einsatzId             String?
+  einheitId             String?
+  einheit               Einheit?               @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz               Einsatz?               @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_einheit_kraft EinsatzEinheitPerson[]
+}
+
+model EinsatzEinheitPerson {
+  id               String          @id() @default(cuid())
+  fahrzeugfuehrer  Boolean
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  einsatzEinheitId String?
+  personId         String?
+  person           Person?         @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_einheit  EinsatzEinheit? @relation(fields: [einsatzEinheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model EinsatztagebuchEintrag {
+  id           String      @id() @default(cuid())
+  timestamp    DateTime
+  type         String
+  content      String
+  absender     String
+  empfaenger   String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  einsatzId    String?
+  bearbeiterId String?
+  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  bearbeiter   Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([absender])
+  @@index([empfaenger])
+  @@index([type])
+}
+
+model Person {
+  id                    String                 @id() @default(cuid())
+  name                  String
+  telefonnummer         String
+  fuehrungskraft        Boolean
+  istTemporaer          Boolean
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  einsatz_einheit_kraft EinsatzEinheitPerson[]
+  person_qualifikation  PersonQualifikation[]
+}
+
+model PersonQualifikation {
+  id              String         @id() @default(cuid())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  personId        String?
+  qualifikationId String?
+  qualifikation   Qualifikation? @relation(fields: [qualifikationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person          Person?        @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Qualifikation {
+  id                   String                @id() @default(cuid())
+  bezeichnung          String
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  person_qualifikation PersonQualifikation[]
+}
+
+model Status {
+  id                      String                  @id() @default(cuid())
+  bezeichnung             String
+  beschreibung            String
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  einheit                 Einheit[]
+  einheit_status_historie EinheitStatusHistorie[]
+}
