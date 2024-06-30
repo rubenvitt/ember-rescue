@@ -10,14 +10,14 @@ import {
 import { UserIcon } from '@heroicons/react/24/outline/index.js';
 
 export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems: DropdownItems }) {
-  const { bearbeiter } = useBearbeiter();
+  const { bearbeiter } = useBearbeiter({ requireBearbeiter: true });
 
   return <Dropdown>
     <DropdownButton className="flex items-center p-1.5 cursor-pointer" plain={true}>
       <span className="sr-only">Open user menu</span>
       <span className="w-5"><UserIcon aria-hidden="true" /></span>
       <span className="text-sm font-semibold" aria-hidden="true">
-        {bearbeiter?.name}
+        {bearbeiter.data?.name}
                       </span>
     </DropdownButton>
     <DropdownMenu

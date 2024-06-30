@@ -42,7 +42,7 @@ function VirtualizedTable<T>({ table, virtualizer }: VirtualizedTableProps<T>) {
 }
 
 interface TableRowProps<T> {
-  virtualRow: VirtualItem;
+  virtualRow: VirtualItem<Element>;
   table: Table<T>;
 }
 

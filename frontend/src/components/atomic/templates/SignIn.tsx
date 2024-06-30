@@ -1,19 +1,28 @@
 import { useForm } from '@tanstack/react-form';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../../../types.js';
-import { ComboInput } from '../../catalyst-components/combobox.js';
+import { BearbeiterInput } from '../molecules/BearbeiterInput.component.js';
+import { getCurrent, LogicalSize } from '@tauri-apps/api/window';
+import { useMemo } from 'react';
 
 export function SignIn() {
-  const { saveBearbeiter, allBearbeiter: { data: allBearbeiter } } = useBearbeiter();
+  const { saveBearbeiter, allBearbeiter } = useBearbeiter();
+
+  useMemo(async () => {
+    const window = getCurrent();
+    await window.setTitle('Project Rescue • Anmelden');
+    await window.setFullscreen(false);
+    await window.setSize(new LogicalSize(400, 600));
+    await window.center();
+    await window.setAlwaysOnTop(true);
+    await window.setResizable(false);
+  }, []);
 
   let form = useForm<{ bearbeiter: Bearbeiter | NewBearbeiter }>({
     defaultValues: {
       bearbeiter: { name: '', id: null },
     },
-    onSubmit: async (values) => {
-      console.log('Form submitted with values:', values);
-      saveBearbeiter(values.value.bearbeiter);
-    },
+    onSubmit: (values) => saveBearbeiter(values.value.bearbeiter),
   });
 
   return (
@@ -47,8 +56,8 @@ export function SignIn() {
                 },
               }}
               children={(field) => (<>
-                  <ComboInput
-                    items={allBearbeiter || []}
+                  <BearbeiterInput
+                    items={allBearbeiter.data || []}
                     errors={field.state.meta.errors}
                     labelText="Anmelden als:"
                     inputProps={{
@@ -56,19 +65,26 @@ export function SignIn() {
                       onBlur: field.handleBlur,
                       onChange: (e) => field.handleChange({ id: e?.id || 'test', name: e?.name ?? '' }),
                       required: true,
-                      placeholder: 'Bearbeiter auswählen',
+                      placeholder: allBearbeiter.isFetched ? 'Bearbeiter auswählen' : 'Bearbeiter laden...',
                     }}
                   />
                 </>
               )} />
           </div>
           <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
-              Mit der Bearbeitung beginnen
-            </button>
+              {([canSubmit, isSubmitting]) => (
+                <button
+                  type="submit"
+                  disabled={!canSubmit}
+                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {isSubmitting ? 'Bearbeite...' : 'Mit der Bearbeitung beginnen'}
+                </button>
+              )}
+            </form.Subscribe>
           </div>
         </form>
       </div>

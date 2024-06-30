@@ -8,11 +8,10 @@ export const Route = createFileRoute('/auth/signout')({
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (bearbeiter) removeBearbeiter();
+      if (bearbeiter.isLoading) return;
+      if (bearbeiter.data) removeBearbeiter();
+      navigate({ to: '/signin' });
     }, [removeBearbeiter, bearbeiter]);
-    useEffect(() => {
-      if (!bearbeiter) navigate({ to: '/signin' });
-    }, [bearbeiter]);
 
     return <></>;
   },

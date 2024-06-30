@@ -14,10 +14,7 @@ const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
   columnHelper.accessor('timestamp', {
     header: 'Zeitpunkt',
-    cell: (context) => {
-      console.log('context', context.getValue());
-      return format(context.getValue(), natoDateTime);
-    },
+    cell: (context) => format(context.getValue(), natoDateTime),
   }),
   columnHelper.accessor('absender', {
     header: 'Absender',

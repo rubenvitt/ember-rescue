@@ -29,4 +29,11 @@ export class BearbeiterService {
 
     return bearbeiter;
   }
+
+  findOne(id: string) {
+    return this.prismaService.bearbeiter.findUnique({
+      where: { id: id, active: true },
+      select: { name: true, id: true, active: false },
+    });
+  }
 }

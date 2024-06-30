@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { LayoutApp } from '../_layout/_layout-app.js';
 import ModalComponent from '../../components/atomic/molecules/Modal.component.js';
@@ -8,39 +8,27 @@ import { Select } from '../../components/catalyst-components/select.js';
 import { Field, Label } from '@headlessui/react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
+import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
+import { useEinheiten } from '../../hooks/einheiten.hook.js';
+import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 
-export const Route = createLazyFileRoute('/app/kraefte')({
-  component: Kraefte,
+export const Route = createLazyFileRoute('/app/einheiten')({
+  component: Einheiten,
 });
 
-function Kraefte() {
+function Einheiten() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fahrzeug, setFahrzeug] = useState('');
-  const [kraefte, setKraefte] = useState([{ name: '', qualifikation: '' }]);
-
-  const qualifikationen = [
-    'Rettungssanitäter',
-    'Rettungsassistent',
-    'Notfallsanitäter',
-    'Notarzt',
-    'Sanitätshelfer',
-    'Einsatzsanitäter',
-  ];
+  const { qualifikationen } = useQualifikationen();
+  const { einheiten } = useEinheiten({ einsatzId: '11' });
 
   const handleAddKraft = () => {
-    setKraefte([...kraefte, { name: '', qualifikation: '' }]);
+
   };
 
-  const handleKraftChange = (index, field, value) => {
-    const updatedKraefte = kraefte.map((kraft, i) =>
-      i === index ? { ...kraft, [field]: value } : kraft,
-    );
-    setKraefte(updatedKraefte);
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Submitted:', { fahrzeug, kraefte });
+  const handleSubmit = () => {
+    console.log('Submitted:', { fahrzeug, kraefte: einheiten });
     setIsModalOpen(false);
     // Here you would typically send this data to your backend or state management
   };
@@ -48,13 +36,13 @@ function Kraefte() {
   return (
     <LayoutApp>
       <Button color="orange" className="cursor-pointer" onClick={() => setIsModalOpen(true)}>
-        Neue Kräfte hinzufügen
+        Neue Einheiten hinzufügen
       </Button>
       <ModalComponent
         isOpen={isModalOpen}
         fullWidth
         onClose={() => setIsModalOpen(false)}
-        title="Neue Kräfte hinzufügen"
+        title="Neue Einheiten hinzufügen"
         Icon={BellIcon}
         content={
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +54,7 @@ function Kraefte() {
                 required
               />
             </Field>
-            {kraefte.map((kraft, index) => (
+            {([] as any[]).map((kraft, index) => (
               <div key={index} className="flex space-x-2">
                 <Field>
                   <Label>
@@ -74,7 +62,7 @@ function Kraefte() {
                   </Label>
                   <Input
                     value={kraft.name}
-                    onChange={(e) => handleKraftChange(index, 'name', e.target.value)}
+                    // onChange={(e) => handleKraftChange(index, 'name', e.target.value)}
                     required
                   />
                 </Field>
@@ -84,12 +72,12 @@ function Kraefte() {
                   </Label>
                   <Select
                     value={kraft.qualifikation}
-                    onChange={(e) => handleKraftChange(index, 'qualifikation', e.target.value)}
+                    // onChange={(e) => handleKraftChange(index, 'qualifikation', e.target.value)}
                     required
                   >
                     <option value="">Bitte wählen</option>
-                    {qualifikationen.map((qual) => (
-                      <option key={qual} value={qual}>{qual}</option>
+                    {qualifikationen.data?.map((qual) => (
+                      <option key={qual.id} value={qual.id}>{qual.bezeichnung}</option>
                     ))}
                   </Select>
                 </Field>
@@ -102,7 +90,7 @@ function Kraefte() {
         }
         primaryAction={{
           label: 'Hinzufügen',
-          onClick: handleSubmit,
+          onClick: () => handleSubmit(),
           color: 'green',
         }}
         secondaryAction={{
@@ -112,7 +100,8 @@ function Kraefte() {
         }}
       />
 
-      <EinheitenlisteComponent />
+      {einheiten.isFetched &&
+        (einheiten.data?.length ? <EinheitenlisteComponent einheiten={einheiten.data} /> : <EmptyEinheitenState />)}
     </LayoutApp>
   );
 }

@@ -11,10 +11,9 @@ function Index() {
   let navigate = useNavigate({ from: '/' });
 
   useEffect(() => {
-    if (!bearbeiter) {
+    if (bearbeiter.isLoading) {
       // do nothing
-    }
-    if (bearbeiter?.id) {
+    } else if (bearbeiter?.data?.id) {
       navigate({ to: '/app' });
     } else {
       navigate({ to: '/signin' });

@@ -35,7 +35,6 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@common-dtos": "../common-dtos/src",
     "@eslint/js": "^9.5.0",
     "@tanstack/eslint-plugin-query": "^5.43.1",
     "@tanstack/router-devtools": "^1.40.0",

@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@common-dtos':
-        specifier: ../common-dtos/src
-        version: link:../common-dtos/src
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.3.9(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)

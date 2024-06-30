@@ -23,6 +23,14 @@
           "url": "http://localhost:3000"
         }
       ]
-    }
+    },
+    "window:allow-maximize",
+    "window:allow-set-title",
+    "window:allow-set-effects",
+    "window:allow-set-size",
+    "window:allow-set-always-on-top",
+    "window:allow-center",
+    "window:allow-set-resizable",
+    "window:allow-set-fullscreen"
   ]
 }

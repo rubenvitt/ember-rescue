@@ -1,7 +1,7 @@
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import React, { useMemo, useState } from 'react';
-import { IdentifiableLabel } from '../../types.js';
+import { IdentifiableLabel } from '../../../types.js';
 import { clsx } from 'clsx';
 import { ValidationError } from '@tanstack/react-form';
 
@@ -15,13 +15,13 @@ type Props<T extends IdentifiableLabel> = {
   labelText: string;
 }
 
-export function ComboInput<T extends IdentifiableLabel>({
-                                                          items,
-                                                          allowCustom = true,
-                                                          inputProps,
-                                                          errors,
-                                                          labelText,
-                                                        }: Props<T>) {
+export function BearbeiterInput<T extends IdentifiableLabel>({
+                                                               items,
+                                                               allowCustom = true,
+                                                               inputProps,
+                                                               errors,
+                                                               labelText,
+                                                             }: Props<T>) {
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<T | null>();
 
@@ -36,10 +36,7 @@ export function ComboInput<T extends IdentifiableLabel>({
     return errors?.filter((err: ValidationError) => Boolean(err));
   }, [errors]);
 
-  const hasErrors = useMemo(() => {
-    console.log('errors', errors, cleanedErrors);
-    return (cleanedErrors?.length ?? 0) > 0;
-  }, [cleanedErrors]);
+  const hasErrors = useMemo(() => (cleanedErrors?.length ?? 0) > 0, [cleanedErrors]);
 
 
   return (

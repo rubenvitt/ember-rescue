@@ -12,7 +12,7 @@ function SignInRoute() {
   let navigate = useNavigate({ from: '/signin' });
 
   useEffect(() => {
-    if (bearbeiter?.id) {
+    if (bearbeiter?.data?.id) {
       navigate({ to: '/app/' });
     }
   }, [bearbeiter, navigate]);

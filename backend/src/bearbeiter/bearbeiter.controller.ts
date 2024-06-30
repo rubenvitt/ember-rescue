@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Inject, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { BearbeiterService } from './bearbeiter.service';
-import { NewBearbeiterDto } from '@common-dtos/bearbeiter.dto';
+import { NewBearbeiterDto } from '../types';
 
 @Controller('bearbeiter')
 export class BearbeiterController {
@@ -17,6 +25,18 @@ export class BearbeiterController {
       process.env.NODE_ENV,
     );
     return this.bearbeiterService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    this.logger.log(
+      'BearbeiterController.findOne(), Environment: ',
+      process.env.NODE_ENV,
+      id,
+    );
+    this.logger.log('BearbeiterController.findOne(), Find one: ', id);
+
+    return this.bearbeiterService.findOne(id);
   }
 
   @Post()

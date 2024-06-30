@@ -128,6 +128,7 @@ model PersonQualifikation {
 model Qualifikation {
   id                   String                @id() @default(cuid())
   bezeichnung          String
+  abkuerzung           String
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   person_qualifikation PersonQualifikation[]
@@ -135,6 +136,7 @@ model Qualifikation {
 
 model Status {
   id                      String                  @id() @default(cuid())
+  code                    String
   bezeichnung             String
   beschreibung            String
   createdAt               DateTime                @default(now())

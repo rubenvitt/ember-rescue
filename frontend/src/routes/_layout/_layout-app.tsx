@@ -26,7 +26,7 @@ export const Route = createFileRoute('/_layout/_layout-app')({
 const mainNavigation = [
   { name: 'Dashboard', href: '/app', icon: HomeIcon },
   { name: 'Einsatztagebuch', href: '/app/einsatztagebuch', icon: BookOpenIcon },
-  { name: 'Kräfteübersicht', href: '/app/kraefte', icon: UserGroupIcon },
+  { name: 'Einheiten', href: '/app/einheiten', icon: UserGroupIcon },
   { name: 'Patienten', href: '/app/patienten', icon: PlusIcon },
   { name: 'Lagekarte', href: '/app/lagekarte', icon: MapIcon },
   { name: 'Einsatzdaten', href: '/app/einsatzdaten', icon: InformationCircleIcon },

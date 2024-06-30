@@ -13,7 +13,6 @@ RUN pnpm i -g @nestjs/cli
 # Kopieren der pnpm-lock.yaml (falls vorhanden) und package.json
 COPY pnpm-lock.yaml package.json ./
 COPY backend/package.json backend/pnpm-lock.yaml ./backend/
-COPY common-dtos/package.json common-dtos/pnpm-lock.yaml ./common-dtos/
 
 # Installation der Abhängigkeiten
 RUN pnpm install --frozen-lockfile --recursive
@@ -21,7 +20,6 @@ RUN pnpm install --frozen-lockfile --recursive
 
 # Kopieren des Quellcodes
 COPY backend backend
-COPY common-dtos common-dtos
 
 WORKDIR /usr/src/app/backend
 RUN pnpx prisma generate
