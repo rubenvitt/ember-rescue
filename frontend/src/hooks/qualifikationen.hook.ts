@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetch } from '@tauri-apps/plugin-http';
 import { QualifikationDto } from '../types.js';
+import { backendFetch } from '../lib/http.js';
 
 export const useQualifikationen = () => {
   let { data: qualifikationen, isLoading, isFetched } = useQuery<QualifikationDto[]>({
     queryKey: ['qualifikationen'],
-    queryFn: async () => fetch('http://localhost:3000/qualifikationen').then((res) => res.json()),
+    queryFn: async () => backendFetch('/qualifikationen'),
   });
 
   return { qualifikationen: { data: qualifikationen, isLoading, isFetched } };

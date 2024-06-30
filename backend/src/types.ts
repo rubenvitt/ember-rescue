@@ -29,3 +29,9 @@ export type EinheitDto = {
   istTemporaer: boolean;
   status: SmallStatusDto;
 };
+
+export type CreateEinsatzDto = {
+  erstAlarmiert: string;
+  aufnehmendesRettungsmittel: string;
+  einsatzstichwort?: string;
+};

@@ -8,6 +8,7 @@ import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module'
 import { QualifikationenModule } from './qualifikationen/qualifikationen.module';
 import { EinheitenModule } from './einheiten/einheiten.module';
 import { StatusModule } from './status/status.module';
+import { EinsatzModule } from './einsatz/einsatz.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -28,6 +29,7 @@ import * as Joi from 'joi';
     QualifikationenModule,
     EinheitenModule,
     StatusModule,
+    EinsatzModule,
   ],
   controllers: [AppController],
   providers: [AppService],

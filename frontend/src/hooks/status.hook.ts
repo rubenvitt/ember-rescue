@@ -1,14 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { StatusDto } from '../types.js';
-import { fetch } from '@tauri-apps/plugin-http';
+import { backendFetch } from '../lib/http.js';
 
 export function useStatus() {
   const status = useQuery<StatusDto[]>({
     queryKey: ['status'],
-    queryFn: async () => {
-      const response = await fetch('http://localhost:3000/status');
-      return response.json();
-    },
+    queryFn: async () => await backendFetch('/status'),
   });
 
   return {

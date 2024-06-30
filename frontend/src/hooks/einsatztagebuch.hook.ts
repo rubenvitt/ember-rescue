@@ -1,17 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { EinsatztagebuchEintrag } from '../types.js';
-import { fetch } from '@tauri-apps/plugin-http';
+import { backendFetch } from '../lib/http.js';
 
 export function useEinsatztagebuch() {
   const queryClient = useQueryClient();
   const { data } = useQuery<EinsatztagebuchEintrag[]>({
     queryKey: ['einsatztagebuch'],
     queryFn: async () => {
-      return await fetch('http://localhost:3000/einsatztagebuch').then(async (res) => {
-        let promise = res.json();
-        console.log('json', await promise);
-        return promise;
-      });
+      return await backendFetch('/einsatztagebuch');
     },
   });
 
@@ -19,13 +15,13 @@ export function useEinsatztagebuch() {
     mutationKey: ['einsatztagebuch'],
     mutationFn: async () => {
       console.log('mutate');
-      return await fetch('http://localhost:3000/einsatztagebuch', {
+      return await backendFetch('/einsatztagebuch', {
         method: 'POST',
         //body: JSON.stringify(einsatztagebuchEintrag),
         headers: {
           'Content-Type': 'application/json',
         },
-      }).then((res) => res.json());
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['einsatztagebuch'] });

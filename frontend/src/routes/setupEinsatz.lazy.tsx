@@ -1,9 +1,9 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { GenericForm } from '../components/atomic/organisms/GenericForm.component.js';
-import { invoke } from '@tauri-apps/api/core';
 import { format } from 'date-fns';
 import { useEinheiten } from '../hooks/einheiten.hook.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
+import { useEinsatz } from '../hooks/einsatz.hook.js';
 
 export const Route = createLazyFileRoute('/setupEinsatz')({
   component: SetupEinsatz,
@@ -21,6 +21,7 @@ function SetupEinsatz() {
   const { einheiten } = useEinheiten();
   const { removeBearbeiter } = useBearbeiter();
   const navigate = useNavigate({ from: '/setupEinsatz' });
+  const { createEinsatz } = useEinsatz();
 
   if (!einheiten.data) {
     return 'Loading...';
@@ -34,12 +35,7 @@ function SetupEinsatz() {
         navigate({ to: '/signin' });
       }}
       onSubmit={async (values) => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            invoke('log_message', { message: 'Submitted form!' + JSON.stringify(values) });
-            resolve();
-          }, 1000);
-        });
+        await createEinsatz.mutateAsync(values);
       }} defaultValues={{
       erstAlarmiert: format(new Date(), `yyyy-MM-dd'T'HH:mm`),
     }} sections={[
