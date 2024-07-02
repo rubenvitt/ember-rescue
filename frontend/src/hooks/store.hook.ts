@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Bearbeiter } from '../types.js';
+import { Bearbeiter, Einsatz } from '../types.js';
 import storage from '../lib/storage.js';
 import { ContextualNavigation } from '../components/atomic/organisms/Sidebar.component.js';
 
@@ -7,6 +7,10 @@ type Store = {
   bearbeiter: Bearbeiter | null;
   setBearbeiter: (bearbeiter: Bearbeiter) => void;
   removeBearbeiter: () => void;
+
+  einsatz: Einsatz | null;
+  setEinsatz: (einsatz: Einsatz) => void;
+  removeEinsatz: () => void;
 
   theme: {
     dark: boolean;
@@ -26,8 +30,21 @@ export const useStore = create<Store>((set, get) => ({
   },
   removeBearbeiter: () => {
     storage().writeLocalStorage('bearbeiter', null);
-    set({ bearbeiter: null });
+    storage().writeLocalStorage('einsatz', null);
+    set({ bearbeiter: null, einsatz: null });
   },
+
+  einsatz: storage().readLocalStorage<Einsatz>('einsatz'),
+  setEinsatz: (einsatz: Einsatz) => {
+    storage().writeLocalStorage('einsatz', einsatz);
+    set({ einsatz });
+  },
+  removeEinsatz: () => {
+    storage().writeLocalStorage('einsatz', null);
+    set({ einsatz: null });
+  },
+
+
   theme: {
     dark: storage().readLocalStorage<boolean>('theme:dark') ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
     setDark: (dark) => {
@@ -45,5 +62,7 @@ export const useStore = create<Store>((set, get) => ({
       }));
     },
   },
+
+
   setContextualNavigation: (contextualNavigation) => set({ contextualNavigation }),
 }));

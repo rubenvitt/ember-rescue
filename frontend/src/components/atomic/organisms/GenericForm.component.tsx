@@ -140,7 +140,7 @@ export function GenericForm<TFormData extends Record<string, any>>({
   });
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 p-6 md:p-12 lg:px-0 lg:p-24 flex flex-col items-center">
+    <div className="p-6 md:p-12 lg:px-0 lg:p-24 flex flex-col items-center">
       <div className="space-y-10 divide-y divide-gray-900/10 dark:divide-gray-100/10 max-w-4xl w-full">
         <form onSubmit={(e) => {
           e.preventDefault();

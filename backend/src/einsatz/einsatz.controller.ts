@@ -5,7 +5,9 @@ import {
   Headers,
   Logger,
   Param,
+  ParseBoolPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { EinsatzService } from './einsatz.service';
 import { CreateEinsatzDto } from '../types';
@@ -18,7 +20,18 @@ export class EinsatzController {
 
   @Get(':id')
   async getEinsatz(@Param('id') id: string) {
+    // the
     return this.einsatzService.getEinsatz(id);
+  }
+
+  @Get()
+  async getEinsaetze(
+    @Query('abgeschlossen', new ParseBoolPipe({ optional: true }))
+    abgeschlossen?: boolean,
+  ) {
+    return this.einsatzService.getEinsaetze({
+      abgeschlossen: abgeschlossen ? { not: null } : null,
+    });
   }
 
   @Post()
@@ -34,6 +47,11 @@ export class EinsatzController {
         },
       },
       beginn: new Date(),
+      aufnehmendes_rettungsmittel: {
+        connect: {
+          id: body.aufnehmendesRettungsmittel,
+        },
+      },
     });
   }
 }

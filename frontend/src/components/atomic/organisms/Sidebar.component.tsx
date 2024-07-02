@@ -67,7 +67,7 @@ const NavList: React.FC<NavListProps> = ({ items, title }) => (
 );
 
 const SidebarContent: React.FC<SidebarContentProps> = ({ navigation, contextualNavigation }) => (
-  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
+  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-red-900 px-6 pb-4">
     <div className="flex h-16 shrink-0 items-center">
       <img className="h-8 w-auto" src="/logo.png" alt="Project Rescue" />
     </div>

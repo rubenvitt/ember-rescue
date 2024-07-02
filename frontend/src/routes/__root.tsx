@@ -5,6 +5,8 @@ import '../style/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 import { Theme } from '../components/atomic/atoms/Theme.compoent.js';
+import { de } from 'date-fns/locale';
+import { setDefaultOptions } from 'date-fns';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +30,7 @@ export const Route = createRootRoute({
     React.useEffect(() => {
       // @ts-expect-error
       window.toggleDevtools = () => setShowDevtools((old) => !old);
+      setDefaultOptions({ locale: de });
     }, []);
 
     return (

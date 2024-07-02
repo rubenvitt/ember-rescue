@@ -17,4 +17,35 @@ export class EinsatzService {
       data,
     });
   }
+
+  getEinsaetze(where: Prisma.EinsatzWhereInput) {
+    return this.prismaService.einsatz
+      .findMany({
+        where: where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          einsatz_alarmstichwort: {
+            include: {
+              alarmstichwort: {
+                select: {
+                  bezeichnung: true,
+                  beschreibung: true,
+                },
+              },
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      })
+      .then((list) => {
+        return list.map((einsatz) => ({
+          ...einsatz,
+          einsatz_alarmstichwort:
+            einsatz.einsatz_alarmstichwort[0]?.alarmstichwort,
+        }));
+      });
+  }
 }

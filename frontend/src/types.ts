@@ -14,6 +14,22 @@ export type Bearbeiter = {
   name: string;
 };
 
+
+export type Einsatz = {
+  id: string;
+  beginn: string;
+  ende: string | null;
+  abgeschlossen: string | null;
+  aufnehmendesRettungsmittelId: string;
+  bearbeiterId: string;
+  createdAt: string;
+  updatedAt: string;
+  einsatz_alarmstichwort?: {
+    beschreibung: string;
+    bezeichnung: string;
+  };
+};
+
 export type NewBearbeiter = {
   name: string;
   id: null

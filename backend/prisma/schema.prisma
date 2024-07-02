@@ -29,7 +29,8 @@ model Einheit {
   aktuellerStatusId       String?
   status                  Status?                 @relation(fields: [aktuellerStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einheit_status_historie EinheitStatusHistorie[]
-  einsatz_einheit         EinsatzEinheit[]
+  einsatz_einheit         EinheitOnEinsatz[]
+  Einsatz                 Einsatz[]
 }
 
 model EinheitStatusHistorie {
@@ -48,40 +49,44 @@ model EinheitStatusHistorie {
 }
 
 model Einsatz {
-  id                      String                   @id() @default(cuid())
-  beginn                  DateTime
-  ende                    DateTime?
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  bearbeiterId            String?
-  einheit_status_historie EinheitStatusHistorie[]
-  bearbeiter              Bearbeiter?              @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz_einheit         EinsatzEinheit[]
-  einsatztagebuch_eintrag EinsatztagebuchEintrag[]
+  id                           String                    @id() @default(cuid())
+  beginn                       DateTime
+  ende                         DateTime?
+  abgeschlossen                DateTime?
+  createdAt                    DateTime                  @default(now())
+  updatedAt                    DateTime                  @updatedAt
+  bearbeiterId                 String?
+  aufnehmendesRettungsmittelId String
+  einheit_status_historie      EinheitStatusHistorie[]
+  bearbeiter                   Bearbeiter?               @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  aufnehmendes_rettungsmittel  Einheit                   @relation(fields: [aufnehmendesRettungsmittelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  einsatz_einheit              EinheitOnEinsatz[]
+  einsatztagebuch_eintrag      EinsatztagebuchEintrag[]
+  einsatz_alarmstichwort       EinsatzOnAlarmstichwort[]
 }
 
-model EinsatzEinheit {
-  id                    String                 @id() @default(cuid())
+model EinheitOnEinsatz {
+  id                    String                     @id() @default(cuid())
   einsatzbeginn         DateTime
   einsatzende           DateTime?
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
   einsatzId             String?
   einheitId             String?
-  einheit               Einheit?               @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz               Einsatz?               @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz_einheit_kraft EinsatzEinheitPerson[]
+  einheit               Einheit?                   @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz               Einsatz?                   @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
 }
 
-model EinsatzEinheitPerson {
-  id               String          @id() @default(cuid())
+model PersonOnEinheitOnEinsatz {
+  id               String            @id() @default(cuid())
   fahrzeugfuehrer  Boolean
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   einsatzEinheitId String?
   personId         String?
-  person           Person?         @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz_einheit  EinsatzEinheit? @relation(fields: [einsatzEinheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person           Person?           @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_einheit  EinheitOnEinsatz? @relation(fields: [einsatzEinheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model EinsatztagebuchEintrag {
@@ -104,18 +109,18 @@ model EinsatztagebuchEintrag {
 }
 
 model Person {
-  id                    String                 @id() @default(cuid())
+  id                    String                     @id() @default(cuid())
   name                  String
   telefonnummer         String
   fuehrungskraft        Boolean
   istTemporaer          Boolean
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  einsatz_einheit_kraft EinsatzEinheitPerson[]
-  person_qualifikation  PersonQualifikation[]
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
+  person_qualifikation  PersonOnQualifikation[]
 }
 
-model PersonQualifikation {
+model PersonOnQualifikation {
   id              String         @id() @default(cuid())
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -126,12 +131,12 @@ model PersonQualifikation {
 }
 
 model Qualifikation {
-  id                   String                @id() @default(cuid())
+  id                   String                  @id() @default(cuid())
   bezeichnung          String
   abkuerzung           String
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  person_qualifikation PersonQualifikation[]
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  person_qualifikation PersonOnQualifikation[]
 }
 
 model Status {
@@ -143,4 +148,23 @@ model Status {
   updatedAt               DateTime                @updatedAt
   einheit                 Einheit[]
   einheit_status_historie EinheitStatusHistorie[]
+}
+
+model EinsatzOnAlarmstichwort {
+  id               String          @id() @default(cuid())
+  einsatzId        String
+  alarmstichwortId String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  einsatz          Einsatz?        @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  alarmstichwort   Alarmstichwort? @relation(fields: [alarmstichwortId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Alarmstichwort {
+  id                     String                    @id() @default(cuid())
+  bezeichnung            String
+  beschreibung           String
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  alarmstichwort_einsatz EinsatzOnAlarmstichwort[]
 }
