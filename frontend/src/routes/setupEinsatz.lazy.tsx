@@ -22,19 +22,19 @@ function SetupEinsatz() {
   const { einheiten } = useEinheiten();
   const { removeBearbeiter } = useBearbeiter();
   const navigate = useNavigate({ from: '/setupEinsatz' });
-  const { createEinsatz, offeneEinsaetze, einsatz } = useEinsatz();
+  const { createEinsatz, offeneEinsaetze, einsatz, saveEinsatz } = useEinsatz();
 
-  if (!einheiten.data) {
+
+  if (!einheiten.isFetched) {
     return 'Loading...';
   }
-  if (einsatz) {
+  if (einsatz.isFetched && einsatz.data) {
     navigate({ to: '/app/' });
   }
-
   return (
     <div className="bg-gray-50 dark:bg-gray-900 flex gap-4 flex-col">
       {
-        offeneEinsaetze.data && offeneEinsaetze.data?.length > 0 &&
+        offeneEinsaetze.data && offeneEinsaetze.data.length > 0 &&
         <div className="flex flex-col items-center">
           <div className="h-24 w-full bg-red-800"></div>
           <div className="max-w-4xl">
@@ -49,7 +49,10 @@ function SetupEinsatz() {
           navigate({ to: '/signin' });
         }}
         onSubmit={async (values) => {
-          await createEinsatz.mutateAsync(values);
+          await createEinsatz.mutateAsync(values).then((einsatz) => {
+            saveEinsatz(einsatz);
+            navigate({ to: '/app/' });
+          });
         }} defaultValues={{
         erstAlarmiert: format(new Date(), `yyyy-MM-dd'T'HH:mm`),
       }} sections={[

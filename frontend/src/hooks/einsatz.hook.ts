@@ -1,10 +1,19 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { backendFetch } from '../lib/http.js';
 import { Einsatz } from '../types.js';
 import { useStore } from './store.hook.js';
 
 export function useEinsatz() {
-  const { setEinsatz, einsatz } = useStore();
+  const { setEinsatz, einsatzId } = useStore();
+  const queryClient = useQueryClient();
+
+  const singleEinsatz = useQuery<Einsatz>({
+    queryKey: ['einsatz', einsatzId],
+    queryFn: async () => {
+      return backendFetch(`/einsatz/${einsatzId}`);
+    },
+    enabled: !!einsatzId,
+  });
 
   const offeneEinsaetze = useQuery<Einsatz[]>({
     queryKey: ['offeneEinsaetze'],
@@ -13,9 +22,8 @@ export function useEinsatz() {
     },
   });
 
-  const createEinsatz = useMutation<unknown, unknown, unknown>({
+  const createEinsatz = useMutation<Einsatz, unknown, unknown>({
     mutationFn: async (data: unknown) => {
-      console.log('mutate with data', data);
       return backendFetch('/einsatz', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -23,12 +31,21 @@ export function useEinsatz() {
     },
   });
 
+  const einsatzAbschliessen = useMutation<unknown, unknown, Einsatz>({
+    mutationKey: ['offeneEinsaetze'],
+    mutationFn: async (einsatz) =>
+      await backendFetch(`/einsatz/${einsatz.id}/close`, {
+        method: 'PUT',
+      }).then(() => queryClient.invalidateQueries({ queryKey: ['offeneEinsaetze'] })),
+  });
+
   function saveEinsatz(einsatz: Einsatz) {
     setEinsatz(einsatz);
   }
 
   return {
-    einsatz, saveEinsatz,
+    einsatz: { ...singleEinsatz, isDisabled: !einsatzId },
+    saveEinsatz,
     createEinsatz: {
       isPending: createEinsatz.isPending,
       isSuccess: createEinsatz.isSuccess,
@@ -40,6 +57,13 @@ export function useEinsatz() {
       isLoading: offeneEinsaetze.isLoading,
       isFetched: offeneEinsaetze.isFetched,
       data: offeneEinsaetze.data,
+    },
+    einsatzAbschliessen: {
+      isPending: einsatzAbschliessen.isPending,
+      isSuccess: einsatzAbschliessen.isSuccess,
+      isError: einsatzAbschliessen.isError,
+      mutate: einsatzAbschliessen.mutate,
+      mutateAsync: einsatzAbschliessen.mutateAsync,
     },
   };
 }

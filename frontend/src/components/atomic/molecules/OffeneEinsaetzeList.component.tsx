@@ -1,6 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
-import clsx from 'clsx';
+import { ArchiveBoxArrowDownIcon, EyeIcon } from '@heroicons/react/20/solid';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { useInterval } from '../../../hooks/functions.hook.js';
 import { formatDate, formatDistanceToNow } from 'date-fns';
@@ -9,10 +7,12 @@ import { Badge } from '../../catalyst-components/badge.js';
 import { Button } from '../../catalyst-components/button.tsx';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
+import { Dropdown } from '../atoms/Dropdown.component.js';
+import { FlexibleDialog } from './Dialog.js';
 
 
 export function OffeneEinsaetzeList() {
-  const { offeneEinsaetze, saveEinsatz } = useEinsatz();
+  const { offeneEinsaetze, saveEinsatz, einsatzAbschliessen } = useEinsatz();
   const { einheiten } = useEinheiten();
   const { allBearbeiter } = useBearbeiter();
 
@@ -60,56 +60,32 @@ export function OffeneEinsaetzeList() {
               saveEinsatz(einsatz);
             }} className="cursor-pointer" color="white">Einsatz öffnen <span
               className="sr-only">, {einsatz.label}</span></Button>
-            <Menu as="div" className="relative flex-none">
-              <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
-                <span className="sr-only">Optionen</span>
-                <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
-              </MenuButton>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <MenuItem>
-                  {({ focus }) => (
-                    <a
-                      href="#"
-                      className={clsx(
-                        focus ? 'bg-gray-50' : '',
-                        'block px-3 py-1 text-sm leading-6 text-gray-900',
-                      )}
-                    >
-                      Abschließen<span className="sr-only">, {einsatz.label}</span>
-                    </a>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <a
-                      href="#"
-                      className={clsx(
-                        focus ? 'bg-gray-50' : '',
-                        'block px-3 py-1 text-sm leading-6 text-gray-900',
-                      )}
-                    >
-                      Leseansicht<span className="sr-only">, {einsatz.label}</span>
-                    </a>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <a
-                      href="#"
-                      className={clsx(
-                        focus ? 'bg-gray-50' : '',
-                        'block px-3 py-1 text-sm leading-6 text-gray-900',
-                      )}
-                    >
-                      Delete<span className="sr-only">, {einsatz.name}</span>
-                    </a>
-                  )}
-                </MenuItem>
-              </MenuItems>
-            </Menu>
+            <FlexibleDialog
+              variant="critical"
+              size="md"
+              actions={[
+                { label: 'Abbrechen' },
+                {
+                  onClick: () => einsatzAbschliessen.mutate(einsatz),
+                  label: 'Einsatz archivieren',
+                  variant: 'error',
+                  primary: true,
+                },
+              ]}
+              message="Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt."
+              title="Laufenden Einsatz wirklich archivieren?"
+            >
+              {({ open }) => (
+                <Dropdown buttonText="Optionen" minimal={true} items={[[
+                  {
+                    text: 'Abschließen', icon: ArchiveBoxArrowDownIcon, onClick: () => {
+                      open();
+                    },
+                  },
+                  { text: 'Leseansicht', to: '/app', icon: EyeIcon },
+                ]]} />
+              )}
+            </FlexibleDialog>
           </div>
         </li>
       ))}

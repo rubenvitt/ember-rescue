@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^3.3.0",
+    "@fontsource-variable/montserrat": "^5.0.19",
     "@headlessui/react": "^2.1.0",
     "@heroicons/react": "^2.1.4",
     "@tailwindcss/forms": "^0.5.7",

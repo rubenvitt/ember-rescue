@@ -48,4 +48,15 @@ export class EinsatzService {
         }));
       });
   }
+
+  closeEinsatz(einsatzId: string) {
+    return this.prismaService.einsatz.update({
+      where: {
+        id: einsatzId,
+      },
+      data: {
+        abgeschlossen: new Date(),
+      },
+    });
+  }
 }

@@ -23,7 +23,7 @@ export function useInterval<T>(callback: () => T, delay: number, dependencies: D
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [savedCallback, delay, [...dependencies]]);
+  }, [savedCallback, delay, ...dependencies]);
 
   return value;
 }

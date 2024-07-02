@@ -4,9 +4,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../style/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
-import { Theme } from '../components/atomic/atoms/Theme.compoent.js';
+import { Theme } from '../components/atomic/atoms/Theme.component.js';
 import { de } from 'date-fns/locale';
 import { setDefaultOptions } from 'date-fns';
+import '@fontsource-variable/montserrat';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -22,10 +22,16 @@ function App() {
     await window.setAlwaysOnTop(false);
   }, []);
 
-  if (!einsatz) {
+  if (einsatz.isDisabled) {
     navigate({ to: '/setupEinsatz' });
   }
 
-  return <LayoutApp>Aktueller
-    Einsatz: {einsatz?.einsatz_alarmstichwort?.bezeichnung} von {format(einsatz.beginn, natoDateTime)}</LayoutApp>;
+  if (einsatz.isLoading)
+    return null;
+
+  const data = einsatz.data;
+  if (data) {
+    return <LayoutApp>Aktueller
+      Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}</LayoutApp>;
+  }
 }

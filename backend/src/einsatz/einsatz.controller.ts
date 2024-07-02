@@ -7,6 +7,7 @@ import {
   Param,
   ParseBoolPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { EinsatzService } from './einsatz.service';
@@ -53,5 +54,14 @@ export class EinsatzController {
         },
       },
     });
+  }
+
+  @Put('/:id/close')
+  async closeEinsatz(
+    @Headers('bearbeiter') bearbeiterId: string,
+    @Param('id') einsatzId: string,
+  ) {
+    console.log('closeEinsatz', einsatzId);
+    return this.einsatzService.closeEinsatz(einsatzId);
   }
 }

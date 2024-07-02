@@ -8,7 +8,7 @@ type Store = {
   setBearbeiter: (bearbeiter: Bearbeiter) => void;
   removeBearbeiter: () => void;
 
-  einsatz: Einsatz | null;
+  einsatzId: string | null;
   setEinsatz: (einsatz: Einsatz) => void;
   removeEinsatz: () => void;
 
@@ -31,17 +31,17 @@ export const useStore = create<Store>((set, get) => ({
   removeBearbeiter: () => {
     storage().writeLocalStorage('bearbeiter', null);
     storage().writeLocalStorage('einsatz', null);
-    set({ bearbeiter: null, einsatz: null });
+    set({ bearbeiter: null, einsatzId: null });
   },
 
-  einsatz: storage().readLocalStorage<Einsatz>('einsatz'),
+  einsatzId: storage().readLocalStorage<string>('einsatz'),
   setEinsatz: (einsatz: Einsatz) => {
-    storage().writeLocalStorage('einsatz', einsatz);
-    set({ einsatz });
+    storage().writeLocalStorage('einsatz', einsatz.id);
+    set({ einsatzId: einsatz.id });
   },
   removeEinsatz: () => {
     storage().writeLocalStorage('einsatz', null);
-    set({ einsatz: null });
+    set({ einsatzId: null });
   },
 
 

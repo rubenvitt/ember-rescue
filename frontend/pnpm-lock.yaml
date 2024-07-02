@@ -11,6 +11,9 @@ importers:
       '@ark-ui/react':
         specifier: ^3.3.0
         version: 3.3.0(@internationalized/date@3.5.4)(react-dom@0.0.0-experimental-100dfd7dab-20240701(react@0.0.0-experimental-100dfd7dab-20240701))(react@0.0.0-experimental-100dfd7dab-20240701)
+      '@fontsource-variable/montserrat':
+        specifier: ^5.0.19
+        version: 5.0.19
       '@headlessui/react':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@0.0.0-experimental-100dfd7dab-20240701(react@0.0.0-experimental-100dfd7dab-20240701))(react@0.0.0-experimental-100dfd7dab-20240701)
@@ -483,6 +486,9 @@ packages:
 
   '@floating-ui/utils@0.2.2':
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
+
+  '@fontsource-variable/montserrat@5.0.19':
+    resolution: {integrity: sha512-vOlVjdGock2yBOeBbg5qexPa1TJM/PS8Nx9YlF6DFEtFf/Y5ayDbZRvV/WPj8W2vk7/aDxUEtTAp/Qp8wK9hNQ==}
 
   '@headlessui/react@2.1.0':
     resolution: {integrity: sha512-/MizQk2xqR5ELkmCI1xWy3VgJULvR8gcAXtZhcK7sY53TNRCPeMdeODEXKSv9LPSSRlEAyzW1+NGJiaXq6dLRw==}
@@ -2480,6 +2486,8 @@ snapshots:
       tabbable: 6.2.0
 
   '@floating-ui/utils@0.2.2': {}
+
+  '@fontsource-variable/montserrat@5.0.19': {}
 
   '@headlessui/react@2.1.0(react-dom@0.0.0-experimental-100dfd7dab-20240701(react@0.0.0-experimental-100dfd7dab-20240701))(react@0.0.0-experimental-100dfd7dab-20240701)':
     dependencies:

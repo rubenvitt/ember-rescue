@@ -20,7 +20,7 @@ export class BearbeiterController {
 
   @Get()
   async findAll() {
-    this.logger.log(
+    this.logger.debug(
       'BearbeiterController.findAll(), Environment: ',
       process.env.NODE_ENV,
     );
@@ -29,19 +29,18 @@ export class BearbeiterController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    this.logger.log(
+    this.logger.debug(
       'BearbeiterController.findOne(), Environment: ',
       process.env.NODE_ENV,
       id,
     );
-    this.logger.log('BearbeiterController.findOne(), Find one: ', id);
 
     return this.bearbeiterService.findOne(id);
   }
 
   @Post()
   async login(@Body() bearbeiter: NewBearbeiterDto) {
-    this.logger.log(
+    this.logger.debug(
       'BearbeiterController.login(), Environment: ',
       process.env.NODE_ENV,
       bearbeiter,
