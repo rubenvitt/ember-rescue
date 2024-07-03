@@ -1,5 +1,7 @@
-import { Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Logger, Post } from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
+import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
+import { CreateEinsatztagebuchDto } from '../types';
 
 @Controller('einsatztagebuch')
 export class EinsatztagebuchController {
@@ -8,13 +10,38 @@ export class EinsatztagebuchController {
   constructor(private service: EinsatztagebuchService) {}
 
   @Get()
-  async getEinsatztagebuch() {
-    return this.service.getEinsatztagebuch();
+  async getEinsatztagebuch(
+    @Headers('bearbeiter') bearbeiterHeader: string,
+    @Headers('einsatz') einsatzHeader: string,
+  ) {
+    const einsatzId = extractEinsatzId(einsatzHeader);
+    return this.service.getEinsatztagebuch(einsatzId);
   }
 
   @Post()
-  async createEinsatztagebuchEintrag() {
-    this.logger.log('createEinsatztagebuchEintrag');
-    return this.service.createEinsatztagebuchEintrag();
+  async createEinsatztagebuchEintrag(
+    @Headers('bearbeiter') bearbeiterHeader: string,
+    @Headers('einsatz') einsatzHeader: string,
+    @Body() createEinsatztagebuchDto: CreateEinsatztagebuchDto,
+  ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const einsatzId = extractEinsatzId(einsatzHeader);
+    this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
+      bearbeiterId,
+      einsatzId,
+    });
+    return this.service.createEinsatztagebuchEintrag({
+      bearbeiter: {
+        connect: {
+          id: bearbeiterId,
+        },
+      },
+      einsatz: {
+        connect: {
+          id: einsatzId,
+        },
+      },
+      ...createEinsatztagebuchDto,
+    });
   }
 }

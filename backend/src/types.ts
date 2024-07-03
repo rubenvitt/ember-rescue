@@ -35,3 +35,11 @@ export type CreateEinsatzDto = {
   aufnehmendesRettungsmittel: string;
   einsatzstichwort?: string;
 };
+
+export type CreateEinsatztagebuchDto = {
+  content: string;
+  type: string;
+  absender: string;
+  empfaenger: string;
+  timestamp: string;
+};

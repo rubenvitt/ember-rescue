@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { EinsatzService } from './einsatz.service';
 import { CreateEinsatzDto } from '../types';
+import { extractBearbeiterId } from '../utils/header.utils';
 
 @Controller('einsatz')
 export class EinsatzController {
@@ -37,14 +38,15 @@ export class EinsatzController {
 
   @Post()
   async createEinsatz(
-    @Headers('bearbeiter') bearbeiterId: string,
+    @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: CreateEinsatzDto,
   ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
     console.log('createEinsatz', body);
     return this.einsatzService.createEinsatz({
       bearbeiter: {
         connect: {
-          id: bearbeiterId.split('BearbeiterId ')[1],
+          id: bearbeiterId,
         },
       },
       beginn: new Date(),

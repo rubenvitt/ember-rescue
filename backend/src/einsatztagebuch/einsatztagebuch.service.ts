@@ -1,25 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EinsatztagebuchService {
   constructor(private prismaService: PrismaService) {}
 
-  getEinsatztagebuch() {
-    return this.prismaService.einsatztagebuchEintrag.findMany();
-  }
-
-  createEinsatztagebuchEintrag() {
-    const eintrag = this.prismaService.einsatztagebuchEintrag.create({
-      data: {
-        type: 'GENERISCH',
-        content: 'test',
-        absender: 'test',
-        empfaenger: 'test',
-        timestamp: new Date(),
+  getEinsatztagebuch(einsatzId: string) {
+    return this.prismaService.einsatztagebuchEintrag.findMany({
+      where: {
+        einsatzId,
       },
     });
+  }
 
-    return eintrag;
+  createEinsatztagebuchEintrag(data: Prisma.EinsatztagebuchEintragCreateInput) {
+    return this.prismaService.einsatztagebuchEintrag.create({
+      data: data,
+    });
   }
 }

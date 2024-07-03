@@ -10,7 +10,10 @@ function ensureSlashBetween(part1: string, part2: string) {
 
 export function backendFetch(path: string, init?: RequestInit) {
   const bearbeiter = storage().readLocalStorage<Bearbeiter>('bearbeiter');
-  const additonalHeaders = bearbeiter && { Bearbeiter: `BearbeiterId ${bearbeiter.id}` };
+  const einsatzId = storage().readLocalStorage<string>('einsatz');
+  const additonalHeaders: { Bearbeiter?: string, Einsatz?: string } = {};
+  if (bearbeiter) additonalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
+  if (einsatzId) additonalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
 
   const requestInit: RequestInit & ClientOptions = {
     ...init,

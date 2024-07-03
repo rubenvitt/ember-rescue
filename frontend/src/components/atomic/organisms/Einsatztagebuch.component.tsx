@@ -1,6 +1,6 @@
 import { EinsatztagebuchEintrag } from '../../../types.js';
 import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 import { natoDateTime } from '../../../lib/time.js';
 import { useRef, useState } from 'react';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
@@ -126,7 +126,13 @@ export function EinsatztagebuchComponent() {
             <div className="sm:col-span-2">
               <Button className="cursor-pointer" onClick={async () => {
                 setInputVisible(false);
-                await createEinsatztagebuchEintrag();
+                await createEinsatztagebuchEintrag.mutateAsync({
+                  type: 'LAGE',
+                  content: 'Neue Lage',
+                  empfaenger: 'Einsatztagebuch',
+                  absender: '(Automated) Code',
+                  timestamp: formatISO(new Date()),
+                });
               }} color="blue">Eintrag anlegen</Button>
             </div>
           </div>
