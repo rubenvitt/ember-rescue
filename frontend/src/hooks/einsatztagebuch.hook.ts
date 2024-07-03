@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { EinsatztagebuchEintrag } from '../types.js';
+import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types.js';
 import { backendFetch } from '../lib/http.js';
 import { useStore } from './store.hook.js';
 
@@ -13,7 +13,7 @@ export function useEinsatztagebuch() {
     },
   });
 
-  const createEinsatztagebuchEintrag = useMutation<EinsatztagebuchEintrag, unknown, Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter'>>({
+  const createEinsatztagebuchEintrag = useMutation<EinsatztagebuchEintrag, unknown, CreateEinsatztagebuchEintrag>({
     mutationKey: ['einsatztagebuch'],
     mutationFn: async (einsatztagebuchEintrag) => {
       console.log('mutate');

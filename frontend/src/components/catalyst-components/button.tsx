@@ -175,6 +175,7 @@ export const Button = forwardRef(function Button(
     className,
     styles.base,
     outline ? styles.outline : plain ? styles.plain : clsx(styles.solid, styles.colors[color ?? 'dark/zinc']),
+    'cursor-pointer',
   );
 
   return 'href' in props ? (

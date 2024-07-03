@@ -1,6 +1,6 @@
 import { EinsatztagebuchEintrag } from '../../../types.js';
 import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { format, formatISO } from 'date-fns';
+import { format } from 'date-fns';
 import { natoDateTime } from '../../../lib/time.js';
 import { useRef, useState } from 'react';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
@@ -8,7 +8,9 @@ import { BadgeButton } from '../../catalyst-components/badge.js';
 import { invoke } from '@tauri-apps/api/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
+import { EinsatztagebuchForm } from '../molecules/EinsatztagebuchForm.component.js';
 import { Button } from '../../catalyst-components/button.js';
+import { Transition } from '@headlessui/react';
 
 const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
@@ -56,7 +58,7 @@ const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
 ];
 
 export function EinsatztagebuchComponent() {
-  const { einsatztagebuch, createEinsatztagebuchEintrag } = useEinsatztagebuch();
+  const { einsatztagebuch } = useEinsatztagebuch();
   const [inputVisible, setInputVisible] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -84,60 +86,21 @@ export function EinsatztagebuchComponent() {
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <button
-            onClick={() => setInputVisible(true)}
+          <Button
+            color={inputVisible ? 'red' : 'blue'}
+            onClick={() => setInputVisible(((prev) => !prev))}
             type="button"
-            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="cursor-pointer"
           >
-            Eintrag anlegen
-          </button>
+            {inputVisible ? 'Abbrechen' : 'Eintrag anlegen'}
+          </Button>
         </div>
       </div>
-      {inputVisible && (
-        <div className="mt-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label htmlFor="absender" className="block text-sm font-semibold text-gray-700">Absender</label>
-              <input
-                type="text"
-                id="absender"
-                name="absender"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="empfaenger" className="block text-sm font-semibold text-gray-700">Empfänger</label>
-              <input
-                type="text"
-                id="empfaenger"
-                name="empfaenger"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label htmlFor="content" className="block text-sm font-semibold text-gray-700">Inhalt</label>
-              <textarea
-                id="content"
-                name="content"
-                rows={3}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <Button className="cursor-pointer" onClick={async () => {
-                setInputVisible(false);
-                await createEinsatztagebuchEintrag.mutateAsync({
-                  type: 'LAGE',
-                  content: 'Neue Lage',
-                  empfaenger: 'Einsatztagebuch',
-                  absender: '(Automated) Code',
-                  timestamp: formatISO(new Date()),
-                });
-              }} color="blue">Eintrag anlegen</Button>
-            </div>
-          </div>
+      <Transition show={inputVisible}>
+        <div className="mt-4 transition duration-50 ease-in data-[closed]:opacity-0 max-w-4xl">
+          <EinsatztagebuchForm closeForm={() => setInputVisible(false)} />
         </div>
-      )}
+      </Transition>
       <div ref={parentRef} className="mt-8 flow-root" style={{
         height: '800px',
         overflow: 'auto',

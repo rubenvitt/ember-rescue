@@ -45,6 +45,7 @@ export type NavItem = {
   current?: boolean;
 } & WithIcon
 
+
 export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   bearbeiter: Bearbeiter;
   type: EinsatztagebuchEintragType;
@@ -52,6 +53,8 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   absender: string;
   empfaenger: string;
 };
+
+export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter'>
 
 export type NavItems = NavItem[]
 
