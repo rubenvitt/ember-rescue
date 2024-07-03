@@ -8,6 +8,8 @@ import { Theme } from '../components/atomic/atoms/Theme.component.js';
 import { de } from 'date-fns/locale';
 import { setDefaultOptions } from 'date-fns';
 import '@fontsource-variable/montserrat';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/nunito';
 
 const queryClient = new QueryClient({
   defaultOptions: {
