@@ -4,7 +4,11 @@ import { format } from 'date-fns';
 import { useEinheiten } from '../hooks/einheiten.hook.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEinsatz } from '../hooks/einsatz.hook.js';
-import { OffeneEinsaetzeList } from '../components/atomic/molecules/OffeneEinsaetzeList.component.js';
+import { OffeneEinsaetzeList } from '../components/atomic/organisms/OffeneEinsaetzeList.component.js';
+import { useMemo } from 'react';
+import { useAlarmstichworte } from '../hooks/alarmstichworte.hook.js';
+import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
+import { Alarmstichwort } from '../types.js';
 
 export const Route = createLazyFileRoute('/setupEinsatz')({
   component: SetupEinsatz,
@@ -13,16 +17,25 @@ export const Route = createLazyFileRoute('/setupEinsatz')({
 
 interface Einsatz {
   erstAlarmiert: string;
-  einsatzstichwort?: string;
+  alarmstichwort?: string;
   aufnehmendesRettungsmittel?: string;
   einsatznummer?: string;
 }
 
 function SetupEinsatz() {
   const { einheiten } = useEinheiten();
-  const { removeBearbeiter } = useBearbeiter();
+  const { removeBearbeiter, bearbeiter } = useBearbeiter();
   const navigate = useNavigate({ from: '/setupEinsatz' });
   const { createEinsatz, offeneEinsaetze, einsatz, saveEinsatz } = useEinsatz();
+  const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.length > 0, [offeneEinsaetze.data]);
+  const { alarmstichworte } = useAlarmstichworte();
+  const alarmstichworteItems = useMemo<ItemType<Alarmstichwort>[]>(() => alarmstichworte.data?.map(item => {
+    return ({
+      item,
+      label: item.bezeichnung,
+      secondary: item.beschreibung,
+    });
+  }) ?? [], [alarmstichworte.data]);
 
 
   if (!einheiten.isFetched) {
@@ -33,15 +46,22 @@ function SetupEinsatz() {
   }
   return (
     <div className="bg-gray-50 dark:bg-gray-900 flex gap-4 flex-col items-center min-h-screen">
-      <div className="w-full max-w-6xl">
+      <div className="w-full max-w-6xl flex flex-col gap-16 space-y-16 divide-y divide-gray-900/30">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 pt-24 sm:pt-32">
+          <div className="mx-auto max-w-2xl lg:mx-0">
+            <h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Einsatz
+              anlegen{einsatzOffen && ' | fortsetzen'}</h2>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Anlegen eines neuen Einsatzes
+              ({bearbeiter.data?.name}){einsatzOffen && ' - es existieren offene Einsätze'}
+            </p>
+          </div>
+        </div>
+
         {
-          offeneEinsaetze.data && offeneEinsaetze.data.length > 0 &&
-          <div className="flex flex-col items-center">
-            <div className="h-24 w-full bg-red-800"></div>
-            <div className="max-w-4xl">
-              <h2>Offene Einsätze vorhanden</h2>
-              <OffeneEinsaetzeList />
-            </div>
+          einsatzOffen &&
+          <div className="w-full">
+            <OffeneEinsaetzeList />
           </div>
         }
         <section id="newEinsatzForm" className="w-full pb-6">
@@ -73,8 +93,7 @@ function SetupEinsatz() {
                     secondary: einheit.typ,
                   })),
                   validators: {
-                    onChange: ({ value }) => {
-                      console.log(value);
+                    onChange: ({ value }: { value: string }) => {
                       if (value === '') {
                         return 'Bitte wählen Sie das aufnehmende Rettungsmittel aus';
                       }
@@ -93,51 +112,17 @@ function SetupEinsatz() {
                   type: 'datetime-local',
                 },
                 {
-                  name: 'einsatzstichwort',
+                  name: 'alarmstichwort',
                   label: 'Einsatzstichwort der Alarmierung',
                   type: 'combo',
-                  items: [
-                    {
-                      item: {
-                        id: '1', // TODO: Remove this
-                        name: 'B1',
-                      },
-                      label: 'B1',
-                      secondary: 'Brand 1',
+                  items: alarmstichworteItems,
+                  validators: {
+                    onChange: ({ value }: { value: string }) => {
+                      if (value === '') {
+                        return 'Bitte wählen Sie das Einsatzstichwort der Alarmierung aus';
+                      }
                     },
-                    {
-                      item: {
-                        id: '2',
-                        name: 'B2',
-                        secondary: 'Brand 2',
-                      },
-                      label: 'B2',
-                    },
-                    {
-                      item: {
-                        id: '21',
-                        name: 'B2Y',
-                      },
-                      label: 'B2Y',
-                      secondary: 'Brand 2 (Menschenleben in Gefahr)',
-                    },
-                    {
-                      item: {
-                        id: '3',
-                        name: 'B3',
-                      },
-                      label: 'B3',
-                      secondary: 'Brand 3',
-                    },
-                    {
-                      item: {
-                        id: '4',
-                        name: 'B3Y',
-                      },
-                      label: 'B3Y',
-                      secondary: 'Brand 3 (Menschenleben in Gefahr)',
-                    },
-                  ],
+                  },
                 },
               ],
               title: 'Alarmierung',

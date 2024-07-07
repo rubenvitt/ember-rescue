@@ -33,7 +33,7 @@ export type EinheitDto = {
 export type CreateEinsatzDto = {
   erstAlarmiert: string;
   aufnehmendesRettungsmittel: string;
-  einsatzstichwort?: string;
+  alarmstichwort?: string;
 };
 
 export type CreateEinsatztagebuchDto = {

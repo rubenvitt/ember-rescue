@@ -10,6 +10,9 @@ import { EinheitenModule } from './einheiten/einheiten.module';
 import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
 import * as Joi from 'joi';
+import { AlarmstichwortModule } from './alarmstichwort/alarmstichwortModule';
+import { SecretsModule } from './secrets/secrets.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import * as Joi from 'joi';
     EinheitenModule,
     StatusModule,
     EinsatzModule,
+    AlarmstichwortModule,
+    SecretsModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

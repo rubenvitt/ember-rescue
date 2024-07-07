@@ -4,13 +4,15 @@ import { Einsatz } from '../types.js';
 import { useStore } from './store.hook.js';
 
 export function useEinsatz() {
-  const { setEinsatz, einsatzId } = useStore();
+  const { setEinsatz, einsatzId, removeEinsatz } = useStore();
   const queryClient = useQueryClient();
 
   const singleEinsatz = useQuery<Einsatz>({
     queryKey: ['einsatz', einsatzId],
     queryFn: async () => {
-      return backendFetch(`/einsatz/${einsatzId}`);
+      return backendFetch(`/einsatz/${einsatzId}`).catch(() => {
+        removeEinsatz();
+      });
     },
     enabled: !!einsatzId,
   });

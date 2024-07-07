@@ -7,9 +7,24 @@ export class EinsatzService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getEinsatz(id: string) {
-    return this.prismaService.einsatz.findUnique({
-      where: { id },
-    });
+    return this.prismaService.einsatz
+      .findUnique({
+        where: { id },
+        include: {
+          einsatz_alarmstichwort: {
+            include: {
+              alarmstichwort: true,
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      })
+      .then((einsatz) => ({
+        ...einsatz,
+        einsatz_alarmstichwort:
+          einsatz.einsatz_alarmstichwort[0].alarmstichwort,
+      }));
   }
 
   async createEinsatz(data: Prisma.EinsatzCreateInput) {

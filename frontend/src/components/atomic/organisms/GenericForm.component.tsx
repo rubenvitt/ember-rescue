@@ -1,52 +1,93 @@
-import { FieldApi, useForm } from '@tanstack/react-form';
+import { DeepKeys, DeepValue, FieldApi, FieldValidators, useForm, Validator } from '@tanstack/react-form';
 import { ComboInput, ItemType } from '../molecules/Combobox.component.js';
 import { Identifiable } from '../../../types.js';
+import { Optional } from '@ark-ui/react';
 
 type FieldType = 'text' | 'date' | 'datetime-local' | 'select' | 'textarea' | 'checkbox' | 'radio' | 'combo';
 
-interface BaseFormField {
-  name: string;
+interface BaseFormField<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> {
+  name: TName;
   label: string;
   type: FieldType;
   placeholder?: string;
   options?: string[];
   items?: ItemType<Identifiable>[];
+  validators?: FieldValidators<TParentData, TName, TFieldValidator, TFormValidator>;
 }
 
-interface SimpleFormField extends BaseFormField {
+interface SimpleFormField<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> extends BaseFormField<TParentData, TName, TFieldValidator, TFormValidator> {
   width?: 'full' | 'half' | 'third' | 'quarter' | 'two-thirds' | 'three-quarters' | 'auto';
 }
 
-type ComplexFormField = BaseFormField;
+type ComplexFormField<
+  TParentData,
+  TName extends DeepKeys<TParentData>,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> = BaseFormField<TParentData, TName, TFieldValidator, TFormValidator>;
 
-interface SimpleFormSection {
-  fields: SimpleFormField[];
+interface SimpleFormSection<
+  TParentData,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> {
+  fields: SimpleFormField<TParentData, DeepKeys<TParentData>, TFieldValidator, TFormValidator>[];
 }
 
-interface ComplexFormSection {
+interface ComplexFormSection<
+  TParentData,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> {
   title?: string;
   description?: string;
-  fields: ComplexFormField[];
+  fields: ComplexFormField<TParentData, DeepKeys<TParentData>, TFieldValidator, TFormValidator>[];
 }
 
-type FormSection = SimpleFormSection | ComplexFormSection;
+type FormSection<
+  TParentData,
+  TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
+> =
+  SimpleFormSection<TParentData, TFieldValidator, TFormValidator>
+  | ComplexFormSection<TParentData, TFieldValidator, TFormValidator>;
 
-interface GenericFormProps<TFormData> {
-  sections: FormSection[];
+interface GenericFormProps<
+  TFormData,
+  TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
+> {
+  sections: FormSection<TFormData, TFieldValidator, TFormValidator>[];
   onSubmit: (values: TFormData) => Promise<void> | void;
   onReset?: () => void;
   defaultValues: TFormData;
   submitText?: string;
   resetText?: string;
+  layout?: 'simple' | 'complex';
 }
 
-function FormField<TFormData>({
-                                field,
-                                fieldApi,
-                                layout,
-                              }: {
-  field: BaseFormField;
-  fieldApi: FieldApi<TFormData, any>;
+function FormField<
+  TFormData,
+  TName extends DeepKeys<TFormData>,
+  TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
+>({
+    field,
+    fieldApi,
+    layout,
+  }: {
+  field: BaseFormField<TFormData, TName, TFieldValidator, TFormValidator>;
+  fieldApi: FieldApi<TFormData, TName>;
   layout: 'simple' | 'complex';
 }) {
   const baseInputClasses = layout === 'complex'
@@ -140,14 +181,19 @@ function FormField<TFormData>({
   }
 }
 
-export function GenericForm<TFormData extends Record<string, any>>({
-                                                                     sections,
-                                                                     onSubmit,
-                                                                     onReset,
-                                                                     defaultValues,
-                                                                     submitText = 'Submit',
-                                                                     resetText = 'Reset',
-                                                                   }: GenericFormProps<TFormData>) {
+export function GenericForm<
+  TFormData extends Record<string, any>,
+  TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
+>({
+    sections,
+    onSubmit,
+    onReset,
+    defaultValues,
+    submitText = 'Submit',
+    resetText = 'Reset',
+    layout = 'simple',
+  }: GenericFormProps<TFormData, TFieldValidator, TFormValidator>) {
   const form = useForm<TFormData>({
     defaultValues,
     onSubmit: async ({ value }) => {
@@ -155,14 +201,12 @@ export function GenericForm<TFormData extends Record<string, any>>({
     },
   });
 
-  const layout: 'simple' | 'complex' = 'title' in (sections[0] || {}) ? 'complex' : 'simple';
-
-  const getWidthClass = (field: BaseFormField): string => {
+  const getWidthClass = (field: BaseFormField<TFormData, any, TFieldValidator, TFormValidator>): string => {
     if (layout === 'complex') {
       return 'md:col-span-12 col-span-12';
     }
     if ('width' in field) {
-      switch ((field as SimpleFormField).width) {
+      switch ((field as SimpleFormField<TFormData, any, TFieldValidator, TFormValidator>).width) {
         case 'half':
           return 'md:col-span-6 col-span-12';
         case 'third':
@@ -186,44 +230,48 @@ export function GenericForm<TFormData extends Record<string, any>>({
       e.preventDefault();
       form.handleSubmit();
     }} className={layout === 'complex' ? 'space-y-10 divide-y divide-gray-900/10' : 'space-y-8'}>
-      {sections.map((section, sectionIndex) => (
-        <div key={sectionIndex}
-             className={layout === 'complex' ? 'grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3' : ''}>
-          {(layout === 'complex' && ('title' in section ? (
-            <div className="px-4 sm:px-0">
-              {section.title && <h2 className="text-base font-semibold leading-7 text-gray-900">{section.title}</h2>}
-              {section.description && <p className="mt-1 text-sm leading-6 text-gray-600">{section.description}</p>}
-            </div>
-          ) : (<div>{/* placeholder */}</div>)))}
-          <div
-            className={layout === 'complex' ? 'bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2' : ''}>
-            <div className={layout === 'complex' ? 'px-4 py-6 sm:p-8' : ''}>
-              <div className={`grid grid-cols-12 gap-6`}>
-                {section.fields.map((field) => (
-                  <form.Field
-                    key={field.name}
-                    name={field.name as any}
-                  >
-                    {(fieldApi) => (
-                      <div className={getWidthClass(field)}>
-                        <label htmlFor={field.name} className="block text-sm font-medium leading-6 text-gray-900">
-                          {field.label}
-                        </label>
-                        <div className="mt-2">
-                          <FormField field={field} fieldApi={fieldApi} layout={layout} />
-                        </div>
-                        {fieldApi.state.meta.touchedErrors && (
-                          <p className="mt-2 text-sm text-red-600">{fieldApi.state.meta.touchedErrors.join(' ')}</p>
+      {// @ts-ignore
+        sections.map((section, sectionIndex) => (
+          <div key={sectionIndex}
+               className={layout === 'complex' ? 'grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3' : ''}>
+            {(layout === 'complex' && ('title' in section ? (
+              <div className="px-4 sm:px-0">
+                {section.title && <h2 className="text-base font-semibold leading-7 text-gray-900">{section.title}</h2>}
+                {section.description && <p className="mt-1 text-sm leading-6 text-gray-600">{section.description}</p>}
+              </div>
+            ) : (<div>{/* placeholder */}</div>)))}
+            <div
+              className={layout === 'complex' ? 'bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2' : ''}>
+              <div className={layout === 'complex' ? 'px-4 py-6 sm:p-8' : ''}>
+                <div className={`grid grid-cols-12 gap-6`}>
+                  {// @ts-ignore
+                    section.fields.map((field) => (
+                      <form.Field
+                        key={field.name}
+                        name={field.name}
+                        validators={field.validators}
+                      >
+                        {(fieldApi) => (
+                          <div className={getWidthClass(field)}>
+                            <label htmlFor={String(field.name)}
+                                   className="block text-sm font-medium leading-6 text-gray-900">
+                              {field.label}
+                            </label>
+                            <div className="mt-2">
+                              <FormField field={field} fieldApi={fieldApi} layout={layout} />
+                            </div>
+                            {fieldApi.state.meta.touchedErrors && (
+                              <p className="mt-2 text-sm text-red-600">{fieldApi.state.meta.touchedErrors.join(' ')}</p>
+                            )}
+                          </div>
                         )}
-                      </div>
-                    )}
-                  </form.Field>
-                ))}
+                      </form.Field>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
       <div
         className={`${layout === 'complex' ? 'mt-6 flex items-center justify-end gap-x-6' : 'flex justify-end space-x-3'}`}>
         {onReset && (

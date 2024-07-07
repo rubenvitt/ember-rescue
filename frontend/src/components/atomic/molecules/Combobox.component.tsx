@@ -44,6 +44,8 @@ export function ComboInput<T extends Identifiable>({ items, defaultItem, onChang
           onChange={(event) => setQuery(event.target.value)}
           onBlur={() => setQuery('')}
           displayValue={(item: ItemType<T>) => item?.label}
+          autoCorrect="false"
+          spellCheck={false}
         />
         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

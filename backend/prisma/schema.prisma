@@ -16,6 +16,8 @@ model Bearbeiter {
   einheit_status_historie EinheitStatusHistorie[]
   einsatz                 Einsatz[]
   einsatztagebuch_eintrag EinsatztagebuchEintrag[]
+
+  @@map("bearbeiter")
 }
 
 model Einheit {
@@ -31,6 +33,8 @@ model Einheit {
   einheit_status_historie EinheitStatusHistorie[]
   einsatz_einheit         EinheitOnEinsatz[]
   Einsatz                 Einsatz[]
+
+  @@map("einheiten")
 }
 
 model EinheitStatusHistorie {
@@ -44,8 +48,10 @@ model EinheitStatusHistorie {
   einsatzId    String?
   bearbeiter   Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   status       Status?     @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   einheit      Einheit?    @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("einheitenStatusHistorie")
 }
 
 model Einsatz {
@@ -63,6 +69,8 @@ model Einsatz {
   einsatz_einheit              EinheitOnEinsatz[]
   einsatztagebuch_eintrag      EinsatztagebuchEintrag[]
   einsatz_alarmstichwort       EinsatzOnAlarmstichwort[]
+
+  @@map("einsaetze")
 }
 
 model EinheitOnEinsatz {
@@ -74,8 +82,10 @@ model EinheitOnEinsatz {
   einsatzId             String?
   einheitId             String?
   einheit               Einheit?                   @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz               Einsatz?                   @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz               Einsatz?                   @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
+
+  @@map("einheitenOnEinsaetze")
 }
 
 model PersonOnEinheitOnEinsatz {
@@ -87,6 +97,8 @@ model PersonOnEinheitOnEinsatz {
   personId         String?
   person           Person?           @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einsatz_einheit  EinheitOnEinsatz? @relation(fields: [einsatzEinheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("personenOnEinsaetze")
 }
 
 model EinsatztagebuchEintrag {
@@ -100,12 +112,13 @@ model EinsatztagebuchEintrag {
   updatedAt    DateTime    @updatedAt
   einsatzId    String?
   bearbeiterId String?
-  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   bearbeiter   Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([absender])
   @@index([empfaenger])
   @@index([type])
+  @@map("einsatztagebuchEintraege")
 }
 
 model Person {
@@ -118,6 +131,8 @@ model Person {
   updatedAt             DateTime                   @updatedAt
   einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
   person_qualifikation  PersonOnQualifikation[]
+
+  @@map("personen")
 }
 
 model PersonOnQualifikation {
@@ -128,6 +143,8 @@ model PersonOnQualifikation {
   qualifikationId String?
   qualifikation   Qualifikation? @relation(fields: [qualifikationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person          Person?        @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("personenOnQualifikationen")
 }
 
 model Qualifikation {
@@ -137,6 +154,8 @@ model Qualifikation {
   createdAt            DateTime                @default(now())
   updatedAt            DateTime                @updatedAt
   person_qualifikation PersonOnQualifikation[]
+
+  @@map("qualifikationen")
 }
 
 model Status {
@@ -148,6 +167,8 @@ model Status {
   updatedAt               DateTime                @updatedAt
   einheit                 Einheit[]
   einheit_status_historie EinheitStatusHistorie[]
+
+  @@map("status")
 }
 
 model EinsatzOnAlarmstichwort {
@@ -156,8 +177,10 @@ model EinsatzOnAlarmstichwort {
   alarmstichwortId String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  einsatz          Einsatz?        @relation(fields: [einsatzId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz          Einsatz?        @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   alarmstichwort   Alarmstichwort? @relation(fields: [alarmstichwortId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("einsatzOnAlarmstichworte")
 }
 
 model Alarmstichwort {
@@ -167,4 +190,16 @@ model Alarmstichwort {
   createdAt              DateTime                  @default(now())
   updatedAt              DateTime                  @updatedAt
   alarmstichwort_einsatz EinsatzOnAlarmstichwort[]
+
+  @@map("alarmstichworte")
+}
+
+model Secret {
+  id        String   @id() @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("secrets")
 }

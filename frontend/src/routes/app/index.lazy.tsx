@@ -36,7 +36,13 @@ function App() {
 
   const data = einsatz.data;
   if (data) {
-    return <LayoutApp>Aktueller
-      Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}</LayoutApp>;
+    return <LayoutApp>
+      <p>
+        Aktueller Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}
+      </p>
+      <p className="text-gray-500">
+        {data.einsatz_alarmstichwort?.beschreibung}
+      </p>
+    </LayoutApp>;
   }
 }

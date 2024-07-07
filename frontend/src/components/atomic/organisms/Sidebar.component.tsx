@@ -5,6 +5,7 @@ import { Link } from '../../catalyst-components/link.js';
 import clsx from 'clsx';
 import { useLocation } from '@tanstack/react-router';
 import { NavItem } from '../../../types.js';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 
 interface NavItemProps {
@@ -81,13 +82,21 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ navigation, contextualN
           </>
         }
         <li className="mt-auto">
-          <Link
-            to="#"
-            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-          >
+          <button
+            onClick={() => {
+              // open new window
+              new WebviewWindow('admin', {
+                url: '/admin',
+                center: true,
+                maximizable: false,
+                minimizable: false,
+                title: 'Admin',
+              });
+            }}
+            className="w-full group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white">
             <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
             Einstellungen
-          </Link>
+          </button>
         </li>
       </ul>
     </nav>

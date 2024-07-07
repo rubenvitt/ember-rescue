@@ -55,6 +55,11 @@ export class EinsatzController {
           id: body.aufnehmendesRettungsmittel,
         },
       },
+      einsatz_alarmstichwort: {
+        create: {
+          alarmstichwortId: body.alarmstichwort,
+        },
+      },
     });
   }
 

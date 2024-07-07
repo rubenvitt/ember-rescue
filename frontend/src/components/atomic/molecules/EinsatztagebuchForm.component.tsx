@@ -1,26 +1,39 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { useForm } from '@tanstack/react-form';
-import { CreateEinsatztagebuchEintrag } from '../../../types.js';
+import { CreateEinsatztagebuchEintrag, EinheitDto } from '../../../types.js';
 import { GenericForm } from '../organisms/GenericForm.component.tsx';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import { useMemo } from 'react';
 import { formatISO } from 'date-fns';
+import { ItemType } from './Combobox.component.js';
 
 interface Props {
   closeForm: () => void;
 }
+
+const einsatztagebuchItem = {
+  item: {
+    typ: 'ETB',
+    funkrufname: 'Einsatztagebuch',
+  },
+  label: 'ETB',
+  secondary: 'Einsatztagebuch',
+};
 
 export function EinsatztagebuchForm({ closeForm }: Props) {
   const { createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const {} = useForm<CreateEinsatztagebuchEintrag>();
   const { einheiten } = useEinheiten();
   // TODO: not only einheiten should be possible. ETB, all used entries should also displayed. And new values should be possible
-  const einheitenAsItems = useMemo(() => {
-    return [...(einheiten.data?.map(item => ({
-      label: item.funkrufname,
-      secondary: item.typ,
-      item,
-    })) ?? [])];
+  const einheitenAsItems = useMemo<ItemType<EinheitDto>[]>(() => {
+    return [
+      einsatztagebuchItem,
+      ...(einheiten.data?.map(item => ({
+        label: item.funkrufname,
+        secondary: item.typ,
+        item,
+      })) ?? []),
+    ];
   }, [einheiten.data]);
 
   return <>

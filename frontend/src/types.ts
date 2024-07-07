@@ -9,6 +9,11 @@ export type EinsatztagebuchEintragType =
   'LAGE' |
   'PATIENTEN';
 
+
+export type Alarmstichwort = Identifiable & WithTimestamp & {
+  bezeichnung: string, beschreibung: string
+}
+
 export type Bearbeiter = {
   id: string;
   name: string;

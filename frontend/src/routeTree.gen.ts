@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
+import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as AuthSignoutImport } from './routes/auth/signout'
 import { Route as LayoutLayoutAppImport } from './routes/_layout/_layout-app'
 
@@ -61,6 +62,11 @@ const AppIndexLazyRoute = AppIndexLazyImport.update({
   path: '/app/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/app/index.lazy').then((d) => d.Route))
+
+const AdminIndexRoute = AdminIndexImport.update({
+  path: '/admin/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppPatientenLazyRoute = AppPatientenLazyImport.update({
   path: '/app/patienten',
@@ -189,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientenLazyImport
       parentRoute: typeof rootRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/app/': {
       id: '/app/'
       path: '/app'
@@ -213,6 +226,7 @@ export const routeTree = rootRoute.addChildren({
   AppEinsatztagebuchLazyRoute,
   AppLagekarteLazyRoute,
   AppPatientenLazyRoute,
+  AdminIndexRoute,
   AppIndexLazyRoute,
 })
 
@@ -235,6 +249,7 @@ export const routeTree = rootRoute.addChildren({
         "/app/einsatztagebuch",
         "/app/lagekarte",
         "/app/patienten",
+        "/admin/",
         "/app/"
       ]
     },
@@ -277,6 +292,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/app/patienten": {
       "filePath": "app/patienten.lazy.tsx"
+    },
+    "/admin/": {
+      "filePath": "admin/index.tsx"
     },
     "/app/": {
       "filePath": "app/index.lazy.tsx"
