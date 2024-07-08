@@ -2,6 +2,7 @@ import { ReactElement, useState } from 'react';
 import { ControlPosition, Marker, MarkerProps, useControl } from 'react-map-gl';
 import MapboxGeocoder, { GeocoderOptions } from '@mapbox/mapbox-gl-geocoder';
 
+
 type GeocoderControlProps = Omit<GeocoderOptions, 'accessToken' | 'mapboxgl' | 'marker'> & {
   mapboxAccessToken: string;
   marker?: boolean | Omit<MarkerProps, 'longitude' | 'latitude'>;
