@@ -5,7 +5,7 @@ import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 
 
 export function EmptyEinheitenState() {
-  const { einheiten } = useEinheiten();
+  const { einheiten, addEinheitToEinsatz } = useEinheiten();
 
   const einheitenComboItems = useMemo(() => {
     return einheiten.data?.map((einheit) => ({
@@ -65,6 +65,11 @@ export function EmptyEinheitenState() {
             <li key={einheit.item.id}>
               <button
                 type="button"
+                onClick={() => {
+                  addEinheitToEinsatz.mutate({
+                    einheitId: einheit.item.id,
+                  });
+                }}
                 className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 <span className="flex min-w-0 flex-1 items-center space-x-3">

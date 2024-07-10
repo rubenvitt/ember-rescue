@@ -7,5 +7,6 @@ import { DatabaseModule } from '../database/database.module';
   imports: [DatabaseModule],
   controllers: [EinsatztagebuchController],
   providers: [EinsatztagebuchService],
+  exports: [EinsatztagebuchService],
 })
 export class EinsatztagebuchModule {}

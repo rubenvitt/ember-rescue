@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { EinheitDto, EinheitTypDto } from '../types.js';
 import { backendFetch } from '../lib/http.js';
+import { useEinsatz } from './einsatz.hook.js';
 
 export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) {
+  const { einsatzId: currentEinsatzId } = useEinsatz();
   const { data: einheiten, isLoading, isFetched, refetch } = useQuery<EinheitDto[]>({
     queryKey: ['einheiten'],
     queryFn: async () => backendFetch('/einheiten'),
@@ -25,5 +27,23 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
     },
   });
 
-  return { einheiten: { data: einsatzId ? [] : einheiten, isLoading, isFetched }, einheitenTypen, patchEinheiten };
+  const addEinheitToEinsatz = useMutation<unknown, unknown, { einheitId: string }>({
+    mutationKey: ['einsatz-einheiten', 'add', currentEinsatzId],
+    mutationFn: ({ einheitId }) => {
+      console.log('Add einheit to einsatz', einheitId, currentEinsatzId);
+      return backendFetch(`/einsatz/${currentEinsatzId}/einheiten/add`, {
+        body: JSON.stringify({
+          einheitId,
+        }),
+        method: 'POST',
+      });
+    },
+  });
+
+  return {
+    einheiten: { data: einsatzId ? [] : einheiten, isLoading, isFetched },
+    einheitenTypen,
+    patchEinheiten,
+    addEinheitToEinsatz,
+  };
 }

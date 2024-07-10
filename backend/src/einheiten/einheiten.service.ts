@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { EinheitDto } from '../types';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EinheitenService {
@@ -53,6 +54,22 @@ export class EinheitenService {
           },
         });
       }
+    });
+  }
+
+  findEinheit(where: Prisma.EinheitWhereUniqueInput) {
+    return this.prismaService.einheit.findUnique({
+      //
+      where,
+      include: {
+        einheitTyp: {
+          select: {
+            id: true,
+            label: true,
+            description: true,
+          },
+        },
+      },
     });
   }
 }
