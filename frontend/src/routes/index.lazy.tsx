@@ -18,5 +18,5 @@ function Index() {
     } else {
       navigate({ to: '/signin' });
     }
-  }, [bearbeiter, navigate]);
+  }, [bearbeiter.isLoading, navigate]);
 }

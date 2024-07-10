@@ -11,10 +11,22 @@ interface Props {
   closeForm: () => void;
 }
 
-const einsatztagebuchItem = {
+const einsatztagebuchItem: ItemType<EinheitDto> = {
   item: {
-    typ: 'ETB',
+    id: 'etb',
+    einheitTyp: {
+      id: 'etb',
+      label: 'ETB',
+    },
+    kapazitaet: 0,
+    istTemporaer: false,
+    status: {
+      id: 'none',
+      code: '-1',
+      bezeichnung: 'None',
+    },
     funkrufname: 'Einsatztagebuch',
+    _count: { einsatz_einheit: 0 },
   },
   label: 'ETB',
   secondary: 'Einsatztagebuch',
@@ -30,7 +42,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       einsatztagebuchItem,
       ...(einheiten.data?.map(item => ({
         label: item.funkrufname,
-        secondary: item.typ,
+        secondary: item.einheitTyp.label,
         item,
       })) ?? []),
     ];

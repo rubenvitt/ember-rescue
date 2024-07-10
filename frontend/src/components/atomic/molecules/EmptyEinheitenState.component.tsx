@@ -10,7 +10,7 @@ export function EmptyEinheitenState() {
   const einheitenComboItems = useMemo(() => {
     return einheiten.data?.map((einheit) => ({
       label: einheit.funkrufname,
-      secondary: einheit.typ,
+      secondary: einheit.einheitTyp.label,
       item: einheit,
     }));
   }, [einheiten.data]);
@@ -21,7 +21,7 @@ export function EmptyEinheitenState() {
     }).slice(0, 6)
       .map((einheit) => ({
         label: einheit.funkrufname,
-        secondary: einheit.typ + ' (' + einheit.kapazitaet + ' Plätze)',
+        secondary: einheit.einheitTyp.label + ' (' + einheit.kapazitaet + ' Plätze)',
         item: einheit,
       }));
   }, [einheiten.data]);

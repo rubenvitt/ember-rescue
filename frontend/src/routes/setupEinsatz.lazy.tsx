@@ -5,7 +5,7 @@ import { useEinheiten } from '../hooks/einheiten.hook.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEinsatz } from '../hooks/einsatz.hook.js';
 import { OffeneEinsaetzeList } from '../components/atomic/organisms/OffeneEinsaetzeList.component.js';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAlarmstichworte } from '../hooks/alarmstichworte.hook.js';
 import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
 import { Alarmstichwort } from '../types.js';
@@ -38,12 +38,12 @@ function SetupEinsatz() {
   }) ?? [], [alarmstichworte.data]);
 
 
-  if (!einheiten.isFetched) {
-    return 'Loading...';
-  }
-  if (einsatz.isFetched && einsatz.data) {
-    navigate({ to: '/app/' });
-  }
+  useEffect(() => {
+    if (einsatz.isFetched && einsatz.data) {
+      navigate({ to: '/app/' });
+    }
+  }, [einsatz.isFetched]);
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 flex gap-4 flex-col items-center min-h-screen">
       <div className="w-full max-w-6xl flex flex-col gap-16 space-y-16 divide-y divide-gray-900/30">
@@ -87,11 +87,11 @@ function SetupEinsatz() {
                   label: 'Aufnehmendes Rettungsmittel',
                   name: 'aufnehmendesRettungsmittel',
                   type: 'combo',
-                  items: einheiten.data!!.map((einheit) => ({
+                  items: einheiten.data?.map((einheit) => ({
                     item: einheit,
                     label: einheit.funkrufname,
-                    secondary: einheit.typ,
-                  })),
+                    secondary: einheit.einheitTyp.label,
+                  })) ?? [],
                   validators: {
                     onChange: ({ value }: { value: string }) => {
                       if (value === '') {

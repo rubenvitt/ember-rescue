@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { EinheitDto } from '../types';
 
 @Injectable()
 export class EinheitenService {
@@ -21,7 +22,37 @@ export class EinheitenService {
             code: true,
           },
         },
+        einheitTyp: {
+          select: {
+            id: true,
+            label: true,
+          },
+        },
       },
+    });
+  }
+
+  findTypen() {
+    return this.prismaService.einheitTyp.findMany({});
+  }
+
+  updateMany(einheiten: Omit<EinheitDto, 'status'>[]) {
+    return this.prismaService.$transaction(async (transaction) => {
+      for (const { einheitTyp: _, einheitTypId, id, ...einheit } of einheiten) {
+        await transaction.einheit.upsert({
+          where: {
+            id: id,
+          },
+          update: {
+            ...einheit,
+            einheitTypId: einheitTypId,
+          },
+          create: {
+            ...einheit,
+            einheitTypId: einheitTypId,
+          },
+        });
+      }
     });
   }
 }

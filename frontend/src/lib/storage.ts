@@ -8,7 +8,11 @@ export default function storage() {
 
   const writeLocalStorage = (key: string, value: any) => {
     console.debug('Writing to local storage:', key, value);
-    localStorage.setItem(key, JSON.stringify(value));
+    if (value === null || value === undefined) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   };
 
   return {

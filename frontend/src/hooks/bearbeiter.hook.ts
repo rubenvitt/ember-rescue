@@ -53,6 +53,7 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
     let loggedInBearbeiter = await loginBearbeiter.mutateAsync(bearbeiter);
     console.log('Saving bearbeiter:', bearbeiter, loggedInBearbeiter);
     setBearbeiter(loggedInBearbeiter);
+    console.log('saved bearbeiter');
   }
 
   function remove() {

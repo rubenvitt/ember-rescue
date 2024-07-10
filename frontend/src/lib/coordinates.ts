@@ -15,8 +15,6 @@ const SCALE_FACTOR = 0.9996;
 const SEMI_MAJOR_AXIS = 6378137;
 const EASTING_OFFSET = 500000;
 const NORTHING_OFFSET = 10000000;
-const UTM_ZONE_WIDTH = 6;
-const HALF_UTM_ZONE_WIDTH = UTM_ZONE_WIDTH / 2;
 
 // Interfaces
 interface LatLng {

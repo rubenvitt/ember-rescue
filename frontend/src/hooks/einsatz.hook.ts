@@ -46,6 +46,7 @@ export function useEinsatz() {
   }
 
   return {
+    einsatzId,
     einsatz: { ...singleEinsatz, isDisabled: !einsatzId },
     saveEinsatz,
     createEinsatz: {

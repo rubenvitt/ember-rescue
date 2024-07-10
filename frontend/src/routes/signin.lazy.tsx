@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { SignIn } from '../components/atomic/templates/SignIn.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEffect } from 'react';
@@ -8,14 +8,10 @@ export const Route = createLazyFileRoute('/signin')({
 });
 
 function SignInRoute() {
-  const { bearbeiter } = useBearbeiter();
-  let navigate = useNavigate({ from: '/signin' });
-
+  const { removeBearbeiter } = useBearbeiter();
   useEffect(() => {
-    if (bearbeiter?.data?.id) {
-      navigate({ to: '/app/' });
-    }
-  }, [bearbeiter, navigate]);
+    removeBearbeiter();
+  }, []);
 
   return (
     <SignIn />

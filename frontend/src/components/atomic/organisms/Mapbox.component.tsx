@@ -1,6 +1,6 @@
 import { MapProvider } from 'react-map-gl';
 import { useSecret } from '../../../hooks/secrets.hook.js';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useTheme } from '../../../hooks/theme.hook.js';
@@ -20,9 +20,9 @@ import { formatMGRS, mgrs } from '../../../lib/coordinates.js';
 
 function _MapboxComponent() {
   const { dark } = useTheme();
-  const [mapStyle, setMapStyle] = useState(() => {
+  const initialMapStyle = useMemo<string>(() => {
     return dark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard';
-  });
+  }, []);
   const { secret } = useSecret({ secretKey: 'mapboxApi' });
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
@@ -33,7 +33,7 @@ function _MapboxComponent() {
     if (!secret.data) return;
     const map = new mapboxgl.Map({
       container: 'map',
-      style: mapStyle,
+      style: initialMapStyle,
       center: [10.55, 52.96],
       zoom: 11,
       accessToken: secret.data?.value,
@@ -104,7 +104,7 @@ function _MapboxComponent() {
   const { einheiten } = useEinheiten();
 
   return <>
-    <div className="bg-green-500">
+    <div className="border border-gray-500 mb-2 px-6 py-2">
       Before map Actions
       ({JSON.stringify(center)} | {JSON.stringify(center && formatMGRS(mgrs(center)))})
       <div className="flex gap-2 overflow-scroll flex-nowrap">

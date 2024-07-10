@@ -21,20 +21,32 @@ model Bearbeiter {
 }
 
 model Einheit {
-  id                      String                  @id() @default(cuid())
+  id                      String                  @id @default(cuid())
   funkrufname             String
-  typ                     String
   kapazitaet              Int
-  istTemporaer            Boolean
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
   aktuellerStatusId       String?
   status                  Status?                 @relation(fields: [aktuellerStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einheit_status_historie EinheitStatusHistorie[]
   einsatz_einheit         EinheitOnEinsatz[]
   Einsatz                 Einsatz[]
+  organisation            String?
+  fachaufgabe             String?
+  verwaltungsstufe        String?
+  einheitTyp              EinheitTyp              @relation(fields: [einheitTypId], references: [id])
+  einheitTypId            String
+  istTemporaer            Boolean
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
 
   @@map("einheiten")
+}
+
+model EinheitTyp {
+  id           String    @id @default(cuid())
+  label        String
+  description  String
+  grundzeichen String
+  einheiten    Einheit[]
 }
 
 model EinheitStatusHistorie {

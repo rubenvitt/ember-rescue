@@ -17,9 +17,10 @@ interface Props<T extends Identifiable> {
   onChange: (id: string) => void,
   defaultItem?: ItemType<T>,
   label?: string,
+  disabled?: boolean
 }
 
-export function ComboInput<T extends Identifiable>({ items, defaultItem, onChange, label }: Props<T>) {
+export function ComboInput<T extends Identifiable>({ items, defaultItem, onChange, label, disabled }: Props<T>) {
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<ItemType<T> | null>(defaultItem ?? null);
 
@@ -30,6 +31,7 @@ export function ComboInput<T extends Identifiable>({ items, defaultItem, onChang
   return (
     <Combobox
       as="div"
+      disabled={disabled}
       value={selectedItem}
       onChange={(item) => {
         setQuery('');
@@ -67,16 +69,14 @@ export function ComboInput<T extends Identifiable>({ items, defaultItem, onChang
               >
                 {({ focus, selected }) => (
                   <>
-                    <div className="flex">
-                      <span className={clsx('truncate', selected && 'font-semibold')}>{item.label}</span>
+                    <div className="flex items-center min-w-0">
+                      <span className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
                       <span
                         className={clsx(
-                          'ml-2 truncate text-gray-500',
+                          'ml-2 flex-shrink truncate text-gray-500',
                           focus ? 'text-indigo-200' : 'text-gray-500',
                         )}
-                      >
-                        {item.secondary}
-                      </span>
+                      >{item.secondary}</span>
                     </div>
 
                     {selected && (

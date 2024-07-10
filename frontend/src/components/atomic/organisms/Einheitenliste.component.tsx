@@ -20,7 +20,9 @@ export function EinheitenlisteComponent({ einheiten }: Props) {
             {/*  alt={client.name}*/}
             {/*  className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"*/}
             {/*/>*/}
-            <div className="text-sm font-medium leading-6 text-gray-900">{einheit.funkrufname} ({einheit.typ})</div>
+            <div
+              className="text-sm font-medium leading-6 text-gray-900">{einheit.funkrufname} ({einheit.einheitTyp.label})
+            </div>
             <Menu as="div" className="relative ml-auto">
               <MenuButton className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
                 <span className="sr-only">Open options</span>

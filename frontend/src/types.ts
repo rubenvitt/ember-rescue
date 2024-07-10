@@ -1,6 +1,7 @@
 import { ToPathOption } from '@tanstack/react-router';
 import React from 'react';
 import { XOR } from './types/helper.js';
+import { GrundzeichenId } from 'taktische-zeichen-core';
 
 export type EinsatztagebuchEintragType =
   'GENERISCH' |
@@ -104,14 +105,26 @@ export type StatusDto = SmallStatusDto & {
   beschreibung: string;
 };
 
+export type SmallEinheitTypDto = {
+  id: string
+  label: string
+}
+
 export type EinheitDto = {
   _count: {
     einsatz_einheit: number
   },
   id: string
   funkrufname: string
-  typ: string
+  einheitTyp: SmallEinheitTypDto,
   kapazitaet: number
   istTemporaer: boolean
   status: SmallStatusDto
+}
+
+export type EinheitTypDto = {
+  id: string
+  description: string
+  label: string
+  grundzeichen: GrundzeichenId
 }

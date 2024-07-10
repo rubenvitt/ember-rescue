@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 
 export const Route = createLazyFileRoute('/app/')({
   component: App,
+  pendingComponent: () => <div>Loading</div>,
 });
 
 function App() {
@@ -26,10 +27,9 @@ function App() {
     setupWindow();
   }, []);
 
-
-  if (einsatz.isDisabled) {
-    navigate({ to: '/setupEinsatz' });
-  }
+  useEffect(() => {
+    if (einsatz.isDisabled) navigate({ to: '/setupEinsatz' });
+  }, [einsatz.isDisabled]);
 
   if (einsatz.isLoading)
     return null;

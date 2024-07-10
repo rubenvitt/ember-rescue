@@ -24,7 +24,11 @@ export type StatusDto = SmallStatusDto & {
 export type EinheitDto = {
   id: string;
   funkrufname: string;
-  typ: string;
+  einheitTyp: {
+    id: string;
+    label: string;
+  };
+  einheitTypId?: string;
   kapazitaet: number;
   istTemporaer: boolean;
   status: SmallStatusDto;

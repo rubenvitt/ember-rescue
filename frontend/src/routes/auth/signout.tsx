@@ -11,7 +11,7 @@ export const Route = createFileRoute('/auth/signout')({
       if (bearbeiter.isLoading) return;
       if (bearbeiter.data) removeBearbeiter();
       navigate({ to: '/signin' });
-    }, [removeBearbeiter, bearbeiter]);
+    }, [removeBearbeiter, bearbeiter.data]);
 
     return <></>;
   },

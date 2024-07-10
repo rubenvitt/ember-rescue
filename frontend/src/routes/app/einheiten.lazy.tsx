@@ -11,6 +11,7 @@ import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einhe
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
+import { useEinsatz } from '../../hooks/einsatz.hook.js';
 
 export const Route = createLazyFileRoute('/app/einheiten')({
   component: Einheiten,
@@ -20,7 +21,8 @@ function Einheiten() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fahrzeug, setFahrzeug] = useState('');
   const { qualifikationen } = useQualifikationen();
-  const { einheiten } = useEinheiten({ einsatzId: '11' });
+  const { einsatzId } = useEinsatz();
+  const { einheiten } = useEinheiten({ einsatzId: einsatzId });
 
   const handleAddKraft = () => {
 

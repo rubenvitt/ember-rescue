@@ -3,10 +3,12 @@ import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../../../types.js';
 import { BearbeiterInput } from '../molecules/BearbeiterInput.component.js';
 import { getCurrent, LogicalSize } from '@tauri-apps/api/window';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 
 export function SignIn() {
   const { saveBearbeiter, allBearbeiter } = useBearbeiter();
+  const navigate = useNavigate({ from: '/signin' });
 
   useMemo(async () => {
     const window = getCurrent();
@@ -18,11 +20,19 @@ export function SignIn() {
     await window.setResizable(false);
   }, []);
 
+  const formSubmit = useCallback(({ value }: {
+    value: { bearbeiter: Bearbeiter | NewBearbeiter }
+  }) => saveBearbeiter(value.bearbeiter).then(async () => {
+    await navigate({
+      to: '/app',
+    });
+  }), [saveBearbeiter]);
+
   let form = useForm<{ bearbeiter: Bearbeiter | NewBearbeiter }>({
     defaultValues: {
       bearbeiter: { name: '', id: null },
     },
-    onSubmit: (values) => saveBearbeiter(values.value.bearbeiter),
+    onSubmit: formSubmit,
   });
 
   return (
