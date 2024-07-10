@@ -1,6 +1,7 @@
-import { ClientOptions, fetch } from '@tauri-apps/plugin-http';
+import { ClientOptions, fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import storage from './storage.js';
 import { Bearbeiter } from '../types.js';
+import { isTauri } from '@tauri-apps/api/core';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -24,9 +25,16 @@ export function backendFetch(path: string, init?: RequestInit) {
       ...init?.headers,
     },
   };
-  const fetchPromise = path.startsWith('http')
-    ? fetch(path, requestInit)
-    : fetch(ensureSlashBetween(BASE_URL, path), requestInit);
+  let fetchPromise;
+  if (isTauri()) {
+    fetchPromise = path.startsWith('http')
+      ? tauriFetch(path, requestInit)
+      : tauriFetch(ensureSlashBetween(BASE_URL, path), requestInit);
+  } else {
+    fetchPromise = path.startsWith('http')
+      ? fetch(path, requestInit)
+      : fetch(ensureSlashBetween(BASE_URL, path), requestInit);
+  }
 
   return fetchPromise.then(async (res) => {
     if (!res.ok) {
