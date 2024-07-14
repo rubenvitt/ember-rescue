@@ -2,13 +2,28 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { EinheitDto, EinheitTypDto } from '../types.js';
 import { backendFetch } from '../lib/http.js';
 import { useEinsatz } from './einsatz.hook.js';
+import { useMemo } from 'react';
 
 export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) {
   const { einsatzId: currentEinsatzId } = useEinsatz();
-  const { data: einheiten, isLoading, isFetched, refetch } = useQuery<EinheitDto[]>({
+  const einheiten = useQuery<EinheitDto[]>({
     queryKey: ['einheiten'],
     queryFn: async () => backendFetch('/einheiten'),
   });
+  const einheitenImEinsatz = useQuery<EinheitDto[]>({
+    queryKey: ['einheiten', einsatzId],
+    queryFn: () => backendFetch(`/einsatz/${einsatzId}/einheiten`),
+    enabled: Boolean(einsatzId),
+  });
+
+  const einheitenNichtImEinsatz = useMemo(() => {
+    if (!einheiten.data || !einheitenImEinsatz.data) {
+      return [];
+    }
+    const einsatzEinheitenIds = new Set(einheitenImEinsatz.data.map(einheit => einheit.id));
+    return einheiten.data.filter(einheit => !einsatzEinheitenIds.has(einheit.id));
+  }, [einheiten, einheitenImEinsatz]);
+
   const einheitenTypen = useQuery<EinheitTypDto[]>({
     queryKey: ['einheiten-typen'],
     queryFn: async () => backendFetch('/einheiten/typen'),
@@ -23,7 +38,7 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
       body: JSON.stringify(einheiten),
     }),
     onSuccess: async () => {
-      await refetch();
+      await einheiten.refetch();
     },
   });
 
@@ -41,9 +56,11 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
   });
 
   return {
-    einheiten: { data: einsatzId ? [] : einheiten, isLoading, isFetched },
+    einheiten,
+    einheitenImEinsatz,
     einheitenTypen,
     patchEinheiten,
     addEinheitToEinsatz,
+    einheitenNichtImEinsatz,
   };
 }

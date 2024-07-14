@@ -101,6 +101,9 @@ importers:
       framer-motion:
         specifier: ^11.2.14
         version: 11.2.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      local-devices:
+        specifier: ^4.0.0
+        version: 4.0.0
       mapbox-gl:
         specifier: ^3.5.1
         version: 3.5.1
@@ -119,6 +122,9 @@ importers:
       taktische-zeichen-react:
         specifier: ^0.8.0
         version: 0.8.0(react@18.3.1)
+      tauri-plugin-network-api:
+        specifier: 2.0.3-beta.1
+        version: 2.0.3-beta.1
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -1837,6 +1843,9 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
+  cidr-regex@1.0.7:
+    resolution: {integrity: sha512-4sQNVjJw/I3kHyb9FGSJ/dBT18BP7pf5zongGsEYExNvtTss24hgJxZr0JK1eWlumX/ij4yiR/vYlndRynnkDQ==}
+
   clone-response@1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
 
@@ -2222,6 +2231,9 @@ packages:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
     engines: {node: '>= 0.4'}
 
+  get-ip-range@2.1.1:
+    resolution: {integrity: sha512-n401kTpf57VhbW2UvInXxhw1DgTJSsZf24gpNhJrFU8Cv+Jk/sQ+qukP2x0EF4MUEjDWlDLeIhIY/f80IV0kqg==}
+
   get-stream@5.2.0:
     resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
     engines: {node: '>=8'}
@@ -2357,6 +2369,13 @@ packages:
   internal-slot@1.0.7:
     resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
     engines: {node: '>= 0.4'}
+
+  ip-address@6.4.0:
+    resolution: {integrity: sha512-c5uxc2WUTuRBVHT/6r4m7HIr/DfV0bF6DvLH3iZGSK8wp8iMwwZSgIq2do0asFf8q9ECug0SE+6+1ACMe4sorA==}
+    engines: {node: '>= 0.10'}
+
+  ip@1.1.9:
+    resolution: {integrity: sha512-cyRxvOEpNHNtchU3Ln9KC/auJgup87llfQpQ+t5ghoC/UhL16SWzbueiCsdTnWmqAWl7LadfuwhlqmtOaqMHdQ==}
 
   is-arguments@1.1.1:
     resolution: {integrity: sha512-8Q7EARjzEnKpt/PCD7e1cgUS0a6X8u5tdSiMqXhojOdoV9TsMsiO+9VLC5vAmO8N7/GmXn7yjR8qnA6bVAEzfA==}
@@ -2508,6 +2527,9 @@ packages:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
 
+  jsbn@1.1.0:
+    resolution: {integrity: sha512-4bYVV3aAMtDTTu4+xsDYa6sy9GyJ69/amsu9sYF2zqjiEoZA5xJi3BrfX3uY+/IekIu7MwdObdbDWpoZdBv3/A==}
+
   jsesc@2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
@@ -2566,6 +2588,10 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
+  local-devices@4.0.0:
+    resolution: {integrity: sha512-65EPltZW7bPRTmIiL9yuQcu0Om6dYl4dzRgiIYxl/cUO62FBW09ZpIVtpffXU8vryfGXEXxt68oWK/Kru12FEA==}
+    engines: {node: '>=10.17'}
+
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
     engines: {node: '>=8'}
@@ -2580,11 +2606,23 @@ packages:
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
+  lodash.find@4.6.0:
+    resolution: {integrity: sha512-yaRZoAV3Xq28F1iafWN1+a0rflOej93l1DQUejs3SZ41h2O9UJBoS9aueGjPDgAl4B6tPC0NuuchLKaDQQ3Isg==}
+
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
 
+  lodash.max@4.0.1:
+    resolution: {integrity: sha512-iykTDTb7PK33HSQmKy34zv+hh4WEu7WonJPXQcgODzUbbtradtNs8RsD/GI7XV++60KaKR1xhW56N4ISqHesfQ==}
+
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+
+  lodash.padstart@4.6.1:
+    resolution: {integrity: sha512-sW73O6S8+Tg66eY56DBk85aQzzUJDtpoXFBgELMd5P/SotAguo+1kYO6RuYgXxA4HJH3LFTFPASX6ET6bjfriw==}
+
+  lodash.repeat@4.1.0:
+    resolution: {integrity: sha512-eWsgQW89IewS95ZOcr15HHCX6FVDxq3f2PNUIng3fyzsPev9imFQxIYdFZ6crl8L56UR6ZlGDLcEb3RZsCSSqw==}
 
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -3133,6 +3171,9 @@ packages:
     resolution: {integrity: sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw==}
     engines: {node: '>=0.10.0'}
 
+  sprintf-js@1.1.2:
+    resolution: {integrity: sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==}
+
   stop-iteration-iterator@1.0.0:
     resolution: {integrity: sha512-iCGQj+0l0HOdZ2AEeBADlsRC+vsnDsZsbdSiH1yNSjcfKM7fdpCMfqAL/dwF5BLiw/XhRft/Wax6zQbhq2BcjQ==}
     engines: {node: '>= 0.4'}
@@ -3219,6 +3260,9 @@ packages:
     resolution: {integrity: sha512-8NNmHBe97HfGtskVxUm4WtUYjnjs18uVdjskXzEOxZrTXt+oYQ7dibCg+akiQmXe2zYpX+H75SEgzMTzvTG+Lg==}
     peerDependencies:
       react: '>= 17.0.0'
+
+  tauri-plugin-network-api@2.0.3-beta.1:
+    resolution: {integrity: sha512-AKm3r31Hrt/txFSUB2A6covzJtS9D3UFS37vT1R4klY/hVai0YOb0dsMe68nnwFJ7T4RPm6xXAPKJBBp2zWlDQ==}
 
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -3377,6 +3421,9 @@ packages:
 
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
+
+  valibot@0.35.0:
+    resolution: {integrity: sha512-+i2aCRkReTrd5KBN/dW2BrPOvFnU5LXTV2xjZnjnqUIO8YUx6P2+MgRrkwF2FhkexgyKq/NIZdPdknhHf5A/Ww==}
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -6144,6 +6191,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  cidr-regex@1.0.7: {}
+
   clone-response@1.0.3:
     dependencies:
       mimic-response: 1.0.1
@@ -6618,6 +6667,12 @@ snapshots:
       has-symbols: 1.0.3
       hasown: 2.0.2
 
+  get-ip-range@2.1.1:
+    dependencies:
+      cidr-regex: 1.0.7
+      ip: 1.1.9
+      ip-address: 6.4.0
+
   get-stream@5.2.0:
     dependencies:
       pump: 3.0.0
@@ -6751,6 +6806,18 @@ snapshots:
       hasown: 2.0.2
       side-channel: 1.0.6
 
+  ip-address@6.4.0:
+    dependencies:
+      jsbn: 1.1.0
+      lodash.find: 4.6.0
+      lodash.max: 4.0.1
+      lodash.merge: 4.6.2
+      lodash.padstart: 4.6.1
+      lodash.repeat: 4.1.0
+      sprintf-js: 1.1.2
+
+  ip@1.1.9: {}
+
   is-arguments@1.1.1:
     dependencies:
       call-bind: 1.0.7
@@ -6880,6 +6947,8 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
+  jsbn@1.1.0: {}
+
   jsesc@2.5.2: {}
 
   json-buffer@3.0.1: {}
@@ -6917,6 +6986,12 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
+  local-devices@4.0.0:
+    dependencies:
+      get-ip-range: 2.1.1
+      ip: 1.1.9
+      mz: 2.7.0
+
   locate-path@5.0.0:
     dependencies:
       p-locate: 4.1.0
@@ -6929,9 +7004,17 @@ snapshots:
 
   lodash.debounce@4.0.8: {}
 
+  lodash.find@4.6.0: {}
+
   lodash.isequal@4.5.0: {}
 
+  lodash.max@4.0.1: {}
+
   lodash.merge@4.6.2: {}
+
+  lodash.padstart@4.6.1: {}
+
+  lodash.repeat@4.1.0: {}
 
   loose-envify@1.4.0:
     dependencies:
@@ -7481,6 +7564,8 @@ snapshots:
     dependencies:
       extend-shallow: 3.0.2
 
+  sprintf-js@1.1.2: {}
+
   stop-iteration-iterator@1.0.0:
     dependencies:
       internal-slot: 1.0.7
@@ -7604,6 +7689,11 @@ snapshots:
     dependencies:
       react: 18.3.1
       taktische-zeichen-core: 0.8.0
+
+  tauri-plugin-network-api@2.0.3-beta.1:
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.14
+      valibot: 0.35.0
 
   text-table@0.2.0: {}
 
@@ -7770,6 +7860,8 @@ snapshots:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.13
       which-typed-array: 1.1.15
+
+  valibot@0.35.0: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:

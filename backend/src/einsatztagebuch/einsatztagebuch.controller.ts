@@ -31,16 +31,8 @@ export class EinsatztagebuchController {
       einsatzId,
     });
     return this.service.createEinsatztagebuchEintrag({
-      bearbeiter: {
-        connect: {
-          id: bearbeiterId,
-        },
-      },
-      einsatz: {
-        connect: {
-          id: einsatzId,
-        },
-      },
+      bearbeiterId,
+      einsatzId,
       ...createEinsatztagebuchDto,
     });
   }

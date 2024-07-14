@@ -115,7 +115,7 @@ model PersonOnEinheitOnEinsatz {
 
 model EinsatztagebuchEintrag {
   id           String      @id() @default(cuid())
-  timestamp    DateTime
+  timestamp    DateTime    @default(now())
   type         String
   content      String
   absender     String
@@ -172,7 +172,7 @@ model Qualifikation {
 
 model Status {
   id                      String                  @id() @default(cuid())
-  code                    String
+  code                    String                  @unique
   bezeichnung             String
   beschreibung            String
   createdAt               DateTime                @default(now())
@@ -180,6 +180,7 @@ model Status {
   einheit                 Einheit[]
   einheit_status_historie EinheitStatusHistorie[]
 
+  @@index([code])
   @@map("status")
 }
 

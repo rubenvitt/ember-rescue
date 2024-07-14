@@ -16,6 +16,7 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../lib/coordinates.js';
+import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 
 
 function _MapboxComponent() {
@@ -27,6 +28,7 @@ function _MapboxComponent() {
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
   const [center, setCenter] = useState<LngLat>();
+  const { einsatzId } = useEinsatz();
 
   useEffect(() => {
     console.log('recreate map', mapDiv);
@@ -101,14 +103,14 @@ function _MapboxComponent() {
     setMap(map);
   }, [mapDiv, secret.data]);
 
-  const { einheiten } = useEinheiten();
+  const { einheitenImEinsatz } = useEinheiten({ einsatzId });
 
   return <>
     <div className="border border-gray-500 mb-2 px-6 py-2">
       Before map Actions
       ({JSON.stringify(center)} | {JSON.stringify(center && formatMGRS(mgrs(center)))})
       <div className="flex gap-2 overflow-scroll flex-nowrap">
-        {einheiten.data?.map(einheit => (
+        {einheitenImEinsatz.data?.map(einheit => (
           <Button
             key={einheit.id}
             outline

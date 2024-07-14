@@ -14,6 +14,7 @@ fn log_message(message: &str) {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_network::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![greet, log_message])

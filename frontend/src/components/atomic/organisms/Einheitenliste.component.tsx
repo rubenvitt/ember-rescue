@@ -1,11 +1,12 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
+import { EllipsisHorizontalIcon, StopIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 import { EinheitDto } from '../../../types.js';
+import { Dropdown } from '../atoms/Dropdown.component.js';
+import { UserGroupIcon } from '@heroicons/react/24/outline';
 
 
 type Props = {
-  einheiten: EinheitDto[]
+  einheiten: EinheitDto[],
 }
 
 export function EinheitenlisteComponent({ einheiten }: Props) {
@@ -23,43 +24,24 @@ export function EinheitenlisteComponent({ einheiten }: Props) {
             <div
               className="text-sm font-medium leading-6 text-gray-900">{einheit.funkrufname} ({einheit.einheitTyp.label})
             </div>
-            <Menu as="div" className="relative ml-auto">
-              <MenuButton className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
-                <span className="sr-only">Open options</span>
-                <EllipsisHorizontalIcon className="h-5 w-5" aria-hidden="true" />
-              </MenuButton>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <MenuItem>
-                  {({ focus }) => (
-                    <a
-                      href="#"
-                      className={clsx(
-                        focus ? 'bg-gray-50' : '',
-                        'block px-3 py-1 text-sm leading-6 text-gray-900',
-                      )}
-                    >
-                      View<span className="sr-only">, {einheit.funkrufname}</span>
-                    </a>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <a
-                      href="#"
-                      className={clsx(
-                        focus ? 'bg-gray-50' : '',
-                        'block px-3 py-1 text-sm leading-6 text-gray-900',
-                      )}
-                    >
-                      Edit<span className="sr-only">, {einheit.funkrufname}</span>
-                    </a>
-                  )}
-                </MenuItem>
-              </MenuItems>
-            </Menu>
+            <div className="relative ml-auto">
+              <Dropdown buttonText="Optionen" minimal={true} items={[[
+                {
+                  text: 'Besatzung',
+                  icon: UserGroupIcon,
+                  onClick: () => {
+                    // besatzung anzeigen oder so
+                  },
+                },
+                {
+                  text: 'Einsatz beenden',
+                  icon: StopIcon,
+                  onClick: () => {
+                    // remove from Einsatz
+                  },
+                },
+              ]]} icon={EllipsisHorizontalIcon} />
+            </div>
           </div>
           <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
             <div className="flex justify-between gap-x-4 py-3">

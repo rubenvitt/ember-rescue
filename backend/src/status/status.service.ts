@@ -8,4 +8,12 @@ export class StatusService {
   findAll() {
     return this.prismaService.status.findMany();
   }
+
+  findStatus(code: number) {
+    return this.prismaService.status.findUnique({
+      where: {
+        code: String(code),
+      },
+    });
+  }
 }

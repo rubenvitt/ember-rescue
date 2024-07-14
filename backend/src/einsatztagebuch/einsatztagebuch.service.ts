@@ -11,11 +11,18 @@ export class EinsatztagebuchService {
       where: {
         einsatzId,
       },
+      orderBy: {
+        timestamp: 'desc',
+      },
     });
   }
 
-  createEinsatztagebuchEintrag(data: Prisma.EinsatztagebuchEintragCreateInput) {
-    return this.prismaService.einsatztagebuchEintrag.create({
+  createEinsatztagebuchEintrag(
+    data:
+      | Prisma.EinsatztagebuchEintragCreateManyInput
+      | Prisma.EinsatztagebuchEintragCreateManyInput[],
+  ) {
+    return this.prismaService.einsatztagebuchEintrag.createMany({
       data: data,
     });
   }

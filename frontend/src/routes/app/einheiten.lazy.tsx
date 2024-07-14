@@ -1,38 +1,63 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { LayoutApp } from '../_layout/_layout-app.js';
-import ModalComponent from '../../components/atomic/molecules/Modal.component.js';
 import { Button } from '../../components/catalyst-components/button.js';
-import { Input } from '../../components/catalyst-components/input.js';
-import { Select } from '../../components/catalyst-components/select.js';
-import { Field, Label } from '@headlessui/react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { useEinsatz } from '../../hooks/einsatz.hook.js';
+import { ModalComponent } from '../../components/atomic/molecules/Modal.component.js';
+import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
+import { EinheitDto } from '../../types.js';
+import { GenericForm, GenericFormRef } from '../../components/atomic/organisms/GenericForm.component.js';
 
 export const Route = createLazyFileRoute('/app/einheiten')({
   component: Einheiten,
 });
+
+type AddEinheitType = {
+  einheitId: string
+}
 
 function Einheiten() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fahrzeug, setFahrzeug] = useState('');
   const { qualifikationen } = useQualifikationen();
   const { einsatzId } = useEinsatz();
-  const { einheiten } = useEinheiten({ einsatzId: einsatzId });
+  const {
+    einheiten,
+    einheitenImEinsatz,
+    addEinheitToEinsatz,
+    einheitenNichtImEinsatz,
+  } = useEinheiten({ einsatzId: einsatzId });
+
+  const einheitenNichtImEinsatzCombo = useMemo<ItemType<EinheitDto>[]>(() => {
+    return einheitenNichtImEinsatz.map(item => ({
+      label: item.funkrufname,
+      secondary: item.einheitTyp.label,
+      item,
+    }));
+  }, []);
+
+  // const einheitenCombo = useMemo<ItemType<EinheitDto>[]>(() => {
+  //   return einheiten.data?.map(item => ({
+  //     label: item.funkrufname,
+  //     secondary: item.einheitTyp.label,
+  //     item,
+  //   })) ?? [];
+  // }, []);
 
   const handleAddKraft = () => {
-
   };
-
+  const formRef = useRef<GenericFormRef<AddEinheitType>>(null);
 
   const handleSubmit = () => {
     console.log('Submitted:', { fahrzeug, kraefte: einheiten });
     setIsModalOpen(false);
-    // Here you would typically send this data to your backend or state management
+    const einheitId = formRef.current?.form?.getFieldValue('einheitId');
+    einheitId && addEinheitToEinsatz.mutate({ einheitId });
   };
 
   return (
@@ -41,54 +66,25 @@ function Einheiten() {
         Neue Einheiten hinzufügen
       </Button>
       <ModalComponent
+        variant="panel"
+        panelColor="amber"
         isOpen={isModalOpen}
         fullWidth
         onClose={() => setIsModalOpen(false)}
         title="Neue Einheiten hinzufügen"
         Icon={BellIcon}
         content={
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Field>
-              <Label>Fahrzeug/Einheit</Label>
-              <Input
-                value={fahrzeug}
-                onChange={(e) => setFahrzeug(e.target.value)}
-                required
-              />
-            </Field>
-            {([] as any[]).map((kraft, index) => (
-              <div key={index} className="flex space-x-2">
-                <Field>
-                  <Label>
-                    Name Kraft {index + 1}
-                  </Label>
-                  <Input
-                    value={kraft.name}
-                    // onChange={(e) => handleKraftChange(index, 'name', e.target.value)}
-                    required
-                  />
-                </Field>
-                <Field>
-                  <Label>
-                    Qualifikation Kraft {index + 1}
-                  </Label>
-                  <Select
-                    value={kraft.qualifikation}
-                    // onChange={(e) => handleKraftChange(index, 'qualifikation', e.target.value)}
-                    required
-                  >
-                    <option value="">Bitte wählen</option>
-                    {qualifikationen.data?.map((qual) => (
-                      <option key={qual.id} value={qual.id}>{qual.bezeichnung}</option>
-                    ))}
-                  </Select>
-                </Field>
-              </div>
-            ))}
-            <Button type="button" onClick={handleAddKraft} color="blue">
-              Weitere Kraft hinzufügen
-            </Button>
-          </form>
+          <GenericForm<AddEinheitType> ref={formRef} onSubmit={handleSubmit} layout="simple"
+                                       sections={[
+                                         {
+                                           fields: [{
+                                             name: 'einheitId',
+                                             label: 'Einheit',
+                                             type: 'combo',
+                                             items: einheitenNichtImEinsatzCombo,
+                                           }],
+                                         },
+                                       ]} />
         }
         primaryAction={{
           label: 'Hinzufügen',
@@ -102,8 +98,9 @@ function Einheiten() {
         }}
       />
 
-      {einheiten.isFetched &&
-        (einheiten.data?.length ? <EinheitenlisteComponent einheiten={einheiten.data} /> : <EmptyEinheitenState />)}
+      {einheitenImEinsatz.isFetched &&
+        (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
+          <EmptyEinheitenState />)}
     </LayoutApp>
   );
 }

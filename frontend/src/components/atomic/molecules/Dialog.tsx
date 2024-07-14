@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogPanel, Transition } from '@headlessui/react';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -36,6 +36,7 @@ interface FlexibleDialogProps {
   actions?: DialogActions;
   size?: 'sm' | 'md' | 'lg';
   children: (props: { open: () => void }) => React.ReactNode;
+  asPanel?: boolean;
 }
 
 const variantStyles = {
@@ -69,6 +70,7 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
                                                                 actions = [],
                                                                 size = 'md',
                                                                 children,
+                                                                asPanel = false,
                                                               }) => {
   const [isOpen, setIsOpen] = useState(false);
   const Icon = variantIcons[variant];
@@ -93,6 +95,70 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
     return 'bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50';
   };
 
+  const Content = () => (
+    <>
+      <div className={`${asPanel ? 'bg-indigo-700 px-4 py-6 sm:px-6' : 'bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'}`}>
+        <div className={`${asPanel ? '' : 'sm:flex sm:items-start'}`}>
+          {!asPanel && (
+            <div
+              className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${variantStyles[variant]} sm:mx-0 sm:h-10 sm:w-10`}
+            >
+              <Icon className="h-6 w-6" aria-hidden="true" />
+            </div>
+          )}
+          <div className={`${asPanel ? '' : 'mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left'}`}>
+            <Dialog.Title
+              as="h3"
+              className={`text-base font-semibold leading-6 ${asPanel ? 'text-white' : 'text-gray-900'}`}
+            >
+              {title}
+            </Dialog.Title>
+            <div className="mt-2">
+              <p className={`text-sm ${asPanel ? 'text-indigo-300' : 'text-gray-500'}`}>{message}</p>
+            </div>
+          </div>
+          {asPanel && (
+            <div className="ml-3 flex h-7 items-center">
+              <button
+                type="button"
+                onClick={close}
+                className="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+              >
+                <span className="absolute -inset-2.5" />
+                <span className="sr-only">Close panel</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      {actions.length > 0 && (
+        <div
+          className={`${asPanel ? 'border-t border-gray-200 px-4 py-6 sm:px-6' : 'bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'}`}>
+          {primaryAction && (
+            <button
+              type="button"
+              className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto ${getButtonStyle(primaryAction)}`}
+              onClick={() => handleActionClick(primaryAction)}
+            >
+              {primaryAction.label}
+            </button>
+          )}
+          {secondaryActions.map((action, index) => (
+            <button
+              key={index}
+              type="button"
+              className={`mt-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm sm:mt-0 sm:w-auto ${getButtonStyle(action)}`}
+              onClick={() => handleActionClick(action)}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <>
       {children({ open })}
@@ -111,58 +177,32 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
           </Transition.Child>
 
           <div className="fixed inset-0 z-10 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div
+              className={`flex min-h-full ${asPanel ? 'items-stretch justify-end' : 'items-end justify-center p-4 text-center sm:items-center sm:p-0'}`}>
               <Transition.Child
                 as={React.Fragment}
                 enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                enterFrom={asPanel ? 'translate-x-full' : 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}
+                enterTo={asPanel ? 'translate-x-0' : 'opacity-100 translate-y-0 sm:scale-100'}
                 leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                leaveFrom={asPanel ? 'translate-x-0' : 'opacity-100 translate-y-0 sm:scale-100'}
+                leaveTo={asPanel ? 'translate-x-full' : 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}
               >
-                <Dialog.Panel
-                  className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full ${size === 'sm' ? 'sm:max-w-sm' : size === 'md' ? 'sm:max-w-md' : 'sm:max-w-lg'}`}>
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div
-                        className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${variantStyles[variant]} sm:mx-0 sm:h-10 sm:w-10`}>
-                        <Icon className="h-6 w-6" aria-hidden="true" />
-                      </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                          {title}
-                        </Dialog.Title>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-500">{message}</p>
-                        </div>
-                      </div>
+                {asPanel ? (
+                  <DialogPanel className="pointer-events-auto w-screen max-w-md transform transition">
+                    <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                      <Content />
                     </div>
-                  </div>
-                  {actions.length > 0 && (
-                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                      {primaryAction && (
-                        <button
-                          type="button"
-                          className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto ${getButtonStyle(primaryAction)}`}
-                          onClick={() => handleActionClick(primaryAction)}
-                        >
-                          {primaryAction.label}
-                        </button>
-                      )}
-                      {secondaryActions.map((action, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          className={`mt-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm sm:mt-0 sm:w-auto ${getButtonStyle(action)}`}
-                          onClick={() => handleActionClick(action)}
-                        >
-                          {action.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </Dialog.Panel>
+                  </DialogPanel>
+                ) : (
+                  <Dialog.Panel
+                    className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full ${
+                      size === 'sm' ? 'sm:max-w-sm' : size === 'md' ? 'sm:max-w-md' : 'sm:max-w-lg'
+                    }`}
+                  >
+                    <Content />
+                  </Dialog.Panel>
+                )}
               </Transition.Child>
             </div>
           </div>

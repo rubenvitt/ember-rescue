@@ -7,6 +7,7 @@ import {
   SimpleFormField,
   SimpleFormSection,
 } from '../molecules/FormField.component.tsx';
+import React, { forwardRef, useImperativeHandle } from 'react';
 
 
 interface ComplexFormSection<
@@ -35,17 +36,26 @@ export interface GenericFormProps<
   sections: FormSection<TFormData, TFieldValidator, TFormValidator>[];
   onSubmit: (values: TFormData) => Promise<void> | void;
   onReset?: () => void;
-  defaultValues: TFormData;
+  defaultValues?: TFormData;
   submitText?: string;
   resetText?: string;
   layout?: 'simple' | 'complex';
 }
 
-export function GenericForm<
+export interface GenericFormRef<TFormData> {
+  form: ReturnType<typeof useForm<TFormData>>;
+}
+
+// @ts-ignore
+export const GenericForm = forwardRef(function GenericForm<
   TFormData extends Record<string, any>,
   TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
->({
+>(
+  props: GenericFormProps<TFormData, TFieldValidator, TFormValidator>,
+  ref: React.Ref<GenericFormRef<TFormData>>,
+) {
+  const {
     sections,
     onSubmit,
     onReset,
@@ -53,13 +63,17 @@ export function GenericForm<
     submitText = 'Submit',
     resetText = 'Reset',
     layout = 'simple',
-  }: GenericFormProps<TFormData, TFieldValidator, TFormValidator>) {
+  } = props;
   const form = useForm<TFormData>({
     defaultValues,
     onSubmit: async ({ value }) => {
       await onSubmit(value);
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    form,
+  }), [form]);
 
   const getWidthClass = (field: BaseFormField<TFormData, any, TFieldValidator, TFormValidator>): string => {
     if (layout === 'complex') {
@@ -160,4 +174,10 @@ export function GenericForm<
       </div>
     </form>
   );
-}
+}) as <
+  TFormData extends Record<string, any>,
+  TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
+>(
+  props: GenericFormProps<TFormData, TFieldValidator, TFormValidator> & { ref?: React.Ref<GenericFormRef<TFormData>> },
+) => React.ReactElement;

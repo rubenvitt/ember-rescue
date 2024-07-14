@@ -25,6 +25,7 @@ const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
+const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
 const AppPatientenLazyImport = createFileRoute('/app/patienten')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
@@ -67,6 +68,13 @@ const AdminIndexRoute = AdminIndexImport.update({
   path: '/admin/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
+  path: '/prestart/settings',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/prestart/settings.lazy').then((d) => d.Route),
+)
 
 const AppPatientenLazyRoute = AppPatientenLazyImport.update({
   path: '/app/patienten',
@@ -195,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientenLazyImport
       parentRoute: typeof rootRoute
     }
+    '/prestart/settings': {
+      id: '/prestart/settings'
+      path: '/prestart/settings'
+      fullPath: '/prestart/settings'
+      preLoaderRoute: typeof PrestartSettingsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -226,6 +241,7 @@ export const routeTree = rootRoute.addChildren({
   AppEinsatztagebuchLazyRoute,
   AppLagekarteLazyRoute,
   AppPatientenLazyRoute,
+  PrestartSettingsLazyRoute,
   AdminIndexRoute,
   AppIndexLazyRoute,
 })
@@ -249,6 +265,7 @@ export const routeTree = rootRoute.addChildren({
         "/app/einsatztagebuch",
         "/app/lagekarte",
         "/app/patienten",
+        "/prestart/settings",
         "/admin/",
         "/app/"
       ]
@@ -292,6 +309,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/app/patienten": {
       "filePath": "app/patienten.lazy.tsx"
+    },
+    "/prestart/settings": {
+      "filePath": "prestart/settings.lazy.tsx"
     },
     "/admin/": {
       "filePath": "admin/index.tsx"

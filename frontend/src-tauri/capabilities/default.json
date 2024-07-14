@@ -21,10 +21,20 @@
       "identifier": "http:default",
       "allow": [
         {
+          "url": "http://**"
+        },
+        {
+          "url": "https://**"
+        },
+        {
+          "url": "http://*.*.*.*:*"
+        },
+        {
           "url": "http://localhost:3000"
         }
       ]
     },
+    "network:allow-all",
     "window:allow-maximize",
     "window:allow-set-title",
     "window:allow-set-effects",

@@ -1,4 +1,12 @@
-import { Body, Controller, Headers, Logger, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EinsatzEinheitenService } from './einsatz-einheiten.service';
 import { EinsatzController } from '../einsatz.controller';
 import { extractBearbeiterId } from '../../utils/header.utils';
@@ -8,6 +16,12 @@ export class EinsatzEinheitenController {
   private readonly logger = new Logger(EinsatzController.name);
 
   constructor(private readonly einheitenService: EinsatzEinheitenService) {}
+
+  @Get()
+  async findEinheitenImEinsatz(@Param('einsatzId') einsatzId: string) {
+    this.logger.log('Find einheiten im Einsatz', einsatzId);
+    return this.einheitenService.findEinheitenImEinsatz({ einsatzId });
+  }
 
   @Post('/add')
   async addEinheitToEinsatz(

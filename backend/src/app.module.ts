@@ -13,6 +13,7 @@ import * as Joi from 'joi';
 import { AlarmstichwortModule } from './alarmstichwort/alarmstichwortModule';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
+import { MetaModule } from './meta/meta.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SettingsModule } from './settings/settings.module';
     AlarmstichwortModule,
     SecretsModule,
     SettingsModule,
+    MetaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
