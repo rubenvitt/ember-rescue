@@ -132,7 +132,9 @@ export const GenericForm = forwardRef(function GenericForm<
                               {field.label}
                             </label>
                             <div className="mt-2">
-                              <FormField field={field} fieldApi={fieldApi} layout={layout} />
+                              <FormField field={field} fieldApi={fieldApi} layout={layout}
+                                         allowNewValues={field.allowNewValues}
+                                         onAddNewValue={field.onAddNewValue} />
                             </div>
                             {fieldApi.state.meta.isTouched && fieldApi.state.meta.errors && (
                               <p className="mt-2 text-sm text-red-600">{fieldApi.state.meta.errors.join(' ')}</p>

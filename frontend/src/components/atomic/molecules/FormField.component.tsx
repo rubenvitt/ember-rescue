@@ -19,6 +19,8 @@ export interface BaseFormField<
   items?: ItemType<Identifiable>[];
   validators?: FieldValidators<TParentData, TName, TFieldValidator, TFormValidator>;
   readonly?: boolean;
+  allowNewValues?: boolean;
+  onAddNewValue?: (newValue: string) => void;
 }
 
 export interface SimpleFormField<
@@ -54,10 +56,14 @@ export function FormField<
     field,
     fieldApi,
     layout,
+    onAddNewValue,
+    allowNewValues,
   }: {
   field: BaseFormField<TFormData, TName, TFieldValidator, TFormValidator>;
   fieldApi: FieldApi<TFormData, TName>;
   layout: 'simple' | 'complex';
+  allowNewValues?: boolean;
+  onAddNewValue?: (newValue: string) => void;
 }) {
   const baseInputClasses = `${layout === 'complex'
     ? 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
@@ -154,6 +160,13 @@ export function FormField<
           items={field.items as ItemType<Identifiable>[]}
           onChange={(item) => handleChange(item)}
           disabled={field.readonly}
+          allowNewValues={allowNewValues}
+          onAddNewValue={(val: string) => {
+            if (allowNewValues && onAddNewValue) {
+              onAddNewValue(val);
+              handleChange(val);
+            }
+          }}
         />
       );
     default:

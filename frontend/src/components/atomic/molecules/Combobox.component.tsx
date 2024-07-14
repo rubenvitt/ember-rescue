@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
-
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ChevronUpDownIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { Identifiable } from '../../../types.js';
 import clsx from 'clsx';
-
 
 export type ItemType<T extends Identifiable> = {
   label: string,
@@ -17,10 +15,20 @@ interface Props<T extends Identifiable> {
   onChange: (id: string) => void,
   defaultItem?: ItemType<T>,
   label?: string,
-  disabled?: boolean
+  disabled?: boolean,
+  allowNewValues?: boolean,
+  onAddNewValue?: (newValue: string) => void
 }
 
-export function ComboInput<T extends Identifiable>({ items, defaultItem, onChange, label, disabled }: Props<T>) {
+export function ComboInput<T extends Identifiable>({
+                                                     items,
+                                                     defaultItem,
+                                                     onChange,
+                                                     label,
+                                                     disabled,
+                                                     allowNewValues = false,
+                                                     onAddNewValue,
+                                                   }: Props<T>) {
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<ItemType<T> | null>(defaultItem ?? null);
 
@@ -28,16 +36,26 @@ export function ComboInput<T extends Identifiable>({ items, defaultItem, onChang
     return query === '' ? items : items.filter((item) => (item.label + item.secondary).toLowerCase().includes(query.toLowerCase()));
   }, [query, items]);
 
+  const handleChange = (item: ItemType<T> | string) => {
+    setQuery('');
+    if (typeof item === 'string') {
+      // This is a new value
+      if (onAddNewValue) {
+        onAddNewValue(item);
+      }
+      onChange(item);
+    } else {
+      setSelectedItem(item);
+      onChange(item.item.id);
+    }
+  };
+
   return (
     <Combobox
       as="div"
       disabled={disabled}
       value={selectedItem}
-      onChange={(item) => {
-        setQuery('');
-        setSelectedItem(item);
-        onChange(item?.item.id ?? '');
-      }}
+      onChange={handleChange}
     >
       {label && <Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Label>}
       <div className={clsx('relative', label && ' mt-3.5')}>
@@ -53,50 +71,65 @@ export function ComboInput<T extends Identifiable>({ items, defaultItem, onChang
           <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
         </ComboboxButton>
 
-        {filteredItems.length > 0 && (
-          <ComboboxOptions
-            className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredItems.map((item) => (
-              <ComboboxOption
-                key={item.item.id}
-                value={item}
-                className={({ focus }) =>
-                  clsx(
-                    'relative cursor-default select-none py-2 pl-3 pr-9',
-                    focus ? 'bg-indigo-600 text-white' : 'text-gray-900',
-                  )
-                }
-              >
-                {({ focus, selected }) => (
-                  <>
-                    <div className="flex items-center min-w-0">
-                      <span className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
-                      <span
-                        className={clsx(
-                          'ml-2 flex-shrink truncate text-gray-500',
-                          focus ? 'text-indigo-200' : 'text-gray-500',
-                        )}
-                      >{item.secondary}</span>
-                    </div>
+        <ComboboxOptions
+          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          {filteredItems.map((item) => (
+            <ComboboxOption
+              key={item.item.id}
+              value={item}
+              className={({ focus }) =>
+                clsx(
+                  'relative cursor-default select-none py-2 pl-3 pr-9',
+                  focus ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                )
+              }
+            >
+              {({ focus, selected }) => (
+                <>
+                  <div className="flex items-center min-w-0">
+                    <span className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
+                    <span
+                      className={clsx(
+                        'ml-2 flex-shrink truncate text-gray-500',
+                        focus ? 'text-indigo-200' : 'text-gray-500',
+                      )}
+                    >{item.secondary}</span>
+                  </div>
 
-                    {selected && (
-                      <span
-                        className={clsx(
-                          'absolute inset-y-0 right-0 flex items-center pr-4',
-                          focus ? 'text-white' : 'text-indigo-600',
-                        )}
-                      >
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    )}
-                  </>
-                )}
-              </ComboboxOption>
-            ))}
-          </ComboboxOptions>
-        )}
+                  {selected && (
+                    <span
+                      className={clsx(
+                        'absolute inset-y-0 right-0 flex items-center pr-4',
+                        focus ? 'text-white' : 'text-indigo-600',
+                      )}
+                    >
+                      <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                  )}
+                </>
+              )}
+            </ComboboxOption>
+          ))}
+          {allowNewValues && query && !filteredItems.some(item => item.label.toLowerCase() === query.toLowerCase()) && (
+            <ComboboxOption
+              value={query}
+              className={({ focus }) =>
+                clsx(
+                  'relative cursor-default select-none py-2 pl-3 pr-9',
+                  focus ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                )
+              }
+            >
+              {({ focus }) => (
+                <div className="flex items-center">
+                  <PlusIcon className={clsx('h-5 w-5 mr-2', focus ? 'text-white' : 'text-gray-400')} />
+                  <span>Neuer Eintrag: "{query}"</span>
+                </div>
+              )}
+            </ComboboxOption>
+          )}
+        </ComboboxOptions>
       </div>
     </Combobox>
   );
 }
-

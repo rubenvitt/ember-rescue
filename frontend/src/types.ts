@@ -128,3 +128,5 @@ export type EinheitTypDto = {
   label: string
   grundzeichen: GrundzeichenId
 }
+
+export type ServerMetadata = { serverName: string, serverId: string, version: string }
