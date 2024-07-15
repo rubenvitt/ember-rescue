@@ -37,40 +37,49 @@ interface BoundingBox {
 }
 
 // Main MGRS function
-export function mgrs(input: LatLng | string, accuracy: number = 5): string | LatLng | BoundingBox {
+export function mgrs(input: LatLng | string, accuracy: number = 5): string | LatLng | BoundingBox | null {
   if (typeof input === 'string') {
-    const utm = decode(input);
-    const latLon = UTMtoLL(utm);
-    if (accuracy === -1) {
-      return getBoundingBox(utm);
+    try {
+      const utm = decode(input);
+      const latLon = UTMtoLL(utm);
+      if (accuracy === -1) {
+        return getBoundingBox(utm);
+      }
+      return latLon;
+    } catch {
+      return null;
     }
-    return latLon;
   } else {
     if (input.lat < -80 || input.lat > 84) {
-      throw new Error('Latitude must be between -80 and 84 degrees');
+      return null;
     }
-    const utm = LLtoUTM(input);
-    return encode(utm, accuracy);
+    try {
+      const utm = LLtoUTM(input);
+      return encode(utm, accuracy);
+    } catch {
+      return null;
+    }
   }
 }
 
 export function formatMGRS(mgrsString: string | LatLng | BoundingBox): string {
-  if (typeof mgrsString !== 'string') throw new Error('Unsupported type');
-  // Entferne alle Leerzeichen
+  if (typeof mgrsString !== 'string') return '';
+
+  // Remove all whitespace
   mgrsString = mgrsString.replace(/\s+/g, '');
 
-  // Extrahiere die verschiedenen Teile des MGRS-Strings
+  // Extract different parts of the MGRS string
   const zoneNumber = mgrsString.slice(0, 2);
   const zoneLetter = mgrsString.slice(2, 3);
   const gridSquare = mgrsString.slice(3, 5);
   const easting = mgrsString.slice(5, 10);
   const northing = mgrsString.slice(10, 15);
 
-  // Formatiere Easting und Northing mit Dezimalpunkten
+  // Format Easting and Northing with decimal points
   const formattedEasting = easting.slice(0, 5) + (easting.length > 5 ? ('.' + easting.slice(5)) : '');
   const formattedNorthing = northing.slice(0, 5) + (easting.length > 5 ? '.' + northing.slice(5) : '');
 
-  // Setze den formatierten String zusammen
+  // Assemble the formatted string
   return `${zoneNumber}${zoneLetter} ${gridSquare} ${formattedEasting} ${formattedNorthing}`;
 }
 
@@ -101,7 +110,7 @@ function LLtoUTM(ll: LatLng): UTMCoordinates {
 
   ZoneNumber = Math.floor((Long + 180) / 6) + 1;
 
-  //Make sure the longitude 180.00 is in Zone 60
+  // Make sure the longitude 180.00 is in Zone 60
   if (Long === 180) {
     ZoneNumber = 60;
   }
@@ -124,7 +133,7 @@ function LLtoUTM(ll: LatLng): UTMCoordinates {
     }
   }
 
-  LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3;  //+3 puts origin in middle of zone
+  LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3;  // +3 puts origin in middle of zone
   LongOriginRad = degToRad(LongOrigin);
 
   const eccPrimeSquared = (eccSquared) / (1 - eccSquared);
@@ -147,7 +156,7 @@ function LLtoUTM(ll: LatLng): UTMCoordinates {
     + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A / 720)));
 
   if (Lat < 0) {
-    UTMNorthing += NORTHING_OFFSET; //10000000 meter offset for southern hemisphere
+    UTMNorthing += NORTHING_OFFSET; // 10000000 meter offset for southern hemisphere
   }
 
   return {
@@ -163,26 +172,19 @@ function UTMtoLL(utm: UTMCoordinates): LatLng {
   const UTMEasting = utm.easting;
   const zoneLetter = utm.zoneLetter;
   const zoneNumber = utm.zoneNumber;
-  // check the ZoneNummber is valid
-  if (zoneNumber < 0 || zoneNumber > 60) {
-    throw new Error('Invalid zone number');
-  }
 
   const k0 = SCALE_FACTOR;
   const a = SEMI_MAJOR_AXIS;
   const eccSquared = ECC_SQUARED;
   const e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared));
 
-  // remove 500,000 meter offset for longitude
+  // Remove 500,000 meter offset for longitude
   const x = UTMEasting - EASTING_OFFSET;
   let y = UTMNorthing;
 
-  // We must know somehow if we are in the Northern or Southern
-  // hemisphere, this is the only time we use the letter So even
-  // if the Zone letter isn't exactly correct it should indicate
-  // the hemisphere correctly
+  // If in southern hemisphere, adjust y accordingly
   if (zoneLetter < 'N') {
-    y -= NORTHING_OFFSET; // remove 10,000,000 meter offset used for southern hemisphere
+    y -= NORTHING_OFFSET;
   }
 
   // There are 60 zones with zone 1 being at West -180 to -174
@@ -218,7 +220,7 @@ function UTMtoLL(utm: UTMCoordinates): LatLng {
 }
 
 function encode(utm: UTMCoordinates, accuracy: number): string {
-  // prepend with leading zeroes
+  // Prepend with leading zeroes
   const seasting = '00000' + utm.easting.toFixed(0);
   const snorthing = '00000' + utm.northing.toFixed(0);
 
@@ -228,12 +230,18 @@ function encode(utm: UTMCoordinates, accuracy: number): string {
 }
 
 function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
-  if (mgrsString.length === 0) {
-    throw new TypeError('MGRSPoint coverting from nothing');
-  }
-
-  // remove all whitespace
+  // Remove all whitespace
   mgrsString = mgrsString.replace(/\s+/g, '');
+
+  if (mgrsString.length === 0) {
+    return {
+      easting: 0,
+      northing: 0,
+      zoneLetter: '',
+      zoneNumber: 0,
+      accuracy: 0,
+    };
+  }
 
   const strLength = mgrsString.length;
 
@@ -242,10 +250,16 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
   let testChar;
   let i = 0;
 
-  // get Zone number
+  // Get Zone number
   while (!/[A-Z]/.test(testChar = mgrsString.charAt(i))) {
     if (i >= 2) {
-      throw new Error('MGRSPoint bad conversion from: ' + mgrsString);
+      return {
+        easting: 0,
+        northing: 0,
+        zoneLetter: '',
+        zoneNumber: 0,
+        accuracy: 0,
+      };
     }
     sb += testChar;
     i++;
@@ -254,16 +268,26 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
   const zoneNumber = parseInt(sb, 10);
 
   if (i === 0 || i + 3 > strLength) {
-    // A good MGRS string has to be 4-5 digits long,
-    // ##AAA/#AAA at least.
-    throw new Error('MGRSPoint bad conversion from: ' + mgrsString);
+    return {
+      easting: 0,
+      northing: 0,
+      zoneLetter: '',
+      zoneNumber: 0,
+      accuracy: 0,
+    };
   }
 
   const zoneLetter = mgrsString.charAt(i++);
 
   // Should we check the zone letter here? Why not.
   if (zoneLetter <= 'A' || zoneLetter === 'B' || zoneLetter === 'Y' || zoneLetter >= 'Z' || zoneLetter === 'I' || zoneLetter === 'O') {
-    throw new Error('MGRSPoint zone letter ' + zoneLetter + ' not handled: ' + mgrsString);
+    return {
+      easting: 0,
+      northing: 0,
+      zoneLetter: '',
+      zoneNumber: 0,
+      accuracy: 0,
+    };
   }
 
   hunK = mgrsString.substring(i, i += 2);
@@ -271,7 +295,8 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
   const set = get100kSetForZone(zoneNumber);
 
   const east100k = getEastingFromChar(hunK.charAt(0), set);
-  let north100k = getNorthingFromChar(hunK.charAt(1), set);
+  let north100k = getNorthingFromChar(hunK.charAt(
+    1), set);
 
   // We have a bug where the northing may be 2000000 too low.
   // How do we know when to roll over?
@@ -280,11 +305,17 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
     north100k += 2000000;
   }
 
-  // calculate the char index for easting/northing separator
+  // Calculate the char index for easting/northing separator
   const remainder = strLength - i;
 
   if (remainder % 2 !== 0) {
-    throw new Error('MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters' + mgrsString);
+    return {
+      easting: 0,
+      northing: 0,
+      zoneLetter: '',
+      zoneNumber: 0,
+      accuracy: 0,
+    };
   }
 
   const sep = remainder / 2;
@@ -297,28 +328,24 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
     northing: sepNorthing + north100k,
     zoneLetter: zoneLetter,
     zoneNumber: zoneNumber,
-    accuracy: (sep > 0) ? Math.pow(10, 5 - sep) : 5,
+    accuracy: (sep > 0) ? Math.pow(10, 5 - sep) : 0,
   };
 }
 
 function getLetterDesignator(latitude: number): string {
-  if (latitude <= 84 && latitude >= 72) {
-    return 'X';
-  } else if (latitude < 72 && latitude >= -80) {
+  if (latitude <= 84 && latitude >= 72) return 'X';
+  if (latitude < 72 && latitude >= -80) {
     const latBands = 'CDEFGHJKLMNPQRSTUVWX';
     const bandIdx = Math.floor((latitude + 80) / 8);
     return latBands.charAt(bandIdx);
-  } else if (latitude > 84 || latitude < -80) {
-    return 'Z';
   }
-  throw new Error('Invalid latitude: ' + latitude);
+  if (latitude > 84 || latitude < -80) return 'Z';
+  return '';
 }
 
 function get100kSetForZone(zoneNumber: number): number {
   let setParm = zoneNumber % NUM_100K_SETS;
-  if (setParm === 0) {
-    setParm = NUM_100K_SETS;
-  }
+  if (setParm === 0) setParm = NUM_100K_SETS;
   return setParm;
 }
 
@@ -351,9 +378,7 @@ function getLetter100kID(column: number, row: number, parm: number): string {
 
   if (colInt === O || (colOrigin < O && colInt > O) || ((colInt > O || colOrigin < O) && rollover)) {
     colInt++;
-    if (colInt === I) {
-      colInt++;
-    }
+    if (colInt === I) colInt++;
   }
 
   if (colInt > Z) {
@@ -373,9 +398,7 @@ function getLetter100kID(column: number, row: number, parm: number): string {
 
   if (((rowInt === O) || ((rowOrigin < O) && (rowInt > O))) || (((rowInt > O) || (rowOrigin < O)) && rollover)) {
     rowInt++;
-    if (rowInt === I) {
-      rowInt++;
-    }
+    if (rowInt === I) rowInt++;
   }
 
   if (rowInt > V) {
@@ -396,9 +419,7 @@ function getEastingFromChar(e: string, set: number): number {
     if (curCol === I) curCol++;
     if (curCol === O) curCol++;
     if (curCol > Z) {
-      if (rewindMarker) {
-        throw new Error('Bad character: ' + e);
-      }
+      if (rewindMarker) return 0;
       curCol = A;
       rewindMarker = true;
     }
@@ -409,9 +430,7 @@ function getEastingFromChar(e: string, set: number): number {
 }
 
 function getNorthingFromChar(n: string, set: number): number {
-  if (n > 'V') {
-    throw new Error('MGRSPoint given invalid Northing ' + n);
-  }
+  if (n > 'V') return 0;
 
   let curRow = SET_ORIGIN_ROW_LETTERS.charCodeAt(set - 1);
   let northingValue = 0.0;
@@ -422,9 +441,7 @@ function getNorthingFromChar(n: string, set: number): number {
     if (curRow === I) curRow++;
     if (curRow === O) curRow++;
     if (curRow > V) {
-      if (rewindMarker) {
-        throw new Error('Bad character: ' + n);
-      }
+      if (rewindMarker) return 0;
       curRow = A;
       rewindMarker = true;
     }
@@ -498,7 +515,8 @@ function getMinNorthing(zoneLetter: string): number {
       northing = 7900000.0;
       break;
     default:
-      throw new Error('Invalid zone letter: ' + zoneLetter);
+      northing = 0.0;
+      break;
   }
   return northing;
 }

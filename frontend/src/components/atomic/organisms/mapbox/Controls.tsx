@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { formatMGRS, mgrs } from '../../../../lib/coordinates.js';
 import { useToggle } from '@reactuses/core';
 import { create } from 'zustand';
+import clsx from 'clsx';
 
 const useMapStore = create<{ map?: Map, setMap: (map: Map) => void }>((set) => ({
   setMap: (map) => set({ map: map }),
@@ -18,32 +19,38 @@ const IconComponent: React.FC = () => {
   return (
     <>
       <button title={`Katwarnungen ${katwarnungenSichtbar ? 'entfernen' : 'hinzufügen'}`}
-              className="p-2 hover:bg-gray-100 cursor-pointer rounded" onClick={() => {
-        if (!katwarnungenSichtbar) {
-          map?.addLayer({
-            id: 'warnings-layer',
-            type: 'fill',
-            source: 'warnings',
-            metadata: 'test',
-            paint: {
-              'fill-color': 'red',
-              'fill-opacity': 0.25,
-              // 'circle-radius': 4,
-              // 'circle-stroke-width': 2,
-              // 'circle-color': 'red',
-              // 'circle-stroke-color': 'white',
-            },
-          });
+              className={clsx(
+                'p-2 cursor-pointer rounded',
+                katwarnungenSichtbar && 'text-primary-500',
+                !katwarnungenSichtbar && 'hover:bg-gray-100',
+              )}
+              onClick={() => {
+                if (!katwarnungenSichtbar) {
+                  map?.addLayer({
+                    id: 'warnings-layer',
+                    type: 'fill',
+                    source: 'warnings',
+                    metadata: 'test',
+                    paint: {
+                      'fill-color': 'red',
+                      'fill-opacity': 0.25,
+                      // 'circle-radius': 4,
+                      // 'circle-stroke-width': 2,
+                      // 'circle-color': 'red',
+                      // 'circle-stroke-color': 'white',
+                    },
+                  });
 
-          map?.on('click', 'warnings-layer', (e) => {
-            console.log('you have clicked on', e.features[0].properties);
-            new mapboxgl.Popup({}).setLngLat(e.lngLat).setHTML(`You have clicked on ${JSON.stringify(e.features[0].properties)}`).addTo(map);
-          });
-        } else {
-          map?.removeLayer('warnings-layer');
-        }
-        toggleKatwarnungen();
-      }}>
+                  map?.on('click', 'warnings-layer', (e) => {
+                    console.log('you have clicked on', e.features[0].properties);
+                    new mapboxgl.Popup({}).setLngLat(e.lngLat).setHTML(`You have clicked on ${JSON.stringify(e.features[0].properties)}`).addTo(map);
+                  });
+                  π;
+                } else {
+                  map?.removeLayer('warnings-layer');
+                }
+                toggleKatwarnungen();
+              }}>
         <PiWarningDiamond size={20} />
       </button>
     </>
@@ -54,7 +61,7 @@ interface MyControlComponentProps {
   map: Map;
 }
 
-const MyControlComponent: React.FC = ({ map }: MyControlComponentProps) => {
+const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   const [mouseLngLat, setMouseLngLat] = useState(map.getCenter());
   const [mapCenterLngLat, setMapCenterLngLat] = useState(map.getCenter());
   const { setMap } = useMapStore();
