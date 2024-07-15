@@ -14,6 +14,8 @@ import { AlarmstichwortModule } from './alarmstichwort/alarmstichwortModule';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
 import { MetaModule } from './meta/meta.module';
+import { NinaModule } from './apis/bund/nina/nina.module';
+import { MapModule } from './map/map.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { MetaModule } from './meta/meta.module';
     SecretsModule,
     SettingsModule,
     MetaModule,
+    NinaModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [AppService],

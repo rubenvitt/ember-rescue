@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 export const Route = createLazyFileRoute('/signin')({
   component: SignInRoute,
+  pendingComponent: () => <div>'Loading...'</div>,
 });
 
 function SignInRoute() {

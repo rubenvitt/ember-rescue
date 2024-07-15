@@ -57,10 +57,10 @@ export function ComboInput<T extends Identifiable>({
       value={selectedItem}
       onChange={handleChange}
     >
-      {label && <Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Label>}
+      {label && <Label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">{label}</Label>}
       <div className={clsx('relative', label && ' mt-3.5')}>
         <ComboboxInput
-          className="w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
           onChange={(event) => setQuery(event.target.value)}
           onBlur={() => setQuery('')}
           displayValue={(item: ItemType<T>) => item?.label}
@@ -72,15 +72,15 @@ export function ComboInput<T extends Identifiable>({
         </ComboboxButton>
 
         <ComboboxOptions
-          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          className="dark:bg-gray-900 absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
           {filteredItems.map((item) => (
             <ComboboxOption
               key={item.item.id}
               value={item}
               className={({ focus }) =>
                 clsx(
-                  'relative cursor-default select-none py-2 pl-3 pr-9',
-                  focus ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                  'relative cursor-default select-none py-2 pl-3 pr-9 dark:text-white',
+                  focus ? 'bg-primary-600 text-white' : 'text-gray-900',
                 )
               }
             >
@@ -90,8 +90,8 @@ export function ComboInput<T extends Identifiable>({
                     <span className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
                     <span
                       className={clsx(
-                        'ml-2 flex-shrink truncate text-gray-500',
-                        focus ? 'text-indigo-200' : 'text-gray-500',
+                        'ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300',
+                        focus && 'text-primary-200',
                       )}
                     >{item.secondary}</span>
                   </div>
@@ -100,7 +100,7 @@ export function ComboInput<T extends Identifiable>({
                     <span
                       className={clsx(
                         'absolute inset-y-0 right-0 flex items-center pr-4',
-                        focus ? 'text-white' : 'text-indigo-600',
+                        focus ? 'text-white' : 'text-primary-600',
                       )}
                     >
                       <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -116,7 +116,7 @@ export function ComboInput<T extends Identifiable>({
               className={({ focus }) =>
                 clsx(
                   'relative cursor-default select-none py-2 pl-3 pr-9',
-                  focus ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                  focus ? 'bg-primary-600 text-white' : 'text-gray-900',
                 )
               }
             >

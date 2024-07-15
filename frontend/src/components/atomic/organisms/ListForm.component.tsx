@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GenericFormProps } from './GenericForm.component.js';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
+import { Button } from '../../catalyst-components/button.js';
 
 interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'> {
   items: T[];
@@ -47,19 +48,21 @@ export function ListForm<T extends Record<string, any>>({
   return (
     <div>
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 dark:bg-gray-800">
         <tr>
           {Object.keys(itemTemplate).map((key) => (
-            <th key={key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th key={key}
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               {key}
             </th>
           ))}
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
             Actions
           </th>
         </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
         {items.map((item, index) => (
           // @ts-ignore
           <ListFormRow
@@ -87,12 +90,9 @@ export function ListForm<T extends Record<string, any>>({
         </tbody>
       </table>
       {!newItem && (
-        <button
-          onClick={handleAddItem}
-          className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Add Item
-        </button>
+        <Button onClick={handleAddItem}>
+          Neue Einheit anlegen
+        </Button>
       )}
     </div>
   );

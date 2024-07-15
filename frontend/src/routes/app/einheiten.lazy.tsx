@@ -7,8 +7,7 @@ import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einhe
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
-import { useEinsatz } from '../../hooks/einsatz.hook.js';
-import { ModalComponent } from '../../components/atomic/molecules/Modal.component.js';
+import { Modal } from '../../components/atomic/molecules/Modal.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { EinheitDto } from '../../types.js';
 import { GenericForm, GenericFormRef } from '../../components/atomic/organisms/GenericForm.component.js';
@@ -25,13 +24,12 @@ function Einheiten() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fahrzeug, setFahrzeug] = useState('');
   const { qualifikationen } = useQualifikationen();
-  const { einsatzId } = useEinsatz();
   const {
     einheiten,
     einheitenImEinsatz,
     addEinheitToEinsatz,
     einheitenNichtImEinsatz,
-  } = useEinheiten({ einsatzId: einsatzId });
+  } = useEinheiten();
 
   const einheitenNichtImEinsatzCombo = useMemo<ItemType<EinheitDto>[]>(() => {
     return einheitenNichtImEinsatz.map(item => ({
@@ -65,7 +63,7 @@ function Einheiten() {
       <Button color="orange" className="cursor-pointer" onClick={() => setIsModalOpen(true)}>
         Neue Einheiten hinzufügen
       </Button>
-      <ModalComponent
+      <Modal
         variant="panel"
         panelColor="amber"
         isOpen={isModalOpen}

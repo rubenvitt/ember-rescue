@@ -7,11 +7,12 @@ export function useEinsatz() {
   const { setEinsatz, einsatzId, removeEinsatz } = useStore();
   const queryClient = useQueryClient();
 
-  const singleEinsatz = useQuery<Einsatz>({
+  const singleEinsatz = useQuery<Einsatz | null>({
     queryKey: ['einsatz', einsatzId],
     queryFn: async () => {
-      return backendFetch(`/einsatz/${einsatzId}`).catch(() => {
+      return backendFetch<Einsatz>(`/einsatz/${einsatzId}`).catch(() => {
         removeEinsatz();
+        return null;
       });
     },
     enabled: !!einsatzId,

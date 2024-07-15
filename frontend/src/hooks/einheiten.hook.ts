@@ -1,11 +1,12 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { EinheitDto, EinheitTypDto } from '../types.js';
 import { backendFetch } from '../lib/http.js';
 import { useEinsatz } from './einsatz.hook.js';
 import { useMemo } from 'react';
 
-export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) {
-  const { einsatzId: currentEinsatzId } = useEinsatz();
+export function useEinheiten(props?: { einheitId?: string }) {
+  const queryClient = useQueryClient();
+  const { einsatzId } = useEinsatz();
   const einheiten = useQuery<EinheitDto[]>({
     queryKey: ['einheiten'],
     queryFn: async () => backendFetch('/einheiten'),
@@ -43,10 +44,10 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
   });
 
   const addEinheitToEinsatz = useMutation<unknown, unknown, { einheitId: string }>({
-    mutationKey: ['einsatz-einheiten', 'add', currentEinsatzId],
+    mutationKey: ['einsatz-einheiten', 'add', einsatzId],
     mutationFn: ({ einheitId }) => {
-      console.log('Add einheit to einsatz', einheitId, currentEinsatzId);
-      return backendFetch(`/einsatz/${currentEinsatzId}/einheiten/add`, {
+      console.log('Add einheit to einsatz', einheitId, einsatzId);
+      return backendFetch(`/einsatz/${einsatzId}/einheiten/add`, {
         body: JSON.stringify({
           einheitId,
         }),
@@ -55,6 +56,21 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
     },
   });
 
+  const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
+    mutationKey: ['einheit', props?.einheitId, 'status'],
+    onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['einheiten'] }),
+    mutationFn: ({ statusId }) => {
+      if (!props?.einheitId) {
+        return Promise.reject(new Error('einheitId ist erforderlich'));
+      }
+      return backendFetch(`/einsatz/${einsatzId}/einheiten/${props.einheitId}/status`, {
+        body: JSON.stringify({
+          statusId,
+        }),
+        method: 'POST',
+      });
+    },
+  });
   return {
     einheiten,
     einheitenImEinsatz,
@@ -62,5 +78,6 @@ export function useEinheiten({ einsatzId }: { einsatzId?: string | null } = {}) 
     patchEinheiten,
     addEinheitToEinsatz,
     einheitenNichtImEinsatz,
+    changeStatus,
   };
 }

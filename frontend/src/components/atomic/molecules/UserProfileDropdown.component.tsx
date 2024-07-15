@@ -45,18 +45,3 @@ export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems:
     </DropdownMenu>
   </Dropdown>;
 }
-
-
-// <MenuItem key={item.name}>
-//   {({ focus }) => (
-//     <Link
-//       to={item.href}
-//       className={clsx(
-//         focus ? 'bg-gray-50' : '',
-//         'block px-3 py-1 text-sm leading-6 text-gray-900',
-//       )}
-//     >
-//       {item.name}
-//     </Link>
-//   )}
-// </MenuItem>

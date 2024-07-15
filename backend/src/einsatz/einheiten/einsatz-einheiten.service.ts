@@ -23,26 +23,15 @@ export class EinsatzEinheitenService {
     const existingEinheit = await this.einheitenService.findEinheit({
       id: einheitId,
     });
-    const status = await this.statusService.findStatus(3);
 
-    await this.einsatztagebuchService.createEinsatztagebuchEintrag([
-      {
-        absender: 'ETB',
-        empfaenger: 'ETB',
-        type: 'RESSOURCEN',
-        einsatzId,
-        bearbeiterId,
-        content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wurde dem Einsatz hinzugefügt.`,
-      },
-      {
-        absender: 'ETB',
-        empfaenger: 'ETB',
-        type: 'RESSOURCEN',
-        einsatzId,
-        bearbeiterId,
-        content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
-      },
-    ]);
+    await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+      absender: 'ETB',
+      empfaenger: 'ETB',
+      type: 'RESSOURCEN',
+      einsatzId,
+      bearbeiterId,
+      content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wurde dem Einsatz hinzugefügt.`,
+    });
 
     await this.prismaService.einheitOnEinsatz.create({
       data: {
@@ -51,21 +40,9 @@ export class EinsatzEinheitenService {
         einsatzbeginn: new Date(),
       },
     });
-    await this.prismaService.einheitStatusHistorie.create({
-      data: {
-        einheitId,
-        einsatzId,
-        bearbeiterId,
-        zeitpunkt: new Date(),
-        statusId: status.id,
-      },
-    });
 
-    await this.prismaService.einheit.update({
-      where: { id: einheitId },
-      data: {
-        aktuellerStatusId: status.id,
-      },
+    await this.changeStatus(einheitId, einsatzId, bearbeiterId, {
+      statusCode: 3,
     });
   }
 
@@ -90,6 +67,53 @@ export class EinsatzEinheitenService {
           },
         },
       },
+    });
+  }
+
+  async changeStatus(
+    einheitId: string,
+    einsatzId: string,
+    bearbeiterId: string,
+    {
+      statusId,
+      statusCode,
+    }:
+      | { statusCode?: never; statusId: string }
+      | { statusCode: number; statusId?: never },
+  ) {
+    const status = statusId
+      ? await this.statusService.findStatusById(statusId)
+      : await this.statusService.findStatusByCode(statusCode);
+
+    await this.prismaService.$transaction(async (transaction) => {
+      await transaction.einheitStatusHistorie.create({
+        data: {
+          einheitId,
+          einsatzId,
+          statusId: status.id,
+          bearbeiterId,
+          zeitpunkt: new Date(),
+        },
+      });
+
+      const einheit = await transaction.einheit.update({
+        where: { id: einheitId },
+        data: {
+          aktuellerStatusId: statusId,
+        },
+        include: {
+          einheitTyp: true,
+        },
+      });
+
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+        einsatzId,
+        bearbeiterId,
+        type: 'RESSOURCEN',
+        absender: einheit.funkrufname,
+        empfaenger: 'ETB',
+        content: `${einheit.funkrufname} (${einheit.einheitTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
+      });
     });
   }
 }

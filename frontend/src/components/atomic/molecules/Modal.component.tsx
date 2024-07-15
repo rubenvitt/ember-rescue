@@ -53,26 +53,26 @@ interface ModalProps {
   panelColor?: PanelColors;
 }
 
-export const ModalComponent: React.FC<ModalProps> = ({
-                                                       isOpen,
-                                                       onClose,
-                                                       title,
-                                                       content,
-                                                       primaryAction,
-                                                       secondaryAction,
-                                                       Icon,
-                                                       fullWidth,
-                                                       variant = 'dialog',
-                                                       panelColor = 'indigo',
-                                                     }) => {
+export const Modal: React.FC<ModalProps> = ({
+                                              isOpen,
+                                              onClose,
+                                              title,
+                                              content,
+                                              primaryAction,
+                                              secondaryAction,
+                                              Icon,
+                                              fullWidth,
+                                              variant = 'dialog',
+                                              panelColor = 'indigo',
+                                            }) => {
   const isPanel = variant === 'panel';
   const { bg, text } = colorStyles[panelColor];
 
   const commonPanelClasses = 'pointer-events-auto transform transition';
   const dialogPanelClasses = clsx(
     fullWidth ? 'w-full' : 'sm:max-w-lg',
-    'relative overflow-hidden rounded-lg bg-white text-left shadow-xl',
-    'data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in',
+    'overflow-visible relative rounded-lg text-left shadow-xl',
+    'data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-100 data-[enter]:ease-out data-[leave]:ease-in',
     'sm:my-8 sm:w-full data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95',
   );
   const sidePanelClasses = 'w-screen max-w-md h-full flex flex-col shadow-xl data-[closed]:translate-x-full duration-500 ease-in-out sm:duration-700';
@@ -81,7 +81,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
     <Dialog className="relative z-50" open={isOpen} onClose={onClose}>
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+        className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:100 data-[enter]:ease-out data-[leave]:ease-in"
       />
 
       <div className={clsx(
@@ -110,7 +110,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="relative flex-1 px-4 py-6 sm:px-6 overflow-y-auto bg-white">
+                <div className="relative flex-1 px-4 py-6 sm:px-6 overflow-y-auto">
                   {content}
                 </div>
                 <div className="bg-gray-50 px-4 py-3 flex flex-row-reverse sm:px-6 gap-3">
@@ -137,7 +137,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
 
           {!isPanel && (
             <DialogPanel transition className={clsx(commonPanelClasses, dialogPanelClasses)}>
-              <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+              <div className="bg-white dark:bg-gray-700 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   {Icon && (
                     <div
@@ -146,7 +146,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
                     </div>
                   )}
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left flex-1">
-                    <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                    <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900 dark:text-white">
                       {title}
                     </DialogTitle>
                     <div className="mt-2">
@@ -155,7 +155,7 @@ export const ModalComponent: React.FC<ModalProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 flex flex-row-reverse sm:px-6 gap-3">
+              <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 flex flex-row-reverse sm:px-6 gap-3">
                 <Button
                   className="cursor-pointer"
                   onClick={primaryAction.onClick}

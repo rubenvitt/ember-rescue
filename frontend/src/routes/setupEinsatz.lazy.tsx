@@ -39,19 +39,21 @@ function SetupEinsatz() {
 
 
   useEffect(() => {
+    console.log('Maybe navigate to app');
     if (einsatz.isFetched && einsatz.data) {
+      console.log('Navigate to app');
       navigate({ to: '/app/' });
     }
-  }, [einsatz.isFetched]);
+  }, [navigate, einsatz.isFetched]);
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 flex gap-4 flex-col items-center min-h-screen">
+    <div className="flex gap-4 flex-col items-center min-h-screen">
       <div className="w-full max-w-6xl flex flex-col gap-16 space-y-16 divide-y divide-gray-900/30">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 pt-24 sm:pt-32">
-          <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Einsatz
+        <div className="mt-12 px-6 lg:px-8 pt-24 sm:pt-32">
+          <div className="mx-auto lg:mx-0">
+            <h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-6xl">Einsatz
               anlegen{einsatzOffen && ' | fortsetzen'}</h2>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
               Anlegen eines neuen Einsatzes
               ({bearbeiter.data?.name}){einsatzOffen && ' - es existieren offene Einsätze'}
             </p>

@@ -6,6 +6,11 @@ import clsx from 'clsx';
 import { useLocation } from '@tanstack/react-router';
 import { NavItem } from '../../../types.js';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { useEinsatz } from '../../../hooks/einsatz.hook.js';
+import { natoDateTime } from '../../../lib/time.js';
+import { format } from 'date-fns';
+import { useInterval } from '../../../hooks/functions.hook.js';
+import FireAlarmIcon from '../../../assets/icons8-fire-alarm.svg?react';
 
 
 interface NavItemProps {
@@ -47,8 +52,8 @@ const NavItemComponent: React.FC<NavItemProps> = ({ item }) => (
       to={item.href}
       className={clsx(
         item.current
-          ? 'bg-gray-800 text-white'
-          : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+          ? 'bg-primary-200 text-gray-900 dark:bg-primary-900 dark:text-gray-200'
+          : 'text-white hover:bg-primary-500 dark:hover:bg-primary-800',
         'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
       )}
     >
@@ -67,41 +72,56 @@ const NavList: React.FC<NavListProps> = ({ items, title }) => (
   </li>
 );
 
-const SidebarContent: React.FC<SidebarContentProps> = ({ navigation, contextualNavigation }) => (
-  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-red-900 px-6 pb-4">
-    <div className="flex h-16 shrink-0 items-center">
-      <img className="h-8 w-auto" src="/logo.png" alt="Project Rescue" />
+const SidebarContent: React.FC<SidebarContentProps> = ({ navigation, contextualNavigation }) => {
+  const { einsatz } = useEinsatz();
+  const time = useInterval<string>(() => {
+    return format(new Date(), natoDateTime);
+  }, 300, []);
+
+  return (
+    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 dark:bg-primary-950 px-6 pb-4">
+      <div className="flex h-16 shrink-0 items-start gap-4 mt-4">
+        <FireAlarmIcon className="h-8 w-auto mt-1 text-white" />
+        <div>
+          <h3
+            className="text-base font-bold leading-6 text-white">Laufend: {einsatz.data?.einsatz_alarmstichwort?.bezeichnung}</h3>
+          <p className="-mt-0.5 text-sm text-gray-200">
+            Beginn: {einsatz.data?.beginn && format(einsatz.data?.beginn, natoDateTime)}<br />
+            Aktuell: {time}
+          </p>
+        </div>
+      </div>
+      <nav className="flex flex-1 flex-col">
+        <ul role="list" className="flex flex-1 flex-col gap-y-7">
+          <NavList items={navigation} />
+          {contextualNavigation && contextualNavigation.items.length > 0 &&
+            <>
+              <hr className="border-t border-gray-800" />
+              <NavList items={contextualNavigation.items} title={contextualNavigation.title} />
+            </>
+          }
+          <li className="mt-auto">
+            <button
+              onClick={() => {
+                // open new window
+                new WebviewWindow('admin', {
+                  url: '/admin',
+                  center: true,
+                  maximizable: false,
+                  minimizable: false,
+                  title: 'Admin-Tools',
+                });
+              }}
+              className="w-full group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-white hover:bg-primary-500 dark:hover:bg-primary-800">
+              <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
+              Einstellungen
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
-    <nav className="flex flex-1 flex-col">
-      <ul role="list" className="flex flex-1 flex-col gap-y-7">
-        <NavList items={navigation} />
-        {contextualNavigation && contextualNavigation.items.length > 0 &&
-          <>
-            <hr className="border-t border-gray-800" />
-            <NavList items={contextualNavigation.items} title={contextualNavigation.title} />
-          </>
-        }
-        <li className="mt-auto">
-          <button
-            onClick={() => {
-              // open new window
-              new WebviewWindow('admin', {
-                url: '/admin',
-                center: true,
-                maximizable: false,
-                minimizable: false,
-                title: 'Admin-Tools',
-              });
-            }}
-            className="w-full group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white">
-            <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
-            Einstellungen
-          </button>
-        </li>
-      </ul>
-    </nav>
-  </div>
-);
+  );
+};
 
 // noinspection RequiredAttributes (TransitionChild)
 const MobileSidebar: React.FC<MobileSidebarProps> = ({

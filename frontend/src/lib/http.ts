@@ -4,7 +4,7 @@ import { Bearbeiter } from '../types.js';
 import { isTauri } from '@tauri-apps/api/core';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 
-function ensureSlashBetween(part1: string, part2: string) {
+export function ensureSlashBetween(part1: string, part2: string) {
   return `${part1}/${part2}`.replace(/([^:]\/)\/+/g, '$1');
 }
 

@@ -9,10 +9,18 @@ export class StatusService {
     return this.prismaService.status.findMany();
   }
 
-  findStatus(code: number) {
+  findStatusByCode(code: number) {
     return this.prismaService.status.findUnique({
       where: {
         code: String(code),
+      },
+    });
+  }
+
+  findStatusById(id: string) {
+    return this.prismaService.status.findUnique({
+      where: {
+        id,
       },
     });
   }

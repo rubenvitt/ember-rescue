@@ -20,7 +20,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
     return (
       <>
         <div className="flex items-start gap-x-3">
-          <p className="text-sm font-semibold leading-6 text-gray-900">
+          <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
             {einsatz.einsatz_alarmstichwort?.bezeichnung || 'Unbekanntes Alarmstichwort'}
           </p>
           <Badge color="blue">Lokaler Einsatz</Badge>
@@ -40,10 +40,10 @@ export const OffeneEinsaetzeList: React.FC = () => {
     const bearbeiter = allBearbeiter.data?.find(value => value.id === einsatz.bearbeiterId)?.name;
 
     return (
-      <p className="text-sm text-gray-700">
+      <div className="text-sm text-gray-700 dark:text-gray-300">
         <p>Erstellt von: {bearbeiter}</p>
         <p>Aufgenommen durch: {einheit}</p>
-      </p>
+      </div>
     );
   }, [einheiten.data, allBearbeiter.data]);
 

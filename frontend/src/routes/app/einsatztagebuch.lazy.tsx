@@ -10,7 +10,7 @@ export const Route = createLazyFileRoute('/app/einsatztagebuch')({
 });
 
 function Einsatztagebuch() {
-  let { setContextualNavigation } = useStore();
+  const { setContextualNavigation } = useStore();
   useEffect(() => {
     setContextualNavigation({
       title: 'Einsatztagebuch',

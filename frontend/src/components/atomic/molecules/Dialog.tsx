@@ -97,7 +97,8 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
 
   const Content = () => (
     <>
-      <div className={`${asPanel ? 'bg-indigo-700 px-4 py-6 sm:px-6' : 'bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'}`}>
+      <div
+        className={`${asPanel ? 'bg-primary-700 px-4 py-6 sm:px-6' : 'bg-white dark:bg-gray-950 px-4 pb-4 pt-5 sm:p-6 sm:pb-4'}`}>
         <div className={`${asPanel ? '' : 'sm:flex sm:items-start'}`}>
           {!asPanel && (
             <div
@@ -114,7 +115,7 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
               {title}
             </Dialog.Title>
             <div className="mt-2">
-              <p className={`text-sm ${asPanel ? 'text-indigo-300' : 'text-gray-500'}`}>{message}</p>
+              <p className={`text-sm ${asPanel ? 'text-primary-300' : 'text-gray-500'}`}>{message}</p>
             </div>
           </div>
           {asPanel && (
@@ -122,7 +123,7 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
               <button
                 type="button"
                 onClick={close}
-                className="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                className="relative rounded-md bg-primary-700 text-primary-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
               >
                 <span className="absolute -inset-2.5" />
                 <span className="sr-only">Close panel</span>
@@ -134,7 +135,7 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
       </div>
       {actions.length > 0 && (
         <div
-          className={`${asPanel ? 'border-t border-gray-200 px-4 py-6 sm:px-6' : 'bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'}`}>
+          className={`${asPanel ? 'border-t border-gray-200 px-4 py-6 sm:px-6' : 'bg-gray-50 dark:bg-gray-950 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'}`}>
           {primaryAction && (
             <button
               type="button"
@@ -190,13 +191,13 @@ export const FlexibleDialog: React.FC<FlexibleDialogProps> = ({
               >
                 {asPanel ? (
                   <DialogPanel className="pointer-events-auto w-screen max-w-md transform transition">
-                    <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                    <div className="flex h-full flex-col overflow-y-scroll bg-white dark:bg-gray-950 shadow-xl">
                       <Content />
                     </div>
                   </DialogPanel>
                 ) : (
                   <Dialog.Panel
-                    className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full ${
+                    className={`relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-950 text-left shadow-xl transition-all sm:my-8 sm:w-full ${
                       size === 'sm' ? 'sm:max-w-sm' : size === 'md' ? 'sm:max-w-md' : 'sm:max-w-lg'
                     }`}
                   >

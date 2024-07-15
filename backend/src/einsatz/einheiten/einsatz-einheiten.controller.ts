@@ -36,5 +36,26 @@ export class EinsatzEinheitenController {
       einsatzId,
       bearbeiterId,
     );
+
+    return { status: 'ok' };
+  }
+
+  @Post(':einheitId/status')
+  async changeStatus(
+    @Param('einsatzId') einsatzId: string,
+    @Param('einheitId') einheitId: string,
+    @Headers('bearbeiter') bearbeiterHeader: string,
+    @Body() body: { statusId: string },
+  ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    this.logger.log(`Change status for ${einheitId} to ${body.statusId}`);
+    await this.einheitenService.changeStatus(
+      einheitId,
+      einsatzId,
+      bearbeiterId,
+      { statusId: body.statusId },
+    );
+
+    return { status: 'ok' };
   }
 }

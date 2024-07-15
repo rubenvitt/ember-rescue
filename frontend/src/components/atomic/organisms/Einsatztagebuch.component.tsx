@@ -11,6 +11,7 @@ import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
 import { EinsatztagebuchForm } from '../molecules/EinsatztagebuchForm.component.js';
 import { Button } from '../../catalyst-components/button.js';
 import { Transition } from '@headlessui/react';
+import { clsx } from 'clsx';
 
 const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
@@ -30,9 +31,10 @@ const columns: ColumnDef<EinsatztagebuchEintrag, any>[] = [
   }),
   columnHelper.accessor('content', {
     header: 'Inhalt',
-    meta: { classNames: 'text-gray-900' },
+    meta: { classNames: 'text-gray-900 dark:text-white' },
     cell: (context) => {
-      return context.getValue();
+      return <span
+        className={clsx(context.row.original.type !== 'GENERISCH' && 'text-gray-400')}>{context.getValue()}</span>;
     },
   }),
   columnHelper.accessor('type', {
@@ -79,15 +81,15 @@ export function EinsatztagebuchComponent() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">Einträge im ETB</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-base font-semibold leading-6 text-gray-900 dark:text-white">Einträge im ETB</h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Hier sollte vielleicht ein Inputfeld für das Anlegen neuer Einträge stehen und zusätzlich eine
             Filter- und Suchmöglichkeit für die Einträge.
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <Button
-            color={inputVisible ? 'red' : 'blue'}
+            color={inputVisible ? 'red' : 'primary'}
             onClick={() => setInputVisible(((prev) => !prev))}
             type="button"
             className="cursor-pointer"

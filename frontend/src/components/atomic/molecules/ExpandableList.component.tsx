@@ -53,7 +53,7 @@ const ExpandableListItem = <T, >({
     <li className="relative flex flex-col">
       <div
         onClick={toggleExpand}
-        className="flex justify-between items-center px-4 py-5 hover:bg-gray-50 sm:px-6 cursor-pointer"
+        className="flex justify-between items-center px-4 py-5 hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-6 cursor-pointer"
       >
         <div className="flex-grow">{renderContent(item)}</div>
         {isExpandable && (
@@ -67,7 +67,7 @@ const ExpandableListItem = <T, >({
         )}
       </div>
       {isExpanded && isExpandable && (
-        <div className="px-4 py-3 bg-gray-50 sm:px-6">
+        <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 sm:px-6">
           {renderExpandedContent && renderExpandedContent(item)}
           <div className="mt-3 flex justify-end space-x-3">
             {actionButtons.map((button, index) => (
@@ -122,7 +122,8 @@ export const ExpandableList = <T extends Identifiable, >({
                                                            isExpandable = true,
                                                          }: ExpandableListProps<T>) => {
   return (
-    <ul className="divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+    <ul
+      className="divide-y mt-8 divide-gray-100 dark:divide-gray-700 overflow-hidden shadow-sm dark:shadow-gray-700 ring-1 ring-gray-900/5 sm:rounded-xl">
       {items.map((item) => (
         <ExpandableListItem
           key={item.id}

@@ -81,7 +81,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
           type: 'GENERISCH',
           content: data.content,
           empfaenger: einheitenAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
-          absender: einheitenAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.absender,
+          absender: einheitenAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
           timestamp: formatISO(new Date()), //todo timestamp from frontend
         });
       }}

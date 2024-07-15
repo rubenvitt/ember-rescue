@@ -17,6 +17,7 @@ import { DropdownItems } from '../../types.js';
 import { useTheme } from '../../hooks/theme.hook.js';
 import { SidebarComponent } from '../../components/atomic/organisms/Sidebar.component.js';
 import { useStore } from '../../hooks/store.hook.js';
+import { useNetwork } from '@reactuses/core';
 
 export const Route = createFileRoute('/_layout/_layout-app')({
   component: LayoutApp,
@@ -36,6 +37,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggle } = useTheme();
   const { contextualNavigation } = useStore();
+  const network = useNetwork();
 
   const userNavigation = useMemo<DropdownItems>(() => {
     return [
@@ -46,19 +48,20 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-900/80">
+      <div>
         <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} navigation={mainNavigation}
                           contextualNavigation={contextualNavigation} />
         <div className="lg:pl-72">
           <div
-            className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-            <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
+            className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <button type="button" className="-m-2.5 p-2.5 text-gray-700 dark:text-gray-300 lg:hidden"
+                    onClick={() => setSidebarOpen(true)}>
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
 
             {/* Separator */}
-            <div className="h-6 w-px bg-gray-900/10 lg:hidden dark:bg-gray-900/80" aria-hidden="true" />
+            <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <form className="relative flex flex-1" action="#" method="GET">
@@ -71,13 +74,14 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 />
                 <input
                   id="search-field"
-                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm dark:bg-gray-900 dark:text-gray-200 dark:placeholder-gray-400"
+                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm dark:bg-gray-900/80 dark:text-gray-200 dark:placeholder-gray-400"
                   placeholder="Search..."
                   type="search"
                   name="search"
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
+                <div>{JSON.stringify(network)} {JSON.stringify(network.type)} - {JSON.stringify(network.saveData)}</div>
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />

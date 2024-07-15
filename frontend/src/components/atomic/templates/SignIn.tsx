@@ -6,6 +6,7 @@ import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../../../types.js';
 import { BearbeiterInput } from '../molecules/BearbeiterInput.component.js';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+import { Button } from '../../catalyst-components/button.js';
 
 export function SignIn() {
   const { saveBearbeiter, allBearbeiter } = useBearbeiter();
@@ -36,14 +37,14 @@ export function SignIn() {
     onSubmit: formSubmit,
   });
 
-  const handleSettingsClick = async () => {
+  const handleSettingsClick = useCallback(async () => {
     await navigate({
       to: '/prestart/settings',
     });
-  };
+  }, [navigate]);
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 dark:bg-gray-900 relative">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative">
       <div className="absolute top-4 right-4">
         <button
           onClick={handleSettingsClick}
@@ -102,13 +103,14 @@ export function SignIn() {
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
-                <button
+                <Button
                   type="submit"
                   disabled={!canSubmit}
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="w-full"
+                  color="primary"
                 >
                   {isSubmitting ? 'Bearbeite...' : 'Mit der Bearbeitung beginnen'}
-                </button>
+                </Button>
               )}
             </form.Subscribe>
           </div>

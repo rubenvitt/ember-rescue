@@ -1,3 +1,4 @@
+import colors from 'tailwindcss/colors';
 import generated from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
@@ -9,7 +10,11 @@ export default {
   darkMode: 'selector',
   plugins: [generated],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: colors.red,
+      },
+    },
   },
 };
 
