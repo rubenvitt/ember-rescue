@@ -41,6 +41,7 @@
     "@turf/turf": "^7.0.0",
     "@types/mapbox__mapbox-gl-draw": "^1.4.6",
     "@uidotdev/usehooks": "2.4.1",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.2.14",

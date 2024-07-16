@@ -3,6 +3,10 @@ import React from 'react';
 import { XOR } from './helper.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 
+
+export type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+
+
 export type EinsatztagebuchEintragType =
   'GENERISCH' |
   'RESSOURCEN' |
@@ -95,9 +99,11 @@ export type QualifikationDto = {
   abkuerzung: string
 }
 
+export type StatusCode = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
 export type SmallStatusDto = {
   id: string
-  code: string
+  code: StatusCode
   bezeichnung: string
 }
 

@@ -20,9 +20,9 @@ import { RescueControl } from './mapbox/Controls.js';
 
 
 function _MapboxComponent() {
-  const { dark } = useTheme();
+  const { isDark } = useTheme();
   const initialMapStyle = useMemo<string>(() => {
-    return dark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard';
+    return isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard';
   }, []);
   const { secret } = useSecret({ secretKey: 'mapboxApi' });
   const [map, setMap] = useState<mapboxgl.Map | null>();

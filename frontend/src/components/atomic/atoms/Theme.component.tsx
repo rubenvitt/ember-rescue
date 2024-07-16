@@ -1,6 +1,14 @@
-import { useTheme } from '../../../hooks/theme.hook.js';
+import { _useTheme } from '../../../hooks/theme.hook.js';
+import { createContext, ReactNode } from 'react';
 
-export function Theme() {
-  useTheme();
-  return null;
+export const ThemeContext = createContext<ReturnType<typeof _useTheme> | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const themeUtils = _useTheme();
+
+  return (
+    <ThemeContext.Provider value={themeUtils}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }

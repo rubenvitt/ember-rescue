@@ -1,37 +1,48 @@
+import { useCallback, useContext, useEffect } from 'react';
+import { ThemeContext } from '../components/atomic/atoms/Theme.component.js';
 import { useStore } from './store.hook.js';
-import { useEffect } from 'react';
+
+export type Theme = 'light' | 'dark';
 
 export function useTheme() {
-  let { theme: { dark, setDark, setAuto } } = useStore();
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+}
+
+
+export function _useTheme() {
+  const { theme: { dark, setDark, setAuto } } = useStore();
+
+  const handleColorSchemeChange = useCallback((e: MediaQueryListEvent) => {
+    setAuto(e.matches);
+  }, [setAuto]);
 
   useEffect(() => {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      setAuto(e.matches);
-    });
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    mediaQuery.addEventListener('change', handleColorSchemeChange);
 
     return () => {
-      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', (e) => {
-        setAuto(e.matches);
-      });
+      mediaQuery.removeEventListener('change', handleColorSchemeChange);
     };
-  }, []);
+  }, [handleColorSchemeChange]);
+
   useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', dark);
   }, [dark]);
 
-  function toggle() {
-    setDark((old) => !old);
-  }
+  const toggle = useCallback(() => {
+    setDark(prevDark => !prevDark);
+  }, [setDark]);
 
   return {
-    theme: dark ? 'dark' : 'light',
-    dark,
-    setDark,
-    setAuto,
-    toggle,
+    theme: dark ? 'dark' : 'light' as Theme,
+    isDark: dark,
+    setIsDark: setDark,
+    setAutoTheme: setAuto,
+    toggleTheme: toggle,
   };
 }

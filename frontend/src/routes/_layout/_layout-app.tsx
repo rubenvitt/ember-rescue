@@ -2,23 +2,20 @@ import { createFileRoute } from '@tanstack/react-router';
 import React, { useMemo, useState } from 'react';
 import {
   Bars3Icon,
-  BellIcon,
   BookOpenIcon,
   HomeIcon,
   InformationCircleIcon,
   MapIcon,
   PlusIcon,
-  SunIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
-import { ArrowRightStartOnRectangleIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { UserProfileDropdownComponent } from '../../components/atomic/molecules/UserProfileDropdown.component.js';
-import { DropdownItems } from '../../types/types.js';
+import { UserProfileDropdown } from '../../components/atomic/molecules/UserProfileDropdown.js';
 import { useTheme } from '../../hooks/theme.hook.js';
 import { SidebarComponent } from '../../components/atomic/organisms/Sidebar.component.js';
 import { useStore } from '../../hooks/store.hook.js';
 import { useNetwork } from '@reactuses/core';
-import { PiWifiHigh, PiWifiXBold } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiNotification, PiSignOut, PiSun, PiWifiHigh, PiWifiXBold } from 'react-icons/pi';
+import { DropdownItemType } from '../../components/atomic/molecules/GenericDropdown.component.js';
 
 export const Route = createFileRoute('/_layout/_layout-app')({
   component: LayoutApp,
@@ -36,14 +33,14 @@ const mainNavigation = [
 
 export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { toggle } = useTheme();
+  const { toggleTheme } = useTheme();
   const { contextualNavigation } = useStore();
   const { online } = useNetwork();
 
-  const userNavigation = useMemo<DropdownItems>(() => {
+  const userNavigation = useMemo<DropdownItemType[]>(() => {
     return [
-      { name: 'Theme wechseln', onClick: toggle, icon: SunIcon },
-      { name: 'Abmelden', href: '/auth/signout', icon: ArrowRightStartOnRectangleIcon },
+      { text: 'Theme wechseln', onClick: toggleTheme, icon: PiSun },
+      { text: 'Abmelden', to: '/auth/signout', icon: PiSignOut },
     ];
   }, []);
 
@@ -69,7 +66,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 <label htmlFor="search-field" className="sr-only">
                   Search
                 </label>
-                <MagnifyingGlassIcon
+                <PiMagnifyingGlass
                   className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
                   aria-hidden="true"
                 />
@@ -85,14 +82,14 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 <div>{online ? <PiWifiHigh size={26} /> : <PiWifiXBold size={26} className="text-red-500" />}</div>
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  <PiNotification className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Separator */}
                 <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
 
                 {/* Profile dropdown */}
-                <UserProfileDropdownComponent dropdownItems={userNavigation} />
+                <UserProfileDropdown dropdownItems={userNavigation} />
               </div>
             </div>
           </div>

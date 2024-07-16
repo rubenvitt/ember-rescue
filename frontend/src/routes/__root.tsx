@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../styles/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
-import { Theme } from '../components/atomic/atoms/Theme.component.js';
+import { ThemeProvider } from '../components/atomic/atoms/Theme.component.js';
 import { de } from 'date-fns/locale';
 import { setDefaultOptions } from 'date-fns';
 import '@fontsource-variable/montserrat';
@@ -38,15 +38,16 @@ export const Route = createRootRoute({
 
     return (
       <QueryClientProvider client={queryClient}>
-        <Theme />
-        <Outlet />
-        <TanStackRouterDevtools />
-        <ReactQueryDevtools initialIsOpen />
-        {showDevtools && (
-          <React.Suspense fallback={null}>
-            <ReactQueryDevtoolsProduction />
-          </React.Suspense>
-        )}
+        <ThemeProvider>
+          <Outlet />
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools initialIsOpen />
+          {showDevtools && (
+            <React.Suspense fallback={null}>
+              <ReactQueryDevtoolsProduction />
+            </React.Suspense>
+          )}
+        </ThemeProvider>
       </QueryClientProvider>
     );
   },
