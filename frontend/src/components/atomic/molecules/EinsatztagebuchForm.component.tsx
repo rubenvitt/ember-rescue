@@ -1,6 +1,6 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { useForm } from '@tanstack/react-form';
-import { CreateEinsatztagebuchEintrag, EinheitDto } from '../../../types.js';
+import { CreateEinsatztagebuchEintrag, EinheitDto } from '../../../types/types.js';
 import { GenericForm } from '../organisms/GenericForm.component.tsx';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import { useMemo } from 'react';

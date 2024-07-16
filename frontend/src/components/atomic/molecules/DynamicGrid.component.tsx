@@ -1,4 +1,4 @@
-import { Identifiable } from '../../../types.js';
+import { Identifiable } from '../../../types/types.js';
 import { ItemType } from './Combobox.component.js';
 import { Fragment, ReactNode, useMemo } from 'react';
 

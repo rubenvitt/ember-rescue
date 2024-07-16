@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GenericFormProps } from './GenericForm.component.js';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 
 interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'> {
   items: T[];

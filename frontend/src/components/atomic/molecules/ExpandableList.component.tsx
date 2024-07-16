@@ -1,9 +1,9 @@
 // Updated Types
-import { Button, ButtonColors } from '../../catalyst-components/button.js';
+import { Button, ButtonColors } from '../../deprecated/button.js';
 import React, { useCallback, useState } from 'react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid/index.js';
 import { FlexibleDialog } from './Dialog.js';
-import { Identifiable } from '../../../types.ts';
+import { Identifiable } from '../../../types/types.ts';
 
 export type ActionButton<T> = {
   label: string;

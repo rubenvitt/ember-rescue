@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { Cog6ToothIcon, XMarkIcon } from '@heroicons/react/24/outline/index.js';
-import { Link } from '../../catalyst-components/link.js';
 import clsx from 'clsx';
 import { useLocation } from '@tanstack/react-router';
-import { NavItem } from '../../../types.js';
+import { NavItem } from '../../../types/types.js';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { natoDateTime } from '../../../lib/time.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { format } from 'date-fns';
 import { useInterval } from '../../../hooks/functions.hook.js';
-import FireAlarmIcon from '../../../assets/icons8-fire-alarm.svg?react';
+import FireAlarmIcon from '../../../assets/icons/icons8-fire-alarm.svg?react';
+import { Link } from '../../deprecated/link.tsx';
 
 
 interface NavItemProps {

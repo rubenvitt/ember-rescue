@@ -1,5 +1,5 @@
 import { EllipsisHorizontalIcon, StopIcon } from '@heroicons/react/20/solid';
-import { EinheitDto, StatusDto } from '../../../types.js';
+import { EinheitDto, StatusDto } from '../../../types/types.js';
 import { Dropdown } from '../atoms/Dropdown.component.js';
 import { UserGroupIcon } from '@heroicons/react/24/outline';
 import { statusColorsMap, StatusLabel } from '../atoms/StatusLabel.component.js';

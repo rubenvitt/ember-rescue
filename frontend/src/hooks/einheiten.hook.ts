@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { EinheitDto, EinheitTypDto } from '../types.js';
-import { backendFetch } from '../lib/http.js';
+import { EinheitDto, EinheitTypDto } from '../types/types.js';
+import { backendFetch } from '../utils/http.js';
 import { useEinsatz } from './einsatz.hook.js';
 import { useMemo } from 'react';
 

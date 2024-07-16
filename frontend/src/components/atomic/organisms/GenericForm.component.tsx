@@ -8,7 +8,7 @@ import {
   SimpleFormSection,
 } from '../molecules/FormField.component.tsx';
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 
 
 interface ComplexFormSection<

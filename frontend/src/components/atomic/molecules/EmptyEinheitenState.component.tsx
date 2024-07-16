@@ -2,7 +2,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import { useMemo } from 'react';
 import { ComboInput } from './Combobox.component.js';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 
 
 export function EmptyEinheitenState() {

@@ -1,12 +1,6 @@
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
-import { DropdownItems } from '../../../types.js';
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownItem,
-  DropdownLabel,
-  DropdownMenu,
-} from '../../catalyst-components/dropdown.js';
+import { DropdownItems } from '../../../types/types.js';
+import { Dropdown, DropdownButton, DropdownItem, DropdownLabel, DropdownMenu } from '../../deprecated/dropdown.js';
 import { UserIcon } from '@heroicons/react/24/outline/index.js';
 
 export function UserProfileDropdownComponent({ dropdownItems }: { dropdownItems: DropdownItems }) {

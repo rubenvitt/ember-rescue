@@ -1,6 +1,6 @@
 import { ClientOptions, fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import storage from './storage.js';
-import { Bearbeiter } from '../types.js';
+import { Bearbeiter } from '../types/types.js';
 import { isTauri } from '@tauri-apps/api/core';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 

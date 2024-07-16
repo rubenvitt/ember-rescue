@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../lib/http.js';
+import { backendFetch } from '../utils/http.js';
 
 type PossibleSecrets = 'mapboxApi'
 

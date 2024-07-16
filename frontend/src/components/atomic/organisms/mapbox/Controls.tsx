@@ -2,15 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
 import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
 import { createRoot } from 'react-dom/client';
-import { formatMGRS, mgrs } from '../../../../lib/coordinates.js';
+import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
 import { useToggle } from '@reactuses/core';
 import { create } from 'zustand';
 import clsx from 'clsx';
-import { backendFetch } from '../../../../lib/http.js';
+import { backendFetch } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
 import { useEinheiten } from '../../../../hooks/einheiten.hook.js';
-import { EinheitDto } from '../../../../types.js';
+import { EinheitDto } from '../../../../types/types.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
 

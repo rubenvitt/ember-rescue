@@ -1,6 +1,6 @@
 import { ToPathOption } from '@tanstack/react-router';
 import React from 'react';
-import { XOR } from './types/helper.js';
+import { XOR } from './helper.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 
 export type EinsatztagebuchEintragType =

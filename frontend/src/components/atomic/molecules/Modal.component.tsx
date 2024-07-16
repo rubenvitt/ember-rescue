@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';

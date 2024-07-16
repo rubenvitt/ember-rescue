@@ -8,7 +8,7 @@ import { OffeneEinsaetzeList } from '../components/atomic/organisms/OffeneEinsae
 import { useEffect, useMemo } from 'react';
 import { useAlarmstichworte } from '../hooks/alarmstichworte.hook.js';
 import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
-import { Alarmstichwort } from '../types.js';
+import { Alarmstichwort } from '../types/types.js';
 
 export const Route = createLazyFileRoute('/setupEinsatz')({
   component: SetupEinsatz,

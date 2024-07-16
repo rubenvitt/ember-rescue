@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon, PlusIcon } from '@heroicons/react/20/solid';
-import { Identifiable } from '../../../types.js';
+import { Identifiable } from '../../../types/types.js';
 import clsx from 'clsx';
 
 export type ItemType<T extends Identifiable> = {

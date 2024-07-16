@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { QualifikationDto } from '../types.js';
-import { backendFetch } from '../lib/http.js';
+import { QualifikationDto } from '../types/types.js';
+import { backendFetch } from '../utils/http.js';
 
 export const useQualifikationen = () => {
   let { data: qualifikationen, isLoading, isFetched } = useQuery<QualifikationDto[]>({

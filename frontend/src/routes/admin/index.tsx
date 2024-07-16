@@ -2,13 +2,13 @@ import { createFileRoute } from '@tanstack/react-router';
 import { GenericForm } from '../../components/atomic/organisms/GenericForm.component.js';
 import { Settings, useSettings } from '../../hooks/settings.hook.js';
 import { ListForm } from '../../components/atomic/organisms/ListForm.component.js';
-import { EinheitDto, EinheitTypDto } from '../../types.js';
+import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { useMemo } from 'react';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { IpPortPair } from 'tauri-plugin-network-api/dist-js/types.js';
 import { useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../../lib/http.js';
+import { backendFetch } from '../../utils/http.js';
 
 export const Route = createFileRoute('/admin/')({
   component: AdminPage,

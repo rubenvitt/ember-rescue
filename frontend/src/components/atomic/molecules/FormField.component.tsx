@@ -1,7 +1,7 @@
 import { DeepKeys, DeepValue, FieldApi, FieldValidators, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
 import { ComboInput, ItemType } from './Combobox.component.js';
-import { Identifiable } from '../../../types.js';
+import { Identifiable } from '../../../types/types.js';
 
 type FieldType = 'text' | 'date' | 'datetime-local' | 'select' | 'textarea' | 'checkbox' | 'radio' | 'combo' | 'number';
 

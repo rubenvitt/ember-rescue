@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { formatDate, formatDistanceToNow, formatISO } from 'date-fns';
-import { natoDateTime } from '../../../lib/time.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { Badge } from '../../catalyst-components/badge.js';
-import { Einsatz } from '../../../types.js';
+import { Badge } from '../../deprecated/badge.js';
+import { Einsatz } from '../../../types/types.js';
 import { ActionButton, ExpandableList } from '../molecules/ExpandableList.component.tsx';
 
 

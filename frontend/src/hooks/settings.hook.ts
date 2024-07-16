@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../lib/http.js';
-import { EinheitDto } from '../types.js';
+import { backendFetch } from '../utils/http.js';
+import { EinheitDto } from '../types/types.js';
 
 export type Settings = {
   mapboxApi: string,

@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightStartOnRectangleIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { UserProfileDropdownComponent } from '../../components/atomic/molecules/UserProfileDropdown.component.js';
-import { DropdownItems } from '../../types.js';
+import { DropdownItems } from '../../types/types.js';
 import { useTheme } from '../../hooks/theme.hook.js';
 import { SidebarComponent } from '../../components/atomic/organisms/Sidebar.component.js';
 import { useStore } from '../../hooks/store.hook.js';

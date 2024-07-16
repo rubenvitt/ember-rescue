@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import mapboxgl, { LngLat } from 'mapbox-gl';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -15,7 +15,7 @@ import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
-import { formatMGRS, mgrs } from '../../../lib/coordinates.js';
+import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
 import { RescueControl } from './mapbox/Controls.js';
 
 

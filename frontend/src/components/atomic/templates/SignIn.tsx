@@ -3,10 +3,10 @@ import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { getCurrent, LogicalSize } from '@tauri-apps/api/window';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
-import { Bearbeiter, NewBearbeiter } from '../../../types.js';
+import { Bearbeiter, NewBearbeiter } from '../../../types/types.js';
 import { BearbeiterInput } from '../molecules/BearbeiterInput.component.js';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 
 export function SignIn() {
   const { saveBearbeiter, allBearbeiter } = useBearbeiter();

@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { LayoutApp } from '../_layout/_layout-app.js';
-import { Button } from '../../components/catalyst-components/button.js';
+import { Button } from '../../components/deprecated/button.js';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
@@ -9,7 +9,7 @@ import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { Modal } from '../../components/atomic/molecules/Modal.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
-import { EinheitDto } from '../../types.js';
+import { EinheitDto } from '../../types/types.js';
 import { GenericForm, GenericFormRef } from '../../components/atomic/organisms/GenericForm.component.js';
 
 export const Route = createLazyFileRoute('/app/einheiten')({

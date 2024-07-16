@@ -1,11 +1,11 @@
 import { GenericForm } from './GenericForm.component.js';
-import storage from '../../../lib/storage.js';
+import storage from '../../../utils/storage.js';
 import { useEffect, useMemo, useState } from 'react';
 // @ts-ignore
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
-import { backendFetch } from '../../../lib/http.js';
+import { backendFetch } from '../../../utils/http.js';
 import { QueryOptions, useQueries, useQueryClient, UseQueryResult } from '@tanstack/react-query';
-import { ServerMetadata } from '../../../types.js';
+import { ServerMetadata } from '../../../types/types.js';
 import { ItemType } from '../molecules/Combobox.component.js';
 
 export type LocalSettings = {

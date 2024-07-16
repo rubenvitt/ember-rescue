@@ -3,7 +3,7 @@ import { LayoutApp } from '../_layout/_layout-app.js';
 import { useEinsatz } from '../../hooks/einsatz.hook.js';
 import { getCurrent } from '@tauri-apps/api/window';
 import { format } from 'date-fns';
-import { natoDateTime } from '../../lib/time.js';
+import { natoDateTime } from '../../utils/time.js';
 import { useEffect } from 'react';
 
 export const Route = createLazyFileRoute('/app/')({

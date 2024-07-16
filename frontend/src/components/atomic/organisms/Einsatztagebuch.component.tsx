@@ -1,15 +1,15 @@
-import { EinsatztagebuchEintrag } from '../../../types.js';
+import { EinsatztagebuchEintrag } from '../../../types/types.js';
 import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { natoDateTime } from '../../../lib/time.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { useRef, useState } from 'react';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { BadgeButton } from '../../catalyst-components/badge.js';
+import { BadgeButton } from '../../deprecated/badge.js';
 import { invoke } from '@tauri-apps/api/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
 import { EinsatztagebuchForm } from '../molecules/EinsatztagebuchForm.component.js';
-import { Button } from '../../catalyst-components/button.js';
+import { Button } from '../../deprecated/button.js';
 import { Transition } from '@headlessui/react';
 import { clsx } from 'clsx';
 

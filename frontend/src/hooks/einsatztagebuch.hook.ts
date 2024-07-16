@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types.js';
-import { backendFetch } from '../lib/http.js';
+import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types/types.js';
+import { backendFetch } from '../utils/http.js';
 import { useStore } from './store.hook.js';
 
 export function useEinsatztagebuch() {

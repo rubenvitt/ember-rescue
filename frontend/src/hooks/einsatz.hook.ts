@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { backendFetch } from '../lib/http.js';
-import { Einsatz } from '../types.js';
+import { backendFetch } from '../utils/http.js';
+import { Einsatz } from '../types/types.js';
 import { useStore } from './store.hook.js';
 
 export function useEinsatz() {

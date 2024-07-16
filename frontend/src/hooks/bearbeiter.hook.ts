@@ -1,8 +1,8 @@
 import { useStore } from './store.hook.js';
-import { Bearbeiter, NewBearbeiter } from '../types.js';
+import { Bearbeiter, NewBearbeiter } from '../types/types.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { backendFetch } from '../lib/http.js';
+import { backendFetch } from '../utils/http.js';
 
 type Props = {
   requireBearbeiter?: boolean;
