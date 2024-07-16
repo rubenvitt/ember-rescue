@@ -18,6 +18,7 @@ import { useTheme } from '../../hooks/theme.hook.js';
 import { SidebarComponent } from '../../components/atomic/organisms/Sidebar.component.js';
 import { useStore } from '../../hooks/store.hook.js';
 import { useNetwork } from '@reactuses/core';
+import { PiWifiHigh, PiWifiXBold } from 'react-icons/pi';
 
 export const Route = createFileRoute('/_layout/_layout-app')({
   component: LayoutApp,
@@ -37,7 +38,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggle } = useTheme();
   const { contextualNavigation } = useStore();
-  const network = useNetwork();
+  const { online } = useNetwork();
 
   const userNavigation = useMemo<DropdownItems>(() => {
     return [
@@ -81,7 +82,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <div>{JSON.stringify(network)} {JSON.stringify(network.type)} - {JSON.stringify(network.saveData)}</div>
+                <div>{online ? <PiWifiHigh size={26} /> : <PiWifiXBold size={26} className="text-red-500" />}</div>
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />

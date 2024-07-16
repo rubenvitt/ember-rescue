@@ -11,7 +11,7 @@ import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/nunito';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,

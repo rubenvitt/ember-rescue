@@ -16,9 +16,6 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../lib/coordinates.js';
-import { ensureSlashBetween } from '../../../lib/http.js';
-import storage from '../../../lib/storage.js';
-import { LocalSettings } from './PrestartSettings.component.js';
 import { MyControl } from './mapbox/Controls.js';
 
 
@@ -31,7 +28,6 @@ function _MapboxComponent() {
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
   const [center, setCenter] = useState<LngLat>();
-  const baseUrl = storage().readLocalStorage<LocalSettings>('localSettings');
 
   useEffect(() => {
     console.log('recreate map', mapDiv);
@@ -86,12 +82,6 @@ function _MapboxComponent() {
 
     map.on('load', () => {
       // application code
-
-      map.addSource('warnings', {
-        type: 'geojson',
-        data: ensureSlashBetween(baseUrl?.baseUrl ?? 'http://localhost:3000', '/apis/bund/nina/warnings.geojson'),
-        dynamic: true,
-      });
     });
 
     map.on('moveend', () => {
@@ -118,8 +108,7 @@ function _MapboxComponent() {
 
   return <>
     <div className="border border-gray-500 mb-2 px-6 py-2">
-      Before map Actions
-      ({JSON.stringify(center)} | {JSON.stringify(center && formatMGRS(mgrs(center)))})
+      Einheiten der Karte hinzufügen (DEBUG)
       <div className="flex gap-2 overflow-scroll flex-nowrap">
         {einheitenImEinsatz.data?.map(einheit => (
           <Button
