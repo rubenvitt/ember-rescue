@@ -81,7 +81,7 @@ export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
                   name="search"
                 />
               </form>
-              <div className="flex items-center gap-x-4 lg:gap-x-6">
+              <div className="flex items-center gap-x-4 lg:gap-x-6 text-gray-900 dark:text-gray-200">
                 <div>{online ? <PiWifiHigh size={26} /> : <PiWifiXBold size={26} className="text-red-500" />}</div>
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>

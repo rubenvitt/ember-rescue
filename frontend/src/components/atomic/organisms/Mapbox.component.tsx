@@ -16,7 +16,7 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../lib/coordinates.js';
-import { MyControl } from './mapbox/Controls.js';
+import { RescueControl } from './mapbox/Controls.js';
 
 
 function _MapboxComponent() {
@@ -78,14 +78,14 @@ function _MapboxComponent() {
     // @ts-ignore
     map.addControl(stylesControl, 'bottom-left');
 
-    map.addControl(new MyControl());
+    map.addControl(new RescueControl());
 
     map.on('load', () => {
       // application code
     });
 
     map.on('moveend', () => {
-      setCenter(map.getCenter());
+      // on move end
     });
 
     // @ts-ignore

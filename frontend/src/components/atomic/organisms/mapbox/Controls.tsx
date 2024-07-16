@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import mapboxgl, { IControl, LayerSpecification, Map } from 'mapbox-gl';
-import { PiMapPin, PiMouse, PiWarningDiamond } from 'react-icons/pi';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
+import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
 import { createRoot } from 'react-dom/client';
 import { formatMGRS, mgrs } from '../../../../lib/coordinates.js';
 import { useToggle } from '@reactuses/core';
@@ -9,9 +9,31 @@ import clsx from 'clsx';
 import { backendFetch } from '../../../../lib/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
+import { useEinheiten } from '../../../../hooks/einheiten.hook.js';
+import { EinheitDto } from '../../../../types.js';
+import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
+import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
 
-const useMapStore = create<{ map?: Map, setMap: (map: Map) => void }>((set) => ({
+const useMapStore = create<{
+  map?: Map,
+  setMap: (map: Map) => void,
+  markerPerEinheit: { [einheitId: string]: Marker }
+  addMarkerForEinheit: (einheitId: string, marker: Marker) => void
+  removeMarkerForEinheit: (einheitId: string) => void
+  updateMarkerForEinheit: (einheitId: string, marker: Marker) => void
+}>((set, get) => ({
   setMap: (map) => set({ map: map }),
+  markerPerEinheit: {},
+  addMarkerForEinheit: (einheit, marker) => set({
+    markerPerEinheit: ({
+      ...get().markerPerEinheit,
+      [einheit]: marker,
+    }),
+  }),
+  removeMarkerForEinheit: (einheit) => set({
+    markerPerEinheit: Object.fromEntries(Object.entries(get().markerPerEinheit).filter(([key]) => key !== einheit)),
+  }),
+  updateMarkerForEinheit: (einheit, marker) => set({ markerPerEinheit: get().markerPerEinheit, [einheit]: marker }),
 }));
 
 // React-Komponente mit Icon
@@ -30,6 +52,7 @@ const katwarnLayer: LayerSpecification = {
     // 'circle-stroke-color': 'white',
   },
 };
+
 const IconComponent: React.FC = () => {
   const [katwarnungenSichtbar, toggleKatwarnungen] = useToggle(false);
   const { map } = useMapStore();
@@ -83,6 +106,66 @@ interface MyControlComponentProps {
   map: Map;
 }
 
+function AddEinheitComponent() {
+  const { einheitenImEinsatz } = useEinheiten();
+  const { markerPerEinheit, addMarkerForEinheit, map } = useMapStore();
+  const randomEinheit = useMemo<EinheitDto | undefined>(() => {
+    return einheitenImEinsatz.data?.find(() => true);
+  }, [einheitenImEinsatz.data]);
+  const [showEinheitenList, toggleShowEinheitenList] = useToggle(false);
+
+  const addEinheitToMap = useCallback((einheit: EinheitDto) => {
+    let element = document.createElement('div');
+    let svg = erzeugeTaktischesZeichen({
+      grundzeichen: 'fahrzeug',
+      organisation: 'hilfsorganisation',
+      einheit: 'zug',
+      fachaufgabe: 'iuk',
+      name: einheit.funkrufname,
+      farbe: statusRgbColors.get(einheit.status.code),
+    }).svg;
+    element.innerHTML = svg.render();
+    element.className = 'w-20 h-20 text-red-500';
+    element.id = `einheit-${einheit.funkrufname}`;
+    map && new mapboxgl.Marker({ element, draggable: true })
+      .setPopup(new mapboxgl.Popup().setHTML(`<div>${einheit.einheitTyp.label} ${einheit.funkrufname} | ${formatMGRS(mgrs(map.getCenter()))} <button onclick="console.log('should delete...')">Löschen</button></div>`))
+      .setLngLat(map.getCenter())
+      .addTo(map);
+  }, [map]);
+
+  if (!map || !randomEinheit) return null;
+
+  if (showEinheitenList) {
+    return <>
+      <button className="absolute right-0 top-0 m-2" onClick={toggleShowEinheitenList}><PiX /></button>
+      <div className="p-2 rounded flex flex-col gap-2 max-h-48 overflow-y-scroll">
+        {einheitenImEinsatz.data?.map((einheit) => {
+          return <button onClick={() => addEinheitToMap(einheit)} className="p-2">
+            {einheit.funkrufname}
+          </button>;
+        })}
+      </div>
+    </>;
+  }
+
+  return <button
+    onClick={() => {
+      toggleShowEinheitenList();
+    }}
+    className="p-2 cursor-pointer rounded">
+    <PiAmbulance size={20} />
+  </button>;
+
+  //       const marker = new mapboxgl.Marker({
+  //         color: 'green',
+  //         draggable: true,
+  //       }).setLngLat(map.getCenter()).addTo(map);
+  //       addMarkerForEinheit(randomEinheit?.id, marker);
+  //       marker.on('dragend', () => {
+  //         console.log('marker is', marker.getLngLat());
+  //       });
+}
+
 const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   const [mouseLngLat, setMouseLngLat] = useState(map.getCenter());
   const [mapCenterLngLat, setMapCenterLngLat] = useState(map.getCenter());
@@ -102,7 +185,7 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
     refetchOnReconnect: false,
     refetchInterval: false,
   });
-  const warnDetails = useQuery<unknown[]>({
+  useQuery<unknown[]>({
     queryKey: ['warnings', 'details'],
     queryFn: () => {
       return backendFetch<unknown[]>('/apis/bund/nina/warnings');
@@ -169,10 +252,14 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
     <div className="rounded bg-white mapboxgl-ctrl">
       <IconComponent />
     </div>
+
+    <div className="rounded bg-white mapboxgl-ctrl">
+      <AddEinheitComponent />
+    </div>
   </>;
 };
 
-export class MyControl implements IControl {
+export class RescueControl implements IControl {
   getDefaultPosition?: () => 'top-right';
   private container: HTMLElement | null = null;
 

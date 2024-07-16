@@ -130,7 +130,7 @@ export function FormField<
           onChange={(e) => handleChange(e.target.checked)}
           onBlur={fieldApi.handleBlur}
           type="checkbox"
-          className={`h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 ${field.readonly ? 'cursor-not-allowed' : ''}`}
+          className={`h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 ${field.readonly ? 'cursor-not-allowed' : ''}`}
           disabled={field.readonly}
         />
       );
@@ -146,7 +146,7 @@ export function FormField<
                 onBlur={fieldApi.handleBlur}
                 type="radio"
                 value={option}
-                className={`h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500 ${field.readonly ? 'cursor-not-allowed' : ''}`}
+                className={`h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500 ${field.readonly ? 'cursor-not-allowed' : ''}`}
                 disabled={field.readonly}
               />
               <label className="ml-2 block text-sm text-gray-900">{option}</label>

@@ -95,7 +95,7 @@ export function ListFormRow<T extends Record<string, any>>({
             <button
               onClick={() => form.handleSubmit()}
               type="submit"
-              className="text-indigo-600 hover:text-indigo-900 mr-2"
+              className="text-primary-600 hover:text-primary-900 mr-2"
             >
               Save
             </button>
@@ -111,7 +111,7 @@ export function ListFormRow<T extends Record<string, any>>({
           <>
             <button
               onClick={() => setIsEditing(true)}
-              className="text-indigo-600 hover:text-indigo-900 mr-2"
+              className="text-primary-600 hover:text-primary-900 mr-2"
             >
               Edit
             </button>

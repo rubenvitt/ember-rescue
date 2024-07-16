@@ -22,10 +22,23 @@ export const statusColorsMap: Map<string, string> = new Map([
   ['0', 'bg-rose-200/30 text-rose-900 ring-rose-500 dark:bg-rose-800/30 dark:text-rose-100 hover:bg-rose-500/30'],
 ]);
 
+export const statusRgbColors: Map<string, string> = new Map([
+  ['1', '#4ade80'],
+  ['2', '#3b82f6'],
+  ['3', '#eab308'],
+  ['4', '#fb923c'],
+  ['5', '#a855f7'],
+  ['6', '#9ca3af'],
+  ['7', '#6366f1'],
+  ['8', '#14b8a6'],
+  ['9', '#ec4899'],
+  ['0', '#f43f5e'],
+]);
+
 const defaultColors = 'bg-gray-200/30 text-gray-900 ring-gray-500 dark:bg-gray-800/30 dark:text-gray-100 hover:bg-gray-500/30';
 
 export function StatusLabel({ einheit }: StatusLabelProps) {
-  const colorClasses = statusColorsMap.get(einheit.status.code) || defaultColors;
+  const colorClasses = statusColorsMap.get(einheit.status?.code) || defaultColors;
 
   return (
     <div

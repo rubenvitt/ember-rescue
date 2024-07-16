@@ -99,7 +99,7 @@ export class EinsatzEinheitenService {
       const einheit = await transaction.einheit.update({
         where: { id: einheitId },
         data: {
-          aktuellerStatusId: statusId,
+          aktuellerStatusId: status.id,
         },
         include: {
           einheitTyp: true,

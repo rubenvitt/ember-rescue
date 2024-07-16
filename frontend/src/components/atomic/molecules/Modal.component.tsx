@@ -5,6 +5,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
 const colorStyles = {
+  primary: { bg: 'bg-primary-600', text: 'text-white' },
   'dark/zinc': { bg: 'bg-zinc-900', text: 'text-white' },
   light: { bg: 'bg-white', text: 'text-zinc-950' },
   'dark/white': { bg: 'bg-zinc-900 dark:bg-white', text: 'text-white dark:text-zinc-950' },
@@ -63,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({
                                               Icon,
                                               fullWidth,
                                               variant = 'dialog',
-                                              panelColor = 'indigo',
+                                              panelColor = 'primary',
                                             }) => {
   const isPanel = variant === 'panel';
   const { bg, text } = colorStyles[panelColor];
@@ -110,7 +111,7 @@ export const Modal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="relative flex-1 px-4 py-6 sm:px-6 overflow-y-auto">
+                <div className="relative flex-1 px-4 py-6 sm:px-6 overflow-y-auto bg-white dark:bg-gray-800">
                   {content}
                 </div>
                 <div className="bg-gray-50 px-4 py-3 flex flex-row-reverse sm:px-6 gap-3">

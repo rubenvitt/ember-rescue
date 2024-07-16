@@ -37,7 +37,7 @@ function Einheiten() {
       secondary: item.einheitTyp.label,
       item,
     }));
-  }, []);
+  }, [einheitenNichtImEinsatz]);
 
   // const einheitenCombo = useMemo<ItemType<EinheitDto>[]>(() => {
   //   return einheiten.data?.map(item => ({
