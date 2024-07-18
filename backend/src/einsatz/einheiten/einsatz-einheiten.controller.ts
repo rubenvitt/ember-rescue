@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Logger,
@@ -57,5 +58,19 @@ export class EinsatzEinheitenController {
     );
 
     return { status: 'ok' };
+  }
+
+  @Delete(':einheitId')
+  async removeFromEinsatz(
+    @Param('einsatzId') einsatzId: string,
+    @Param('einheitId') einheitId: string,
+    @Headers('bearbeiter') bearbeiterHeader: string,
+  ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    await this.einheitenService.removeEinheitFromEinsatz(
+      einheitId,
+      einsatzId,
+      bearbeiterId,
+    );
   }
 }

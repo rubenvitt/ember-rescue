@@ -1,5 +1,5 @@
 // Updated Types
-import { Button, ButtonColors } from '../../deprecated/button.js';
+import { Button, ButtonColor } from '../../deprecated/button.js';
 import React, { useCallback, useState } from 'react';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid/index.js';
 import { FlexibleDialog } from './Dialog.js';

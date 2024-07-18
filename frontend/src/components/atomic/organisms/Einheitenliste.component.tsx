@@ -1,14 +1,15 @@
 import { EinheitDto, StatusDto } from '../../../types/types.js';
 import { PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
-import { Modal } from '../molecules/Modal.component.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ItemType } from '../molecules/Combobox.component.js';
 import { useStatus } from '../../../hooks/status.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten.hook.js';
 import clsx from 'clsx';
-import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
 import { StatusLabel, statusLabel } from '../atoms/StatusLabel.component.js';
 import { MinimalDotsDropdown } from '../molecules/MinimalDropdown.component.js';
+import { useModal } from '../../../hooks/modal.hook.js';
+import { ModalConfig } from '../../../types/modalTypes.js';
+import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
 
 
 type Props = {
@@ -37,10 +38,8 @@ function StatusButton({ onClick, item, className }: StatusButtonProps) {
 }
 
 function EinheitListItem({ einheit }: EinheitListItemProps) {
-  const [statusModalOpen, setStatusModalOpen] = useState(false);
   const { status } = useStatus();
-  const { changeStatus } = useEinheiten({ einheitId: einheit.id });
-  const [newStatusId, setNewStatusId] = useState<string>();
+  const { changeStatus, removeEinheitFromEinsatz } = useEinheiten({ einheitId: einheit.id });
 
   const statusItems = useMemo<ItemType<StatusDto>[]>(() => {
     return status.data?.map(item => ({
@@ -50,9 +49,36 @@ function EinheitListItem({ einheit }: EinheitListItemProps) {
     })) ?? [];
   }, [status]);
 
+  const { openModal, closeModal } = useModal();
+  const modalConfig = useMemo<ModalConfig>(() => {
+    return {
+      variant: 'dialog',
+      panelColor: 'primary',
+      primaryAction: {
+        label: 'test',
+        onClick: () => {
+        },
+      },
+      secondaryAction: {
+        label: 'Abbrechen',
+        onClick: () => {
+        },
+      },
+      title: `Status ändern von ${einheit.funkrufname}`,
+      content: (<div className="min-h-32">
+        <DynamicGrid<StatusDto> items={statusItems}
+                                render={(item, className) => (
+                                  <StatusButton onClick={onStatusButtonClick} item={item}
+                                                className={className} />
+                                )}
+        />
+      </div>),
+    };
+  }, [einheit, statusItems]);
+
   const onStatusButtonClick = useCallback(async (item: { statusId: string }) => {
     await changeStatus.mutateAsync(item);
-    return setStatusModalOpen(false);
+    return closeModal();
   }, [changeStatus.mutateAsync]);
 
   return <li className="overflow-hidden rounded-xl border border-gray-200">
@@ -81,43 +107,19 @@ function EinheitListItem({ einheit }: EinheitListItemProps) {
               text: 'Status wechseln',
               icon: PiNumpad,
               onClick: () => {
-                setStatusModalOpen(true);
+                openModal(modalConfig);
               },
             },
             {
               text: 'Einsatz beenden',
               icon: PiStop,
               onClick: () => {
-                // remove from Einsatz
+                removeEinheitFromEinsatz.mutate({});
               },
             },
           ]} />
       </div>
     </div>
-    <Modal
-      isOpen={statusModalOpen} onClose={() => setStatusModalOpen(false)} primaryAction={{
-      label: 'Status ändern',
-      onClick: () => {
-        if (!newStatusId) {
-          throw Error('StatusId missing');
-        }
-        changeStatus.mutateAsync({
-          statusId: newStatusId,
-        }).then(() => {
-          setStatusModalOpen(false);
-        });
-      },
-    }} title={`Status ändern von ${einheit.funkrufname}`}
-      content={
-        <div className="min-h-32">
-          <DynamicGrid<StatusDto> items={statusItems}
-                                  render={(item, className) => <StatusButton onClick={onStatusButtonClick}
-                                                                             item={item}
-                                                                             className={className} />}
-          />
-        </div>
-      }
-    />
 
     <dl className="-my-3 divide-y divide-gray-100 dark:divide-gray-700 px-6 py-4 text-sm leading-6">
       <div className="flex justify-between gap-x-4 py-3">

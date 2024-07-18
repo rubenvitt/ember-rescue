@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Headers, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Logger,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
 import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
 import { CreateEinsatztagebuchDto } from '../types';
@@ -35,5 +43,10 @@ export class EinsatztagebuchController {
       einsatzId,
       ...createEinsatztagebuchDto,
     });
+  }
+
+  @Post('/:id/archive')
+  async archiveEinsatztagebuchEintrag(@Param('id') id: string) {
+    return this.service.archiveEinsatztagebuchEintrag(id);
   }
 }

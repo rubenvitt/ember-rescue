@@ -24,13 +24,31 @@ export function useEinsatztagebuch() {
         },
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['einsatztagebuch'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['einsatztagebuch'] });
+    },
+  });
+
+  const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { einsatztagebuchEintragId }>({
+    mutationKey: ['einsatztagebuch'],
+    mutationFn: async ({ einsatztagebuchEintragId }) => {
+      if (!einsatztagebuchEintragId) {
+        return Promise.reject(new Error('einsatztagebuchEintragId ist erforderlich'));
+      }
+      return await backendFetch(`/einsatztagebuch/${einsatztagebuchEintragId}/archive`, {
+        method: 'POST',
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['einsatztagebuch'],
+      });
     },
   });
 
   return {
     einsatztagebuch: data,
     createEinsatztagebuchEintrag,
+    archiveEinsatztagebuchEintrag,
   };
 }

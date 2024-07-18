@@ -47,6 +47,8 @@ export function GenericDropdown({
           <DropdownItem
             key={item.text}
             className={itemClassName}
+            to={item.to}
+            href={item.to}
           >
             {'to' in item ? (
               <Link to={item.to} className="flex items-center w-full">

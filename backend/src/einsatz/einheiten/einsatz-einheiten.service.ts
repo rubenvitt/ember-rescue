@@ -116,4 +116,34 @@ export class EinsatzEinheitenService {
       });
     });
   }
+
+  async removeEinheitFromEinsatz(
+    einheitId: string,
+    einsatzId: string,
+    bearbeiterId: string,
+  ) {
+    return this.prismaService.$transaction(async (transaction) => {
+      const existingEinheit = await this.einheitenService.findEinheit({
+        id: einheitId,
+      });
+
+      await transaction.einheitOnEinsatz.delete({
+        where: {
+          einsatzId_einheitId: {
+            einheitId,
+            einsatzId,
+          },
+        },
+      });
+
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+        absender: existingEinheit.funkrufname,
+        empfaenger: 'ETB',
+        type: 'RESSOURCEN',
+        einsatzId,
+        bearbeiterId,
+        content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wurde aus dem Einsatz entfernt.`,
+      });
+    });
+  }
 }

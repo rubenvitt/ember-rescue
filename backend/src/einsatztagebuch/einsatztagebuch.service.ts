@@ -26,4 +26,13 @@ export class EinsatztagebuchService {
       data: data,
     });
   }
+
+  archiveEinsatztagebuchEintrag(id: string) {
+    return this.prismaService.einsatztagebuchEintrag.update({
+      where: { id },
+      data: {
+        archived: true,
+      },
+    });
+  }
 }

@@ -56,6 +56,25 @@ export function useEinheiten(props?: { einheitId?: string }) {
     },
   });
 
+  const removeEinheitFromEinsatz = useMutation<unknown, unknown, {}>({
+    mutationKey: ['einheiten'],
+    mutationFn: async () => {
+      if (!props?.einheitId) {
+        return Promise.reject(new Error('einheitId ist erforderlich'));
+      }
+      console.log('Remove einheit', props.einheitId);
+      await backendFetch(`/einsatz/${einsatzId}/einheiten/${props.einheitId}`, {
+        method: 'DELETE',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['einheiten'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['einheiten', props.einheitId],
+      });
+    },
+  });
+
   const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
     mutationKey: ['einheit', props?.einheitId, 'status'],
     onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['einheiten'] }),
@@ -77,6 +96,7 @@ export function useEinheiten(props?: { einheitId?: string }) {
     einheitenTypen,
     patchEinheiten,
     addEinheitToEinsatz,
+    removeEinheitFromEinsatz,
     einheitenNichtImEinsatz,
     changeStatus,
   };

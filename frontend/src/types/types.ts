@@ -3,10 +3,6 @@ import React from 'react';
 import { XOR } from './helper.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 
-
-export type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>;
-
-
 export type EinsatztagebuchEintragType =
   'GENERISCH' |
   'RESSOURCEN' |
@@ -46,7 +42,7 @@ export type NewBearbeiter = {
 }
 
 export type WithIcon = {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: SVGComponent;
 }
 
 export type NavItem = {
@@ -60,8 +56,10 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   bearbeiter: Bearbeiter;
   type: EinsatztagebuchEintragType;
   content: string;
+  archived: boolean;
   absender: string;
   empfaenger: string;
+  createdAt: string;
 };
 
 export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter'>
@@ -136,3 +134,5 @@ export type EinheitTypDto = {
 }
 
 export type ServerMetadata = { serverName: string, serverId: string, version: string }
+
+export type SVGComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>

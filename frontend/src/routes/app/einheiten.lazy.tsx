@@ -1,16 +1,17 @@
-import { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { LayoutApp } from '../_layout/_layout-app.js';
-import { Button } from '../../components/deprecated/button.js';
-import { BellIcon } from '@heroicons/react/24/outline';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
-import { Modal } from '../../components/atomic/molecules/Modal.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { EinheitDto } from '../../types/types.js';
 import { GenericForm, GenericFormRef } from '../../components/atomic/organisms/GenericForm.component.js';
+import { Button } from '../../components/atomic/molecules/Button.component.tsx';
+import { PiBell } from 'react-icons/pi';
+import { useModal } from '../../hooks/modal.hook.js';
+import { ModalConfig } from '../../types/modalTypes.js';
 
 export const Route = createLazyFileRoute('/app/einheiten')({
   component: Einheiten,
@@ -53,48 +54,44 @@ function Einheiten() {
 
   const handleSubmit = () => {
     console.log('Submitted:', { fahrzeug, kraefte: einheiten });
-    setIsModalOpen(false);
+    closeModal();
     const einheitId = formRef.current?.form?.getFieldValue('einheitId');
     einheitId && addEinheitToEinsatz.mutate({ einheitId });
   };
 
+  const { closeModal, openModal } = useModal();
+
+  const modalConfig = useMemo<ModalConfig>(() => {
+    return {
+      variant: 'dialog',
+      fullWidth: true,
+      title: 'Neue Einheiten hinzufügen',
+      Icon: PiBell,
+      content: (
+        <GenericForm<AddEinheitType>
+          ref={formRef}
+          onSubmit={handleSubmit}
+          layout="simple"
+          sections={[
+            {
+              fields: [{
+                name: 'einheitId',
+                label: 'Einheit',
+                type: 'combo',
+                items: einheitenNichtImEinsatzCombo,
+              }],
+            },
+          ]}
+        />
+      ),
+    };
+  }, []);
+
   return (
     <LayoutApp>
-      <Button color="orange" className="cursor-pointer" onClick={() => setIsModalOpen(true)}>
+      <Button color="orange" className="cursor-pointer" onClick={() => openModal(modalConfig)}>
         Neue Einheiten hinzufügen
       </Button>
-      <Modal
-        variant="panel"
-        panelColor="amber"
-        isOpen={isModalOpen}
-        fullWidth
-        onClose={() => setIsModalOpen(false)}
-        title="Neue Einheiten hinzufügen"
-        Icon={BellIcon}
-        content={
-          <GenericForm<AddEinheitType> ref={formRef} onSubmit={handleSubmit} layout="simple"
-                                       sections={[
-                                         {
-                                           fields: [{
-                                             name: 'einheitId',
-                                             label: 'Einheit',
-                                             type: 'combo',
-                                             items: einheitenNichtImEinsatzCombo,
-                                           }],
-                                         },
-                                       ]} />
-        }
-        primaryAction={{
-          label: 'Hinzufügen',
-          onClick: () => handleSubmit(),
-          color: 'green',
-        }}
-        secondaryAction={{
-          label: 'Abbrechen',
-          onClick: () => setIsModalOpen(false),
-          color: 'red',
-        }}
-      />
 
       {einheitenImEinsatz.isFetched &&
         (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
