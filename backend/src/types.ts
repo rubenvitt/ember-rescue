@@ -1,3 +1,5 @@
+import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
+
 export type BearbeiterDto = {
   id: string;
   name: string;
@@ -40,10 +42,31 @@ export type CreateEinsatzDto = {
   alarmstichwort?: string;
 };
 
-export type CreateEinsatztagebuchDto = {
+export enum EinsatztagebuchEintragEnum {
+  USER = 'USER',
+  GENERISCH = 'GENERISCH',
+  RESSOURCEN = 'RESSOURCEN',
+  KOMMUNIKATION = 'KOMMUNIKATION',
+  LAGE = 'LAGE',
+  PATIENTEN = 'PATIENTEN',
+}
+
+export type EinsatztagebuchEintragType =
+  keyof typeof EinsatztagebuchEintragEnum;
+
+const EinsatztagebuchEintragTypesArray: EinsatztagebuchEintragType[] =
+  Object.values(EinsatztagebuchEintragEnum) as EinsatztagebuchEintragType[];
+
+export class CreateEinsatztagebuchDto {
+  @IsNotEmpty()
   content: string;
-  type?: string;
+  @IsOptional()
+  @IsIn(EinsatztagebuchEintragTypesArray)
+  type?: EinsatztagebuchEintragType;
+  @IsNotEmpty()
   absender: string;
+  @IsNotEmpty()
   empfaenger: string;
+  @IsNotEmpty()
   timestamp: string;
-};
+}
