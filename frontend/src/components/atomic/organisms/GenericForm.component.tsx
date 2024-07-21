@@ -5,6 +5,7 @@ import { Button } from '../../deprecated/button.js';
 import { FormField } from '../molecules/FormField.component.js';
 import { BaseFormField, SimpleFormField } from '../../../types/formfield.types.js';
 import { zodValidator } from '@tanstack/zod-form-adapter';
+import { ValidatedInput } from '../atoms/inputs/validated-input.component.js';
 
 
 interface ComplexFormSection<
@@ -35,13 +36,14 @@ export interface GenericFormProps<
   TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
 > {
-  sections: FormSection<TFormData, TFieldValidator, TFormValidator>[];
-  onSubmit: (values: TFormData) => Promise<void> | void;
-  onReset?: () => void;
-  defaultValues?: TFormData;
-  submitText?: string;
-  resetText?: string;
-  layout?: 'simple' | 'complex';
+  sections: FormSection<TFormData, TFieldValidator, TFormValidator>[],
+  onSubmit: (values: TFormData) => Promise<void> | void,
+  onReset?: () => void,
+  defaultValues?: TFormData,
+  submitText?: string,
+  resetText?: string,
+  layout?: 'simple' | 'complex',
+  produceDefaultItem?: (item: TFormData) => TFormData
 }
 
 export interface GenericFormRef<TFormData> {
@@ -137,15 +139,13 @@ export const GenericForm = forwardRef(function GenericForm<
                               {field.label}
                             </label>
                             <div className="mt-2">
-                              {/* @ts-ignore */}
-                              <FormField field={field} fieldApi={fieldApi} layout={layout}
-                                         allowNewValues={field.allowNewValues}
-                                         onAddNewValue={field.onAddNewValue} />
+                              <ValidatedInput meta={fieldApi.state.meta}>
+                                {/* @ts-ignore */}
+                                <FormField field={field} fieldApi={fieldApi} layout={layout}
+                                           allowNewValues={field.allowNewValues}
+                                           onAddNewValue={field.onAddNewValue} />
+                              </ValidatedInput>
                             </div>
-                            {fieldApi.state.meta.isTouched && fieldApi.state.meta.errors && (
-                              <p
-                                className="mt-2 text-sm text-red-600 dark:text-red-400">{fieldApi.state.meta.errors.join(' ')}</p>
-                            )}
                           </div>
                         )}
                       </form.Field>

@@ -1,6 +1,7 @@
 import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
 import { Identifiable } from './types.js';
 import React from 'react';
+import { ValidationError } from '@tanstack/react-form';
 
 export type ChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
 
@@ -12,6 +13,7 @@ export interface BaseInputProps {
   className: string;
   readOnly?: boolean;
   placeholder?: string;
+  errors?: ValidationError[];
 }
 
 export interface SelectInputProps extends BaseInputProps {
@@ -33,4 +35,5 @@ export interface ComboInputProps<Item extends Identifiable> {
   allowNewValues?: boolean;
   onAddNewValue?: (newValue: string) => void;
   defaultItem?: ItemType<Item>;
+  errors?: ValidationError[];
 }

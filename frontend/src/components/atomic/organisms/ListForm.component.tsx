@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { GenericFormProps } from './GenericForm.component.js';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
 import { Button } from '../../deprecated/button.js';
@@ -7,9 +7,7 @@ interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | '
   items: T[];
   onItemsChange: (newItems: T[]) => void;
   itemTemplate: T;
-  renderFunctions?: {
-    [K in keyof T]?: (value: T[K]) => React.ReactNode;
-  };
+  renderFunctions?: Partial<Record<keyof T, (value: T[keyof T]) => ReactNode>>;
 }
 
 export function ListForm<T extends Record<string, any>>({
@@ -17,6 +15,7 @@ export function ListForm<T extends Record<string, any>>({
                                                           onItemsChange,
                                                           itemTemplate,
                                                           renderFunctions,
+                                                          produceDefaultItem,
                                                           ...genericFormProps
                                                         }: ListFormProps<T>) {
   const [newItem, setNewItem] = useState<T | null>(null);
@@ -62,24 +61,22 @@ export function ListForm<T extends Record<string, any>>({
           </th>
         </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
         {items.map((item, index) => (
           // @ts-ignore
           <ListFormRow
             key={index}
             item={item}
-            index={index}
-            // @ts-ignore
             onSave={(updatedItem) => handleSaveItem(updatedItem, index)}
             onDelete={() => handleDeleteItem(index)}
             formProps={genericFormProps}
             renderFunctions={renderFunctions}
+            produceDefaultItem={produceDefaultItem}
           />
         ))}
         {newItem && (
           <ListFormRow
             item={newItem}
-            index={-1}
             onSave={handleSaveNewItem}
             onDelete={handleCancelNewItem}
             formProps={genericFormProps}

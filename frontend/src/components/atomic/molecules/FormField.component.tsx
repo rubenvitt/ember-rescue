@@ -16,6 +16,7 @@ import { DeepKeys, DeepValue, FieldApi, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
 import { BaseFormField } from '../../../types/formfield.types.js';
 import { ChangeEvent } from '../../../types/inputs.types.ts';
+import { useValidation } from '../../../hooks/validation.hook.js';
 
 export function FormField<
   TFormData,
@@ -35,7 +36,8 @@ export function FormField<
   allowNewValues?: boolean;
   onAddNewValue?: (newValue: string) => void;
 }>) {
-  const inputClasses = inputStyles({ layout, readonly: field.readonly });
+  const { hasErrors } = useValidation(fieldApi.state.meta.errors);
+  const inputClasses = inputStyles({ layout, readonly: field.readonly, hasErrors });
 
   const handleChange = (value: any) => {
     if (!field.readonly) {
@@ -85,6 +87,7 @@ export function FormField<
               handleChange(val);
             }
           }}
+          errors={fieldApi.state.meta.errors}
         />
       );
     default:

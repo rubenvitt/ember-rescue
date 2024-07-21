@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { BearbeiterService } from './bearbeiter.service';
-import { NewBearbeiterDto } from '../types';
+import { CreateBearbeiterDto } from '../types';
 
 @Controller('bearbeiter')
 export class BearbeiterController {
@@ -39,7 +39,7 @@ export class BearbeiterController {
   }
 
   @Post()
-  async login(@Body() bearbeiter: NewBearbeiterDto) {
+  async login(@Body() bearbeiter: CreateBearbeiterDto) {
     this.logger.debug(
       'BearbeiterController.login(), Environment: ',
       process.env.NODE_ENV,

@@ -12,6 +12,10 @@ export const inputStyles = cva(
         true: 'bg-gray-100 cursor-not-allowed',
         false: '',
       },
+      hasErrors: {
+        true: 'ring-red-500 focus:ring-red-500 placeholder:text-red-300 text-red-900',
+        false: '',
+      },
     },
     compoundVariants: [
       {
@@ -23,6 +27,7 @@ export const inputStyles = cva(
     defaultVariants: {
       layout: 'simple',
       readonly: false,
+      hasErrors: false,
     },
   },
 );

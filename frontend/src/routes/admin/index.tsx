@@ -6,9 +6,10 @@ import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { useMemo } from 'react';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
-import { IpPortPair } from 'tauri-plugin-network-api/dist-js/types.js';
 import { useQuery } from '@tanstack/react-query';
 import { backendFetch } from '../../utils/http.js';
+// @ts-ignore
+import type { IpPortPair } from 'tauri-plugin-network-api';
 
 export const Route = createFileRoute('/admin/')({
   component: AdminPage,
@@ -24,10 +25,11 @@ const einheitTemplate: Pick<EinheitDto, 'id' | 'funkrufname' | 'kapazitaet' | 'i
   kapazitaet: 2,
   istTemporaer: false,
 };
+type ServerInfo = { version: string, serverName: string, serverId: string }
 
 function DeviceOption({ device }: { device: IpPortPair }) {
-  const serverInfo = useQuery<{ version: string, serverName: string, serverId: string }>({
-    queryFn: () => backendFetch('http://' + device.ip + ':' + device.port + '/meta').catch(e => {
+  const serverInfo = useQuery<ServerInfo>({
+    queryFn: () => backendFetch<ServerInfo>('http://' + device.ip + ':' + device.port + '/meta').catch(e => {
       console.log('error while fetching', e);
       throw e;
     }),
@@ -113,6 +115,8 @@ function AdminPage() {
             ],
           }]}
           itemTemplate={einheitTemplate} items={einheitenTableDtos}
+          // @ts-ignore
+          produceDefaultItem={(einheit: typeof einheitTemplate) => ({ ...einheit, einheitTyp: einheit.einheitTyp.id })}
           onItemsChange={(items) => {
             patchEinheiten.mutate(items.map(item => ({
               ...item,
@@ -123,7 +127,7 @@ function AdminPage() {
           }}
           layout={'simple'}
           renderFunctions={{
-            einheitTyp: (einheitTyp) => einheitTyp.label,
+            einheitTyp: (einheitTyp) => einheitTyp && typeof einheitTyp !== 'boolean' && typeof einheitTyp !== 'number' && (typeof einheitTyp === 'string' ? einheitTyp : einheitTyp.label) || '',
           }}
         />}
     </div>

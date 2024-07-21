@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { PiCaretDownLight, PiCheck, PiPlus } from 'react-icons/pi';
 import { ValidationError } from '@tanstack/react-form';
 import { cva } from 'class-variance-authority';
+import { useValidation } from '../../../hooks/validation.hook.js';
 
 const comboboxStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
   variants: {
@@ -49,6 +50,7 @@ export function ComboInput<T extends Identifiable>({
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<ItemType<T> | null>(defaultItem ?? null);
   const [pendingNewItem, setPendingNewItem] = useState<string | null>(null);
+  const { hasErrors } = useValidation(errors);
 
   useEffect(() => {
     if (!selectedItem && defaultItem && query === '') {
@@ -59,12 +61,6 @@ export function ComboInput<T extends Identifiable>({
   const filteredItems = useMemo(() => {
     return query === '' ? items : items.filter((item) => (item.label + item.secondary).toLowerCase().includes(query.toLowerCase()));
   }, [query, items]);
-
-  const cleanedErrors = useMemo(() => {
-    return errors?.filter((err: ValidationError) => Boolean(err));
-  }, [errors]);
-
-  const hasErrors = useMemo(() => (cleanedErrors?.length ?? 0) > 0, [cleanedErrors]);
 
   const handleChange = (item: ItemType<T> | string | null) => {
     setQuery('');
@@ -176,13 +172,6 @@ export function ComboInput<T extends Identifiable>({
           )}
         </ComboboxOptions>
       </div>
-      {hasErrors && (
-        <div className="mt-2 text-sm text-red-600">
-          {cleanedErrors?.map((error: ValidationError) => (
-            <p key={error?.toString()}>{error || ''}</p>
-          ))}
-        </div>
-      )}
     </Combobox>
   );
 }
