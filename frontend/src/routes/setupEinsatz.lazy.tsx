@@ -1,7 +1,7 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { GenericForm } from '../components/atomic/organisms/GenericForm.component.js';
 import { format } from 'date-fns';
-import { useEinheiten } from '../hooks/einheiten.hook.js';
+import { useEinheiten } from '../hooks/einheiten/einheiten.hook.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEinsatz } from '../hooks/einsatz.hook.js';
 import { OffeneEinsaetzeList } from '../components/atomic/organisms/OffeneEinsaetzeList.component.js';
@@ -9,6 +9,7 @@ import { useEffect, useMemo } from 'react';
 import { useAlarmstichworte } from '../hooks/alarmstichworte.hook.js';
 import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
 import { Alarmstichwort } from '../types/types.js';
+import { PiSirenBold } from 'react-icons/pi';
 
 export const Route = createLazyFileRoute('/setupEinsatz')({
   component: SetupEinsatz,
@@ -48,7 +49,7 @@ function SetupEinsatz() {
 
   return (
     <div className="flex gap-4 flex-col items-center min-h-screen">
-      <div className="w-full max-w-6xl flex flex-col gap-16 space-y-16 divide-y divide-gray-900/30">
+      <div className="w-full max-w-6xl flex flex-col gap-16 space-y-6">
         <div className="mt-12 px-6 lg:px-8 pt-24 sm:pt-32">
           <div className="mx-auto lg:mx-0">
             <h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-6xl">Einsatz
@@ -62,7 +63,10 @@ function SetupEinsatz() {
 
         {
           einsatzOffen &&
-          <div className="w-full">
+          <div className="w-full bg-gray-100/30 dark:bg-gray-900/30 rounded-lg py-6 px-4 border border-primary-400">
+            <h2 className="text-xl font-semibold mb-2 ml-2 tracking-tight text-gray-900 dark:text-gray-100">
+              <PiSirenBold className="h-6 w-6 inline text-blue-400" /> Momentan offene Einsätze
+            </h2>
             <OffeneEinsaetzeList />
           </div>
         }

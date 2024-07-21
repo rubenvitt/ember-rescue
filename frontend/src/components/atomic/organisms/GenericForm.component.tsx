@@ -1,14 +1,10 @@
 import { DeepKeys, DeepValue, useForm, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
-import {
-  BaseFormField,
-  ComplexFormField,
-  FormField,
-  SimpleFormField,
-  SimpleFormSection,
-} from '../molecules/FormField.component.tsx';
 import React, { forwardRef, useImperativeHandle } from 'react';
 import { Button } from '../../deprecated/button.js';
+import { FormField } from '../molecules/FormField.component.js';
+import { BaseFormField, SimpleFormField } from '../../../types/formfield.types.js';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 
 
 interface ComplexFormSection<
@@ -18,7 +14,12 @@ interface ComplexFormSection<
 > {
   title?: string;
   description?: string;
-  fields: ComplexFormField<TParentData, DeepKeys<TParentData>, TFieldValidator, TFormValidator>[];
+  fields: SimpleFormField<TParentData, DeepKeys<TParentData>, TFieldValidator, TFormValidator>[];
+}
+
+interface SimpleFormSection<TParentData, TFieldValidator extends Validator<DeepValue<TParentData, DeepKeys<TParentData>, Optional<TParentData>>, unknown> | undefined = any,
+  TFormValidator extends Validator<TParentData, unknown> | undefined = undefined> {
+  fields: SimpleFormField<TParentData, DeepKeys<TParentData>, TFieldValidator, TFormValidator>[];
 }
 
 type FormSection<
@@ -47,7 +48,6 @@ export interface GenericFormRef<TFormData> {
   form: ReturnType<typeof useForm<TFormData>>;
 }
 
-// @ts-ignore
 export const GenericForm = forwardRef(function GenericForm<
   TFormData extends Record<string, any>,
   TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
@@ -126,6 +126,8 @@ export const GenericForm = forwardRef(function GenericForm<
                       <form.Field
                         key={field.name}
                         name={field.name}
+                        validatorAdapter={zodValidator()}
+                        // @ts-ignore
                         validators={field.validators}
                       >
                         {(fieldApi) => (
@@ -135,6 +137,7 @@ export const GenericForm = forwardRef(function GenericForm<
                               {field.label}
                             </label>
                             <div className="mt-2">
+                              {/* @ts-ignore */}
                               <FormField field={field} fieldApi={fieldApi} layout={layout}
                                          allowNewValues={field.allowNewValues}
                                          onAddNewValue={field.onAddNewValue} />

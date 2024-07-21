@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
-import { useModal } from '../../../hooks/modal.hook.js';
-import { DialogBackdrop } from '../atoms/Backdrop.component.js';
-import { PanelModal } from './modal/PanelModal.component.js';
-import { DialogModal } from './modal/DialogModal.component.js';
+import { useModal } from '../../../../hooks/modal.hook.js';
+import { DialogBackdrop } from '../../atoms/Backdrop.component.js';
+import { PanelModal } from './PanelModal.component.js';
+import { DialogModal } from './DialogModal.component.js';
 
 export const Modal: React.FC = () => {
   const { modalConfig, closeModal, isOpen } = useModal();

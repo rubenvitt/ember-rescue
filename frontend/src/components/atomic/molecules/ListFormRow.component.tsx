@@ -1,7 +1,9 @@
 import React from 'react';
 import { useForm } from '@tanstack/react-form';
 import { GenericFormProps } from '../organisms/GenericForm.component.js';
-import { BaseFormField, FormField } from './FormField.component.js';
+import { FormField } from './FormField.component.js';
+import { BaseFormField } from '../../../types/formfield.types.js';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 
 interface ListFormRowProps<T> {
   item: T;
@@ -74,6 +76,7 @@ export function ListFormRow<T extends Record<string, any>>({
           {isEditing ? (
             <form.Field
               name={key as any}
+              validatorAdapter={zodValidator()}
               validators={getFieldConfig(key).validators}
             >
               {(fieldApi) => (

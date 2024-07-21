@@ -6,5 +6,5 @@ export const Route = createLazyFileRoute('/app/patienten')({
 });
 
 function Patienten() {
-  return <LayoutApp>Das is app yo</LayoutApp>;
+  return <LayoutApp><p className="dark:text-white">Patienten</p></LayoutApp>;
 }

@@ -13,5 +13,5 @@ function Einsatzdaten() {
   //   }),
   //   refetchInterval: 1000,theme
   // });
-  return <LayoutApp>Einsatzdaten</LayoutApp>;
+  return <LayoutApp><p className="dark:text-white">Einsatzdaten</p></LayoutApp>;
 }

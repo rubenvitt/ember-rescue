@@ -10,7 +10,7 @@ import { setDefaultOptions } from 'date-fns';
 import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/nunito';
-import { Modal } from '../components/atomic/organisms/Modal.component.js';
+import { Modal } from '../components/atomic/organisms/modal/Modal.component.js';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

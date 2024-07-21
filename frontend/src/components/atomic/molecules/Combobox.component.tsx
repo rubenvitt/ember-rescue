@@ -1,8 +1,19 @@
-import { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { Identifiable } from '../../../types/types.js';
 import clsx from 'clsx';
+import { PiCaretDownLight, PiCheck, PiPlus } from 'react-icons/pi';
+import { ValidationError } from '@tanstack/react-form';
+import { cva } from 'class-variance-authority';
+
+const comboboxStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
+  variants: {
+    hasErrors: {
+      true: 'ring-red-500 focus:ring-red-500 placeholder:text-red-300 text-red-900',
+      false: 'ring-gray-300 focus:ring-primary-600',
+    },
+  },
+});
 
 export type ItemType<T extends Identifiable> = {
   label: string,
@@ -12,12 +23,15 @@ export type ItemType<T extends Identifiable> = {
 
 interface Props<T extends Identifiable> {
   items: ItemType<T>[],
-  onChange: (id: string) => void,
+  onChange: (id: string | null) => void,
   defaultItem?: ItemType<T>,
   label?: string,
   disabled?: boolean,
   allowNewValues?: boolean,
-  onAddNewValue?: (newValue: string) => void
+  onAddNewValue?: (newValue: string) => void,
+  addValueLabel?: string,
+  errors?: ValidationError[],
+  inputProps?: Pick<React.ComponentPropsWithoutRef<'input'>, 'name' | 'onBlur' | 'required' | 'placeholder'>
 }
 
 export function ComboInput<T extends Identifiable>({
@@ -28,26 +42,57 @@ export function ComboInput<T extends Identifiable>({
                                                      disabled,
                                                      allowNewValues = false,
                                                      onAddNewValue,
-                                                   }: Props<T>) {
+                                                     addValueLabel = 'Neuen Wert hinzufügen:',
+                                                     errors,
+                                                     inputProps,
+                                                   }: Readonly<Props<T>>) {
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<ItemType<T> | null>(defaultItem ?? null);
+  const [pendingNewItem, setPendingNewItem] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedItem && defaultItem && query === '') {
+      setSelectedItem(defaultItem);
+    }
+  }, [defaultItem, selectedItem, query]);
 
   const filteredItems = useMemo(() => {
     return query === '' ? items : items.filter((item) => (item.label + item.secondary).toLowerCase().includes(query.toLowerCase()));
   }, [query, items]);
 
-  const handleChange = (item: ItemType<T> | string) => {
+  const cleanedErrors = useMemo(() => {
+    return errors?.filter((err: ValidationError) => Boolean(err));
+  }, [errors]);
+
+  const hasErrors = useMemo(() => (cleanedErrors?.length ?? 0) > 0, [cleanedErrors]);
+
+  const handleChange = (item: ItemType<T> | string | null) => {
     setQuery('');
+    if (!item) {
+      setPendingNewItem(null);
+      setSelectedItem(null);
+      onChange(null);
+      return;
+    }
     if (typeof item === 'string') {
       // This is a new value
       if (onAddNewValue) {
         onAddNewValue(item);
       }
+      setPendingNewItem(item);
       onChange(item);
     } else {
+      setPendingNewItem(null); // Clear pending item if an existing item is selected
       setSelectedItem(item);
       onChange(item.item.id);
     }
+  };
+
+  const displayValue = (item: ItemType<T>) => {
+    if (pendingNewItem) {
+      return pendingNewItem;
+    }
+    return item?.label ?? '';
   };
 
   return (
@@ -60,15 +105,16 @@ export function ComboInput<T extends Identifiable>({
       {label && <Label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">{label}</Label>}
       <div className={clsx('relative', label && ' mt-3.5')}>
         <ComboboxInput
-          className="w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+          className={comboboxStyles({ hasErrors })}
           onChange={(event) => setQuery(event.target.value)}
           onBlur={() => setQuery('')}
-          displayValue={(item: ItemType<T>) => item?.label}
+          displayValue={displayValue}
           autoCorrect="false"
           spellCheck={false}
+          {...inputProps}
         />
         <ComboboxButton className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-          <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+          <PiCaretDownLight className="h-5 w-5 text-gray-400" aria-hidden="true" />
         </ComboboxButton>
 
         <ComboboxOptions
@@ -103,7 +149,7 @@ export function ComboInput<T extends Identifiable>({
                         focus ? 'text-white' : 'text-primary-600',
                       )}
                     >
-                      <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                      <PiCheck className="h-5 w-5" aria-hidden="true" />
                     </span>
                   )}
                 </>
@@ -122,14 +168,21 @@ export function ComboInput<T extends Identifiable>({
             >
               {({ focus }) => (
                 <div className="flex items-center">
-                  <PlusIcon className={clsx('h-5 w-5 mr-2', focus ? 'text-white' : 'text-gray-400')} />
-                  <span>Neuer Eintrag: "{query}"</span>
+                  <PiPlus className={clsx('h-5 w-5 mr-2', focus ? 'text-white' : 'text-gray-400')} />
+                  <span>{addValueLabel} "{query}"</span>
                 </div>
               )}
             </ComboboxOption>
           )}
         </ComboboxOptions>
       </div>
+      {hasErrors && (
+        <div className="mt-2 text-sm text-red-600">
+          {cleanedErrors?.map((error: ValidationError) => (
+            <p key={error?.toString()}>{error || ''}</p>
+          ))}
+        </div>
+      )}
     </Combobox>
   );
 }

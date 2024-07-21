@@ -65,7 +65,7 @@ const NavItemComponent: React.FC<NavItemProps> = ({ item }) => (
 
 const NavList: React.FC<NavListProps> = ({ items, title }) => (
   <li>
-    {title && <div className="text-xs font-semibold leading-6 text-gray-400">{title}</div>}
+    {title && <div className="text-xs font-semibold leading-6 text-white">{title}</div>}
     <ul role="list" className="-mx-2 mt-2 space-y-1">
       {items.map((item) => <NavItemComponent key={item.name} item={item} />)}
     </ul>

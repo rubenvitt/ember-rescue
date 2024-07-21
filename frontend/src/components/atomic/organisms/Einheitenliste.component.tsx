@@ -3,7 +3,7 @@ import { PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
 import { useCallback, useMemo } from 'react';
 import { ItemType } from '../molecules/Combobox.component.js';
 import { useStatus } from '../../../hooks/status.hook.js';
-import { useEinheiten } from '../../../hooks/einheiten.hook.js';
+import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import clsx from 'clsx';
 import { StatusLabel, statusLabel } from '../atoms/StatusLabel.component.js';
 import { MinimalDotsDropdown } from '../molecules/MinimalDropdown.component.js';

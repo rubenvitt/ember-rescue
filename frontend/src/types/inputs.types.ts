@@ -1,0 +1,36 @@
+import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
+import { Identifiable } from './types.js';
+import React from 'react';
+
+export type ChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
+
+export interface BaseInputProps {
+  name: string;
+  value: string | number | readonly string[];
+  onChange: (e: ChangeEvent) => void;
+  onBlur: () => void;
+  className: string;
+  readOnly?: boolean;
+  placeholder?: string;
+}
+
+export interface SelectInputProps extends BaseInputProps {
+  options?: string[];
+}
+
+export interface CheckboxInputProps extends Omit<BaseInputProps, 'value'> {
+  checked: boolean;
+}
+
+export interface RadioInputProps extends BaseInputProps {
+  options?: string[];
+}
+
+export interface ComboInputProps<Item extends Identifiable> {
+  items: ItemType<Item>[];
+  onChange: (item: string | null) => void;
+  disabled?: boolean;
+  allowNewValues?: boolean;
+  onAddNewValue?: (newValue: string) => void;
+  defaultItem?: ItemType<Item>;
+}

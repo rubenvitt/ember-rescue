@@ -1,16 +1,24 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { getCurrent, LogicalSize } from '@tauri-apps/api/window';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../../../types/types.js';
-import { BearbeiterInput } from '../molecules/BearbeiterInput.component.js';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 import { Button } from '../../deprecated/button.js';
+import { ComboInput, ItemType } from '../molecules/Combobox.component.js';
+import { zodValidator } from '@tanstack/zod-form-adapter';
+import { z } from 'zod';
 
 export function SignIn() {
   const { saveBearbeiter, allBearbeiter } = useBearbeiter();
   const navigate = useNavigate({ from: '/signin' });
+  const allBearbeiterItems = useMemo<ItemType<Bearbeiter>[]>(() => {
+    return allBearbeiter.data?.map((item: Bearbeiter) => ({
+      label: item.name,
+      item,
+    })) ?? [];
+  }, [allBearbeiter]);
 
   useMemo(async () => {
     const window = getCurrent();
@@ -73,25 +81,32 @@ export function SignIn() {
           <div>
             <form.Field
               name="bearbeiter"
+              validatorAdapter={zodValidator()}
               validators={{
-                onSubmit: (value) => {
-                  console.log('Validating bearbeiter:', value);
-                  if (!value?.value.name) {
-                    return 'Bitte wählen Sie einen Bearbeiter aus.';
-                  }
-                },
+                onSubmit: z.object({ name: z.string().trim().min(1, 'Es wird ein Bearbeiter benötigt') }),
               }}
             >
               {(field) => (
-                <BearbeiterInput
-                  items={allBearbeiter.data || []}
+                <ComboInput<Bearbeiter>
+                  items={allBearbeiterItems}
                   errors={field.state.meta.errors}
-                  labelText="Anmelden als:"
+                  label="Anmelden als:"
+                  addValueLabel="Bearbeiter anlegen:"
+                  allowNewValues={true}
+                  onAddNewValue={(name) => {
+                    field.handleChange({
+                      name,
+                      id: 'hans',
+                    });
+                  }}
+                  onChange={(e) =>
+                    e && field.handleChange({
+                      id: e,
+                      name: allBearbeiter.data?.find(b => b.id === e)?.name ?? e,
+                    })}
                   inputProps={{
                     name: field.name,
                     onBlur: field.handleBlur,
-                    onChange: (e) => field.handleChange({ id: e?.id || 'test', name: e?.name ?? '' }),
-                    required: true,
                     placeholder: allBearbeiter.isFetched ? 'Bearbeiter auswählen' : 'Bearbeiter laden...',
                   }}
                 />

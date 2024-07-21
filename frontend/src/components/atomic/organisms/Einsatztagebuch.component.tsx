@@ -51,12 +51,13 @@ export function EinsatztagebuchComponent() {
         cell: (context) => {
           const eintrag = context.row.original;
           return <span
-            className={clsx(eintrag.type !== 'GENERISCH' && 'text-gray-400', eintrag.archived && 'line-through decoration-red-500/75')}>{context.getValue()}</span>;
+            className={clsx(eintrag.type !== 'USER' && 'text-gray-400', eintrag.archived && 'line-through decoration-red-500/75')}>{context.getValue()}</span>;
         },
       }),
       columnHelper.accessor('type', {
         header: 'Typ',
         cell: (context) => context.getValue(),
+        enableGlobalFilter: true,
       }),
       columnHelper.display({
         header: 'Aktionen',

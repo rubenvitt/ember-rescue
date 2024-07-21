@@ -8,36 +8,41 @@ interface VirtualizedTableProps<T> {
 }
 
 function VirtualizedTable<T>({ table, virtualizer }: VirtualizedTableProps<T>) {
+
   return (
-    <table className="min-w-full divide-y divide-gray-300">
-      <thead className="bg-gray-50">
-      {table.getHeaderGroups().map((headerGroup) => (
-        <tr key={headerGroup.id} className="divide-x divide-gray-200">
-          {headerGroup.headers.map((header, idx) => (
-            <th
-              key={header.id}
-              scope="col"
-              className={clsx(
-                'sticky top-0 z-10 border-b border-gray-300 bg-gray-50 bg-opacity-75 py-3.5 px-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter',
-                idx === 0 && 'sm:pl-6 lg:pl-8',
-                idx === headerGroup.headers.length - 1 && 'sm:pr-6 lg:pr-8',
-              )}
-            >
-              {header.isPlaceholder
-                ? null
-                : flexRender(header.column.columnDef.header, header.getContext())
-              }
-            </th>
-          ))}
-        </tr>
-      ))}
-      </thead>
-      <tbody className="divide-y divide-gray-200 bg-white">
-      {virtualizer.getVirtualItems().map((virtualRow) => (
-        <TableRow key={virtualRow.key} virtualRow={virtualRow} table={table} />
-      ))}
-      </tbody>
-    </table>
+    <>
+      <div>
+      </div>
+      <table className="min-w-full divide-y divide-gray-300">
+        <thead className="bg-gray-50">
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id} className="divide-x divide-gray-200">
+            {headerGroup.headers.map((header, idx) => (
+              <th
+                key={header.id}
+                scope="col"
+                className={clsx(
+                  'sticky top-0 z-10 border-b border-gray-300 bg-gray-50 bg-opacity-75 py-3.5 px-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter',
+                  idx === 0 && 'sm:pl-6 lg:pl-8',
+                  idx === headerGroup.headers.length - 1 && 'sm:pr-6 lg:pr-8',
+                )}
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(header.column.columnDef.header, header.getContext())
+                }
+              </th>
+            ))}
+          </tr>
+        ))}
+        </thead>
+        <tbody className="divide-y divide-gray-200 bg-white">
+        {virtualizer.getVirtualItems().map((virtualRow) => (
+          <TableRow key={virtualRow.key} virtualRow={virtualRow} table={table} />
+        ))}
+        </tbody>
+      </table>
+    </>
   );
 }
 

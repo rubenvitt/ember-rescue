@@ -2,11 +2,12 @@ import React, { useCallback } from 'react';
 import { formatDate, formatDistanceToNow, formatISO } from 'date-fns';
 import { natoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
-import { useEinheiten } from '../../../hooks/einheiten.hook.js';
+import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { Badge } from '../../deprecated/badge.js';
 import { Einsatz } from '../../../types/types.js';
-import { ActionButton, ExpandableList } from '../molecules/ExpandableList.component.tsx';
+import { ExpandableList } from './ExpandableList.component.tsx';
+import { ActionButton } from '../../../types/expandableList.types.js';
 
 
 export const OffeneEinsaetzeList: React.FC = () => {
@@ -50,8 +51,6 @@ export const OffeneEinsaetzeList: React.FC = () => {
   const actionButtons: ActionButton<Einsatz>[] = [
     {
       label: 'Archivieren',
-      onClick: () => {
-      }, // This is not used when dialog is present
       color: 'red',
       dialog: {
         title: 'Laufenden Einsatz wirklich archivieren?',
@@ -65,7 +64,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
   ];
 
   return (
-    <ExpandableList
+    <ExpandableList<Einsatz>
       items={offeneEinsaetze.data || []}
       renderItem={renderEinsatz}
       renderExpandedContent={renderExpandedContent}

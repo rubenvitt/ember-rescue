@@ -42,7 +42,7 @@ export type CreateEinsatzDto = {
 
 export type CreateEinsatztagebuchDto = {
   content: string;
-  type: string;
+  type?: string;
   absender: string;
   empfaenger: string;
   timestamp: string;

@@ -16,7 +16,7 @@ export function useEinsatztagebuch() {
   const createEinsatztagebuchEintrag = useMutation<EinsatztagebuchEintrag, unknown, CreateEinsatztagebuchEintrag>({
     mutationKey: ['einsatztagebuch'],
     mutationFn: async (einsatztagebuchEintrag) => {
-      return await backendFetch('/einsatztagebuch', {
+      return await backendFetch<EinsatztagebuchEintrag>('/einsatztagebuch', {
         method: 'POST',
         body: JSON.stringify(einsatztagebuchEintrag),
         headers: {

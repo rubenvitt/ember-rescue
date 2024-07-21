@@ -4,6 +4,7 @@ import { XOR } from './helper.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 
 export type EinsatztagebuchEintragType =
+  'USER' |
   'GENERISCH' |
   'RESSOURCEN' |
   'KOMMUNIKATION' |
@@ -54,7 +55,7 @@ export type NavItem = {
 
 export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   bearbeiter: Bearbeiter;
-  type: EinsatztagebuchEintragType;
+  type?: EinsatztagebuchEintragType;
   content: string;
   archived: boolean;
   absender: string;
@@ -62,7 +63,7 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   createdAt: string;
 };
 
-export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter'>
+export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter' | 'archived' | 'createdAt'>
 
 export type NavItems = NavItem[]
 
@@ -97,7 +98,7 @@ export type QualifikationDto = {
   abkuerzung: string
 }
 
-export type StatusCode = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type StatusCode = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 'none';
 
 export type SmallStatusDto = {
   id: string

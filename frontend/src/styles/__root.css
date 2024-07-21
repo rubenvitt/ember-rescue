@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 html, body, #root {
-    height: 100%;
+    min-height: 100%;
     width: 100%;
 }
 
 html.dark {
-    background-color: black;
+    background-color: rgb(17 24 39);
 }
 
 html.dark body {

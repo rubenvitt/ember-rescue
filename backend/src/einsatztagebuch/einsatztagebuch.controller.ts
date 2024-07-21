@@ -42,6 +42,7 @@ export class EinsatztagebuchController {
       bearbeiterId,
       einsatzId,
       ...createEinsatztagebuchDto,
+      type: createEinsatztagebuchDto.type ?? 'USER',
     });
   }
 

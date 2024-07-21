@@ -11,7 +11,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
-import { useEinheiten } from '../../../hooks/einheiten.hook.js';
+import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
@@ -107,7 +107,7 @@ function _MapboxComponent() {
   const { einheitenImEinsatz } = useEinheiten();
 
   return <>
-    <div className="border border-gray-500 mb-2 px-6 py-2">
+    <div className="border border-gray-500 mb-2 px-6 py-2 dark:text-white">
       Einheiten der Karte hinzufügen (DEBUG)
       <div className="flex gap-2 overflow-scroll flex-nowrap">
         {einheitenImEinsatz.data?.map(einheit => (

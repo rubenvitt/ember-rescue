@@ -3,7 +3,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import { LayoutApp } from '../_layout/_layout-app.js';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
-import { useEinheiten } from '../../hooks/einheiten.hook.js';
+import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { EinheitDto } from '../../types/types.js';
@@ -82,6 +82,9 @@ function Einheiten() {
               }],
             },
           ]}
+          defaultValues={{
+            einheitId: einheiten.data?.find(() => true)?.id ?? '',
+          }}
         />
       ),
     };
