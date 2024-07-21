@@ -1,37 +1,47 @@
+import { gridItemStyles } from '../../../styles/dynamicGrid.styles.ts';
 import { Identifiable } from '../../../types/types.js';
 import { ItemType } from './Combobox.component.js';
 import { Fragment, ReactNode, useMemo } from 'react';
 
 export function DynamicGrid<T extends Identifiable>({
-                                                      items,
+                                                      items = [],
                                                       render,
+                                                      columns = 3,
                                                     }: {
   items?: ItemType<T>[];
   render: (item: T, className: string) => ReactNode;
+  columns?: number;
 }) {
   const renderItems = useMemo(() => {
-    return items?.map((itemWrapper, index) => {
-      let className = 'p-4 flex items-center justify-center';
+    return items.map((itemWrapper, index) => {
+      const isLastItem = index === items.length - 1;
+      const remainingItems = items.length % columns;
 
-      if (index === items.length - 1) { // Letztes Element
-        if (items.length % 3 === 1) {
-          className += ' col-span-3'; // Zentriert über volle Breite
-        } else if (items.length % 3 === 2) {
-          className += ' col-start-2 col-span-2'; // Zentriert über 2 Spalten
-        }
-      }
+      const span = isLastItem
+        ? remainingItems === 1
+          ? 'full'
+          : remainingItems === 2
+            ? 'two'
+            : 'default'
+        : 'default';
+
+      const className = gridItemStyles({ span });
 
       return (
         <Fragment key={itemWrapper.item.id}>
           {render(itemWrapper.item, className)}
         </Fragment>
       );
-    }) ?? [];
-  }, [items, render]);
+    });
+  }, [items, render, columns]);
 
+  // noinspection com.intellij.reactbuddy.ArrayToJSXMapInspection
   return (
-    <div className="grid grid-cols-3 gap-4 auto-rows-auto justify-items-center">
-      {renderItems.map((renderItem) => renderItem)}
+    <div
+      className={`grid gap-4 auto-rows-auto justify-items-center`}
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+    >
+      {renderItems}
     </div>
   );
 }

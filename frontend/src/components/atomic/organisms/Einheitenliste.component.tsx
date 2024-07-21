@@ -43,7 +43,7 @@ function EinheitListItem({ einheit }: EinheitListItemProps) {
 
   const statusItems = useMemo<ItemType<StatusDto>[]>(() => {
     return status.data?.map(item => ({
-      label: item.code,
+      label: String(item.code),
       secondary: item.bezeichnung,
       item,
     })) ?? [];
