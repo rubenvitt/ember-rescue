@@ -1,76 +1,22 @@
+import React, { useEffect, useState } from 'react';
 import { GenericForm } from './GenericForm.component.js';
 import storage from '../../../utils/storage.js';
-import { useEffect, useMemo, useState } from 'react';
-// @ts-ignore
-import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
-import { backendFetch } from '../../../utils/http.js';
-import { QueryOptions, useQueries, useQueryClient, UseQueryResult } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLocalServer } from '../../../hooks/local-network.hook.js';
 import { ServerMetadata } from '../../../types/types.js';
 import { ItemType } from '../molecules/Combobox.component.js';
 
 export type LocalSettings = {
-  baseUrl: string,
-  baseUrlHistory: string[]
-}
+  baseUrl: string;
+  baseUrlHistory: string[];
+};
 
-function useLocalServer(singleServer?: string) {
-  const [devices, setDevices] = useState<IpPortPair>();
-  useEffect(() => {
-    if (!singleServer) {
-      scanLocalNetworkOnlineHostsByPort({
-        port: 3000,
-      }).then((result: IpPortPair) => {
-        setDevices(result);
-        console.log(result);
-      });
-    }
-  }, []);
-  const queries = useMemo(
-    () => devices?.map((device: IpPortPair) => ({
-      queryKey: ['server', device.ip, device.port],
-      queryFn: () => backendFetch<ServerMetadata>(`http://${device.ip}:${device.port}/meta`)
-        .then((result) => {
-          return { id: result.serverId, url: 'http://' + device.ip + ':' + device.port, metadata: result };
-        })
-        .catch(e => {
-          console.log('error while fetching', e);
-          throw e;
-        }),
-      retry: 2,
-    }) as QueryOptions),
-    [devices],
-  );
-
-  const results = useQueries<{ id: string, url: string, metadata: ServerMetadata }[], {
-    id: string,
-    url: string,
-    metadata: ServerMetadata
-  }[]>({
-    queries: singleServer ? {
-      queryKey: ['server', singleServer],
-      queryFn: () => backendFetch<ServerMetadata>(singleServer + '/meta')
-        .then((result) => {
-          return { id: result.serverId, url: 'http://' + singleServer, metadata: result };
-        })
-        .catch(e => {
-          console.log('error while fetching', e);
-          throw e;
-        }),
-    } as QueryOptions : queries ?? [],
-    combine: (results: UseQueryResult<{ id: string, url: string, metadata: ServerMetadata }>[]) => {
-      console.log('combining', results);
-      return [...new Map(results.filter((result) => result.data?.id).map(result => [result.data!!.id, result.data])).values()];
-    },
-  });
-
-  return { localServers: results };
-}
-
-export function PrestartSettings() {
+export const PrestartSettings: React.FC = () => {
   const localSettings = storage().readLocalStorage<LocalSettings>('localSettings');
+  const queryClient = useQueryClient();
+
   const { localServers } = useLocalServer();
   const [servers, setServers] = useState<ItemType<{ id: string, url: string, metadata?: ServerMetadata }>[]>([]);
-  const { invalidateQueries, getQueryCache, removeQueries } = useQueryClient();
 
   useEffect(() => {
     console.log('setting servers...', localServers);
@@ -81,40 +27,32 @@ export function PrestartSettings() {
     })));
   }, [localServers]);
 
-  return <>
-    <GenericForm<LocalSettings>
-      defaultValues={localSettings ?? {
-        baseUrl: 'http://localhost:3000',
-        baseUrlHistory: [],
-      }}
-      onSubmit={(data) => {
-        console.log('searching', data, servers);
-        const newUrl = servers.find(server => server.item.id === data.baseUrl)?.item?.url ?? data.baseUrl;
-        console.log('using new url', newUrl);
+  const handleSubmit = (data: LocalSettings) => {
+    const newUrl = servers.find(server => server.item.id === data.baseUrl)?.item?.url ?? data.baseUrl;
+    const currentSettings = localSettings ?? { baseUrlHistory: [] };
+    const updatedSettings = {
+      baseUrl: newUrl,
+      baseUrlHistory: [newUrl, ...currentSettings.baseUrlHistory.filter(url => url !== newUrl)],
+    };
+    storage().writeLocalStorage('localSettings', updatedSettings);
+    queryClient.getQueryCache().clear();
+    queryClient.removeQueries();
+    queryClient.invalidateQueries({ queryKey: ['bearbeiter'] });
+  };
 
-        const currentSettings = localSettings ?? { baseUrlHistory: [] };
-        const updatedSettings = {
-          baseUrl: newUrl,
-          baseUrlHistory: [newUrl, ...(currentSettings.baseUrlHistory ?? []).filter(url => url !== newUrl)],
-        };
-        console.log('saving items', updatedSettings);
-        storage().writeLocalStorage('localSettings', updatedSettings);
-        getQueryCache().clear();
-        removeQueries();
-        invalidateQueries({
-          queryKey: ['bearbeiter'],
-        });
-      }}
+  return (
+    <GenericForm<LocalSettings>
+      defaultValues={localSettings ?? { baseUrl: 'http://localhost:3000', baseUrlHistory: [] }}
+      onSubmit={handleSubmit}
       sections={[{
         title: 'Backend API',
         fields: [{
           name: 'baseUrl',
           type: 'combo',
           label: 'URL zur Backend API',
-          items: servers ?? [],
+          items: servers,
           allowNewValues: true,
           onAddNewValue: (val) => {
-            console.log('added', val);
             setServers((prev) => [...(prev?.filter(item => item.item.id !== 'custom') ?? []), {
               label: val,
               item: { id: 'custom', url: val },
@@ -122,6 +60,7 @@ export function PrestartSettings() {
           },
           width: 'full',
         }],
-      }]} />
-  </>;
-}
+      }]}
+    />
+  );
+};
