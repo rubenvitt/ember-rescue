@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { GenericFormProps } from './GenericForm.component.js';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
 import { Button } from '../../deprecated/button.js';
+import { TableHeaderComponent } from '../molecules/TableHeader.component.js';
 
 interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'> {
   items: T[];
@@ -20,50 +21,33 @@ export function ListForm<T extends Record<string, any>>({
                                                         }: ListFormProps<T>) {
   const [newItem, setNewItem] = useState<T | null>(null);
 
-  const handleAddItem = () => {
+  const handleAddItem = useCallback(() => {
     setNewItem({ ...itemTemplate });
-  };
+  }, [itemTemplate, produceDefaultItem]);
 
-  const handleSaveItem = (updatedItem: T, index: number) => {
-    const newItems = [...items];
-    newItems[index] = updatedItem;
-    onItemsChange(newItems);
-  };
+  const handleSaveItem = useCallback((updatedItem: T, index: number) => {
+    onItemsChange(items.map((item, i) => i === index ? updatedItem : item));
+  }, [items, onItemsChange]);
 
-  const handleDeleteItem = (index: number) => {
-    const newItems = items.filter((_, i) => i !== index);
-    onItemsChange(newItems);
-  };
+  const handleDeleteItem = useCallback((index: number) => {
+    onItemsChange(items.filter((_, i) => i !== index));
+  }, [items, onItemsChange]);
 
-  const handleSaveNewItem = (item: T) => {
+  const handleSaveNewItem = useCallback((item: T) => {
     onItemsChange([...items, item]);
     setNewItem(null);
-  };
+  }, [items, onItemsChange]);
 
-  const handleCancelNewItem = () => {
+  const handleCancelNewItem = useCallback(() => {
     setNewItem(null);
-  };
+  }, []);
 
   return (
     <div>
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 dark:bg-gray-800">
-        <tr>
-          {Object.keys(itemTemplate).map((key) => (
-            <th key={key}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              {key}
-            </th>
-          ))}
-          <th
-            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-            Actions
-          </th>
-        </tr>
-        </thead>
+        <TableHeaderComponent itemTemplate={itemTemplate} />
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
         {items.map((item, index) => (
-          // @ts-ignore
           <ListFormRow
             key={index}
             item={item}
