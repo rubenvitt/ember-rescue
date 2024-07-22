@@ -31,7 +31,7 @@ export const ExpandableListItem = <T, >({
       </button>
       {isExpanded && isExpandable && (
         <div className={expandedContentStyles()}>
-          {renderExpandedContent && renderExpandedContent(item)}
+          {renderExpandedContent?.(item)}
           <ActionButtons buttons={actionButtons} item={item} />
         </div>
       )}

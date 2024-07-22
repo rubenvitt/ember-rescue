@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { formatDate, formatDistanceToNow, formatISO } from 'date-fns';
 import { natoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
@@ -9,7 +9,6 @@ import { Einsatz } from '../../../types/types.js';
 import { ExpandableList } from './ExpandableList.component.tsx';
 import { ActionButton } from '../../../types/expandableList.types.js';
 
-
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
   const { einheiten } = useEinheiten();
@@ -19,20 +18,25 @@ export const OffeneEinsaetzeList: React.FC = () => {
     const beginnToNow = formatDistanceToNow(einsatz.beginn);
 
     return (
-      <>
+      <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
           <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            {einsatz.einsatz_alarmstichwort?.bezeichnung || 'Unbekanntes Alarmstichwort'}
+            {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
           </p>
           <Badge color="blue">Lokaler Einsatz</Badge>
           <Badge color="orange">Remote Einsatz</Badge>
         </div>
-        <div className="mt-1 flex flex-col text-xs leading-5 text-gray-500">
-          <p>Beginn: <time
-            dateTime={formatISO(einsatz.beginn)}>{formatDate(einsatz.beginn, natoDateTime)}</time> (vor {beginnToNow})
+        <div className="mt-1 text-right flex flex-col text-xs leading-5 text-blue-800 dark:text-blue-300">
+          <p>
+            Beginn:{' '}
+            <time dateTime={formatISO(einsatz.beginn)}>
+              {formatDate(einsatz.beginn, natoDateTime)}
+            </time>
+            {' '}
+            (Laufzeit bisher: {beginnToNow})
           </p>
         </div>
-      </>
+      </div>
     );
   }, []);
 
@@ -42,13 +46,13 @@ export const OffeneEinsaetzeList: React.FC = () => {
 
     return (
       <div className="text-sm text-gray-700 dark:text-gray-300">
-        <p>Erstellt von: {bearbeiter}</p>
-        <p>Aufgenommen durch: {einheit}</p>
+        <p>Erstellt von: {bearbeiter ?? 'Unbekannt'}</p>
+        <p>Aufgenommen durch: {einheit ?? 'Unbekannt'}</p>
       </div>
     );
   }, [einheiten.data, allBearbeiter.data]);
 
-  const actionButtons: ActionButton<Einsatz>[] = [
+  const actionButtons: ActionButton<Einsatz>[] = useMemo(() => [
     {
       label: 'Archivieren',
       color: 'red',
@@ -60,12 +64,16 @@ export const OffeneEinsaetzeList: React.FC = () => {
         onConfirm: (einsatz) => einsatzAbschliessen.mutate(einsatz),
       },
     },
-    { label: 'Einsatz öffnen', onClick: (einsatz) => saveEinsatz(einsatz), color: 'blue' },
-  ];
+    {
+      label: 'Einsatz öffnen',
+      onClick: (einsatz) => saveEinsatz(einsatz),
+      color: 'blue',
+    },
+  ], [einsatzAbschliessen, saveEinsatz]);
 
   return (
     <ExpandableList<Einsatz>
-      items={offeneEinsaetze.data || []}
+      items={offeneEinsaetze.data ?? []}
       renderItem={renderEinsatz}
       renderExpandedContent={renderExpandedContent}
       actionButtons={actionButtons}
