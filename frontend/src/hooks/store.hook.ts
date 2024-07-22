@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Bearbeiter, Einsatz } from '../types/types.js';
 import storage from '../utils/storage.js';
-import { ContextualNavigation } from '../components/atomic/organisms/Sidebar.component.js';
+import { ContextualNavigation } from '../components/atomic/templates/Sidebar.component.js';
 
 type Store = {
   bearbeiter: Bearbeiter | null;

@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { UserProfileDropdown } from '../../components/atomic/molecules/UserProfileDropdown.js';
 import { useTheme } from '../../hooks/theme.hook.js';
-import { SidebarComponent } from '../../components/atomic/organisms/Sidebar.component.js';
+import { SidebarComponent } from '../../components/atomic/templates/Sidebar.component.js';
 import { useStore } from '../../hooks/store.hook.js';
 import { useNetwork } from '@reactuses/core';
 import {
