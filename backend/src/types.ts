@@ -5,7 +5,7 @@ export type BearbeiterDto = {
   name: string;
 };
 
-export type NewBearbeiterDto = Omit<BearbeiterDto, 'id'>;
+export type CreateBearbeiterDto = Omit<BearbeiterDto, 'id'>;
 
 export type QualifikationDto = {
   id: string;
