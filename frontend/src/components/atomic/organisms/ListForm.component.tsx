@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { GenericFormProps } from './GenericForm.component.js';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
 import { Button } from '../../deprecated/button.js';
 import { TableHeaderComponent } from '../molecules/TableHeader.component.js';
+import { GenericFormProps } from '../../../types/form.types.ts';
 
 interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'> {
   items: T[];
@@ -18,7 +18,9 @@ export function ListForm<T extends Record<string, any>>({
                                                           renderFunctions,
                                                           produceDefaultItem,
                                                           ...genericFormProps
-                                                        }: ListFormProps<T>) {
+                                                        }: ListFormProps<T> & {
+  produceDefaultItem?: (item: T) => T
+}) {
   const [newItem, setNewItem] = useState<T | null>(null);
 
   const handleAddItem = useCallback(() => {
@@ -65,6 +67,7 @@ export function ListForm<T extends Record<string, any>>({
             onDelete={handleCancelNewItem}
             formProps={genericFormProps}
             renderFunctions={renderFunctions}
+            produceDefaultItem={produceDefaultItem}
             isNew
           />
         )}
