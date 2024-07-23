@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { SignIn } from '../components/atomic/templates/SignIn.js';
+import { SignIn } from '../components/atomic/organisms/SignIn.js';
 import { useBearbeiter } from '../hooks/bearbeiter.hook.js';
 import { useEffect } from 'react';
 

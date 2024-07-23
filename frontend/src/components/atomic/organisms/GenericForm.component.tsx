@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
 import React, { forwardRef, useCallback, useImperativeHandle } from 'react';
-import { Button } from '../../deprecated/button.js';
 import { FormField } from '../molecules/FormField.component.js';
 import { BaseFormField, SimpleFormField } from '../../../types/formfield.types.js';
 import { zodValidator } from '@tanstack/zod-form-adapter';
@@ -18,6 +17,8 @@ import { ZodType, ZodTypeDef } from 'zod';
 import { buttonContainerStyles, formStyles } from '../../../styles/form.styles.ts';
 import { FormSection } from './FormSection.js';
 import { GenericFormProps, GenericFormRef } from '../../../types/form.types.ts';
+import { Button } from '../molecules/Button.component.tsx';
+import { PiArrowArcRight } from 'react-icons/pi';
 
 
 export const GenericForm = forwardRef(function GenericForm<
@@ -102,11 +103,11 @@ export const GenericForm = forwardRef(function GenericForm<
       ))}
       <div className={buttonContainerStyles({ layout })}>
         {onReset && (
-          <Button type="button" onClick={onReset} outline>{resetText}</Button>
+          <Button type="button" onClick={onReset} intent="outline">{resetText}</Button>
         )}
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
-            <Button type="submit" disabled={!canSubmit} color="primary">
+            <Button type="submit" disabled={!canSubmit} color="primary" icon={PiArrowArcRight} iconPosition="right">
               {isSubmitting ? 'Submitting...' : submitText}
             </Button>
           )}

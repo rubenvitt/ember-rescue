@@ -73,7 +73,11 @@ export function FormField<
     case 'radio':
       return <RadioInput {...commonProps} options={field.options} />;
     case 'combo':
-      const defaultItem = field.items?.find(item => item.item.id === fieldApi.state.value);
+      const defaultItem = field.items?.find(item => item.item.id === fieldApi.state.value)
+        ?? (allowNewValues ? {
+          item: { id: '' },
+          label: fieldApi.state.value,
+        } as ItemType<Identifiable> : undefined);
       return (
         <ComboInputWrapper
           items={field.items as ItemType<Identifiable>[]}
