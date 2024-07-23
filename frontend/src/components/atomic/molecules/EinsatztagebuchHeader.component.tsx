@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../../deprecated/button.js';
+import { Button } from './Button.component.tsx';
 
 export const EinsatztagebuchHeaderComponent: React.FC<{
   inputVisible: boolean;

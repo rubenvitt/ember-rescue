@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, useMemo } from 'react';
 import { ButtonProps } from '../../../types/button.types.ts';
 import { buttonVariants } from '../../../styles/button.styles.ts';
-import { Link } from '../../deprecated/link.js';
+import { Link } from '../atoms/Link.js';
 import { TouchTarget } from '../atoms/TouchTarget.component.js';
 import * as Headless from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';

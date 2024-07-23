@@ -4,7 +4,7 @@ import { natoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { Badge } from '../../deprecated/badge.js';
+import { Badge } from '../atoms/Badge.component.js';
 import { Einsatz } from '../../../types/types.js';
 import { ExpandableList } from './ExpandableList.component.tsx';
 import { ActionButton } from '../../../types/expandableList.types.js';

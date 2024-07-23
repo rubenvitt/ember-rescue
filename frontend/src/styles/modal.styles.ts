@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import { ButtonColor } from '../components/deprecated/button.js';
+import { ButtonColor } from './button.styles.js';
 
 type ColorVariants = {
-  [color in ButtonColors]: string
+  [color in ButtonColor]: string
 };
 
 const colorVariants: ColorVariants = {

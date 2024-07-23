@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../../deprecated/link.js';
+import { Link } from '../atoms/Link.js';
 import { navItemStyles } from '../../../styles/nav.styles.js';
 import { NavItemProps } from '../../../types/nav.types.js';
 

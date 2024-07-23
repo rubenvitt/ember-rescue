@@ -164,8 +164,8 @@ export const styles: {
   },
 };
 
-export type ButtonColor = keyof typeof styles.colors;
 
+export type ButtonColor = keyof typeof styles.colors;
 
 // Define button variants using cva
 export const buttonVariants = cva(

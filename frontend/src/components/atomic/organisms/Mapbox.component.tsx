@@ -5,7 +5,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import mapboxgl, { LngLat } from 'mapbox-gl';
-import { Button } from '../../deprecated/button.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -17,6 +16,7 @@ import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
 import { RescueControl } from './mapbox/Controls.js';
+import { Button } from '../molecules/Button.component.tsx';
 
 
 function _MapboxComponent() {
@@ -113,7 +113,7 @@ function _MapboxComponent() {
         {einheitenImEinsatz.data?.map(einheit => (
           <Button
             key={einheit.id}
-            outline
+            intent="outline"
             className="break-keep"
             onClick={() => {
               let presentMarker = map?._markers?.find((m) => m.getElement().id === `einheit-${einheit.funkrufname}`);
@@ -133,7 +133,7 @@ function _MapboxComponent() {
                 element.className = 'w-20 h-20';
                 element.id = `einheit-${einheit.funkrufname}`;
                 map && new mapboxgl.Marker({ element, draggable: true })
-                  .setPopup(new mapboxgl.Popup().setText(`Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter()))}`))
+                  .setPopup(new mapboxgl.Popup().setText(`Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter())!)}`))
                   .setLngLat(map.getCenter())
                   .addTo(map);
               }

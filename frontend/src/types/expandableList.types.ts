@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import { ButtonColor } from '../styles/button.styles.js';
+import { buttonVariants } from '../styles/button.styles.js';
 import { Identifiable } from './types.js';
+import { VariantProps } from 'class-variance-authority';
 
-export type ActionButton<T> = {
+export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
   label: string;
-  color: ButtonColor;
 } & (
   | {
   onClick: (item: T) => void;

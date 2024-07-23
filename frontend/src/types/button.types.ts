@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, ComponentType, ReactNode, SVGProps } from 'react';
 import * as Headless from '@headlessui/react';
 import { VariantProps } from 'class-variance-authority';
-import { Link } from '../components/deprecated/link.js';
+import { Link } from '../components/atomic/atoms/Link.js';
 import { buttonVariants } from '../styles/button.styles.ts';
 
 export type ButtonProps = VariantProps<typeof buttonVariants> & {
