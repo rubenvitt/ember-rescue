@@ -72,5 +72,7 @@ export class EinsatzEinheitenController {
       einsatzId,
       bearbeiterId,
     );
+
+    return { status: 'ok' };
   }
 }

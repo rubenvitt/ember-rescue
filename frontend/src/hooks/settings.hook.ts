@@ -1,29 +1,28 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../utils/http.js';
 import { EinheitDto } from '../types/types.js';
+import { services } from '../services/backend/index.js';
 
 export type Settings = {
-  mapboxApi: string,
-  einheiten: EinheitDto[]
-}
+  mapboxApi: string;
+  einheiten: EinheitDto[];
+};
 
 export function useSettings() {
-  let query = useQuery<Settings>({
-    queryKey: ['settings'],
-    queryFn: () => {
-      return backendFetch('/settings');
+  const settings = useQuery<Settings>({
+    queryKey: services.settings.fetchSettings.queryKey,
+    queryFn: services.settings.fetchSettings.queryFn,
+  });
+
+  const save = useMutation<unknown, unknown, Settings>({
+    mutationKey: services.settings.saveSettings.mutationKey,
+    mutationFn: services.settings.saveSettings.mutationFn,
+    onSuccess: () => {
+      return Promise.all([
+        services.settings.invalidateQueries(),
+        services.einheiten.invalidateQueries(),
+      ]);
     },
   });
 
-  const mutation = useMutation<void, unknown, Settings>({
-    mutationKey: ['settings'],
-    mutationFn: (settings) => {
-      return backendFetch('/settings', {
-        body: JSON.stringify(settings),
-        method: 'POST',
-      });
-    },
-  });
-
-  return { settings: query, save: mutation };
+  return { settings, save };
 }

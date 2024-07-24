@@ -17,6 +17,7 @@ export const statusLabel = cva<{ status: { [key in StatusCode]: string } }>(
         8: 'bg-teal-200/30 text-teal-900 ring-teal-500 dark:bg-teal-800/30 dark:text-teal-100 hover:bg-teal-500/30',
         9: 'bg-pink-200/30 text-pink-900 ring-pink-500 dark:bg-pink-800/30 dark:text-pink-100 hover:bg-pink-500/30',
         0: 'bg-rose-200/30 text-rose-900 ring-rose-500 dark:bg-rose-800/30 dark:text-rose-100 hover:bg-rose-500/30',
+        none: '',
       },
     },
     defaultVariants: {

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../utils/http.js';
+import { services } from '../services/backend/index.js';
 
 type PossibleSecrets = 'mapboxApi'
 
@@ -11,25 +11,16 @@ type Secrets = {
 type Props = { secretKey: PossibleSecrets }
 
 export function useSecret({ secretKey }: Props) {
-  let query = useQuery<Secrets>({
-    queryKey: ['secrets', secretKey],
-    queryFn: () => {
-      return backendFetch(`/secrets/${secretKey}`);
-    },
+  const secret = useQuery<Secrets>({
+    queryKey: services.secrets.fetchSecret.queryKey(secretKey),
+    queryFn: () => services.secrets.fetchSecret.queryFn(secretKey),
   });
 
-  const mutation = useMutation<void, unknown, string>({
-    mutationKey: ['secrets', secretKey],
-    mutationFn: (value) => {
-      return backendFetch('/secrets', {
-        body: JSON.stringify({
-          key: secretKey,
-          value: value,
-        }),
-        method: 'POST',
-      });
-    },
+  const save = useMutation<unknown, unknown, string>({
+    mutationKey: services.secrets.saveSecret.mutationKey(secretKey),
+    mutationFn: services.secrets.saveSecret.mutationFn(secretKey),
+    onSuccess: services.secrets.invalidateQueries(secretKey),
   });
 
-  return { secret: query, save: mutation };
+  return { secret, save };
 }

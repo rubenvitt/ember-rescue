@@ -56,7 +56,7 @@ function Einheiten() {
     console.log('Submitted:', { fahrzeug, kraefte: einheiten });
     closeModal();
     const einheitId = formRef.current?.form?.getFieldValue('einheitId');
-    einheitId && addEinheitToEinsatz.mutate({ einheitId });
+    return einheitId && addEinheitToEinsatz.mutateAsync({ einheitId });
   };
 
   const { closeModal, openModal } = useModal();
@@ -99,6 +99,7 @@ function Einheiten() {
       {einheitenImEinsatz.isFetched &&
         (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
           <EmptyEinheitenState />)}
+      <EmptyEinheitenState />
     </LayoutApp>
   );
 }

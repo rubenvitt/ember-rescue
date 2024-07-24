@@ -8,7 +8,7 @@ export function ensureSlashBetween(part1: string, part2: string) {
   return `${part1}/${part2}`.replace(/([^:]\/)\/+/g, '$1');
 }
 
-export function backendFetch<T>(path: string, init?: RequestInit) {
+export async function backendFetch<T>(path: string, init?: RequestInit) {
   const baseUrl = storage().readLocalStorage<LocalSettings>('localSettings');
   const bearbeiter = storage().readLocalStorage<Bearbeiter>('bearbeiter');
   const einsatzId = storage().readLocalStorage<string>('einsatz');
@@ -36,11 +36,10 @@ export function backendFetch<T>(path: string, init?: RequestInit) {
       : fetch(ensureSlashBetween(baseUrl?.baseUrl ?? 'http://localhost:3000', path), requestInit);
   }
 
-  return fetchPromise.then(async (res) => {
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
-    }
-    return await res.json() as T;
-  });
+  let res = await fetchPromise;
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message);
+  }
+  return await res.json() as T;
 }

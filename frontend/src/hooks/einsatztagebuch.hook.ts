@@ -1,49 +1,25 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types/types.js';
-import { backendFetch } from '../utils/http.js';
 import { useStore } from './store.hook.js';
+import { services } from '../services/backend/index.js';
 
 export function useEinsatztagebuch() {
-  const queryClient = useQueryClient();
   const { einsatzId } = useStore();
   const { data } = useQuery<EinsatztagebuchEintrag[]>({
-    queryKey: ['einsatztagebuch', einsatzId],
-    queryFn: async () => {
-      return await backendFetch('/einsatztagebuch');
-    },
+    queryKey: services.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryKey({ einsatzId }),
+    queryFn: services.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryFn,
   });
 
   const createEinsatztagebuchEintrag = useMutation<EinsatztagebuchEintrag, unknown, CreateEinsatztagebuchEintrag>({
-    mutationKey: ['einsatztagebuch'],
-    mutationFn: async (einsatztagebuchEintrag) => {
-      return await backendFetch<EinsatztagebuchEintrag>('/einsatztagebuch', {
-        method: 'POST',
-        body: JSON.stringify(einsatztagebuchEintrag),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['einsatztagebuch'] });
-    },
+    mutationKey: services.einsatztagebuch.createEinsatztagebuchEintrag.mutationKey({ einsatzId }),
+    mutationFn: services.einsatztagebuch.createEinsatztagebuchEintrag.mutationFn,
+    onSuccess: services.einsatztagebuch.invalidateQueries,
   });
 
-  const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { einsatztagebuchEintragId }>({
-    mutationKey: ['einsatztagebuch'],
-    mutationFn: async ({ einsatztagebuchEintragId }) => {
-      if (!einsatztagebuchEintragId) {
-        return Promise.reject(new Error('einsatztagebuchEintragId ist erforderlich'));
-      }
-      return await backendFetch(`/einsatztagebuch/${einsatztagebuchEintragId}/archive`, {
-        method: 'POST',
-      });
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['einsatztagebuch'],
-      });
-    },
+  const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { einsatztagebuchEintragId: string }>({
+    mutationKey: services.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationKey({ einsatzId }),
+    mutationFn: services.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationFn,
+    onSuccess: services.einsatztagebuch.invalidateQueries,
   });
 
   return {

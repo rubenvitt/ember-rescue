@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { QualifikationDto } from '../types/types.js';
-import { backendFetch } from '../utils/http.js';
+import { services } from '../services/backend/index.js';
 
 export const useQualifikationen = () => {
-  let { data: qualifikationen, isLoading, isFetched } = useQuery<QualifikationDto[]>({
-    queryKey: ['qualifikationen'],
-    queryFn: async () => backendFetch('/qualifikationen'),
+  const qualifikationen = useQuery<QualifikationDto[]>({
+    queryKey: services.qualifikationen.fetchAllQualifikationen.queryKey,
+    queryFn: services.qualifikationen.fetchAllQualifikationen.queryFn,
   });
 
-  return { qualifikationen: { data: qualifikationen, isLoading, isFetched } };
+  return { qualifikationen };
 };

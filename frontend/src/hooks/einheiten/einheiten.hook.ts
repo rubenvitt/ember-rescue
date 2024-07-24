@@ -1,19 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { EinheitDto, EinheitTypDto } from '../../types/types.js';
-import { backendFetch } from '../../utils/http.js';
 import { useEinsatz } from '../einsatz.hook.js';
 import { useMemo } from 'react';
+import { services } from '../../services/backend/index.js';
+import { PatchEinheitenType } from '../../services/backend/einheiten.js';
 
 export function useEinheiten(props?: { einheitId?: string }) {
-  const queryClient = useQueryClient();
   const { einsatzId } = useEinsatz();
   const einheiten = useQuery<EinheitDto[]>({
-    queryKey: ['einheiten'],
-    queryFn: async () => backendFetch('/einheiten'),
+    queryKey: services.einheiten.fetchAllEinheiten.queryKey,
+    queryFn: services.einheiten.fetchAllEinheiten.queryFn,
   });
   const einheitenImEinsatz = useQuery<EinheitDto[]>({
-    queryKey: ['einheiten', einsatzId],
-    queryFn: () => backendFetch(`/einsatz/${einsatzId}/einheiten`),
+    queryKey: services.einheiten.fetchAllEinheitenImEinsatz.queryKey({ einsatzId }),
+    queryFn: services.einheiten.fetchAllEinheitenImEinsatz.queryFn({ einsatzId }),
     enabled: Boolean(einsatzId),
   });
 
@@ -26,70 +26,38 @@ export function useEinheiten(props?: { einheitId?: string }) {
   }, [einheiten, einheitenImEinsatz]);
 
   const einheitenTypen = useQuery<EinheitTypDto[]>({
-    queryKey: ['einheiten-typen'],
-    queryFn: async () => backendFetch('/einheiten/typen'),
+    queryKey: services.einheiten.fetchEinheitenTypen.queryKey,
+    queryFn: services.einheiten.fetchEinheitenTypen.queryFn,
   });
 
-  const patchEinheiten = useMutation<unknown, unknown, (Omit<EinheitDto, '_count' | 'status' | 'einheitTyp' | 'id'> & Partial<Pick<EinheitDto, 'id'>> & {
-    einheitTypId: string
-  })[]>({
-    mutationKey: ['einheiten'],
-    mutationFn: (einheiten) => backendFetch('/einheiten', {
-      method: 'PATCH',
-      body: JSON.stringify(einheiten),
-    }),
-    onSuccess: async () => {
-      await einheiten.refetch();
-    },
+  const patchEinheiten = useMutation<unknown, unknown, PatchEinheitenType>({
+    mutationKey: services.einheiten.patchEinheiten.mutationKey,
+    mutationFn: services.einheiten.patchEinheiten.mutationFn,
+    onSuccess: services.einheiten.invalidateQueries,
   });
 
   const addEinheitToEinsatz = useMutation<unknown, unknown, { einheitId: string }>({
-    mutationKey: ['einsatz-einheiten', 'add', einsatzId],
-    mutationFn: ({ einheitId }) => {
-      console.log('Add einheit to einsatz', einheitId, einsatzId);
-      return backendFetch(`/einsatz/${einsatzId}/einheiten/add`, {
-        body: JSON.stringify({
-          einheitId,
-        }),
-        method: 'POST',
-      });
-    },
+    mutationKey: services.einheiten.postAddEinheitToEinsatz.mutationKey({ einsatzId }),
+    mutationFn: services.einheiten.postAddEinheitToEinsatz.mutationFn({ einsatzId }),
+    onSuccess: services.einheiten.invalidateQueries,
   });
 
   const removeEinheitFromEinsatz = useMutation<unknown, unknown, {}>({
-    mutationKey: ['einheiten'],
-    mutationFn: async () => {
-      if (!props?.einheitId) {
-        return Promise.reject(new Error('einheitId ist erforderlich'));
-      }
-      console.log('Remove einheit', props.einheitId);
-      await backendFetch(`/einsatz/${einsatzId}/einheiten/${props.einheitId}`, {
-        method: 'DELETE',
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['einheiten'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['einheiten', props.einheitId],
-      });
-    },
+    mutationKey: services.einheiten.deleteEinheitFromEinsatz.mutationKey({ einsatzId, einheitId: props?.einheitId }),
+    mutationFn: services.einheiten.deleteEinheitFromEinsatz.mutationFn({ einheitId: props?.einheitId, einsatzId }),
+    onSuccess: services.einheiten.invalidateQueries,
   });
 
   const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
-    mutationKey: ['einheit', props?.einheitId, 'status'],
-    onSuccess: async () => await queryClient.invalidateQueries({ queryKey: ['einheiten'] }),
-    mutationFn: ({ statusId }) => {
-      if (!props?.einheitId) {
-        return Promise.reject(new Error('einheitId ist erforderlich'));
-      }
-      return backendFetch(`/einsatz/${einsatzId}/einheiten/${props.einheitId}/status`, {
-        body: JSON.stringify({
-          statusId,
-        }),
-        method: 'POST',
-      });
-    },
+    mutationKey: services.einheiten.postStatusForEinheit.mutationKey({
+      einsatzId,
+      einheitId: props?.einheitId,
+    }),
+    mutationFn: services.einheiten.postStatusForEinheit.mutationFn({ einsatzId, einheitId: props?.einheitId }),
+    onSuccess: services.einheiten.invalidateQueries,
   });
+
+
   return {
     einheiten,
     einheitenImEinsatz,

@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../utils/http.js';
 import { Alarmstichwort } from '../types/types.js';
+import { services } from '../services/backend/index.js';
 
 export function useAlarmstichworte() {
   const alarmstichworte = useQuery<Alarmstichwort[]>({
-    queryKey: ['alarmstichwort'],
-    queryFn: () => backendFetch('/alarmstichwort'),
+    queryKey: services.alarmstichworte.fetchAllAlarmstichworte.queryKey,
+    queryFn: services.alarmstichworte.fetchAllAlarmstichworte.queryFn,
   });
 
   return { alarmstichworte };

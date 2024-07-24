@@ -1,16 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { backendFetch } from '../utils/http.js';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Einsatz } from '../types/types.js';
 import { useStore } from './store.hook.js';
+import { services } from '../services/backend/index.js';
 
 export function useEinsatz() {
   const { setEinsatz, einsatzId, removeEinsatz } = useStore();
-  const queryClient = useQueryClient();
 
   const singleEinsatz = useQuery<Einsatz | null>({
-    queryKey: ['einsatz', einsatzId],
+    queryKey: services.einsatze.fetchSingleEinsatz.queryKey({ einsatzId }),
     queryFn: async () => {
-      return backendFetch<Einsatz>(`/einsatz/${einsatzId}`).catch(() => {
+      return services.einsatze.fetchSingleEinsatz.queryFn({ einsatzId }).catch(() => {
         removeEinsatz();
         return null;
       });
@@ -19,27 +18,20 @@ export function useEinsatz() {
   });
 
   const offeneEinsaetze = useQuery<Einsatz[]>({
-    queryKey: ['offeneEinsaetze'],
-    queryFn: async () => {
-      return backendFetch('/einsatz?abgeschlossen=false');
-    },
+    queryKey: services.einsatze.fetchOffeneEinsaetze.queryKey,
+    queryFn: services.einsatze.fetchOffeneEinsaetze.queryFn,
   });
 
-  const createEinsatz = useMutation<Einsatz, unknown, unknown>({
-    mutationFn: async (data: unknown) => {
-      return backendFetch('/einsatz', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
-    },
+  const createEinsatz = useMutation<Einsatz, unknown, Einsatz>({
+    mutationKey: services.einsatze.createEinsatz.mutationKey,
+    mutationFn: services.einsatze.createEinsatz.mutationFn,
+    onSuccess: services.einsatze.invalidateQueries,
   });
 
   const einsatzAbschliessen = useMutation<unknown, unknown, Einsatz>({
-    mutationKey: ['offeneEinsaetze'],
-    mutationFn: async (einsatz) =>
-      await backendFetch(`/einsatz/${einsatz.id}/close`, {
-        method: 'PUT',
-      }).then(() => queryClient.invalidateQueries({ queryKey: ['offeneEinsaetze'] })),
+    mutationKey: services.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
+    mutationFn: services.einsatze.einsatzAbschliessen.mutationFn,
+    onSuccess: services.einsatze.invalidateQueries,
   });
 
   function saveEinsatz(einsatz: Einsatz) {
@@ -50,24 +42,8 @@ export function useEinsatz() {
     einsatzId,
     einsatz: { ...singleEinsatz, isDisabled: !einsatzId },
     saveEinsatz,
-    createEinsatz: {
-      isPending: createEinsatz.isPending,
-      isSuccess: createEinsatz.isSuccess,
-      isError: createEinsatz.isError,
-      mutate: createEinsatz.mutate,
-      mutateAsync: createEinsatz.mutateAsync,
-    },
-    offeneEinsaetze: {
-      isLoading: offeneEinsaetze.isLoading,
-      isFetched: offeneEinsaetze.isFetched,
-      data: offeneEinsaetze.data,
-    },
-    einsatzAbschliessen: {
-      isPending: einsatzAbschliessen.isPending,
-      isSuccess: einsatzAbschliessen.isSuccess,
-      isError: einsatzAbschliessen.isError,
-      mutate: einsatzAbschliessen.mutate,
-      mutateAsync: einsatzAbschliessen.mutateAsync,
-    },
+    createEinsatz,
+    offeneEinsaetze,
+    einsatzAbschliessen,
   };
 }
