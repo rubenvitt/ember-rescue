@@ -2,7 +2,7 @@ import { useStore } from './store.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../types/types.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { services } from '../services/backend/index.js';
+import { services } from '../services/index.js';
 
 type Props = {
   requireBearbeiter?: boolean;
@@ -13,30 +13,30 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   const navigate = useNavigate();
 
   const allBearbeiter = useQuery<Bearbeiter[]>({
-    queryKey: services.bearbeiter.fetchAllBearbeiter.queryKey,
-    queryFn: services.bearbeiter.fetchAllBearbeiter.queryFn,
+    queryKey: services.backend.bearbeiter.fetchAllBearbeiter.queryKey,
+    queryFn: services.backend.bearbeiter.fetchAllBearbeiter.queryFn,
   });
 
   const singleBearbeiter = useQuery<Bearbeiter, unknown, Bearbeiter>({
-    queryKey: services.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.id }),
+    queryKey: services.backend.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.id }),
     queryFn: async () => {
-      if (!bearbeiter?.id) return Promise.resolve(null);
-      console.log('Fetching bearbeiter:', bearbeiter);
-      return await services.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter?.id })
-        .catch(() => {
-          if (requireBearbeiter) {
-            // redirect to login
-            console.warn('Bearbeiter not found, redirecting to login');
-            navigate({ to: '/signin' });
-          }
-          return null;
-        });
+      if (!bearbeiter?.id) return null;
+      try {
+        return await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter?.id });
+      } catch (error) {
+        if (requireBearbeiter) {
+          console.warn('Bearbeiter not found, redirecting to login');
+          navigate({ to: '/signin' });
+        }
+        return null;
+      }
     },
   });
 
   const loginBearbeiter = useMutation<Bearbeiter, unknown, Bearbeiter | NewBearbeiter>({
-    mutationKey: services.bearbeiter.postNewBearbeiter.mutationKey,
-    mutationFn: services.bearbeiter.postNewBearbeiter.mutationFn,
+    mutationKey: services.backend.bearbeiter.postNewBearbeiter.mutationKey,
+    mutationFn: services.backend.bearbeiter.postNewBearbeiter.mutationFn,
+    onSuccess: services.backend.bearbeiter.invalidateQueries,
   });
 
   async function saveBearbeiter(bearbeiter: Bearbeiter | NewBearbeiter) {
@@ -49,19 +49,12 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   function remove() {
     console.log('Removing bearbeiter:', bearbeiter);
     removeBearbeiter();
+    services.backend.bearbeiter.invalidateQueries();
   }
 
   return {
-    bearbeiter: {
-      data: singleBearbeiter.data,
-      isFetched: singleBearbeiter.isFetched,
-      isLoading: singleBearbeiter.isLoading,
-    },
-    allBearbeiter: {
-      data: allBearbeiter.data,
-      isFetched: allBearbeiter.isFetched,
-      isLoading: allBearbeiter.isLoading,
-    },
+    bearbeiter: singleBearbeiter,
+    allBearbeiter,
     saveBearbeiter,
     removeBearbeiter: remove,
   };

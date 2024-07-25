@@ -1,4 +1,5 @@
 import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type BearbeiterDto = {
   id: string;
@@ -59,14 +60,19 @@ const EinsatztagebuchEintragTypesArray: EinsatztagebuchEintragType[] =
 
 export class CreateEinsatztagebuchDto {
   @IsNotEmpty()
+  @ApiProperty()
   content: string;
   @IsOptional()
   @IsIn(EinsatztagebuchEintragTypesArray)
+  @ApiProperty({ enum: EinsatztagebuchEintragEnum })
   type?: EinsatztagebuchEintragType;
   @IsNotEmpty()
+  @ApiProperty()
   absender: string;
   @IsNotEmpty()
+  @ApiProperty()
   empfaenger: string;
   @IsNotEmpty()
+  @ApiProperty({ pattern: 'YYYY-MM-ddThh:mm:ss' })
   timestamp: string;
 }

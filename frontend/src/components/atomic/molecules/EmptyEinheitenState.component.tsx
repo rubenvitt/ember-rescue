@@ -30,7 +30,7 @@ const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }
 );
 
 export function EmptyEinheitenState() {
-  const empfohleneEinheiten = useRecommendedEinheiten();
+  const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
   const { addEinheitToEinsatz, einheiten } = useEinheiten();
 
   const einheitenComboItems = useMemo(() => {

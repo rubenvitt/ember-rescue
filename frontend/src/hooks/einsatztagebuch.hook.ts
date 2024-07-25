@@ -1,25 +1,25 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types/types.js';
 import { useStore } from './store.hook.js';
-import { services } from '../services/backend/index.js';
+import { services } from '../services/index.js';
 
 export function useEinsatztagebuch() {
   const { einsatzId } = useStore();
   const { data } = useQuery<EinsatztagebuchEintrag[]>({
-    queryKey: services.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryKey({ einsatzId }),
-    queryFn: services.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryFn,
+    queryKey: services.backend.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryKey({ einsatzId }),
+    queryFn: services.backend.einsatztagebuch.fetchAllEinsatztagebuchEintraege.queryFn,
   });
 
   const createEinsatztagebuchEintrag = useMutation<EinsatztagebuchEintrag, unknown, CreateEinsatztagebuchEintrag>({
-    mutationKey: services.einsatztagebuch.createEinsatztagebuchEintrag.mutationKey({ einsatzId }),
-    mutationFn: services.einsatztagebuch.createEinsatztagebuchEintrag.mutationFn,
-    onSuccess: services.einsatztagebuch.invalidateQueries,
+    mutationKey: services.backend.einsatztagebuch.createEinsatztagebuchEintrag.mutationKey({ einsatzId }),
+    mutationFn: services.backend.einsatztagebuch.createEinsatztagebuchEintrag.mutationFn,
+    onSuccess: services.backend.einsatztagebuch.invalidateQueries,
   });
 
   const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { einsatztagebuchEintragId: string }>({
-    mutationKey: services.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationKey({ einsatzId }),
-    mutationFn: services.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationFn,
-    onSuccess: services.einsatztagebuch.invalidateQueries,
+    mutationKey: services.backend.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationKey({ einsatzId }),
+    mutationFn: services.backend.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationFn,
+    onSuccess: services.backend.einsatztagebuch.invalidateQueries,
   });
 
   return {

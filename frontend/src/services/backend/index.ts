@@ -9,7 +9,7 @@ import * as settings from './settings.js';
 import * as secrets from './secrets.js';
 
 
-export const services = {
+export default {
   einheiten,
   bearbeiter,
   einsatztagebuch,

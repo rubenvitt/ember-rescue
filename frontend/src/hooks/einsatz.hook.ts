@@ -1,15 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Einsatz } from '../types/types.js';
 import { useStore } from './store.hook.js';
-import { services } from '../services/backend/index.js';
+import { services } from '../services/index.js';
 
 export function useEinsatz() {
   const { setEinsatz, einsatzId, removeEinsatz } = useStore();
 
   const singleEinsatz = useQuery<Einsatz | null>({
-    queryKey: services.einsatze.fetchSingleEinsatz.queryKey({ einsatzId }),
+    queryKey: services.backend.einsatze.fetchSingleEinsatz.queryKey({ einsatzId }),
     queryFn: async () => {
-      return services.einsatze.fetchSingleEinsatz.queryFn({ einsatzId }).catch(() => {
+      return services.backend.einsatze.fetchSingleEinsatz.queryFn({ einsatzId }).catch(() => {
         removeEinsatz();
         return null;
       });
@@ -18,20 +18,20 @@ export function useEinsatz() {
   });
 
   const offeneEinsaetze = useQuery<Einsatz[]>({
-    queryKey: services.einsatze.fetchOffeneEinsaetze.queryKey,
-    queryFn: services.einsatze.fetchOffeneEinsaetze.queryFn,
+    queryKey: services.backend.einsatze.fetchOffeneEinsaetze.queryKey,
+    queryFn: services.backend.einsatze.fetchOffeneEinsaetze.queryFn,
   });
 
   const createEinsatz = useMutation<Einsatz, unknown, Einsatz>({
-    mutationKey: services.einsatze.createEinsatz.mutationKey,
-    mutationFn: services.einsatze.createEinsatz.mutationFn,
-    onSuccess: services.einsatze.invalidateQueries,
+    mutationKey: services.backend.einsatze.createEinsatz.mutationKey,
+    mutationFn: services.backend.einsatze.createEinsatz.mutationFn,
+    onSuccess: services.backend.einsatze.invalidateQueries,
   });
 
   const einsatzAbschliessen = useMutation<unknown, unknown, Einsatz>({
-    mutationKey: services.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
-    mutationFn: services.einsatze.einsatzAbschliessen.mutationFn,
-    onSuccess: services.einsatze.invalidateQueries,
+    mutationKey: services.backend.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
+    mutationFn: services.backend.einsatze.einsatzAbschliessen.mutationFn,
+    onSuccess: services.backend.einsatze.invalidateQueries,
   });
 
   function saveEinsatz(einsatz: Einsatz) {

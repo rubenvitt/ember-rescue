@@ -2,18 +2,18 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinsatz } from '../einsatz.hook.js';
 import { useMemo } from 'react';
-import { services } from '../../services/backend/index.js';
 import { PatchEinheitenType } from '../../services/backend/einheiten.js';
+import { services } from '../../services/index.js';
 
 export function useEinheiten(props?: { einheitId?: string }) {
   const { einsatzId } = useEinsatz();
   const einheiten = useQuery<EinheitDto[]>({
-    queryKey: services.einheiten.fetchAllEinheiten.queryKey,
-    queryFn: services.einheiten.fetchAllEinheiten.queryFn,
+    queryKey: services.backend.einheiten.fetchAllEinheiten.queryKey,
+    queryFn: services.backend.einheiten.fetchAllEinheiten.queryFn,
   });
   const einheitenImEinsatz = useQuery<EinheitDto[]>({
-    queryKey: services.einheiten.fetchAllEinheitenImEinsatz.queryKey({ einsatzId }),
-    queryFn: services.einheiten.fetchAllEinheitenImEinsatz.queryFn({ einsatzId }),
+    queryKey: services.backend.einheiten.fetchAllEinheitenImEinsatz.queryKey({ einsatzId }),
+    queryFn: services.backend.einheiten.fetchAllEinheitenImEinsatz.queryFn({ einsatzId }),
     enabled: Boolean(einsatzId),
   });
 
@@ -26,35 +26,41 @@ export function useEinheiten(props?: { einheitId?: string }) {
   }, [einheiten, einheitenImEinsatz]);
 
   const einheitenTypen = useQuery<EinheitTypDto[]>({
-    queryKey: services.einheiten.fetchEinheitenTypen.queryKey,
-    queryFn: services.einheiten.fetchEinheitenTypen.queryFn,
+    queryKey: services.backend.einheiten.fetchEinheitenTypen.queryKey,
+    queryFn: services.backend.einheiten.fetchEinheitenTypen.queryFn,
   });
 
   const patchEinheiten = useMutation<unknown, unknown, PatchEinheitenType>({
-    mutationKey: services.einheiten.patchEinheiten.mutationKey,
-    mutationFn: services.einheiten.patchEinheiten.mutationFn,
-    onSuccess: services.einheiten.invalidateQueries,
+    mutationKey: services.backend.einheiten.patchEinheiten.mutationKey,
+    mutationFn: services.backend.einheiten.patchEinheiten.mutationFn,
+    onSuccess: services.backend.einheiten.invalidateQueries,
   });
 
   const addEinheitToEinsatz = useMutation<unknown, unknown, { einheitId: string }>({
-    mutationKey: services.einheiten.postAddEinheitToEinsatz.mutationKey({ einsatzId }),
-    mutationFn: services.einheiten.postAddEinheitToEinsatz.mutationFn({ einsatzId }),
-    onSuccess: services.einheiten.invalidateQueries,
+    mutationKey: services.backend.einheiten.postAddEinheitToEinsatz.mutationKey({ einsatzId }),
+    mutationFn: services.backend.einheiten.postAddEinheitToEinsatz.mutationFn({ einsatzId }),
+    onSuccess: services.backend.einheiten.invalidateQueries,
   });
 
   const removeEinheitFromEinsatz = useMutation<unknown, unknown, {}>({
-    mutationKey: services.einheiten.deleteEinheitFromEinsatz.mutationKey({ einsatzId, einheitId: props?.einheitId }),
-    mutationFn: services.einheiten.deleteEinheitFromEinsatz.mutationFn({ einheitId: props?.einheitId, einsatzId }),
-    onSuccess: services.einheiten.invalidateQueries,
-  });
-
-  const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
-    mutationKey: services.einheiten.postStatusForEinheit.mutationKey({
+    mutationKey: services.backend.einheiten.deleteEinheitFromEinsatz.mutationKey({
       einsatzId,
       einheitId: props?.einheitId,
     }),
-    mutationFn: services.einheiten.postStatusForEinheit.mutationFn({ einsatzId, einheitId: props?.einheitId }),
-    onSuccess: services.einheiten.invalidateQueries,
+    mutationFn: services.backend.einheiten.deleteEinheitFromEinsatz.mutationFn({
+      einheitId: props?.einheitId,
+      einsatzId,
+    }),
+    onSuccess: services.backend.einheiten.invalidateQueries,
+  });
+
+  const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
+    mutationKey: services.backend.einheiten.postStatusForEinheit.mutationKey({
+      einsatzId,
+      einheitId: props?.einheitId,
+    }),
+    mutationFn: services.backend.einheiten.postStatusForEinheit.mutationFn({ einsatzId, einheitId: props?.einheitId }),
+    onSuccess: services.backend.einheiten.invalidateQueries,
   });
 
 

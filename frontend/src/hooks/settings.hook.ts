@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { EinheitDto } from '../types/types.js';
-import { services } from '../services/backend/index.js';
+import { services } from '../services/index.js';
 
 export type Settings = {
   mapboxApi: string;
@@ -9,17 +9,17 @@ export type Settings = {
 
 export function useSettings() {
   const settings = useQuery<Settings>({
-    queryKey: services.settings.fetchSettings.queryKey,
-    queryFn: services.settings.fetchSettings.queryFn,
+    queryKey: services.backend.settings.fetchSettings.queryKey,
+    queryFn: services.backend.settings.fetchSettings.queryFn,
   });
 
   const save = useMutation<unknown, unknown, Settings>({
-    mutationKey: services.settings.saveSettings.mutationKey,
-    mutationFn: services.settings.saveSettings.mutationFn,
+    mutationKey: services.backend.settings.saveSettings.mutationKey,
+    mutationFn: services.backend.settings.saveSettings.mutationFn,
     onSuccess: () => {
       return Promise.all([
-        services.settings.invalidateQueries(),
-        services.einheiten.invalidateQueries(),
+        services.backend.settings.invalidateQueries(),
+        services.backend.einheiten.invalidateQueries(),
       ]);
     },
   });

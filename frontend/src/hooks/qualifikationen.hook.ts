@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { QualifikationDto } from '../types/types.js';
-import { services } from '../services/backend/index.js';
+import { services } from '../services/index.js';
 
 export const useQualifikationen = () => {
   const qualifikationen = useQuery<QualifikationDto[]>({
-    queryKey: services.qualifikationen.fetchAllQualifikationen.queryKey,
-    queryFn: services.qualifikationen.fetchAllQualifikationen.queryFn,
+    queryKey: services.backend.qualifikationen.fetchAllQualifikationen.queryKey,
+    queryFn: services.backend.qualifikationen.fetchAllQualifikationen.queryFn,
   });
 
   return { qualifikationen };
