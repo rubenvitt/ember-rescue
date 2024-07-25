@@ -29,11 +29,11 @@ export interface RadioInputProps extends BaseInputProps {
 }
 
 export interface ComboInputProps<Item extends Identifiable> {
-  items: ItemType<Item>[];
-  onChange: (item: string | null) => void;
-  disabled?: boolean;
-  allowNewValues?: boolean;
-  onAddNewValue?: (newValue: string) => void;
-  defaultItem?: ItemType<Item>;
-  errors?: ValidationError[];
+  items: ItemType<Item>[],
+  onChange: (item: string | null) => void,
+  disabled?: boolean,
+  allowNewValues?: boolean,
+  onAddNewValue?: (newValue: string) => void,
+  defaultItem?: ItemType<Item>,
+  errors?: ValidationError[],
 }

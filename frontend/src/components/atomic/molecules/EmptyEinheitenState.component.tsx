@@ -1,9 +1,10 @@
 import { useRecommendedEinheiten } from '../../../hooks/einheiten/recommended-einheiten.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { ComboInput } from './Combobox.component.js';
 import { Button } from './Button.component.tsx';
 import { PiPlus } from 'react-icons/pi';
 import React, { useCallback, useMemo } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { FormField } from './FormField.component.js';
 
 const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }> = ({ einheit, onAdd }) => (
   <li>
@@ -32,6 +33,12 @@ const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }
 export function EmptyEinheitenState() {
   const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
   const { addEinheitToEinsatz, einheiten } = useEinheiten();
+  const form = useForm<{ einheit: string }>({
+    onSubmit({ value }) {
+      handleAddEinheit(value.einheit);
+      form.reset();
+    },
+  });
 
   const einheitenComboItems = useMemo(() => {
     return einheiten.data?.map((einheit) => ({
@@ -56,15 +63,22 @@ export function EmptyEinheitenState() {
         </p>
       </div>
 
-      <form className="mt-6 sm:flex sm:items-center" action="#">
+      <form className="mt-6 sm:flex sm:items-center" onSubmit={(e) => {
+        e.preventDefault();
+        return form.handleSubmit();
+      }}>
         <label htmlFor="einheit" className="sr-only">Hinzuzufügende Einheit</label>
         <div className="grid grid-cols-1 sm:flex-auto">
-          <ComboInput
-            items={einheitenComboItems ?? []}
-            onChange={id => {
-              console.log('Selected Einheit:', id);
-            }}
-          />
+          <form.Field name={'einheit'}>
+            {fieldApi => <FormField
+              field={{
+                items: einheitenComboItems ?? [],
+                label: 'Einheit auswählen',
+                name: 'einheit',
+                type: 'combo',
+              }}
+              fieldApi={fieldApi} layout={'simple'} />}
+          </form.Field>
         </div>
         <div className="mt-3 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
           <Button type="submit">Disponieren</Button>

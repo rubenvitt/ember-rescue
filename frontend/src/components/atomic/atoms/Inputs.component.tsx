@@ -225,16 +225,10 @@ export const RadioInput: React.FC<RadioInputProps> = ({
 };
 
 export const ComboInputWrapper: React.FC<ComboInputProps<Identifiable>> = ({
-                                                                             items,
-                                                                             onChange,
-                                                                             defaultItem,
                                                                              ...props
                                                                            }) => {
   return (
     <ComboInput
-      items={items}
-      onChange={onChange}
-      defaultItem={defaultItem}
       {...props}
     />
   );

@@ -21,7 +21,6 @@ type AddEinheitType = {
 }
 
 function Einheiten() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [fahrzeug, setFahrzeug] = useState('');
   const { qualifikationen } = useQualifikationen();
   const {

@@ -31,7 +31,11 @@ export class EinsatzEinheitenController {
     @Body() body: { einheitId: string },
   ) {
     const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    this.logger.log('Add Einheit to Einsatz', einsatzId);
+    this.logger.log('Add Einheit to Einsatz', {
+      einsatzId,
+      body,
+      bearbeiterId,
+    });
     await this.einheitenService.addEinheitToEinsatz(
       body.einheitId,
       einsatzId,

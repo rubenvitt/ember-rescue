@@ -29,7 +29,7 @@ export const fetchAllEinheitenImEinsatz = {
 
 export const postAddEinheitToEinsatz = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
-  mutationFn: ({ einsatzId }: { einsatzId: string | null }) => async ({ einheitId }: { einheitId?: string }) => {
+  mutationFn: ({ einsatzId }: { einsatzId: string | null }) => async ({ einheitId }: { einheitId: string }) => {
     console.log('Add einheit to einsatz', einheitId, einsatzId);
     return await backendFetch<{ status: string }>(`/einsatz/${einsatzId}/einheiten/add`, {
       body: JSON.stringify({

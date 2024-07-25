@@ -6,8 +6,6 @@ import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { useMemo } from 'react';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
-import { useQuery } from '@tanstack/react-query';
-import { backendFetch } from '../../utils/http.js';
 // @ts-ignore
 import type { IpPortPair } from 'tauri-plugin-network-api';
 
@@ -25,19 +23,6 @@ const einheitTemplate: Pick<EinheitDto, 'id' | 'funkrufname' | 'kapazitaet' | 'i
   kapazitaet: 2,
   istTemporaer: false,
 };
-type ServerInfo = { version: string, serverName: string, serverId: string }
-
-function DeviceOption({ device }: { device: IpPortPair }) {
-  const serverInfo = useQuery<ServerInfo>({
-    queryFn: () => backendFetch<ServerInfo>('http://' + device.ip + ':' + device.port + '/meta').catch(e => {
-      console.log('error while fetching', e);
-      throw e;
-    }),
-    queryKey: ['server', JSON.stringify(device)],
-  });
-
-  return <option key={device.ip}>{JSON.stringify(serverInfo.data)}</option>;
-}
 
 function AdminPage() {
   const { settings, save } = useSettings();
