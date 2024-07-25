@@ -1,5 +1,4 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { LayoutApp } from '../_layout/_layout-app.js';
 import { useEinsatz } from '../../hooks/einsatz.hook.js';
 import { getCurrent } from '@tauri-apps/api/window';
 import { format } from 'date-fns';
@@ -36,13 +35,13 @@ function App() {
 
   const data = einsatz.data;
   if (data) {
-    return <LayoutApp>
+    return <>
       <p className="text-gray-900 dark:text-white">
         Aktueller Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}
       </p>
       <p className="text-gray-500">
         {data.einsatz_alarmstichwort?.beschreibung}
       </p>
-    </LayoutApp>;
+    </>;
   }
 }

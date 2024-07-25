@@ -13,10 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
+import { Route as AppImport } from './routes/app'
 import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as AuthSignoutImport } from './routes/auth/signout'
-import { Route as LayoutLayoutAppImport } from './routes/_layout/_layout-app'
 
 // Create Virtual Routes
 
@@ -26,11 +25,11 @@ const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
-const AppPatientenLazyImport = createFileRoute('/app/patienten')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
 const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
 const AppEinheitenLazyImport = createFileRoute('/app/einheiten')()
+const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')()
 
 // Create/Update Routes
 
@@ -49,8 +48,8 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+const AppRoute = AppImport.update({
+  path: '/app',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,8 +59,8 @@ const IndexLazyRoute = IndexLazyImport.update({
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 const AppIndexLazyRoute = AppIndexLazyImport.update({
-  path: '/app/',
-  getParentRoute: () => rootRoute,
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/index.lazy').then((d) => d.Route))
 
 const AdminIndexRoute = AdminIndexImport.update({
@@ -76,43 +75,40 @@ const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
   import('./routes/prestart/settings.lazy').then((d) => d.Route),
 )
 
-const AppPatientenLazyRoute = AppPatientenLazyImport.update({
-  path: '/app/patienten',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/app/patienten.lazy').then((d) => d.Route))
-
 const AppLagekarteLazyRoute = AppLagekarteLazyImport.update({
-  path: '/app/lagekarte',
-  getParentRoute: () => rootRoute,
+  path: '/lagekarte',
+  getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/lagekarte.lazy').then((d) => d.Route))
 
 const AppEinsatztagebuchLazyRoute = AppEinsatztagebuchLazyImport.update({
-  path: '/app/einsatztagebuch',
-  getParentRoute: () => rootRoute,
+  path: '/einsatztagebuch',
+  getParentRoute: () => AppRoute,
 } as any).lazy(() =>
   import('./routes/app/einsatztagebuch.lazy').then((d) => d.Route),
 )
 
 const AppEinsatzdatenLazyRoute = AppEinsatzdatenLazyImport.update({
-  path: '/app/einsatzdaten',
-  getParentRoute: () => rootRoute,
+  path: '/einsatzdaten',
+  getParentRoute: () => AppRoute,
 } as any).lazy(() =>
   import('./routes/app/einsatzdaten.lazy').then((d) => d.Route),
 )
 
 const AppEinheitenLazyRoute = AppEinheitenLazyImport.update({
-  path: '/app/einheiten',
-  getParentRoute: () => rootRoute,
+  path: '/einheiten',
+  getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/einheiten.lazy').then((d) => d.Route))
+
+const AppBetroffeneLazyRoute = AppBetroffeneLazyImport.update({
+  path: '/betroffene',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/app/betroffene.lazy').then((d) => d.Route),
+)
 
 const AuthSignoutRoute = AuthSignoutImport.update({
   path: '/auth/signout',
   getParentRoute: () => rootRoute,
-} as any)
-
-const LayoutLayoutAppRoute = LayoutLayoutAppImport.update({
-  id: '/_layout-app',
-  getParentRoute: () => LayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -126,11 +122,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -154,13 +150,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninLazyImport
       parentRoute: typeof rootRoute
     }
-    '/_layout/_layout-app': {
-      id: '/_layout/_layout-app'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutLayoutAppImport
-      parentRoute: typeof LayoutImport
-    }
     '/auth/signout': {
       id: '/auth/signout'
       path: '/auth/signout'
@@ -168,40 +157,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignoutImport
       parentRoute: typeof rootRoute
     }
+    '/app/betroffene': {
+      id: '/app/betroffene'
+      path: '/betroffene'
+      fullPath: '/app/betroffene'
+      preLoaderRoute: typeof AppBetroffeneLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/einheiten': {
       id: '/app/einheiten'
-      path: '/app/einheiten'
+      path: '/einheiten'
       fullPath: '/app/einheiten'
       preLoaderRoute: typeof AppEinheitenLazyImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
     '/app/einsatzdaten': {
       id: '/app/einsatzdaten'
-      path: '/app/einsatzdaten'
+      path: '/einsatzdaten'
       fullPath: '/app/einsatzdaten'
       preLoaderRoute: typeof AppEinsatzdatenLazyImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
     '/app/einsatztagebuch': {
       id: '/app/einsatztagebuch'
-      path: '/app/einsatztagebuch'
+      path: '/einsatztagebuch'
       fullPath: '/app/einsatztagebuch'
       preLoaderRoute: typeof AppEinsatztagebuchLazyImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
     '/app/lagekarte': {
       id: '/app/lagekarte'
-      path: '/app/lagekarte'
+      path: '/lagekarte'
       fullPath: '/app/lagekarte'
       preLoaderRoute: typeof AppLagekarteLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/app/patienten': {
-      id: '/app/patienten'
-      path: '/app/patienten'
-      fullPath: '/app/patienten'
-      preLoaderRoute: typeof AppPatientenLazyImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
     '/prestart/settings': {
       id: '/prestart/settings'
@@ -219,10 +208,10 @@ declare module '@tanstack/react-router' {
     }
     '/app/': {
       id: '/app/'
-      path: '/app'
-      fullPath: '/app'
+      path: '/'
+      fullPath: '/app/'
       preLoaderRoute: typeof AppIndexLazyImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
   }
 }
@@ -231,19 +220,20 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  LayoutRoute: LayoutRoute.addChildren({}),
+  AppRoute: AppRoute.addChildren({
+    AppBetroffeneLazyRoute,
+    AppEinheitenLazyRoute,
+    AppEinsatzdatenLazyRoute,
+    AppEinsatztagebuchLazyRoute,
+    AppLagekarteLazyRoute,
+    AppIndexLazyRoute,
+  }),
   AboutLazyRoute,
   SetupEinsatzLazyRoute,
   SigninLazyRoute,
   AuthSignoutRoute,
-  AppEinheitenLazyRoute,
-  AppEinsatzdatenLazyRoute,
-  AppEinsatztagebuchLazyRoute,
-  AppLagekarteLazyRoute,
-  AppPatientenLazyRoute,
   PrestartSettingsLazyRoute,
   AdminIndexRoute,
-  AppIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -255,28 +245,27 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_layout",
+        "/app",
         "/about",
         "/setupEinsatz",
         "/signin",
         "/auth/signout",
-        "/app/einheiten",
-        "/app/einsatzdaten",
-        "/app/einsatztagebuch",
-        "/app/lagekarte",
-        "/app/patienten",
         "/prestart/settings",
-        "/admin/",
-        "/app/"
+        "/admin/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
-    "/_layout": {
-      "filePath": "_layout.tsx",
+    "/app": {
+      "filePath": "app.tsx",
       "children": [
-        "/_layout/_layout-app"
+        "/app/betroffene",
+        "/app/einheiten",
+        "/app/einsatzdaten",
+        "/app/einsatztagebuch",
+        "/app/lagekarte",
+        "/app/"
       ]
     },
     "/about": {
@@ -288,27 +277,28 @@ export const routeTree = rootRoute.addChildren({
     "/signin": {
       "filePath": "signin.lazy.tsx"
     },
-    "/_layout/_layout-app": {
-      "filePath": "_layout/_layout-app.tsx",
-      "parent": "/_layout"
-    },
     "/auth/signout": {
       "filePath": "auth/signout.tsx"
     },
+    "/app/betroffene": {
+      "filePath": "app/betroffene.lazy.tsx",
+      "parent": "/app"
+    },
     "/app/einheiten": {
-      "filePath": "app/einheiten.lazy.tsx"
+      "filePath": "app/einheiten.lazy.tsx",
+      "parent": "/app"
     },
     "/app/einsatzdaten": {
-      "filePath": "app/einsatzdaten.lazy.tsx"
+      "filePath": "app/einsatzdaten.lazy.tsx",
+      "parent": "/app"
     },
     "/app/einsatztagebuch": {
-      "filePath": "app/einsatztagebuch.lazy.tsx"
+      "filePath": "app/einsatztagebuch.lazy.tsx",
+      "parent": "/app"
     },
     "/app/lagekarte": {
-      "filePath": "app/lagekarte.lazy.tsx"
-    },
-    "/app/patienten": {
-      "filePath": "app/patienten.lazy.tsx"
+      "filePath": "app/lagekarte.lazy.tsx",
+      "parent": "/app"
     },
     "/prestart/settings": {
       "filePath": "prestart/settings.lazy.tsx"
@@ -317,7 +307,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "admin/index.tsx"
     },
     "/app/": {
-      "filePath": "app/index.lazy.tsx"
+      "filePath": "app/index.lazy.tsx",
+      "parent": "/app"
     }
   }
 }

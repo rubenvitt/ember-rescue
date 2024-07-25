@@ -1,21 +1,17 @@
-import { createFileRoute } from '@tanstack/react-router';
 import React, { useMemo, useState } from 'react';
-import {
-  Bars3Icon,
-  BookOpenIcon,
-  HomeIcon,
-  InformationCircleIcon,
-  MapIcon,
-  PlusIcon,
-  UserGroupIcon,
-} from '@heroicons/react/24/outline';
-import { UserProfileDropdown } from '../../components/atomic/molecules/UserProfileDropdown.js';
-import { useTheme } from '../../hooks/theme.hook.js';
-import { SidebarComponent } from '../../components/atomic/templates/Sidebar.component.js';
-import { useStore } from '../../hooks/store.hook.js';
+import { Bars3Icon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { UserProfileDropdown } from '../molecules/UserProfileDropdown.js';
+import { useTheme } from '../../../hooks/theme.hook.js';
+import { SidebarComponent } from './Sidebar.component.js';
+import { useStore } from '../../../hooks/store.hook.js';
 import { useNetwork } from '@reactuses/core';
 import {
+  PiAmbulance,
+  PiFirstAid,
+  PiGauge,
   PiMagnifyingGlass,
+  PiMapTrifold,
+  PiNotebook,
   PiNotification,
   PiNotificationBold,
   PiSignOut,
@@ -23,25 +19,20 @@ import {
   PiWifiHigh,
   PiWifiXBold,
 } from 'react-icons/pi';
-import { DropdownItemType } from '../../components/atomic/molecules/GenericDropdown.component.js';
+import { DropdownItemType } from '../molecules/GenericDropdown.component.js';
 import { twMerge } from 'tailwind-merge';
-import { CommandPalette } from '../../components/atomic/organisms/CommandPalette.component.js';
-
-export const Route = createFileRoute('/_layout/_layout-app')({
-  component: LayoutApp,
-});
-
+import { CommandPalette } from '../organisms/CommandPalette.component.js';
 
 const mainNavigation = [
-  { name: 'Dashboard', href: '/app', icon: HomeIcon },
-  { name: 'Einsatztagebuch', href: '/app/einsatztagebuch', icon: BookOpenIcon },
-  { name: 'Einheiten', href: '/app/einheiten', icon: UserGroupIcon },
-  { name: 'Patienten', href: '/app/patienten', icon: PlusIcon },
-  { name: 'Lagekarte', href: '/app/lagekarte', icon: MapIcon },
+  { name: 'Dashboard', href: '/app', icon: PiGauge },
+  { name: 'Einsatztagebuch', href: '/app/einsatztagebuch', icon: PiNotebook },
+  { name: 'Einheiten', href: '/app/einheiten', icon: PiAmbulance },
+  { name: 'Betroffene', href: '/app/betroffene', icon: PiFirstAid },
+  { name: 'Lagekarte', href: '/app/lagekarte', icon: PiMapTrifold },
   { name: 'Einsatzdaten', href: '/app/einsatzdaten', icon: InformationCircleIcon },
 ];
 
-export function LayoutApp({ children }: React.PropsWithChildren<{}>) {
+export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggleTheme } = useTheme();
   const { contextualNavigation } = useStore();

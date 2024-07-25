@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { LayoutApp } from '../_layout/_layout-app.js';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
@@ -91,7 +90,7 @@ function Einheiten() {
   }, []);
 
   return (
-    <LayoutApp>
+    <>
       <Button color="orange" className="cursor-pointer" onClick={() => openModal(modalConfig)}>
         Neue Einheiten hinzufügen
       </Button>
@@ -100,6 +99,6 @@ function Einheiten() {
         (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
           <EmptyEinheitenState />)}
       <EmptyEinheitenState />
-    </LayoutApp>
+    </>
   );
 }

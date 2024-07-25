@@ -9,7 +9,7 @@ export type EinsatztagebuchEintragType =
   'RESSOURCEN' |
   'KOMMUNIKATION' |
   'LAGE' |
-  'PATIENTEN';
+  'BETROFFENE';
 
 
 export type Alarmstichwort = Identifiable & WithTimestamp & {

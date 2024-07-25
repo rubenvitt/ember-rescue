@@ -1,5 +1,4 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { LayoutApp } from '../_layout/_layout-app.js';
 
 export const Route = createLazyFileRoute('/app/einsatzdaten')({
   component: Einsatzdaten,
@@ -13,5 +12,5 @@ function Einsatzdaten() {
   //   }),
   //   refetchInterval: 1000,theme
   // });
-  return <LayoutApp><p className="dark:text-white">Einsatzdaten</p></LayoutApp>;
+  return <><p className="dark:text-white">Einsatzdaten</p></>;
 }

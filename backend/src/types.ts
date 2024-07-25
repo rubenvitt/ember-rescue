@@ -49,7 +49,7 @@ export enum EinsatztagebuchEintragEnum {
   RESSOURCEN = 'RESSOURCEN',
   KOMMUNIKATION = 'KOMMUNIKATION',
   LAGE = 'LAGE',
-  PATIENTEN = 'PATIENTEN',
+  BETROFFENE = 'BETROFFENE',
 }
 
 export type EinsatztagebuchEintragType =

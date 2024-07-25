@@ -1,5 +1,4 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { LayoutApp } from '../_layout/_layout-app.js';
 import { EinsatztagebuchComponent } from '../../components/atomic/organisms/Einsatztagebuch.component.tsx';
 import { useEffect } from 'react';
 import { useStore } from '../../hooks/store.hook.js';
@@ -23,7 +22,5 @@ function Einsatztagebuch() {
     return () => setContextualNavigation(undefined);
   }, [setContextualNavigation]);
 
-  return <LayoutApp>
-    <EinsatztagebuchComponent />
-  </LayoutApp>;
+  return <EinsatztagebuchComponent />;
 }

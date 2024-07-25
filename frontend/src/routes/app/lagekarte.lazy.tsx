@@ -1,5 +1,4 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { LayoutApp } from '../_layout/_layout-app.js';
 import { MapboxComponent } from '../../components/atomic/organisms/Mapbox.component.js';
 import { useEffect } from 'react';
 import { ClockIcon } from '@heroicons/react/24/outline/index.js';
@@ -26,12 +25,11 @@ function Lagekarte() {
     return () => setContextualNavigation(undefined);
   }, [setContextualNavigation]);
 
-  return <LayoutApp>
-    <div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>
-      <MapboxComponent />
-    </div>
-    {/*<div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>*/}
-    {/*  <LeafletMap />*/}
-    {/*</div>*/}
-  </LayoutApp>;
+  return <div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>
+    <MapboxComponent />
+  </div>;
+  /*<div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>*/
+
+  /*  <LeafletMap />*/
+  /*</div>*/
 }
