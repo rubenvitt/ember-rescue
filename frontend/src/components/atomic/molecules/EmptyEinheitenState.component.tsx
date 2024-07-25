@@ -5,6 +5,7 @@ import { PiPlus } from 'react-icons/pi';
 import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { FormField } from './FormField.component.js';
+import { GenericForm } from '../organisms/GenericForm.component.js';
 
 const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }> = ({ einheit, onAdd }) => (
   <li>
@@ -32,7 +33,7 @@ const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }
 
 export function EmptyEinheitenState() {
   const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
-  const { addEinheitToEinsatz, einheiten } = useEinheiten();
+  const { addEinheitToEinsatz, einheitenNichtImEinsatz } = useEinheiten();
   const form = useForm<{ einheit: string }>({
     onSubmit({ value }) {
       handleAddEinheit(value.einheit);
@@ -41,15 +42,15 @@ export function EmptyEinheitenState() {
   });
 
   const einheitenComboItems = useMemo(() => {
-    return einheiten.data?.map((einheit) => ({
+    return einheitenNichtImEinsatz?.map((einheit) => ({
       label: einheit.funkrufname,
       secondary: einheit.einheitTyp.label,
       item: einheit,
     }));
-  }, [einheiten.data]);
+  }, [einheitenNichtImEinsatz]);
 
-  const handleAddEinheit = useCallback((einheitId: string) => {
-    addEinheitToEinsatz.mutate({ einheitId });
+  const handleAddEinheit = useCallback(async (einheitId: string) => {
+    await addEinheitToEinsatz.mutateAsync({ einheitId });
   }, [addEinheitToEinsatz]);
 
   return (
@@ -84,6 +85,15 @@ export function EmptyEinheitenState() {
           <Button type="submit">Disponieren</Button>
         </div>
       </form>
+      
+      <GenericForm<{ einheitId: string }> sections={[{
+        fields: [{
+          name: 'einheitId',
+          label: 'Einheit',
+          type: 'combo',
+          items: einheitenComboItems,
+        }],
+      }]} onSubmit={form => handleAddEinheit(form.einheitId)} submitText="Disponieren" />
 
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">Empfohlene Einheiten</h3>

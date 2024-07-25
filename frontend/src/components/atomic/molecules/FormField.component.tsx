@@ -22,7 +22,7 @@ export function FormField<
   TFormData,
   TName extends DeepKeys<TFormData>,
   TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
-  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
+  TFormValidator extends Validator<TFormData, unknown> | undefined = undefined,
 >({
     field,
     fieldApi,

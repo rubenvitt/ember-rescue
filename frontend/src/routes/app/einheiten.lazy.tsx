@@ -86,7 +86,7 @@ function Einheiten() {
         />
       ),
     };
-  }, []);
+  }, [einheitenNichtImEinsatzCombo, einheiten, formRef]);
 
   return (
     <>

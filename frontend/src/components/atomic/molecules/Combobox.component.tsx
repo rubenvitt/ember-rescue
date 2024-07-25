@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
 import { Identifiable } from '../../../types/types.js';
 import clsx from 'clsx';
 import { PiCaretDownLight, PiCheck, PiPlus } from 'react-icons/pi';
-import { ValidationError } from '@tanstack/react-form';
 import { cva } from 'class-variance-authority';
 import { useValidation } from '../../../hooks/validation.hook.js';
+import { ComboInputProps } from '../../../types/inputs.types.js';
 
 const comboboxStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
   variants: {
@@ -22,19 +22,6 @@ export type ItemType<T extends Identifiable> = {
   item: T | (T & Record<string, any>)
 }
 
-interface Props<T extends Identifiable> {
-  items: ItemType<T>[],
-  onChange: (id: string | null) => void,
-  defaultItem?: ItemType<T>,
-  label?: string,
-  disabled?: boolean,
-  allowNewValues?: boolean,
-  onAddNewValue?: (newValue: string) => void,
-  addValueLabel?: string,
-  errors?: ValidationError[],
-  inputProps?: Pick<React.ComponentPropsWithoutRef<'input'>, 'name' | 'onBlur' | 'required' | 'placeholder'>
-}
-
 export function ComboInput<T extends Identifiable>({
                                                      items,
                                                      defaultItem,
@@ -46,7 +33,7 @@ export function ComboInput<T extends Identifiable>({
                                                      addValueLabel = 'Neuen Wert hinzufügen:',
                                                      errors,
                                                      inputProps,
-                                                   }: Readonly<Props<T>>) {
+                                                   }: Readonly<ComboInputProps<T>>) {
   const [query, setQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<ItemType<T> | null>(defaultItem ?? null);
   const [pendingNewItem, setPendingNewItem] = useState<string | null>(null);

@@ -30,10 +30,13 @@ export interface RadioInputProps extends BaseInputProps {
 
 export interface ComboInputProps<Item extends Identifiable> {
   items: ItemType<Item>[],
-  onChange: (item: string | null) => void,
+  onChange: (id: string | null) => void,
+  defaultItem?: ItemType<Item>,
+  label?: string,
   disabled?: boolean,
   allowNewValues?: boolean,
   onAddNewValue?: (newValue: string) => void,
-  defaultItem?: ItemType<Item>,
+  addValueLabel?: string,
   errors?: ValidationError[],
+  inputProps?: Pick<React.ComponentPropsWithoutRef<'input'>, 'name' | 'onBlur' | 'required' | 'placeholder'>,
 }
