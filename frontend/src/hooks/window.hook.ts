@@ -51,7 +51,8 @@ interface UseAppWindowParameters {
 export const useAppWindow = ({ window, windowOptions }: UseAppWindowParameters) => {
   const browserNavigate = useNavigate();
 
-  return useCallback(({ closeOnNavigate = false }: { closeOnNavigate: boolean }) => {
+  return useCallback((props: { closeOnNavigate: boolean } = { closeOnNavigate: false }) => {
+    const { closeOnNavigate } = props;
     if (isTauri()) {
       console.trace('using tauri for window creation');
       const webviewWindow = new WebviewWindow(window, {

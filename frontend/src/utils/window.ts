@@ -5,6 +5,7 @@ export enum Windows {
   SIGN_IN = 'signin',
   APP = 'app',
   ADMIN = 'admin',
+  DOCS = 'docs',
 }
 
 
@@ -13,6 +14,7 @@ export const WindowUrls: Readonly<Record<Windows, string>> = {
   [Windows.SIGN_IN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
+  [Windows.DOCS]: '/docs',
 };
 
 export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
@@ -46,5 +48,13 @@ export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
     center: true,
     maximizable: false,
     minimizable: false,
+  },
+  [Windows.DOCS]: {
+    title: 'Project Rescue • Dokumentation',
+    center: true,
+    maximizable: true,
+    minimizable: false,
+    alwaysOnTop: true,
+    resizable: true,
   },
 };

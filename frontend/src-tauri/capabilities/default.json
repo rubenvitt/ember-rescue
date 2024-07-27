@@ -6,7 +6,8 @@
     "main",
     "admin",
     "app",
-    "signin"
+    "signin",
+    "docs"
   ],
   "permissions": [
     "path:default",

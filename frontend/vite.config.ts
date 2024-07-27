@@ -5,7 +5,15 @@ import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [TanStackRouterVite(), svgr(), react()],
+  plugins: [TanStackRouterVite(), svgr(), react(), {
+    name: 'markdown-loader',
+    transform(code: unknown, id: string) {
+      if (id.slice(-3) === '.md') {
+        // For .md files, get the raw content
+        return `export default ${JSON.stringify(code)};`;
+      }
+    },
+  }],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
