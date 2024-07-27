@@ -2,12 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { GenericForm } from '../../components/atomic/organisms/GenericForm.component.js';
 import { Settings, useSettings } from '../../hooks/settings.hook.js';
 import { ListForm } from '../../components/atomic/organisms/ListForm.component.js';
-import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { useMemo } from 'react';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 // @ts-ignore
 import type { IpPortPair } from 'tauri-plugin-network-api';
+import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
 
 export const Route = createFileRoute('/admin/')({
   component: AdminPage,

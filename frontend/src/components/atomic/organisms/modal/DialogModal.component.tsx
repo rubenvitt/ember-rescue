@@ -2,7 +2,7 @@ import { DialogPanel, DialogTitle } from '@headlessui/react';
 import { modalHeader, modalPanel } from '../../../../styles/modal.styles.js';
 import { ModalContent } from '../../molecules/ModalContent.component.js';
 import { ModalButton } from '../../atoms/ModalButton.component.js';
-import { ModalConfig } from '../../../../types/modalTypes.js';
+import { ModalConfig } from '../../../../types/ui/modal.types.js';
 
 export function DialogModal({
                               title,

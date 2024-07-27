@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { EinheitDto } from '../types/types.js';
 import { services } from '../services/index.js';
+import { EinheitDto } from '../types/app/einheit.types.js';
 
 export type Settings = {
   mapboxApi: string;

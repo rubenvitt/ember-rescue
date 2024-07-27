@@ -1,6 +1,6 @@
 import React from 'react';
-import { EinheitDto } from '../../../types/types.js';
 import { EinheitListItemComponent } from '../molecules/EinheitListItem.component.js';
+import { EinheitDto } from '../../../types/app/einheit.types.js';
 
 interface EinheitenlisteComponentProps {
   einheiten: EinheitDto[];

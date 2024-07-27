@@ -3,7 +3,7 @@ import { MapboxComponent } from '../../components/atomic/organisms/Mapbox.compon
 import { useMemo } from 'react';
 import { ClockIcon } from '@heroicons/react/24/outline/index.js';
 import { PiCloud } from 'react-icons/pi';
-import { ContextualNavigation } from '../../types/nav.types.js';
+import { ContextualNavigation } from '../../types/ui/nav.types.js';
 import { useContextualNavigation } from '../../hooks/navigation.hook.js';
 
 export const Route = createLazyFileRoute('/app/lagekarte')({

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { SVGComponent } from './types.js';
-import { ButtonColor } from '../styles/button.styles.js';
+import { ButtonColor } from '../../styles/button.styles.js';
+import { SVGComponent } from '../utils/common.types.js';
 
 
 export type ModalVariant = 'dialog' | 'panel';

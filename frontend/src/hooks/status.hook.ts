@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { StatusDto } from '../types/types.js';
 import { services } from '../services/index.js';
+import { StatusDto } from '../types/app/status.types.js';
 
 export function useStatus() {
   const status = useQuery<StatusDto[]>({

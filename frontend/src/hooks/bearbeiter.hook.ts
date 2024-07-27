@@ -1,8 +1,8 @@
 import { useStore } from './store.hook.js';
-import { Bearbeiter, NewBearbeiter } from '../types/types.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 import { useNavigate } from '@tanstack/react-router';
+import { Bearbeiter, CreateBearbeiter } from '../types/app/bearbeiter.types.js';
 
 type Props = {
   requireBearbeiter?: boolean;
@@ -36,13 +36,13 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
     },
   });
 
-  const loginBearbeiter = useMutation<Bearbeiter, unknown, Bearbeiter | NewBearbeiter>({
+  const loginBearbeiter = useMutation<Bearbeiter, unknown, Bearbeiter | CreateBearbeiter>({
     mutationKey: services.backend.bearbeiter.postNewBearbeiter.mutationKey,
     mutationFn: services.backend.bearbeiter.postNewBearbeiter.mutationFn,
     onSuccess: services.backend.bearbeiter.invalidateQueries,
   });
 
-  async function saveBearbeiter(bearbeiter: Bearbeiter | NewBearbeiter) {
+  async function saveBearbeiter(bearbeiter: Bearbeiter | CreateBearbeiter) {
     let loggedInBearbeiter = await loginBearbeiter.mutateAsync(bearbeiter);
     console.log('Saving bearbeiter:', bearbeiter, loggedInBearbeiter);
     setBearbeiter(loggedInBearbeiter);

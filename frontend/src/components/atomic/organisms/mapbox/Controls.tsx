@@ -10,9 +10,9 @@ import { backendFetch } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
 import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
-import { EinheitDto } from '../../../../types/types.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
+import { EinheitDto } from '../../../../types/app/einheit.types.js';
 
 const useMapStore = create<{
   map?: Map,

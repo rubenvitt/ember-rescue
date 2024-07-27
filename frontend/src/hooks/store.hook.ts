@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { Bearbeiter, Einsatz } from '../types/types.js';
 import storage from '../utils/storage.js';
-import { ContextualNavigation } from '../types/nav.types.js';
+import { ContextualNavigation } from '../types/ui/nav.types.js';
+import { Einsatz } from '../types/app/einsatz.types.js';
+import { Bearbeiter } from '../types/app/bearbeiter.types.js';
 
 type Store = {
   bearbeiter: Bearbeiter | null;

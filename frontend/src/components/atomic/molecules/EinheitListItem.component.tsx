@@ -3,13 +3,14 @@ import { useStatus } from '../../../hooks/status.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useModal } from '../../../hooks/modal.hook.js';
 import { ItemType } from './Combobox.component.js';
-import { EinheitDto, StatusDto } from '../../../types/types.js';
-import { ModalConfig } from '../../../types/modalTypes.js';
+import { ModalConfig } from '../../../types/ui/modal.types.js';
 import { DynamicGrid } from './DynamicGrid.component.js';
 import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
 import { MinimalDotsDropdown } from './MinimalDropdown.component.js';
 import { PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
 import { StatusLabel } from '../atoms/StatusLabel.component.js';
+import { StatusDto } from '../../../types/app/status.types.js';
+import { EinheitDto } from '../../../types/app/einheit.types.js';
 
 interface EinheitListItemProps {
   einheit: EinheitDto;

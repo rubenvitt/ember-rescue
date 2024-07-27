@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { statusLabel } from './StatusLabel.component.js';
-import { StatusDto } from '../../../types/types.js';
+
+import { StatusDto } from '../../../types/app/status.types.js';
 
 interface StatusButtonProps {
   onClick: (props: { statusId: string }) => unknown;

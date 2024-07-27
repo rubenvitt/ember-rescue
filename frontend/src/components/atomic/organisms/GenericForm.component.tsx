@@ -10,13 +10,13 @@ import {
 import { Optional } from '@ark-ui/react';
 import React, { forwardRef, useCallback, useImperativeHandle } from 'react';
 import { FormField } from '../molecules/FormField.component.js';
-import { BaseFormField, SimpleFormField } from '../../../types/formfield.types.js';
+import { BaseFormField, SimpleFormField } from '../../../types/ui/formfield.types.js';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { ValidatedInput } from '../atoms/inputs/validated-input.component.js';
 import { ZodType, ZodTypeDef } from 'zod';
 import { buttonContainerStyles, formStyles } from '../../../styles/form.styles.ts';
 import { FormSection } from './FormSection.js';
-import { GenericFormProps, GenericFormRef } from '../../../types/form.types.ts';
+import { GenericFormProps, GenericFormRef } from '../../../types/ui/form.types.ts';
 import { Button } from '../molecules/Button.component.tsx';
 import { PiArrowArcRight } from 'react-icons/pi';
 

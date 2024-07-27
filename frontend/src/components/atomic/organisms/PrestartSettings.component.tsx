@@ -3,8 +3,8 @@ import { GenericForm } from './GenericForm.component.js';
 import storage from '../../../utils/storage.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocalServer } from '../../../hooks/local-network.hook.js';
-import { ServerMetadata } from '../../../types/types.js';
 import { ItemType } from '../molecules/Combobox.component.js';
+import { ServerMetadata } from '../../../types/app/server.types.js';
 
 export type LocalSettings = {
   baseUrl: string;

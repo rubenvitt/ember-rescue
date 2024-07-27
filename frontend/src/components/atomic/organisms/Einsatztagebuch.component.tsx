@@ -5,13 +5,13 @@ import { format } from 'date-fns';
 import { invoke } from '@tauri-apps/api/core';
 import { twMerge } from 'tailwind-merge';
 
-import { EinsatztagebuchEintrag } from '../../../types/types.js';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { natoDateTime } from '../../../utils/time.js';
 import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
 import { BadgeButton } from '../atoms/Badge.component.js';
 import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
+import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 
 const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
 

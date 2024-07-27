@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { QualifikationDto } from '../../types/types.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
+import { QualifikationTypes } from '../../types/app/qualifikation.types.js';
 
 // Export des queryKey
 export const queryKey = 'qualifikationen';
@@ -12,6 +12,6 @@ export const invalidateQueries = createInvalidateQueries([queryKey]);
 export const fetchAllQualifikationen = {
   queryKey: [queryKey],
   queryFn: function() {
-    return backendFetch<QualifikationDto[]>('qualifikationen');
+    return backendFetch<QualifikationTypes[]>('qualifikationen');
   },
 };

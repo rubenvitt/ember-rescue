@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { useEinsatz } from '../einsatz.hook.js';
 import { useMemo } from 'react';
 import { PatchEinheitenType } from '../../services/backend/einheiten.js';
 import { services } from '../../services/index.js';
+import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
 
 export function useEinheiten(props?: { einheitId?: string }) {
   const { einsatzId } = useEinsatz();

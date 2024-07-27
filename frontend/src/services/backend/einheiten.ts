@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { EinheitDto, EinheitTypDto } from '../../types/types.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
+import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
 
 export const queryKey = 'einheiten';
 

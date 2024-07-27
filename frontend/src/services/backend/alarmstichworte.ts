@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { Alarmstichwort } from '../../types/types.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
+import { Alarmstichwort } from '../../types/app/alarmstichwort.types.js';
 
 // Export des queryKey
 export const queryKey = 'alarmstichwort';

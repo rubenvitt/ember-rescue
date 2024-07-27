@@ -1,4 +1,11 @@
-import { NavItem } from './types.js';
+import { ToPathOption } from '@tanstack/react-router';
+import { WithIcon } from '../utils/common.types.js';
+
+export type NavItem = {
+  name: string;
+  href: ToPathOption;
+  current?: boolean;
+} & WithIcon
 
 export interface NavItemProps {
   item: NavItem;

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IsOpen, ModalConfig } from '../types/modalTypes.js';
+import { IsOpen, ModalConfig } from '../types/ui/modal.types.js';
 
 interface ModalStore {
   modalConfig: (ModalConfig & IsOpen) | null;

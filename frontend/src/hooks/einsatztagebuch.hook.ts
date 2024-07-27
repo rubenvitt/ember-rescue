@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types/types.js';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
+import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../types/app/einsatztagebuch.types.js';
 
 export function useEinsatztagebuch() {
   const { einsatzId } = useStore();

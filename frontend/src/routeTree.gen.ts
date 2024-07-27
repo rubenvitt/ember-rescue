@@ -21,7 +21,6 @@ import { Route as AuthSignoutImport } from './routes/auth/signout'
 
 const SigninLazyImport = createFileRoute('/signin')()
 const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
-const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
@@ -42,11 +41,6 @@ const SetupEinsatzLazyRoute = SetupEinsatzLazyImport.update({
   path: '/setupEinsatz',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/setupEinsatz.lazy').then((d) => d.Route))
-
-const AboutLazyRoute = AboutLazyImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
 const AppRoute = AppImport.update({
   path: '/app',
@@ -127,13 +121,6 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AppImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
     '/setupEinsatz': {
@@ -228,7 +215,6 @@ export const routeTree = rootRoute.addChildren({
     AppLagekarteLazyRoute,
     AppIndexLazyRoute,
   }),
-  AboutLazyRoute,
   SetupEinsatzLazyRoute,
   SigninLazyRoute,
   AuthSignoutRoute,
@@ -246,7 +232,6 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/app",
-        "/about",
         "/setupEinsatz",
         "/signin",
         "/auth/signout",
@@ -267,9 +252,6 @@ export const routeTree = rootRoute.addChildren({
         "/app/lagekarte",
         "/app/"
       ]
-    },
-    "/about": {
-      "filePath": "about.lazy.tsx"
     },
     "/setupEinsatz": {
       "filePath": "setupEinsatz.lazy.tsx"

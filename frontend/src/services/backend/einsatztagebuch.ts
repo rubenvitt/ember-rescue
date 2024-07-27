@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../../types/types.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
+import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../../types/app/einsatztagebuch.types.js';
 
 // Export des queryKey
 export const queryKey = 'einsatztagebuch';

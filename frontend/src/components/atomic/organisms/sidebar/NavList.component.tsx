@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavListProps } from '../../../../types/nav.types.js';
+import { NavListProps } from '../../../../types/ui/nav.types.js';
 import { NavItemComponent } from '../NavItemComponent.js';
 
 export const NavListComponent: React.FC<NavListProps> = ({ items, title }) => (

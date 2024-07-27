@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useEinheiten } from './einheiten.hook.js';
-import { EinheitDto } from '../../types/types.js';
+
+import { EinheitDto } from '../../types/app/einheit.types.js';
 
 
 interface UseRecommendedEinheitenConfig {

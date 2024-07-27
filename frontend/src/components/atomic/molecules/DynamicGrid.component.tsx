@@ -1,7 +1,7 @@
 import { gridItemStyles } from '../../../styles/dynamicGrid.styles.ts';
-import { Identifiable } from '../../../types/types.js';
 import { ItemType } from './Combobox.component.js';
 import { Fragment, ReactNode, useMemo } from 'react';
+import { Identifiable } from '../../../types/utils/common.types.js';
 
 export function DynamicGrid<T extends Identifiable>({
                                                       items = [],

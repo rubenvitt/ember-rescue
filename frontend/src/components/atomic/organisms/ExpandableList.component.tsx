@@ -1,7 +1,8 @@
 import { listStyles } from '../../../styles/expandableList.styles.ts';
 import { ExpandableListItem } from '../molecules/ExpandableListItem.component.js';
-import { ExpandableListProps } from '../../../types/expandableList.types.js';
-import { Identifiable } from '../../../types/types.js';
+import { ExpandableListProps } from '../../../types/ui/expandableList.types.js';
+
+import { Identifiable } from '../../../types/utils/common.types.js';
 
 export const ExpandableList = <T extends Identifiable>({
                                                          items,

@@ -1,9 +1,9 @@
 import { DeepKeys, DeepValue, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
-import { SimpleFormField } from '../../../types/formfield.types.js';
+import { SimpleFormField } from '../../../types/ui/formfield.types.js';
 import React from 'react';
 import { fieldContainerStyles, fieldGridStyles, sectionStyles } from '../../../styles/form.styles.js';
-import { FormSection as TFormSection } from '../../../types/form.types.ts';
+import { FormSection as TFormSection } from '../../../types/ui/form.types.ts';
 
 export const FormSection = <
   TParentData,

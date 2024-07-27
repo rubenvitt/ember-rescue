@@ -1,5 +1,5 @@
 import { ForwardedRef, forwardRef, useMemo } from 'react';
-import { ButtonProps } from '../../../types/button.types.ts';
+import { ButtonProps } from '../../../types/ui/button.types.ts';
 import { buttonVariants } from '../../../styles/button.styles.ts';
 import { Link } from '../atoms/Link.js';
 import { TouchTarget } from '../atoms/TouchTarget.component.js';

@@ -1,5 +1,4 @@
 import { inputStyles } from '../../../styles/formfield.styles.js';
-import { Identifiable } from '../../../types/types.ts';
 import {
   CheckboxInput,
   ComboInputWrapper,
@@ -14,9 +13,10 @@ import {
 import { ItemType } from './Combobox.component.js';
 import { DeepKeys, DeepValue, FieldApi, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
-import { BaseFormField } from '../../../types/formfield.types.js';
-import { ChangeEvent } from '../../../types/inputs.types.ts';
+import { BaseFormField } from '../../../types/ui/formfield.types.js';
+import { ChangeEvent } from '../../../types/ui/inputs.types.ts';
 import { useValidation } from '../../../hooks/validation.hook.js';
+import { Identifiable } from '../../../types/utils/common.types.js';
 
 export function FormField<
   TFormData,

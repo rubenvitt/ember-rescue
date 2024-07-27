@@ -1,8 +1,8 @@
 import { ClientOptions, fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import storage from './storage.js';
-import { Bearbeiter } from '../types/types.js';
 import { isTauri } from '@tauri-apps/api/core';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
+import { Bearbeiter } from '../types/app/bearbeiter.types.js';
 
 export function ensureSlashBetween(part1: string, part2: string) {
   return `${part1}/${part2}`.replace(/([^:]\/)\/+/g, '$1');

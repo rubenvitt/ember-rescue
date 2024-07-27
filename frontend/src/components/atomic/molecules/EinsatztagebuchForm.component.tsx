@@ -1,5 +1,4 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { CreateEinsatztagebuchEintrag, EinheitDto } from '../../../types/types.js';
 import { GenericForm } from '../organisms/GenericForm.component.tsx';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useCallback, useMemo } from 'react';
@@ -7,6 +6,8 @@ import { formatISO } from 'date-fns';
 import { ItemType } from './Combobox.component.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { z } from 'zod';
+import { EinheitDto } from '../../../types/app/einheit.types.js';
+import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 
 interface Props {
   closeForm: () => void;

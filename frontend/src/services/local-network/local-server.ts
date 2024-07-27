@@ -2,7 +2,8 @@
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { backendFetch } from '../../utils/http.js';
-import { ServerMetadata } from '../../types/types.js';
+
+import { ServerMetadata } from '../../types/app/server.types.js';
 
 // Export des queryKey
 export const queryKey = (ip: string, port: number) => ['server', ip, port];

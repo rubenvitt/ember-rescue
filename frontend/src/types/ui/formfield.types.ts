@@ -1,7 +1,7 @@
 import { Optional } from '@ark-ui/react';
 import { DeepKeys, DeepValue, FieldValidators, Validator } from '@tanstack/react-form';
-import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
-import { Identifiable } from './types.js';
+import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
+import { Identifiable } from '../utils/common.types.js';
 
 export type FieldType =
   'text'

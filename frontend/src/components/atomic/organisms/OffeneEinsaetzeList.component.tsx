@@ -5,9 +5,9 @@ import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { Badge } from '../atoms/Badge.component.js';
-import { Einsatz } from '../../../types/types.js';
 import { ExpandableList } from './ExpandableList.component.tsx';
-import { ActionButton } from '../../../types/expandableList.types.js';
+import { ActionButton } from '../../../types/ui/expandableList.types.js';
+import { Einsatz } from '../../../types/app/einsatz.types.js';
 
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();

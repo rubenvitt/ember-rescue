@@ -1,5 +1,5 @@
 import React from 'react';
-import { MobileSidebarProps } from '../../../../types/nav.types.js';
+import { MobileSidebarProps } from '../../../../types/ui/nav.types.js';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';
 import { XMarkIcon } from '@heroicons/react/24/outline/index.js';

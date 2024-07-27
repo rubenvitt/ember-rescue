@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
-import { Bearbeiter, NewBearbeiter } from '../../../types/types.js';
 import { ComboInput, ItemType } from '../molecules/Combobox.component.js';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
@@ -12,6 +11,7 @@ import { cva } from 'class-variance-authority';
 import { useAppWindow, useWindowSetup } from '../../../hooks/window.hook.ts';
 import { LogicalSize } from '@tauri-apps/api/window';
 import { WindowOptions, Windows } from '../../../utils/window.js';
+import { Bearbeiter, CreateBearbeiter } from '../../../types/app/bearbeiter.types.js';
 
 
 export const SignIn: React.FC = () => {
@@ -36,11 +36,11 @@ export const SignIn: React.FC = () => {
     size: new LogicalSize(400, 600),
   });
 
-  const formSubmit = useCallback(({ value }: { value: { bearbeiter: Bearbeiter | NewBearbeiter } }) =>
+  const formSubmit = useCallback(({ value }: { value: { bearbeiter: Bearbeiter | CreateBearbeiter } }) =>
       saveBearbeiter(value.bearbeiter).then(() => openApp({ closeOnNavigate: true })),
     [saveBearbeiter, navigate]);
 
-  const form = useForm<{ bearbeiter: Bearbeiter | NewBearbeiter }>({
+  const form = useForm<{ bearbeiter: Bearbeiter | CreateBearbeiter }>({
     defaultValues: { bearbeiter: { name: '', id: null } },
     onSubmit: formSubmit,
   });

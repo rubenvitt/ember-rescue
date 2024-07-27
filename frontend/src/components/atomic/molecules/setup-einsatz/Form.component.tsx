@@ -3,9 +3,9 @@ import { GenericForm } from '../../organisms/GenericForm.component.js';
 import { useNavigate } from '@tanstack/react-router';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
-import { CreateEinsatz } from '../../../../types/types.ts';
 import { format } from 'date-fns';
 import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
+import { CreateEinsatz } from '../../../../types/app/einsatz.types.js';
 
 export const SetupEinsatzForm: React.FC = () => {
   const navigate = useNavigate();

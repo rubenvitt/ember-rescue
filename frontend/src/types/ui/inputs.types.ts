@@ -1,7 +1,7 @@
-import { ItemType } from '../components/atomic/molecules/Combobox.component.js';
-import { Identifiable } from './types.js';
+import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import React from 'react';
 import { ValidationError } from '@tanstack/react-form';
+import { Identifiable } from '../utils/common.types.js';
 
 export type ChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
 

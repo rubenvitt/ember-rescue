@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useLocation } from '@tanstack/react-router';
 import { MobileSidebarComponent } from '../organisms/sidebar/MobileSidebar.component.js';
-import { SidebarComponentProps } from '../../../types/nav.types.js';
+import { SidebarComponentProps } from '../../../types/ui/nav.types.js';
 import { DesktopSidebarComponent } from '../organisms/sidebar/DesktopSidebar.component.js';
 
 export const SidebarComponent: React.FC<SidebarComponentProps> = ({

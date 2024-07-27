@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '../atoms/Link.js';
 import { navItemStyles } from '../../../styles/nav.styles.js';
-import { NavItemProps } from '../../../types/nav.types.js';
+import { NavItemProps } from '../../../types/ui/nav.types.js';
 
 export const NavItemComponent: React.FC<NavItemProps> = ({ item }) => (
   <li key={item.name}>

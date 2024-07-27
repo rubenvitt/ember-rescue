@@ -1,7 +1,7 @@
 import { contentStyles, expandedContentStyles, listItemStyles } from '../../../styles/expandableList.styles.ts';
 import { ActionButtons } from './ActionButtons.component.js';
 import { ExpandIcon } from '../atoms/ExpandIcon.component.js';
-import { ExpandableListItemProps } from '../../../types/expandableList.types.ts';
+import { ExpandableListItemProps } from '../../../types/ui/expandableList.types.ts';
 import { useCallback, useState } from 'react';
 
 export const ExpandableListItem = <T, >({

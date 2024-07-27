@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { CreateEinsatz, Einsatz } from '../../types/types.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
+import { CreateEinsatz, Einsatz } from '../../types/app/einsatz.types.js';
 
 // Export des queryKey
 export const queryKey = 'einsatz';

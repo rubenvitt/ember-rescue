@@ -5,13 +5,13 @@ import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
-import { EinheitDto } from '../../types/types.js';
 import { GenericForm } from '../../components/atomic/organisms/GenericForm.component.js';
 import { PiAmbulance, PiBell } from 'react-icons/pi';
 import { useModal } from '../../hooks/modal.hook.js';
-import { ModalConfig } from '../../types/modalTypes.js';
-import { GenericFormRef } from '../../types/form.types.js';
+import { ModalConfig } from '../../types/ui/modal.types.js';
+import { GenericFormRef } from '../../types/ui/form.types.js';
 import { Button } from '../../components/atomic/molecules/Button.component.tsx';
+import { EinheitDto } from '../../types/app/einheit.types.js';
 
 export const Route = createLazyFileRoute('/app/einheiten')({
   component: Einheiten,

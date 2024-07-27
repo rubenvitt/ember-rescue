@@ -1,5 +1,5 @@
 import React from 'react';
-import { DesktopSidebarProps } from '../../../../types/nav.types.js';
+import { DesktopSidebarProps } from '../../../../types/ui/nav.types.js';
 import { SidebarContentComponent } from './SidebarContent.component.js';
 
 export const DesktopSidebarComponent: React.FC<DesktopSidebarProps> = ({ navigation, contextualNavigation }) => (

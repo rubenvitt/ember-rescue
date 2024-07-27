@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { FormField } from './FormField.component.js';
-import { BaseFormField } from '../../../types/formfield.types.js';
+import { BaseFormField } from '../../../types/ui/formfield.types.js';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { cva } from 'class-variance-authority';
 import { ValidatedInput } from '../atoms/inputs/validated-input.component.js';
-import { GenericFormProps } from '../../../types/form.types.js';
+import { GenericFormProps } from '../../../types/ui/form.types.js';
 
 interface ListFormRowProps<T> {
   item: T,

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { buttonVariants } from '../styles/button.styles.js';
-import { Identifiable } from './types.js';
+import { buttonVariants } from '../../styles/button.styles.js';
 import { VariantProps } from 'class-variance-authority';
+import { Identifiable } from '../utils/common.types.js';
 
 export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
   label: string;

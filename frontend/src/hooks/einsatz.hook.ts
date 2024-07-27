@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { CreateEinsatz, Einsatz } from '../types/types.js';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
+import { CreateEinsatz, Einsatz } from '../types/app/einsatz.types.js';
 
 export function useEinsatz() {
   const { setEinsatz, einsatzId, removeEinsatz } = useStore();

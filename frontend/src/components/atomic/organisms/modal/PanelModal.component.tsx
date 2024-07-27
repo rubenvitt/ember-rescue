@@ -2,7 +2,7 @@ import { DialogPanel, DialogTitle } from '@headlessui/react';
 import { modalCloseButton, modalHeader, modalPanel } from '../../../../styles/modal.styles.js';
 import { XMarkIcon } from '@heroicons/react/24/outline/index.js';
 import { ModalButton } from '../../atoms/ModalButton.component.js';
-import { ModalConfig } from '../../../../types/modalTypes.js';
+import { ModalConfig } from '../../../../types/ui/modal.types.js';
 import { ModalContent } from '../../molecules/ModalContent.component.js';
 
 export function PanelModal({

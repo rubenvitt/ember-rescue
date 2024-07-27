@@ -1,5 +1,5 @@
 import React from 'react';
-import { SidebarContentProps } from '../../../../types/nav.types.js';
+import { SidebarContentProps } from '../../../../types/ui/nav.types.js';
 import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
 import { NavListComponent } from './NavList.component.js';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';

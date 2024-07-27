@@ -1,6 +1,6 @@
 import { Button } from './Button.component.tsx';
 import { FlexibleDialog } from './Dialog.js';
-import { ActionButton } from '../../../types/expandableList.types.js';
+import { ActionButton } from '../../../types/ui/expandableList.types.js';
 
 export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[], item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">

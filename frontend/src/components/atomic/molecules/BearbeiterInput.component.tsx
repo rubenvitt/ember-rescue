@@ -1,9 +1,9 @@
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import React, { useMemo, useState } from 'react';
-import { IdentifiableLabel } from '../../../types/types.js';
 import { clsx } from 'clsx';
 import { ValidationError } from '@tanstack/react-form';
+import { IdentifiableLabel } from '../../../types/utils/common.types.js';
 
 type Props<T extends IdentifiableLabel> = {
   items: T[];

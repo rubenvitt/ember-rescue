@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
-import { Bearbeiter, NewBearbeiter } from '../../types/types.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
+import { Bearbeiter, CreateBearbeiter } from '../../types/app/bearbeiter.types.js';
 
 // Export des queryKey
 export const queryKey = 'bearbeiter';
@@ -26,7 +26,7 @@ export const fetchSingleBearbeiter = {
 // POST New Bearbeiter
 export const postNewBearbeiter = {
   mutationKey: [queryKey, 'add'],
-  mutationFn: async (bearbeiter: Bearbeiter | NewBearbeiter) => {
+  mutationFn: async (bearbeiter: Bearbeiter | CreateBearbeiter) => {
     return await backendFetch<Bearbeiter>('/bearbeiter', {
       method: 'POST',
       body: JSON.stringify(bearbeiter),

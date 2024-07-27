@@ -1,6 +1,6 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
-import { SmallStatusDto, StatusCode } from '../../../types/types.js';
+import { SmallStatusDto, StatusCode } from '../../../types/app/status.types.js';
 
 export const statusLabel = cva<{ status: { [key in StatusCode]: string } }>(
   'rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset',

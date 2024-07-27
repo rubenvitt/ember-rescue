@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Label } from '@headlessui/react';
-import { Identifiable } from '../../../types/types.js';
 import clsx from 'clsx';
 import { PiCaretDownLight, PiCheck, PiPlus } from 'react-icons/pi';
 import { cva } from 'class-variance-authority';
 import { useValidation } from '../../../hooks/validation.hook.js';
-import { ComboInputProps } from '../../../types/inputs.types.js';
+import { ComboInputProps } from '../../../types/ui/inputs.types.js';
+import { Identifiable } from '../../../types/utils/common.types.js';
 
 const comboboxStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
   variants: {

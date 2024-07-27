@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useState } from 'react';
 import { ListFormRow } from '../molecules/ListFormRow.component.js';
 import { TableHeaderComponent } from '../molecules/TableHeader.component.js';
-import { GenericFormProps } from '../../../types/form.types.ts';
+import { GenericFormProps } from '../../../types/ui/form.types.ts';
 import { Button } from '../molecules/Button.component.tsx';
 
 interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'> {

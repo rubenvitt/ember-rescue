@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 // @ts-ignore
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
-import { ServerMetadata } from '../types/types.js';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
 import { services } from '../services/index.js';
+import { ServerMetadata } from '../types/app/server.types.js';
 
 export function useLocalServer(singleServer?: string) {
   const [devices, setDevices] = useState<IpPortPair>();
