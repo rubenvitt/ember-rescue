@@ -5,12 +5,6 @@ export const Route = createLazyFileRoute('/app/einsatzdaten')({
 });
 
 function Einsatzdaten() {
-  // let query = useQuery({
-  //   queryKey: ['test'],
-  //   queryFn: () => new Promise((resolve) => {
-  //     setTimeout(() => resolve(`Banana, its ${new Date().toISOString()}`), 2000);
-  //   }),
-  //   refetchInterval: 1000,theme
-  // });
+  // here should a form be added that allows the user to modify einsatzdaten
   return <><p className="dark:text-white">Einsatzdaten</p></>;
 }
