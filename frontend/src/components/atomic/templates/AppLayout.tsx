@@ -22,6 +22,7 @@ import {
 import { DropdownItemType } from '../molecules/GenericDropdown.component.js';
 import { twMerge } from 'tailwind-merge';
 import { CommandPalette } from '../organisms/CommandPalette.component.js';
+import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 
 const mainNavigation = [
   { name: 'Dashboard', href: '/app', icon: PiGauge },
@@ -33,6 +34,7 @@ const mainNavigation = [
 ];
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
+  useBearbeiter({ requireBearbeiter: true });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggleTheme } = useTheme();
   const { contextualNavigation } = useStore();

@@ -1,5 +1,10 @@
-import { getCurrent, LogicalSize } from '@tauri-apps/api/window';
-import { useEffect } from 'react';
+import { getCurrent, LogicalSize, type WindowOptions } from '@tauri-apps/api/window';
+import { useCallback, useEffect } from 'react';
+import { isTauri } from '@tauri-apps/api/core';
+import { Windows, WindowUrls } from '../utils/window.js';
+import { useNavigate } from '@tanstack/react-router';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { WebviewOptions } from '@tauri-apps/api/webview';
 
 export const useWindowSetup = ({
                                  title,
@@ -30,6 +35,37 @@ export const useWindowSetup = ({
         console.error('Failed to set up window:', error);
       }
     };
-    setupWindow();
+    if (isTauri()) {
+      setupWindow();
+    }
   }, [title, fullscreen, size, center, alwaysOnTop, resizable]);
+};
+
+export type AppWindowOptions = Omit<WebviewOptions, 'x' | 'y' | 'width' | 'height' | 'url'> & WindowOptions
+
+interface UseAppWindowParameters {
+  window: Windows;
+  windowOptions?: AppWindowOptions;
+}
+
+export const useAppWindow = ({ window, windowOptions }: UseAppWindowParameters) => {
+  const browserNavigate = useNavigate();
+
+  return useCallback(({ closeOnNavigate = false }: { closeOnNavigate: boolean }) => {
+    if (isTauri()) {
+      console.trace('using tauri for window creation');
+      const webviewWindow = new WebviewWindow(window, {
+        url: WindowUrls[window],
+        ...(windowOptions ? windowOptions : {}),
+      });
+      webviewWindow.once('tauri://created', () => {
+        if (closeOnNavigate) {
+          getCurrent().close();
+        }
+      });
+    } else {
+      console.trace('not using tauri for window creation');
+      browserNavigate({ to: WindowUrls[window] });
+    }
+  }, [browserNavigate, window]);
 };

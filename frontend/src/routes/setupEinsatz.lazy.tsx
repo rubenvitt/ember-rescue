@@ -25,7 +25,7 @@ interface Einsatz {
 
 function SetupEinsatz() {
   const { einheiten } = useEinheiten();
-  const { removeBearbeiter, bearbeiter } = useBearbeiter();
+  const { bearbeiter } = useBearbeiter({ requireBearbeiter: true });
   const navigate = useNavigate({ from: '/setupEinsatz' });
   const { createEinsatz, offeneEinsaetze, einsatz, saveEinsatz } = useEinsatz();
   const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.length > 0, [offeneEinsaetze.data]);
@@ -76,8 +76,7 @@ function SetupEinsatz() {
             resetText="Abbrechen"
             submitText="Einsatz erstellen"
             onReset={() => {
-              removeBearbeiter();
-              navigate({ to: '/signin' });
+              navigate({ to: '/auth/signout' });
             }}
             onSubmit={async (values) => {
               await createEinsatz.mutateAsync(values).then((einsatz) => {

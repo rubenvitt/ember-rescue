@@ -19,7 +19,7 @@ export const fetchSingleBearbeiter = {
   queryKey: ({ bearbeiterId }: { bearbeiterId?: string }) => [queryKey, bearbeiterId],
   queryFn: function({ bearbeiterId }: { bearbeiterId: string }) {
     requireParams(bearbeiterId);
-    return backendFetch<Bearbeiter>(`/bearbeiter/${bearbeiterId}`);
+    return backendFetch<Bearbeiter | null>(`/bearbeiter/${bearbeiterId}`);
   },
 };
 

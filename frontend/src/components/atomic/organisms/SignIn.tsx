@@ -9,13 +9,18 @@ import { z } from 'zod';
 import { Button } from '../molecules/Button.component.tsx';
 import { PiGear } from 'react-icons/pi';
 import { cva } from 'class-variance-authority';
-import { useWindowSetup } from '../../../hooks/window.hook.ts';
+import { useAppWindow, useWindowSetup } from '../../../hooks/window.hook.ts';
 import { LogicalSize } from '@tauri-apps/api/window';
+import { WindowOptions, Windows } from '../../../utils/window.js';
 
 
 export const SignIn: React.FC = () => {
   const { saveBearbeiter, allBearbeiter } = useBearbeiter();
   const navigate = useNavigate({ from: '/signin' });
+  const openApp = useAppWindow({
+    window: Windows.APP,
+    windowOptions: WindowOptions.app,
+  });
   const allBearbeiterItems = React.useMemo<ItemType<Bearbeiter>[]>(() =>
       allBearbeiter.data?.map((item: Bearbeiter) => ({
         label: item.name,
@@ -32,7 +37,7 @@ export const SignIn: React.FC = () => {
   });
 
   const formSubmit = useCallback(({ value }: { value: { bearbeiter: Bearbeiter | NewBearbeiter } }) =>
-      saveBearbeiter(value.bearbeiter).then(() => navigate({ to: '/app' })),
+      saveBearbeiter(value.bearbeiter).then(() => openApp({ closeOnNavigate: true })),
     [saveBearbeiter, navigate]);
 
   const form = useForm<{ bearbeiter: Bearbeiter | NewBearbeiter }>({

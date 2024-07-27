@@ -17,6 +17,7 @@ function App() {
   useWindowSetup({
     title: 'Project Rescue',
     resizable: true,
+    fullscreen: true,
   });
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
 import { NavListComponent } from './NavList.component.js';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline/index.js';
+import { Windows } from '../../../../utils/window.js';
 
 export const SidebarContentComponent: React.FC<SidebarContentProps> = ({ navigation, contextualNavigation }) => (
   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 dark:bg-primary-950 px-6 pb-4">
@@ -20,7 +21,7 @@ export const SidebarContentComponent: React.FC<SidebarContentProps> = ({ navigat
         <li className="mt-auto">
           <button
             onClick={() => {
-              return new WebviewWindow('admin', {
+              return new WebviewWindow(Windows.ADMIN, {
                 url: '/admin',
                 center: true,
                 maximizable: false,

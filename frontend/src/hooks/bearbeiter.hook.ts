@@ -1,8 +1,8 @@
 import { useStore } from './store.hook.js';
 import { Bearbeiter, NewBearbeiter } from '../types/types.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
 import { services } from '../services/index.js';
+import { useNavigate } from '@tanstack/react-router';
 
 type Props = {
   requireBearbeiter?: boolean;
@@ -17,16 +17,19 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
     queryFn: services.backend.bearbeiter.fetchAllBearbeiter.queryFn,
   });
 
-  const singleBearbeiter = useQuery<Bearbeiter, unknown, Bearbeiter>({
+  const singleBearbeiter = useQuery<Bearbeiter, unknown, Bearbeiter | null>({
     queryKey: services.backend.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.id }),
     queryFn: async () => {
-      if (!bearbeiter?.id) return null;
+      if (bearbeiter && !bearbeiter?.id) return null;
       try {
-        return await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter?.id });
+        const foundBearbeiter = await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter!.id });
+        console.log('found single berater', bearbeiter, foundBearbeiter);
+        if (!foundBearbeiter) return Promise.reject('no bearbeiter found');
+        return foundBearbeiter;
       } catch (error) {
         if (requireBearbeiter) {
           console.warn('Bearbeiter not found, redirecting to login');
-          navigate({ to: '/signin' });
+          navigate({ to: '/signout' });
         }
         return null;
       }

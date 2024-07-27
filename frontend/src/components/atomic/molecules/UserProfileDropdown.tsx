@@ -14,6 +14,7 @@ export function UserProfileDropdown({ dropdownItems }: UserProfileDropdownProps)
       <span className="sr-only">Benutzermenü öffnen</span>
       <PiUser size={24} aria-hidden="true" />
       <span className="ml-2 text-sm font-semibold" aria-hidden="true">
+        {JSON.stringify(bearbeiter.data)}
         {bearbeiter.data?.name}
       </span>
     </>

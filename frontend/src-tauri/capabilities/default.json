@@ -4,12 +4,15 @@
   "description": "Capability for the main window",
   "windows": [
     "main",
-    "admin"
+    "admin",
+    "app",
+    "signin"
   ],
   "permissions": [
     "path:default",
     "event:default",
     "window:default",
+    "window:allow-close",
     "app:default",
     "image:default",
     "resources:default",
