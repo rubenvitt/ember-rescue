@@ -8,14 +8,14 @@ export enum Windows {
 }
 
 
-export const WindowUrls: { [key in Windows]: string } = {
+export const WindowUrls: Readonly<Record<Windows, string>> = {
   [Windows.MAIN]: '/',
   [Windows.SIGN_IN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
 };
 
-export const WindowOptions: { [key in Windows]: AppWindowOptions } = {
+export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
   [Windows.MAIN]: {
     titleBarStyle: 'transparent',
     hiddenTitle: true,

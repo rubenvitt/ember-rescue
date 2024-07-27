@@ -1,19 +1,19 @@
 export default function storage() {
 
-  function readLocalStorage<TYPE>(key: string): TYPE | null {
+  function readLocalStorage<T>(key: string): T | null {
     console.debug('Reading from local storage:', key);
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    return item ? JSON.parse(item) as T : null;
   }
 
-  const writeLocalStorage = (key: string, value: any) => {
+  function writeLocalStorage<T>(key: string, value: T) {
     console.debug('Writing to local storage:', key, value);
     if (value === null || value === undefined) {
       localStorage.removeItem(key);
     } else {
       localStorage.setItem(key, JSON.stringify(value));
     }
-  };
+  }
 
   return {
     readLocalStorage,

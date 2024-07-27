@@ -1,20 +1,18 @@
 import { queryClient } from '../routes/__root.js';
 
 /**
- * Checks if all the parameters are present.
+ * Checks if all parameters are present and not null or undefined.
+ * Throws an error if any parameter is missing.
  *
- * @param {...any} elements - The parameters to check.
- * @throws {Error} Throws an error if any parameter is missing.
- * @return {undefined}
+ * @param {...unknown} elements - The parameters to be checked.
+ * @throws {Error} If any required parameter is missing.
  */
-export function requireParams(...elements: any) {
-  if (Array.isArray(elements)) {
-    elements.forEach((el) => {
-      if (!el) {
-        throw new Error('Required parameter missing');
-      }
-    });
-  }
+export function requireParams(...elements: unknown[]) {
+  elements.forEach((el) => {
+    if (!el) {
+      throw new Error('Required parameter missing');
+    }
+  });
 }
 
 /**
