@@ -1,9 +1,8 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../styles/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ThemeProvider } from '../components/atomic/atoms/Theme.component.js';
 import { de } from 'date-fns/locale';
 import { setDefaultOptions } from 'date-fns';
@@ -28,6 +27,18 @@ const ReactQueryDevtoolsProduction = React.lazy(() =>
   })),
 );
 
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === 'production'
+    ? () => null // Render nothing in production
+    : React.lazy(() =>
+      // Lazy load in development
+      import('@tanstack/router-devtools').then((res) => ({
+        default: res.TanStackRouterDevtools,
+        // For Embedded Mode
+        // default: res.TanStackRouterDevtoolsPanel
+      })),
+    );
+
 export const Route = createRootRoute({
   component: () => {
     const [showDevtools, setShowDevtools] = React.useState(false);
@@ -42,8 +53,10 @@ export const Route = createRootRoute({
         <ThemeProvider>
           <Outlet />
           <Modal />
-          <TanStackRouterDevtools />
           <ReactQueryDevtools initialIsOpen />
+          <Suspense>
+            <TanStackRouterDevtools />
+          </Suspense>
           {showDevtools && (
             <React.Suspense fallback={null}>
               <ReactQueryDevtoolsProduction />
