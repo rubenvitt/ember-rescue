@@ -11,7 +11,7 @@ function Index() {
   let navigate = useNavigate({ from: '/' });
 
   useEffect(() => {
-    if (bearbeiter.isLoading) {
+    if (bearbeiter.isPending) {
       // do nothing
     } else if (bearbeiter?.data?.id) {
       navigate({ to: '/app' });

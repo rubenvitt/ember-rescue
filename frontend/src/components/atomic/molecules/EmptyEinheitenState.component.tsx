@@ -85,7 +85,7 @@ export function EmptyEinheitenState() {
           <Button type="submit">Disponieren</Button>
         </div>
       </form>
-      
+
       <GenericForm<{ einheitId: string }> sections={[{
         fields: [{
           name: 'einheitId',

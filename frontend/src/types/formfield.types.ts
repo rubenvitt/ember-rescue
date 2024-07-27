@@ -21,7 +21,7 @@ export interface BaseFormField<
   TFormValidator extends Validator<TParentData, unknown> | undefined = undefined
 > {
   name: TName;
-  label: string;
+  label?: string;
   type: FieldType;
   placeholder?: string;
   options?: string[];

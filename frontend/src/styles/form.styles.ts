@@ -41,6 +41,7 @@ export const buttonContainerStyles = cva('', {
     layout: {
       simple: 'flex justify-end space-x-3',
       complex: 'pt-6 flex items-center justify-end gap-x-6',
+      none: '',
     },
   },
 });

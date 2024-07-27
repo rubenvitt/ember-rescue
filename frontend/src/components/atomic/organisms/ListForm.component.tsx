@@ -50,6 +50,7 @@ export function ListForm<T extends Record<string, any>>({
         <TableHeaderComponent itemTemplate={itemTemplate} />
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
         {items.map((item, index) => (
+          // @ts-ignore
           <ListFormRow
             key={index}
             item={item}

@@ -1,6 +1,7 @@
 import { DeepKeys, DeepValue, useForm, Validator } from '@tanstack/react-form';
 import { Optional } from '@ark-ui/react';
-import { SimpleFormField } from './formfield.types.js';
+import { BaseFormField, SimpleFormField } from './formfield.types.js';
+import { IconType } from 'react-icons';
 
 export interface ComplexFormSection<
   TParentData,
@@ -25,19 +26,25 @@ export type FormSection<
   SimpleFormSection<TParentData, TFieldValidator, TFormValidator>
   | ComplexFormSection<TParentData, TFieldValidator, TFormValidator>;
 
-export interface GenericFormProps<
+export type GenericFormProps<
   TFormData,
   TFieldValidator extends Validator<DeepValue<TFormData, DeepKeys<TFormData>, Optional<TFormData>>, unknown> | undefined = any,
   TFormValidator extends Validator<TFormData, unknown> | undefined = undefined
-> {
-  sections: FormSection<TFormData, TFieldValidator, TFormValidator>[],
-  onSubmit: (values: TFormData) => Promise<void> | void,
+> = {
+  onSubmit: (values: TFormData) => Promise<unknown> | unknown,
   onReset?: () => void,
   defaultValues?: TFormData,
   submitText?: string,
   resetText?: string,
   layout?: 'simple' | 'complex',
-}
+} & (
+  { sections: FormSection<TFormData, TFieldValidator, TFormValidator>[], field?: never }
+  | { sections?: never, field: BaseFormField<TFormData, DeepKeys<TFormData>> }
+  )
+  & (
+  { submitIcon?: IconType, withoutIcon?: never } |
+  { submitIcon?: never, withoutIcon?: boolean }
+  )
 
 export interface GenericFormRef<TFormData> {
   form: ReturnType<typeof useForm<TFormData>>;

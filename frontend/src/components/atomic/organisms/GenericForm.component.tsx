@@ -34,6 +34,9 @@ export const GenericForm = forwardRef(function GenericForm<
     resetText = 'Reset',
     sections,
     submitText = 'Submit',
+    submitIcon = PiArrowArcRight,
+    withoutIcon,
+    field,
   }: GenericFormProps<TFormData, TFieldValidator, TFormValidator>,
   ref: React.Ref<GenericFormRef<TFormData>>,
 ) {
@@ -44,6 +47,25 @@ export const GenericForm = forwardRef(function GenericForm<
     },
   });
   useImperativeHandle(ref, () => ({ form }), [form]);
+
+  const renderSingleItemForm = useCallback(() => {
+    if (!field) return null;
+
+    return (
+      <>
+        <div className="grid grid-cols-1 sm:flex-auto">
+          <label htmlFor={field.name} className="sr-only">{field.label}</label>
+          <form.Field name={field.name}>
+            {fieldApi => (
+              <FormField
+                field={field}
+                fieldApi={fieldApi} layout={'simple'} />
+            )}
+          </form.Field>
+        </div>
+      </>
+    );
+  }, [form, field, submitText]);
 
   const getWidthClass = useCallback((field: BaseFormField<TFormData, any, TFieldValidator, TFormValidator>): string => {
     if (layout === 'complex') return 'md:col-span-12 col-span-12';
@@ -97,17 +119,20 @@ export const GenericForm = forwardRef(function GenericForm<
     <form onSubmit={(e) => {
       e.preventDefault();
       form.handleSubmit();
-    }} className={formStyles({ layout })}>
-      {sections.map((section, index) => (
-        <FormSection key={index} section={section} layout={layout} renderFields={renderFields} />
-      ))}
-      <div className={buttonContainerStyles({ layout })}>
+    }} className={!!field ? 'sm:flex sm:items-center' : formStyles({ layout })}>
+      {sections?.length && sections.length > 0
+        ? sections.map((section, index) => (
+          <FormSection key={index} section={section} layout={layout} renderFields={renderFields} />
+        ))
+        : renderSingleItemForm()}
+      <div className={!!field ? 'sm:ml-4 sm:mt-0 sm:flex-shrink-0' : buttonContainerStyles({ layout })}>
         {onReset && (
           <Button type="button" onClick={onReset} intent="outline">{resetText}</Button>
         )}
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
-            <Button type="submit" disabled={!canSubmit} color="primary" icon={PiArrowArcRight} iconPosition="right">
+            <Button type="submit" disabled={!canSubmit} color="primary" icon={!withoutIcon ? submitIcon : undefined}
+                    iconPosition="right">
               {isSubmitting ? 'Submitting...' : submitText}
             </Button>
           )}

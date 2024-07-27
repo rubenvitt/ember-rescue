@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
@@ -6,11 +6,12 @@ import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { EinheitDto } from '../../types/types.js';
-import { GenericForm, GenericFormRef } from '../../components/atomic/organisms/GenericForm.component.js';
-import { Button } from '../../components/atomic/molecules/Button.component.tsx';
-import { PiBell } from 'react-icons/pi';
+import { GenericForm } from '../../components/atomic/organisms/GenericForm.component.js';
+import { PiAmbulance, PiBell } from 'react-icons/pi';
 import { useModal } from '../../hooks/modal.hook.js';
 import { ModalConfig } from '../../types/modalTypes.js';
+import { GenericFormRef } from '../../types/form.types.js';
+import { Button } from '../../components/atomic/molecules/Button.component.tsx';
 
 export const Route = createLazyFileRoute('/app/einheiten')({
   component: Einheiten,
@@ -46,8 +47,6 @@ function Einheiten() {
   //   })) ?? [];
   // }, []);
 
-  const handleAddKraft = () => {
-  };
   const formRef = useRef<GenericFormRef<AddEinheitType>>(null);
 
   const handleSubmit = () => {
@@ -70,19 +69,17 @@ function Einheiten() {
           ref={formRef}
           onSubmit={handleSubmit}
           layout="simple"
-          sections={[
-            {
-              fields: [{
-                name: 'einheitId',
-                label: 'Einheit',
-                type: 'combo',
-                items: einheitenNichtImEinsatzCombo,
-              }],
-            },
-          ]}
+          field={{
+            name: 'einheitId',
+            label: 'Einheit',
+            type: 'combo',
+            items: einheitenNichtImEinsatzCombo,
+          }}
           defaultValues={{
             einheitId: einheiten.data?.find(() => true)?.id ?? '',
           }}
+          submitText="Disponieren"
+          submitIcon={PiAmbulance}
         />
       ),
     };
@@ -90,9 +87,11 @@ function Einheiten() {
 
   return (
     <>
-      <Button color="orange" className="cursor-pointer" onClick={() => openModal(modalConfig)}>
-        Neue Einheiten hinzufügen
-      </Button>
+      <div className="pb-2 w-1/2">
+        <Button color="orange" className="cursor-pointer" onClick={() => openModal(modalConfig)}>
+          Neue Einheiten hinzufügen
+        </Button>
+      </div>
 
       {einheitenImEinsatz.isFetched &&
         (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
