@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Einsatz } from '../types/types.js';
+import { CreateEinsatz, Einsatz } from '../types/types.js';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
 
@@ -22,7 +22,7 @@ export function useEinsatz() {
     queryFn: services.backend.einsatze.fetchOffeneEinsaetze.queryFn,
   });
 
-  const createEinsatz = useMutation<Einsatz, unknown, Einsatz>({
+  const createEinsatz = useMutation<Einsatz, unknown, CreateEinsatz>({
     mutationKey: services.backend.einsatze.createEinsatz.mutationKey,
     mutationFn: services.backend.einsatze.createEinsatz.mutationFn,
     onSuccess: services.backend.einsatze.invalidateQueries,

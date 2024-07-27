@@ -1,5 +1,5 @@
 import { backendFetch } from '../../utils/http.js';
-import { Einsatz } from '../../types/types.js';
+import { CreateEinsatz, Einsatz } from '../../types/types.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 
 // Export des queryKey
@@ -28,7 +28,7 @@ export const fetchOffeneEinsaetze = {
 // POST New Einsatz
 export const createEinsatz = {
   mutationKey: [queryKey, 'add'],
-  mutationFn: async (data: Einsatz) => {
+  mutationFn: async (data: CreateEinsatz) => {
     return await backendFetch<Einsatz>('/einsatz', {
       method: 'POST',
       body: JSON.stringify(data),

@@ -37,6 +37,13 @@ export type Einsatz = {
   };
 };
 
+export interface CreateEinsatz {
+  erstAlarmiert: string;
+  alarmstichwort?: string;
+  aufnehmendesRettungsmittel?: string;
+  einsatznummer?: string;
+}
+
 export type NewBearbeiter = {
   name: string;
   id: null

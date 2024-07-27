@@ -42,7 +42,7 @@ export type GenericFormProps<
   | { sections?: never, field: BaseFormField<TFormData, DeepKeys<TFormData>> }
   )
   & (
-  { submitIcon?: IconType, withoutIcon?: never } |
+  { submitIcon?: IconType | undefined, withoutIcon?: never } |
   { submitIcon?: never, withoutIcon?: boolean }
   )
 
