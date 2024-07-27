@@ -1,9 +1,9 @@
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEinsatz } from '../../hooks/einsatz.hook.js';
-import { getCurrent } from '@tauri-apps/api/window';
 import { format } from 'date-fns';
 import { natoDateTime } from '../../utils/time.js';
 import { useEffect } from 'react';
+import { useWindowSetup } from '../../hooks/window.hook.js';
 
 export const Route = createLazyFileRoute('/app/')({
   component: App,
@@ -14,17 +14,10 @@ function App() {
   const { einsatz } = useEinsatz();
   const navigate = useNavigate({ from: '/app/' });
 
-  useEffect(() => {
-    const setupWindow = async () => {
-      const window = getCurrent();
-      await window.setTitle('Project Rescue');
-      await window.setFullscreen(true);
-      await window.setResizable(true);
-      await window.setAlwaysOnTop(false);
-    };
-
-    setupWindow();
-  }, []);
+  useWindowSetup({
+    title: 'Project Rescue',
+    resizable: true,
+  });
 
   useEffect(() => {
     if (einsatz.isDisabled) navigate({ to: '/setupEinsatz' });
