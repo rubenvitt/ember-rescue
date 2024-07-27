@@ -21,9 +21,7 @@ import { Route as AuthSignoutImport } from './routes/auth/signout'
 
 const SigninLazyImport = createFileRoute('/signin')()
 const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
-const DocsLazyImport = createFileRoute('/docs')()
 const IndexLazyImport = createFileRoute('/')()
-const DocsIndexLazyImport = createFileRoute('/docs/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
@@ -44,11 +42,6 @@ const SetupEinsatzLazyRoute = SetupEinsatzLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/setupEinsatz.lazy').then((d) => d.Route))
 
-const DocsLazyRoute = DocsLazyImport.update({
-  path: '/docs',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/docs.lazy').then((d) => d.Route))
-
 const AppRoute = AppImport.update({
   path: '/app',
   getParentRoute: () => rootRoute,
@@ -58,11 +51,6 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const DocsIndexLazyRoute = DocsIndexLazyImport.update({
-  path: '/',
-  getParentRoute: () => DocsLazyRoute,
-} as any).lazy(() => import('./routes/docs/index.lazy').then((d) => d.Route))
 
 const AppIndexLazyRoute = AppIndexLazyImport.update({
   path: '/',
@@ -133,13 +121,6 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AppImport
-      parentRoute: typeof rootRoute
-    }
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsLazyImport
       parentRoute: typeof rootRoute
     }
     '/setupEinsatz': {
@@ -219,13 +200,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexLazyImport
       parentRoute: typeof AppImport
     }
-    '/docs/': {
-      id: '/docs/'
-      path: '/'
-      fullPath: '/docs/'
-      preLoaderRoute: typeof DocsIndexLazyImport
-      parentRoute: typeof DocsLazyImport
-    }
   }
 }
 
@@ -241,7 +215,6 @@ export const routeTree = rootRoute.addChildren({
     AppLagekarteLazyRoute,
     AppIndexLazyRoute,
   }),
-  DocsLazyRoute: DocsLazyRoute.addChildren({ DocsIndexLazyRoute }),
   SetupEinsatzLazyRoute,
   SigninLazyRoute,
   AuthSignoutRoute,
@@ -259,7 +232,6 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/app",
-        "/docs",
         "/setupEinsatz",
         "/signin",
         "/auth/signout",
@@ -279,12 +251,6 @@ export const routeTree = rootRoute.addChildren({
         "/app/einsatztagebuch",
         "/app/lagekarte",
         "/app/"
-      ]
-    },
-    "/docs": {
-      "filePath": "docs.lazy.tsx",
-      "children": [
-        "/docs/"
       ]
     },
     "/setupEinsatz": {
@@ -325,10 +291,6 @@ export const routeTree = rootRoute.addChildren({
     "/app/": {
       "filePath": "app/index.lazy.tsx",
       "parent": "/app"
-    },
-    "/docs/": {
-      "filePath": "docs/index.lazy.tsx",
-      "parent": "/docs"
     }
   }
 }

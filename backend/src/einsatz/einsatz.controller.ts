@@ -68,7 +68,7 @@ export class EinsatzController {
     @Headers('bearbeiter') bearbeiterId: string,
     @Param('id') einsatzId: string,
   ) {
-    console.log('closeEinsatz', einsatzId);
+    this.logger.log('Einsatz geschlossen', { einsatzId });
     return this.einsatzService.closeEinsatz(einsatzId);
   }
 }

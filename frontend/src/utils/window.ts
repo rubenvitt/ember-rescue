@@ -14,7 +14,7 @@ export const WindowUrls: Readonly<Record<Windows, string>> = {
   [Windows.SIGN_IN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
-  [Windows.DOCS]: '/docs',
+  [Windows.DOCS]: 'http://localhost:3001',
 };
 
 export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
@@ -56,5 +56,7 @@ export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
     minimizable: false,
     alwaysOnTop: true,
     resizable: true,
+    width: 1200,
+    height: 800,
   },
 };

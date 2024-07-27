@@ -1,9 +1,9 @@
 export const navigation = [
   {
-    title: 'Introduction',
+    title: 'Einführung',
     links: [
-      { title: 'Getting started', href: '/' },
-      { title: 'Installation', href: '/docs/installation' },
+      { title: 'Erste Schritte', href: '/' },
+      { title: 'Module in der Übersicht', href: '/docs/module' },
     ],
   },
   {

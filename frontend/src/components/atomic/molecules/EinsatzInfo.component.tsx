@@ -8,7 +8,7 @@ import FireAlarmIcon from '../../../assets/icons/icons8-fire-alarm.svg?react';
 export const EinsatzInfoComponent: React.FC = () => {
   const { einsatz } = useEinsatz();
   const time = useInterval(() => format(new Date(), natoDateTime), 300, []);
-
+  
   return (
     <div className="flex h-16 shrink-0 items-start gap-4 mt-4">
       <FireAlarmIcon className="h-8 w-auto mt-1 text-white" />

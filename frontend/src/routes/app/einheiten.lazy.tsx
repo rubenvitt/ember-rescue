@@ -64,23 +64,24 @@ function Einheiten() {
       fullWidth: true,
       title: 'Neue Einheiten hinzufügen',
       Icon: PiBell,
-      content: (
-        <GenericForm<AddEinheitType>
-          ref={formRef}
-          onSubmit={handleSubmit}
-          layout="simple"
-          field={{
-            name: 'einheitId',
-            label: 'Einheit',
-            type: 'combo',
-            items: einheitenNichtImEinsatzCombo,
-          }}
-          defaultValues={{
-            einheitId: einheiten.data?.find(() => true)?.id ?? '',
-          }}
-          submitText="Disponieren"
-          submitIcon={PiAmbulance}
-        />
+      content: (<div className="mb-24">
+          <GenericForm<AddEinheitType>
+            ref={formRef}
+            onSubmit={handleSubmit}
+            layout="simple"
+            field={{
+              name: 'einheitId',
+              label: 'Einheit',
+              type: 'combo',
+              items: einheitenNichtImEinsatzCombo,
+            }}
+            defaultValues={{
+              einheitId: einheiten.data?.find(() => true)?.id ?? '',
+            }}
+            submitText="Disponieren"
+            submitIcon={PiAmbulance}
+          />
+        </div>
       ),
     };
   }, [einheitenNichtImEinsatzCombo, einheiten, formRef]);
@@ -88,7 +89,7 @@ function Einheiten() {
   return (
     <>
       <div className="pb-2 w-1/2">
-        <Button color="orange" className="cursor-pointer" onClick={() => openModal(modalConfig)}>
+        <Button className="cursor-pointer" onClick={() => openModal(modalConfig)}>
           Neue Einheiten hinzufügen
         </Button>
       </div>
