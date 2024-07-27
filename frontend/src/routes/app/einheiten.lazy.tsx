@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
@@ -22,7 +22,6 @@ type AddEinheitType = {
 }
 
 function Einheiten() {
-  const [fahrzeug, setFahrzeug] = useState('');
   const { qualifikationen } = useQualifikationen();
   const {
     einheiten,
@@ -50,8 +49,9 @@ function Einheiten() {
   const formRef = useRef<GenericFormRef<AddEinheitType>>(null);
 
   const handleSubmit = () => {
-    console.log('Submitted:', { fahrzeug, kraefte: einheiten });
+    console.log('Submitted:', { kraefte: einheiten });
     closeModal();
+    // TODO: Kräfte should be handled here, too
     const einheitId = formRef.current?.form?.getFieldValue('einheitId');
     return einheitId && addEinheitToEinsatz.mutateAsync({ einheitId });
   };
