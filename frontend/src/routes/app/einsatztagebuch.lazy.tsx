@@ -1,26 +1,24 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { EinsatztagebuchComponent } from '../../components/atomic/organisms/Einsatztagebuch.component.tsx';
-import { useEffect } from 'react';
-import { useStore } from '../../hooks/store.hook.js';
-import { ClockIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useContextualNavigation } from '../../hooks/navigation.hook.js';
+import { useMemo } from 'react';
+import { ContextualNavigation } from '../../types/nav.types.js';
+import { PiCloud, PiPlus } from 'react-icons/pi';
 
 export const Route = createLazyFileRoute('/app/einsatztagebuch')({
   component: Einsatztagebuch,
 });
 
 function Einsatztagebuch() {
-  const { setContextualNavigation } = useStore();
-  useEffect(() => {
-    setContextualNavigation({
+  useContextualNavigation(useMemo<ContextualNavigation>(() => {
+    return {
       title: 'Einsatztagebuch',
       items: [
-        { name: 'Neuen Eintrag anlegen', href: '/app', icon: PlusIcon },
-        { name: 'Letzte Einträge', href: '/app/einsatztagebuch/letzte-eintraege', icon: ClockIcon },
+        { name: 'Neuen Eintrag anlegen', href: '/app', icon: PiPlus },
+        { name: 'Letzte Einträge', href: '/app', icon: PiCloud },
       ],
-    });
-
-    return () => setContextualNavigation(undefined);
-  }, [setContextualNavigation]);
+    };
+  }, []));
 
   return <EinsatztagebuchComponent />;
 }
