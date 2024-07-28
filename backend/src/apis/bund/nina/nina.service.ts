@@ -5,6 +5,12 @@ import {
   WarningInfo,
 } from '../../../map/geojson/geojson.service';
 
+/**
+ * Represents a warning system.
+ * @typedef {string} WarningSystem
+ * @description - The WarningSystem class represents various warning systems used for emergency alerts and notifications.
+ * These warning systems include 'katwarn', 'dwd', 'biwapp', 'mowas', 'lhp', and 'police'.
+ */
 export type WarningSystem =
   | 'katwarn'
   | 'dwd'
@@ -13,6 +19,11 @@ export type WarningSystem =
   | 'lhp'
   | 'police';
 
+/**
+ * Service class for fetching warnings from the Nina API and manipulating GeoJSON data.
+ *
+ * @Injectable
+ */
 @Injectable()
 export class NinaService {
   private readonly logger = new Logger(NinaService.name);
@@ -29,7 +40,12 @@ export class NinaService {
 
   constructor(private readonly geojsonService: GeojsonService) {}
 
-  async fetchWarningsAsGeoJson(): Promise<GeoJSONResponse<unknown>> {
+  /**
+   * Fetches warnings as GeoJSON.
+   *
+   * @returns {Promise<GeoJSONResponse<unknown>>} A promise that resolves to a GeoJSONResponse object.
+   */
+  public async fetchWarningsAsGeoJson(): Promise<GeoJSONResponse<unknown>> {
     const allWarnings = await this.fetchAllWarnings();
     this.logger.log(`Found ${allWarnings.length} warnings`);
 
@@ -42,7 +58,14 @@ export class NinaService {
     return response;
   }
 
-  async fetchWarningDetails(warningId: string): Promise<any> {
+  /**
+   * Fetches warning details for a given warning ID.
+   *
+   * @param {string} warningId - The ID of the warning.
+   * @returns {Promise<any>} - A promise that resolves to the warning details.
+   * @throws {Error} - If there is an error in the HTTP request or response.
+   */
+  public async fetchWarningDetails(warningId: string): Promise<any> {
     const url = `${this.ninaWarningApi}/${warningId}.json`;
     try {
       const response = await fetch(url);
@@ -59,6 +82,11 @@ export class NinaService {
     }
   }
 
+  /**
+   * Fetches all warning details.
+   *
+   * @returns {Promise<any[]>} A promise that resolves to an array of warning details.
+   */
   async fetchAllWarningDetails(): Promise<any[]> {
     const allWarnings = await this.fetchAllWarnings();
     const warningDetailsPromises = allWarnings.map((warning) =>
@@ -77,7 +105,7 @@ export class NinaService {
     }
   }
 
-  private async fetchAllWarnings(): Promise<WarningInfo[]> {
+  async fetchAllWarnings(): Promise<WarningInfo[]> {
     const warningPromises = Object.entries(this.warningSystems).map(
       ([type, apiUrl]) =>
         this.fetchWarningsByType(type as WarningSystem, apiUrl),
@@ -86,7 +114,7 @@ export class NinaService {
     return warningsArray.flat();
   }
 
-  private async fetchWarningsByType(
+  async fetchWarningsByType(
     type: WarningSystem,
     apiUrl: string,
   ): Promise<WarningInfo[]> {

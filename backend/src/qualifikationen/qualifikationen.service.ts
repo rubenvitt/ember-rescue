@@ -6,6 +6,12 @@ export class QualifikationenService {
   constructor(private readonly prismaService: PrismaService) {}
 
   findAll() {
-    return this.prismaService.qualifikation.findMany();
+    return this.prismaService.qualifikation.findMany({
+      select: {
+        id: true,
+        abkuerzung: true,
+        bezeichnung: true,
+      },
+    });
   }
 }
