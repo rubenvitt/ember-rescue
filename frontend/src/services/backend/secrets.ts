@@ -1,5 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
+import { QueryClient } from '@tanstack/react-query';
 
 type PossibleSecrets = 'mapboxApi';
 type Secrets = {
@@ -11,8 +12,8 @@ type Secrets = {
 export const queryKey = (secretKey: PossibleSecrets) => ['secrets', secretKey];
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (secretKey: PossibleSecrets) =>
-  createInvalidateQueries([queryKey(secretKey)]);
+export const invalidateQueries = (secretKey: PossibleSecrets, queryClient: QueryClient) => createInvalidateQueries(queryKey(secretKey), queryClient);
+
 
 // GET Secret
 export const fetchSecret = {

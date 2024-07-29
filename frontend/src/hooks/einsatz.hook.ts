@@ -1,9 +1,10 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
 import { CreateEinsatz, Einsatz } from '../types/app/einsatz.types.js';
 
 export function useEinsatz() {
+  const queryClient = useQueryClient();
   const { setEinsatz, einsatzId, removeEinsatz } = useStore();
 
   const singleEinsatz = useQuery<Einsatz | null>({
@@ -25,13 +26,13 @@ export function useEinsatz() {
   const createEinsatz = useMutation<Einsatz, unknown, CreateEinsatz>({
     mutationKey: services.backend.einsatze.createEinsatz.mutationKey,
     mutationFn: services.backend.einsatze.createEinsatz.mutationFn,
-    onSuccess: services.backend.einsatze.invalidateQueries,
+    onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
 
   const einsatzAbschliessen = useMutation<unknown, unknown, Einsatz>({
     mutationKey: services.backend.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
     mutationFn: services.backend.einsatze.einsatzAbschliessen.mutationFn,
-    onSuccess: services.backend.einsatze.invalidateQueries,
+    onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
 
   function saveEinsatz(einsatz: Einsatz) {

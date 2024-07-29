@@ -1,12 +1,13 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../../types/app/einsatztagebuch.types.js';
+import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
 export const queryKey = 'einsatztagebuch';
 
 // Invalidate Queries Funktion
-export const invalidateQueries = createInvalidateQueries([queryKey]);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
 // GET All EinsatztagebuchEinträge
 export const fetchAllEinsatztagebuchEintraege = {

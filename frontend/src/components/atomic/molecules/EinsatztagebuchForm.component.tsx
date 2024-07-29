@@ -1,45 +1,24 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { GenericForm } from '../organisms/GenericForm.component.tsx';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { formatISO } from 'date-fns';
-import { ItemType } from './Combobox.component.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { z } from 'zod';
-import { EinheitDto } from '../../../types/app/einheit.types.js';
 import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
+import { einsatztagebuchItem } from '../../../hooks/einheiten/einheiten-items.hook.ts';
+import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
 
 interface Props {
   closeForm: () => void;
 }
 
-const einsatztagebuchItem: ItemType<EinheitDto> = {
-  item: {
-    id: 'etb',
-    einheitTyp: { id: 'etb', label: 'ETB' },
-    kapazitaet: 0,
-    istTemporaer: false,
-    status: { id: 'none', code: 'none', bezeichnung: 'None' },
-    funkrufname: 'Einsatztagebuch',
-    _count: { einsatz_einheit: 0 },
-  },
-  label: 'ETB',
-  secondary: 'Einsatztagebuch',
-};
-
 export function EinsatztagebuchForm({ closeForm }: Props) {
   const { createEinsatztagebuchEintrag } = useEinsatztagebuch();
-  const { einheiten } = useEinheiten();
   const { einsatz } = useEinsatz();
 
-  const einheitenAsItems = useMemo<ItemType<EinheitDto>[]>(() => [
-    einsatztagebuchItem,
-    ...(einheiten.data?.map(item => ({
-      label: item.funkrufname,
-      secondary: item.einheitTyp.label,
-      item,
-    })) ?? []),
-  ], [einheiten.data]);
+  const { einheitenAsItems } = useEinheitenItems({
+    include: ['einsatztagebuch', 'einheitenImEinsatz', 'einheitenNichtImEinsatz'],
+  });
 
   const handleSubmit = useCallback(async (data: CreateEinsatztagebuchEintrag) => {
     closeForm();

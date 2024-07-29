@@ -27,7 +27,7 @@ export const fieldContainerStyles = cva('', {
   },
 });
 
-export const fieldGridStyles = cva('grid grid-cols-12 gap-6', {
+export const fieldGridStyles = cva('md:grid md:grid-cols-12 md:gap-6 grid-cols-1 gap-2', {
   variants: {
     layout: {
       simple: '',

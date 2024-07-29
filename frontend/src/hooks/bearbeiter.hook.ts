@@ -1,5 +1,5 @@
 import { useStore } from './store.hook.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 import { useNavigate } from '@tanstack/react-router';
 import { Bearbeiter, CreateBearbeiter } from '../types/app/bearbeiter.types.js';
@@ -11,6 +11,7 @@ type Props = {
 export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   const { setBearbeiter, bearbeiter, removeBearbeiter } = useStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const allBearbeiter = useQuery<Bearbeiter[]>({
     queryKey: services.backend.bearbeiter.fetchAllBearbeiter.queryKey,
@@ -39,7 +40,7 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   const loginBearbeiter = useMutation<Bearbeiter, unknown, Bearbeiter | CreateBearbeiter>({
     mutationKey: services.backend.bearbeiter.postNewBearbeiter.mutationKey,
     mutationFn: services.backend.bearbeiter.postNewBearbeiter.mutationFn,
-    onSuccess: services.backend.bearbeiter.invalidateQueries,
+    onSuccess: services.backend.bearbeiter.invalidateQueries(queryClient),
   });
 
   async function saveBearbeiter(bearbeiter: Bearbeiter | CreateBearbeiter) {
@@ -52,7 +53,7 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   function remove() {
     console.log('Removing bearbeiter:', bearbeiter);
     removeBearbeiter();
-    services.backend.bearbeiter.invalidateQueries();
+    services.backend.bearbeiter.invalidateQueries(queryClient);
   }
 
   return {

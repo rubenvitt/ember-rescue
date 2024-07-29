@@ -2,7 +2,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../styles/__root.css';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { ThemeProvider } from '../components/atomic/atoms/Theme.component.js';
 import { de } from 'date-fns/locale';
 import { setDefaultOptions } from 'date-fns';
@@ -17,6 +17,7 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: false,
       refetchOnMount: true,
+      refetchOnReconnect: true,
       refetchInterval: 5000,
     },
   },
@@ -43,7 +44,7 @@ const TanStackRouterDevtools =
 export const Route = createRootRoute({
   component: () => {
     const [showDevtools, setShowDevtools] = React.useState(false);
-    React.useEffect(() => {
+    useEffect(() => {
       // @ts-expect-error
       window.toggleDevtools = () => setShowDevtools((old) => !old);
       setDefaultOptions({ locale: de });

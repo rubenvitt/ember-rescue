@@ -1,12 +1,13 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { Settings } from '../../hooks/settings.hook.js';
+import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
 export const queryKey = 'settings';
 
 // Invalidate Queries Funktion
-export const invalidateQueries = createInvalidateQueries([queryKey]);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
 // GET Settings
 export const fetchSettings = {

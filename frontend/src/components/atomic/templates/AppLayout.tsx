@@ -4,7 +4,6 @@ import { UserProfileDropdown } from '../molecules/UserProfileDropdown.js';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import { SidebarComponent } from './Sidebar.component.js';
 import { useStore } from '../../../hooks/store.hook.js';
-import { useNetwork } from '@reactuses/core';
 import {
   PiAmbulance,
   PiFirstAid,
@@ -15,14 +14,15 @@ import {
   PiNotification,
   PiNotificationBold,
   PiSignOut,
+  PiSpinner,
   PiSun,
-  PiWifiHigh,
-  PiWifiXBold,
 } from 'react-icons/pi';
 import { DropdownItemType } from '../molecules/GenericDropdown.component.js';
 import { twMerge } from 'tailwind-merge';
 import { CommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKey } from '../../../services/backend/bearbeiter.js';
 
 const mainNavigation = [
   { name: 'Dashboard', href: '/app', icon: PiGauge },
@@ -38,8 +38,9 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggleTheme } = useTheme();
   const { contextualNavigation } = useStore();
-  const { online } = useNetwork();
+  const queryClient = useQueryClient();
   const unreadNotification = false; // TODO implement me
+  const bearbeiterState = queryClient.getQueryState([queryKey]);
 
   const userNavigation = useMemo<DropdownItemType[]>(() => {
     return [
@@ -83,7 +84,8 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
               />
             </form>
             <div className="flex items-center gap-x-4 lg:gap-x-6 text-gray-900 dark:text-gray-200">
-              <div>{online ? <PiWifiHigh size={26} /> : <PiWifiXBold size={26} className="text-red-500" />}</div>
+              {(queryClient.isMutating() > 0 || queryClient.isFetching() > 0) &&
+                <PiSpinner size={14} className={queryClient.isMutating() > 0 ? 'animate-ping' : 'animate-spin'} />}
               <button type="button"
                       className={twMerge('-m-2.5 p-2.5 text-gray-400 hover:text-gray-500', unreadNotification && 'text-primary-500 hover:animate-none animate-ping')}>
                 <span className="sr-only">View notifications</span>

@@ -1,10 +1,11 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { Bearbeiter, CreateBearbeiter } from '../../types/app/bearbeiter.types.js';
+import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
 export const queryKey = 'bearbeiter';
-export const invalidateQueries = createInvalidateQueries([queryKey]);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
 // GET All Bearbeiter
 export const fetchAllBearbeiter = {

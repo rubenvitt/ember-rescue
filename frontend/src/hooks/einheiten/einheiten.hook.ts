@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEinsatz } from '../einsatz.hook.js';
 import { useMemo } from 'react';
 import { PatchEinheitenType } from '../../services/backend/einheiten.js';
@@ -6,6 +6,7 @@ import { services } from '../../services/index.js';
 import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
 
 export function useEinheiten(props?: { einheitId?: string }) {
+  const queryClient = useQueryClient();
   const { einsatzId } = useEinsatz();
   const einheiten = useQuery<EinheitDto[]>({
     queryKey: services.backend.einheiten.fetchAllEinheiten.queryKey,
@@ -33,13 +34,13 @@ export function useEinheiten(props?: { einheitId?: string }) {
   const patchEinheiten = useMutation<unknown, unknown, PatchEinheitenType>({
     mutationKey: services.backend.einheiten.patchEinheiten.mutationKey,
     mutationFn: services.backend.einheiten.patchEinheiten.mutationFn,
-    onSuccess: services.backend.einheiten.invalidateQueries,
+    onSuccess: services.backend.einheiten.invalidateQueries(queryClient),
   });
 
   const addEinheitToEinsatz = useMutation<unknown, unknown, { einheitId: string }>({
     mutationKey: services.backend.einheiten.postAddEinheitToEinsatz.mutationKey({ einsatzId }),
     mutationFn: services.backend.einheiten.postAddEinheitToEinsatz.mutationFn({ einsatzId }),
-    onSuccess: services.backend.einheiten.invalidateQueries,
+    onSuccess: services.backend.einheiten.invalidateQueries(queryClient),
   });
 
   const removeEinheitFromEinsatz = useMutation<unknown, unknown, {}>({
@@ -51,7 +52,7 @@ export function useEinheiten(props?: { einheitId?: string }) {
       einheitId: props?.einheitId,
       einsatzId,
     }),
-    onSuccess: services.backend.einheiten.invalidateQueries,
+    onSuccess: services.backend.einheiten.invalidateQueries(queryClient),
   });
 
   const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
@@ -60,7 +61,7 @@ export function useEinheiten(props?: { einheitId?: string }) {
       einheitId: props?.einheitId,
     }),
     mutationFn: services.backend.einheiten.postStatusForEinheit.mutationFn({ einsatzId, einheitId: props?.einheitId }),
-    onSuccess: services.backend.einheiten.invalidateQueries,
+    onSuccess: services.backend.einheiten.invalidateQueries(queryClient),
   });
 
 

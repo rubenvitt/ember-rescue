@@ -1,6 +1,7 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
+import { QueryClient } from '@tanstack/react-query';
 
 export const queryKey = 'einheiten';
 
@@ -8,7 +9,7 @@ export type PatchEinheitenType = (Omit<EinheitDto, '_count' | 'status' | 'einhei
   einheitTypId: string
 })[]
 
-export const invalidateQueries = createInvalidateQueries([queryKey]);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
 /// fetch
 

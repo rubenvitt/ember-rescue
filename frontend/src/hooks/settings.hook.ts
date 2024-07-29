@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 import { EinheitDto } from '../types/app/einheit.types.js';
 
@@ -8,6 +8,7 @@ export type Settings = {
 };
 
 export function useSettings() {
+  const queryClient = useQueryClient();
   const settings = useQuery<Settings>({
     queryKey: services.backend.settings.fetchSettings.queryKey,
     queryFn: services.backend.settings.fetchSettings.queryFn,
@@ -18,8 +19,8 @@ export function useSettings() {
     mutationFn: services.backend.settings.saveSettings.mutationFn,
     onSuccess: () => {
       return Promise.all([
-        services.backend.settings.invalidateQueries(),
-        services.backend.einheiten.invalidateQueries(),
+        services.backend.settings.invalidateQueries(queryClient),
+        services.backend.einheiten.invalidateQueries(queryClient),
       ]);
     },
   });

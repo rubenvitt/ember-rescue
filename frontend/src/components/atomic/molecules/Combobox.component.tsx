@@ -40,6 +40,7 @@ export function ComboInput<T extends Identifiable>({
   const { hasErrors } = useValidation(errors);
 
   useEffect(() => {
+    console.log('try to set default item', defaultItem);
     if (!selectedItem && defaultItem && query === '') {
       setSelectedItem(defaultItem);
     }
@@ -85,7 +86,8 @@ export function ComboInput<T extends Identifiable>({
       value={selectedItem}
       onChange={handleChange}
     >
-      {label && <Label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">{label}</Label>}
+      {label &&
+        <Label className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">{label}</Label>}
       <div className={clsx('relative', label && ' mt-3.5')}>
         <ComboboxInput
           className={comboboxStyles({ hasErrors })}
@@ -96,7 +98,8 @@ export function ComboInput<T extends Identifiable>({
           spellCheck={false}
           {...inputProps}
         />
-        <ComboboxButton className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
+        <ComboboxButton
+          className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <PiCaretDownLight className="h-5 w-5 text-gray-400" aria-hidden="true" />
         </ComboboxButton>
 
@@ -116,7 +119,8 @@ export function ComboInput<T extends Identifiable>({
               {({ focus, selected }) => (
                 <>
                   <div className="flex items-center min-w-0">
-                    <span className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
+                                        <span
+                                          className={clsx('flex-shrink-0 truncate', selected && 'font-semibold')}>{item.label}</span>
                     <span
                       className={clsx(
                         'ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300',

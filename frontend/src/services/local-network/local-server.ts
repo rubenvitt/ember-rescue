@@ -4,12 +4,13 @@ import { createInvalidateQueries } from '../../utils/queries.js';
 import { backendFetch } from '../../utils/http.js';
 
 import { ServerMetadata } from '../../types/app/server.types.js';
+import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
 export const queryKey = (ip: string, port: number) => ['server', ip, port];
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (ip: string, port: number) => createInvalidateQueries([queryKey(ip, port)]);
+export const invalidateQueries = (ip: string, port: number, queryClient: QueryClient) => createInvalidateQueries(queryKey(ip, port), queryClient);
 
 // GET Metadaten von einem lokalen Server
 export const fetchLocalServerMeta = {

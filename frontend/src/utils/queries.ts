@@ -1,4 +1,4 @@
-import { queryClient } from '../routes/__root.js';
+import { QueryClient } from '@tanstack/react-query';
 
 /**
  * Checks if all parameters are present and not null or undefined.
@@ -16,13 +16,14 @@ export function requireParams(...elements: unknown[]) {
 }
 
 /**
- * Creates a function that can be used to invalidate queries in the `queryClient`.
+ * Creates a function that invalidates queries in a QueryClient.
  *
- * @param {unknown[]} queryKey - The key or keys of the queries to invalidate.
+ * @param {unknown[]} queryKey - The key of the queries to invalidate.
+ * @param {QueryClient} queryClient - The QueryClient object to invalidate queries in.
  *
- * @return {Function} - A function that, when called, triggers the invalidation of the specified queries.
+ * @return {() => Promise<void>} The function that invalidates the queries.
  */
-export function createInvalidateQueries(queryKey: unknown[]): () => Promise<void> {
+export function createInvalidateQueries(queryKey: unknown[], queryClient: QueryClient): () => Promise<void> {
   return async () => await queryClient.invalidateQueries({
     queryKey,
   });

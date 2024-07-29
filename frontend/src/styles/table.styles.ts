@@ -3,8 +3,8 @@ import { cva } from 'class-variance-authority';
 export const cellStyles = cva('py-4 px-4 text-sm', {
   variants: {
     type: {
-      header: 'font-semibold text-gray-900 bg-gray-50 bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 backdrop-blur backdrop-filter',
-      body: 'text-gray-500',
+      header: 'font-semibold text-gray-900 bg-gray-50 bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 backdrop-blur backdrop-filter dark:bg-gray-950 dark:text-white',
+      body: 'text-gray-500 dark:text-white',
     },
     position: {
       first: 'sm:pl-6 lg:pl-8',
@@ -18,11 +18,11 @@ export const cellStyles = cva('py-4 px-4 text-sm', {
   },
 });
 
-export const rowStyles = cva('transition-colors hover:bg-gray-100', {
+export const rowStyles = cva('transition-colors hover:bg-gray-100 dark:hover:bg-gray-950/50', {
   variants: {
     striped: {
-      even: 'bg-white',
-      odd: 'bg-gray-50',
+      even: 'bg-white dark:bg-gray-800/50',
+      odd: 'bg-gray-50 dark:bg-gray-800',
     },
   },
   defaultVariants: {

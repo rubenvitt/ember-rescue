@@ -38,11 +38,11 @@ export const modalPanel = cva(
     variants: {
       variant: {
         dialog: 'relative rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg overflow-hidden',
-        panel: 'w-screen max-w-md shadow-xl my-4 rounded-l-lg overflow-y-scroll',
+        panel: 'w-screen shadow-xl my-4 rounded-l-lg overflow-y-scroll',
       },
       fullWidth: {
-        true: 'w-full',
-        false: '',
+        true: 'w-full md:ml-24',
+        false: 'max-w-md',
       },
     },
     defaultVariants: {

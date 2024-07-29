@@ -1,12 +1,13 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { CreateEinsatz, Einsatz } from '../../types/app/einsatz.types.js';
+import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
 export const queryKey = 'einsatz';
 
 // Invalidate Queries Funktion
-export const invalidateQueries = createInvalidateQueries([queryKey, 'offeneEinsaetze']);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
 
 // GET Single Einsatz
 export const fetchSingleEinsatz = {

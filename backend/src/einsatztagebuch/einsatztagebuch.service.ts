@@ -11,9 +11,7 @@ export class EinsatztagebuchService {
       where: {
         einsatzId,
       },
-      orderBy: {
-        timestamp: 'desc',
-      },
+      orderBy: [{ timestamp: 'desc' }, { createdAt: 'desc' }],
     });
   }
 
@@ -22,8 +20,29 @@ export class EinsatztagebuchService {
       | Prisma.EinsatztagebuchEintragCreateManyInput
       | Prisma.EinsatztagebuchEintragCreateManyInput[],
   ) {
+    const mapData = (item: Prisma.EinsatztagebuchEintragCreateManyInput) => ({
+      timestamp: item.timestamp,
+      type: item.type,
+      content: item.content,
+      absender: item.absender,
+      empfaenger: item.empfaenger,
+      archived: item.archived,
+      einsatzId: item.einsatzId,
+      bearbeiterId: item.bearbeiterId,
+      id: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
+    });
+
+    // if data is an array
+    if (Array.isArray(data)) {
+      return this.prismaService.einsatztagebuchEintrag.createMany({
+        data: data.map(mapData),
+      });
+    }
+
     return this.prismaService.einsatztagebuchEintrag.createMany({
-      data: data,
+      data: mapData(data),
     });
   }
 
