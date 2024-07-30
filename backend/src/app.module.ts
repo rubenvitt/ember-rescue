@@ -10,7 +10,7 @@ import { EinheitenModule } from './einheiten/einheiten.module';
 import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
 import * as Joi from 'joi';
-import { AlarmstichwortModule } from './alarmstichwort/alarmstichwortModule';
+import { AlarmstichwortModule } from './alarmstichwort/alarmstichwort.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
 import { MetaModule } from './meta/meta.module';

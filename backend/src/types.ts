@@ -59,7 +59,7 @@ const EinsatztagebuchEintragTypesArray: EinsatztagebuchEintragType[] =
   Object.values(EinsatztagebuchEintragEnum) as EinsatztagebuchEintragType[];
 
 export class CreateEinsatztagebuchDto {
-  id: never;
+  id?: never;
 
   @IsNotEmpty()
   @ApiProperty()

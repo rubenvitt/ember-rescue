@@ -1,81 +1,116 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EinsatztagebuchController } from './einsatztagebuch.controller';
+import { PrismaService } from '../database/prisma/prisma.service';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import * as utils from '../utils/header.utils';
-import { CreateEinsatztagebuchDto } from '../types';
 
-describe('EinsatztagebuchController', () => {
-  let controller: EinsatztagebuchController;
+describe('EinsatztagebuchService', () => {
   let service: EinsatztagebuchService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
-    const serviceMock = {
-      getEinsatztagebuch: jest.fn().mockResolvedValue([]),
-      createEinsatztagebuchEintrag: jest
-        .fn()
-        .mockResolvedValue({ id: 'eintrag1' }),
-      archiveEinsatztagebuchEintrag: jest
-        .fn()
-        .mockResolvedValue({ id: 'eintrag1', archived: true }),
-    };
-
-    jest
-      .spyOn(utils, 'extractBearbeiterId')
-      .mockImplementation((headerValue: string) => headerValue);
-    jest
-      .spyOn(utils, 'extractEinsatzId')
-      .mockImplementation((headerValue: string) => headerValue);
-
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [EinsatztagebuchController],
-      providers: [{ provide: EinsatztagebuchService, useValue: serviceMock }],
+      providers: [
+        EinsatztagebuchService,
+        {
+          provide: PrismaService,
+          useValue: {
+            einsatztagebuchEintrag: {
+              findMany: jest.fn().mockResolvedValue([]),
+              createMany: jest.fn(),
+              update: jest
+                .fn()
+                .mockResolvedValue({ id: 'eintrag1', archived: true }),
+            },
+          },
+        },
+      ],
     }).compile();
 
-    controller = module.get<EinsatztagebuchController>(
-      EinsatztagebuchController,
-    );
     service = module.get<EinsatztagebuchService>(EinsatztagebuchService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   it('should get einsatztagebuch', async () => {
-    const result = await controller.getEinsatztagebuch(
-      'bearbeiter1',
-      'einsatz1',
-    );
+    const result = await service.getEinsatztagebuch('einsatz1');
     expect(result).toEqual([]);
-    expect(service.getEinsatztagebuch).toHaveBeenCalledWith('einsatz1');
+    expect(prismaService.einsatztagebuchEintrag.findMany).toHaveBeenCalledWith({
+      where: { einsatzId: 'einsatz1' },
+      orderBy: [{ timestamp: 'desc' }, { createdAt: 'desc' }],
+    });
   });
 
   it('should create einsatztagebuch eintrag', async () => {
-    const dto: CreateEinsatztagebuchDto = {
-      content: 'Eintrag Test',
-      absender: 'Absender Test',
-      empfaenger: 'Empfaenger Test',
-      timestamp: new Date().toISOString().substr(0, 19), // Format: YYYY-MM-DDTHH:mm:ss
+    const createData = {
+      timestamp: new Date().toISOString(),
       type: 'USER',
+      content: 'Testinhalt',
+      absender: 'Testabsender',
+      empfaenger: 'Testempfänger',
+      archived: false,
+      einsatzId: 'einsatz1',
+      bearbeiterId: 'bearbeiter1',
     };
 
-    const result = await controller.createEinsatztagebuchEintrag(
-      'bearbeiter1',
-      'einsatz1',
-      dto,
-    );
-    expect(result).toEqual({ id: 'eintrag1' });
-    expect(service.createEinsatztagebuchEintrag).toHaveBeenCalledWith({
-      bearbeiterId: 'bearbeiter1',
-      einsatzId: 'einsatz1',
-      ...dto,
+    await service.createEinsatztagebuchEintrag(createData);
+    expect(
+      prismaService.einsatztagebuchEintrag.createMany,
+    ).toHaveBeenCalledWith({
+      data: {
+        ...createData,
+        id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+      },
+    });
+  });
+
+  it('should handle array of parameters correctly when creating einsatztagebuch eintrag', async () => {
+    const createDataArray = [
+      {
+        timestamp: new Date().toISOString(),
+        type: 'USER',
+        content: 'Testinhalt1',
+        absender: 'Testabsender1',
+        empfaenger: 'Testempfänger1',
+        archived: false,
+        einsatzId: 'einsatz1',
+        bearbeiterId: 'bearbeiter1',
+      },
+      {
+        timestamp: new Date().toISOString(),
+        type: 'SYSTEM',
+        content: 'Testinhalt2',
+        absender: 'Testabsender2',
+        empfaenger: 'Testempfänger2',
+        archived: false,
+        einsatzId: 'einsatz2',
+        bearbeiterId: 'bearbeiter2',
+      },
+    ];
+
+    await service.createEinsatztagebuchEintrag(createDataArray);
+    expect(
+      prismaService.einsatztagebuchEintrag.createMany,
+    ).toHaveBeenCalledWith({
+      data: createDataArray.map((item) => ({
+        ...item,
+        id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+      })),
     });
   });
 
   it('should archive einsatztagebuch eintrag', async () => {
     const id = 'eintrag1';
-    const result = await controller.archiveEinsatztagebuchEintrag(id);
+    const result = await service.archiveEinsatztagebuchEintrag(id);
     expect(result).toEqual({ id, archived: true });
-    expect(service.archiveEinsatztagebuchEintrag).toHaveBeenCalledWith(id);
+    expect(prismaService.einsatztagebuchEintrag.update).toHaveBeenCalledWith({
+      where: { id },
+      data: { archived: true },
+    });
   });
 });

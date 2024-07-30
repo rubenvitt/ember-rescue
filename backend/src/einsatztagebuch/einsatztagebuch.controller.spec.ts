@@ -55,7 +55,7 @@ describe('EinsatztagebuchController', () => {
       content: 'Eintrag Test',
       absender: 'Absender Test',
       empfaenger: 'Empfaenger Test',
-      timestamp: new Date().toISOString().substr(0, 19), // Format: YYYY-MM-DDTHH:mm:ss
+      timestamp: new Date().toISOString().slice(0, 19), // Format: YYYY-MM-DDTHH:mm:ss
       type: 'USER',
     };
 

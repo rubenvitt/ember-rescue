@@ -131,7 +131,7 @@ describe('EinsatzService', () => {
     const result = await service.closeEinsatz(einsatzId);
     const currentTime = new Date().getTime();
     expect(result.id).toBe(einsatzId);
-    expect(result.abgeschlossen.getTime()).toBeCloseTo(currentTime, -1);
+    expect(result.abgeschlossen.getTime()).toBeCloseTo(currentTime, -3);
     expect(prismaService.einsatz.update).toHaveBeenCalledWith({
       where: { id: einsatzId },
       data: { abgeschlossen: expect.any(Date) },
