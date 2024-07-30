@@ -27,6 +27,7 @@
     "@mapbox-controls/zoom": "^2.1.0",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
+    "@mapbox/search-js-react": "1.0.0-beta.21",
     "@reactuses/core": "^5.0.19",
     "@tailwindcss/forms": "^0.5.7",
     "@tanstack/react-form": "^0.26.4",

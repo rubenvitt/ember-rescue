@@ -24,7 +24,9 @@ const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
 const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
+const AppSchadenLazyImport = createFileRoute('/app/schaden')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
+const AppGefahrenLazyImport = createFileRoute('/app/gefahren')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
 const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
 const AppEinheitenLazyImport = createFileRoute('/app/einheiten')()
@@ -69,10 +71,20 @@ const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
   import('./routes/prestart/settings.lazy').then((d) => d.Route),
 )
 
+const AppSchadenLazyRoute = AppSchadenLazyImport.update({
+  path: '/schaden',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/app/schaden.lazy').then((d) => d.Route))
+
 const AppLagekarteLazyRoute = AppLagekarteLazyImport.update({
   path: '/lagekarte',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/lagekarte.lazy').then((d) => d.Route))
+
+const AppGefahrenLazyRoute = AppGefahrenLazyImport.update({
+  path: '/gefahren',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/app/gefahren.lazy').then((d) => d.Route))
 
 const AppEinsatztagebuchLazyRoute = AppEinsatztagebuchLazyImport.update({
   path: '/einsatztagebuch',
@@ -172,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEinsatztagebuchLazyImport
       parentRoute: typeof AppImport
     }
+    '/app/gefahren': {
+      id: '/app/gefahren'
+      path: '/gefahren'
+      fullPath: '/app/gefahren'
+      preLoaderRoute: typeof AppGefahrenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/lagekarte': {
       id: '/app/lagekarte'
       path: '/lagekarte'
       fullPath: '/app/lagekarte'
       preLoaderRoute: typeof AppLagekarteLazyImport
+      parentRoute: typeof AppImport
+    }
+    '/app/schaden': {
+      id: '/app/schaden'
+      path: '/schaden'
+      fullPath: '/app/schaden'
+      preLoaderRoute: typeof AppSchadenLazyImport
       parentRoute: typeof AppImport
     }
     '/prestart/settings': {
@@ -212,7 +238,9 @@ export const routeTree = rootRoute.addChildren({
     AppEinheitenLazyRoute,
     AppEinsatzdatenLazyRoute,
     AppEinsatztagebuchLazyRoute,
+    AppGefahrenLazyRoute,
     AppLagekarteLazyRoute,
+    AppSchadenLazyRoute,
     AppIndexLazyRoute,
   }),
   SetupEinsatzLazyRoute,
@@ -249,7 +277,9 @@ export const routeTree = rootRoute.addChildren({
         "/app/einheiten",
         "/app/einsatzdaten",
         "/app/einsatztagebuch",
+        "/app/gefahren",
         "/app/lagekarte",
+        "/app/schaden",
         "/app/"
       ]
     },
@@ -278,8 +308,16 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "app/einsatztagebuch.lazy.tsx",
       "parent": "/app"
     },
+    "/app/gefahren": {
+      "filePath": "app/gefahren.lazy.tsx",
+      "parent": "/app"
+    },
     "/app/lagekarte": {
       "filePath": "app/lagekarte.lazy.tsx",
+      "parent": "/app"
+    },
+    "/app/schaden": {
+      "filePath": "app/schaden.lazy.tsx",
       "parent": "/app"
     },
     "/prestart/settings": {

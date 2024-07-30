@@ -20,4 +20,5 @@ export interface CreateEinsatz {
   alarmstichwort?: string;
   aufnehmendesRettungsmittel?: string;
   einsatznummer?: string;
+  adresse?: string;
 }

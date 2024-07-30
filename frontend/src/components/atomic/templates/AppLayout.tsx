@@ -6,6 +6,7 @@ import { SidebarComponent } from './Sidebar.component.js';
 import { useStore } from '../../../hooks/store.hook.js';
 import {
   PiAmbulance,
+  PiChartPie,
   PiFirstAid,
   PiGauge,
   PiMagnifyingGlass,
@@ -13,9 +14,12 @@ import {
   PiNotebook,
   PiNotification,
   PiNotificationBold,
+  PiPaperclip,
   PiSignOut,
   PiSpinner,
   PiSun,
+  PiWarningDiamond,
+  PiWrench,
 } from 'react-icons/pi';
 import { DropdownItemType } from '../molecules/GenericDropdown.component.js';
 import { twMerge } from 'tailwind-merge';
@@ -30,6 +34,10 @@ const mainNavigation = [
   { name: 'Betroffene', href: '/app/betroffene', icon: PiFirstAid },
   { name: 'Lagekarte', href: '/app/lagekarte', icon: PiMapTrifold },
   { name: 'Einsatzdaten', href: '/app/einsatzdaten', icon: InformationCircleIcon },
+  { name: '(?) Einsatzabschnitte', href: '#', icon: PiChartPie },
+  { name: '(?) Schäden', href: '/app/schaden', icon: PiWrench },
+  { name: '(?) Gefahren', href: '/app/gefahren', icon: PiWarningDiamond },
+  { name: '(?) Notizen & Erinnerungen', href: '#', icon: PiPaperclip },
 ];
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {

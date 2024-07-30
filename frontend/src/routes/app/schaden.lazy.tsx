@@ -4,19 +4,19 @@ import { PiPlus, PiUsers } from 'react-icons/pi';
 import { useMemo } from 'react';
 import { ContextualNavigation } from '../../types/ui/nav.types.js';
 
-export const Route = createLazyFileRoute('/app/betroffene')({
-  component: Betroffene,
+export const Route = createLazyFileRoute('/app/schaden')({
+  component: Schaden,
 });
 
-function Betroffene() {
+function Schaden() {
   useContextualNavigation(useMemo<ContextualNavigation>(() => {
     return {
-      title: 'Betroffene',
+      title: 'Schäden',
       items: [
-        { name: 'Betroffene aufnehmen', icon: PiPlus, href: '#' },
-        { name: 'Betroffene verwalten', icon: PiUsers, href: '#' },
+        { name: 'Personenschaden', icon: PiPlus, href: '#', current: false },
+        { name: 'Sachschaden', icon: PiUsers, href: '#' },
       ],
     };
   }, []));
-  return <><p className="dark:text-white">Betroffene</p></>;
+  return <><p className="dark:text-white">Schäden</p></>;
 }

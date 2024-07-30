@@ -6,9 +6,55 @@ import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
 import { format } from 'date-fns';
 import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
 import { CreateEinsatz } from '../../../../types/app/einsatz.types.js';
+import { SearchBox } from '@mapbox/search-js-react';
+import { useSecret } from '../../../../hooks/secrets.hook.js';
+
+// const AddressAutocomplete: React.FC = () => {
+//   const { secret } = useSecret({ secretKey: 'mapboxApi' });
+//   const { retrieve } = useMapboxAutofill({
+//     accessToken: secret.data?.value,
+//     country: 'de',
+//     language: 'de-DE',
+//     streets: true,
+//   });
+//
+//   const [query, setQuery] = useState('');
+//   const [suggestions, setSuggestions] = useState<any>([]);
+//
+//   const handleChange = async (event: any) => {
+//     const value = event.target.value;
+//     setQuery(value);
+//     if (value) {
+//       const results = await retrieve(value, { sessionToken: 'test-asd' });
+//       setSuggestions(results);
+//     } else {
+//       setSuggestions([]);
+//     }
+//   };
+//
+//   return (
+//     <div>
+//       <input
+//         type="text"
+//         value={query}
+//         onChange={handleChange}
+//         placeholder="Adresse eingeben..."
+//       />
+//       {suggestions.length > 0 && (
+//         <ul>
+//           {/* @ts-ignore FIXME */}
+//           {suggestions.map((suggestion, index) => (
+//             <li key={index}>{suggestion.place_name}</li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
 
 export const SetupEinsatzForm: React.FC = () => {
   const navigate = useNavigate();
+  const { secret } = useSecret({ secretKey: 'mapboxApi' });
 
   const { einheiten } = useEinheiten();
   const { createEinsatz, saveEinsatz } = useEinsatz();
@@ -22,6 +68,11 @@ export const SetupEinsatzForm: React.FC = () => {
 
   return (
     <section id="newEinsatzForm" className="w-full pb-6">
+      {secret.data &&
+        // @ts-ignore
+        <SearchBox value="" accessToken={secret.data?.value ?? ''} theme={{ variables: { colorPrimary: 'red' } }}
+                   options={{ language: 'de', country: 'de', proximity: [10.55, 52.96] }} />
+      }
       <GenericForm<CreateEinsatz>
         layout="complex"
         resetText="Abbrechen"
