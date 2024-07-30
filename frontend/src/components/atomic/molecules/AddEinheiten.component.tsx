@@ -1,11 +1,10 @@
 import { useRecommendedEinheiten } from '../../../hooks/einheiten/recommended-einheiten.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { Button } from './Button.component.tsx';
-import { PiPlus } from 'react-icons/pi';
+import { PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
 import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { FormField } from './FormField.component.js';
 import { GenericForm } from '../organisms/GenericForm.component.js';
+import { twMerge } from 'tailwind-merge';
 
 const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }> = ({ einheit, onAdd }) => (
   <li>
@@ -31,9 +30,13 @@ const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }
   </li>
 );
 
-export function EmptyEinheitenState() {
+interface Props {
+  classNameContainer?: string;
+}
+
+export function AddEinheiten({ classNameContainer }: Props) {
   const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
-  const { addEinheitToEinsatz, einheitenNichtImEinsatz } = useEinheiten();
+  const { addEinheitToEinsatz, einheitenNichtImEinsatz, einheitenImEinsatz } = useEinheiten();
   const form = useForm<{ einheit: string }>({
     onSubmit({ value }) {
       handleAddEinheit(value.einheit);
@@ -54,54 +57,47 @@ export function EmptyEinheitenState() {
   }, [addEinheitToEinsatz]);
 
   return (
-    <div className="mx-auto max-w-md sm:max-w-3xl">
-      <div className="text-center">
-        <PiPlus className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
-        <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900 dark:text-white">Neue Einheit
-          disponieren</h2>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+    <div
+      className={twMerge('mx-auto max-w-md sm:max-w-3xl border border-primary-500 p-6 rounded-lg', classNameContainer)}>
+      <div className="text-center mb-6">
+        {empfohleneEinheiten.length == 0
+          ? <PiEmpty className="mx-auto h-12 w-12 text-red-500" aria-hidden="true" />
+          : <PiShieldPlus className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />}
+        <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900 dark:text-white">
+          Neue Einheit disponieren
+        </h2>
+        {einheitenImEinsatz.data?.length === 0 && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Dem Einsatz wurden noch keine Fahrzeuge zugewiesen. Jetzt Fahrzeuge zuweisen.
         </p>
+        }
       </div>
 
-      <form className="mt-6 sm:flex sm:items-center" onSubmit={(e) => {
-        e.preventDefault();
-        return form.handleSubmit();
-      }}>
-        <label htmlFor="einheit" className="sr-only">Hinzuzufügende Einheit</label>
-        <div className="grid grid-cols-1 sm:flex-auto">
-          <form.Field name={'einheit'}>
-            {fieldApi => <FormField
-              field={{
-                items: einheitenComboItems ?? [],
-                label: 'Einheit auswählen',
-                name: 'einheit',
-                type: 'combo',
-              }}
-              fieldApi={fieldApi} layout={'simple'} />}
-          </form.Field>
-        </div>
-        <div className="mt-3 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-          <Button type="submit">Disponieren</Button>
-        </div>
-      </form>
-
-      <GenericForm<{ einheitId: string }> sections={[{
-        fields: [{
+      <GenericForm<{ einheitId: string }>
+        field={{
           name: 'einheitId',
           label: 'Einheit',
           type: 'combo',
           items: einheitenComboItems,
-        }],
-      }]} onSubmit={form => handleAddEinheit(form.einheitId)} submitText="Disponieren" />
+        }}
+        withoutIcon={true}
+        onSubmit={form => handleAddEinheit(form.einheitId)} submitText="Disponieren" />
 
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">Empfohlene Einheiten</h3>
-        <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {empfohleneEinheiten?.map((einheit) => (
-            <RecommendedEinheit key={einheit.item.id} einheit={einheit} onAdd={handleAddEinheit} />
-          ))}
-        </ul>
+        {empfohleneEinheiten.length > 0
+          ? <>
+            <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {empfohleneEinheiten?.map((einheit) => (
+                <RecommendedEinheit key={einheit.item.id} einheit={einheit} onAdd={handleAddEinheit} />
+              ))}
+            </ul>
+          </>
+          : <>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Keine weiteren empfohlenen Einheiten verfügbar.
+            </p>
+          </>
+        }
       </div>
     </div>
   );

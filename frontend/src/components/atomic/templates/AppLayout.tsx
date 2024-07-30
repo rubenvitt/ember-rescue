@@ -115,7 +115,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
         </div>
 
         <main className="py-10">
-          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+          <div className="px-4 sm:px-6 lg:px-8 dark:text-white">{children}</div>
         </main>
       </div>
     </div>

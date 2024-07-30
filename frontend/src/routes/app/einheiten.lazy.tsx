@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
-import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
+import { AddEinheiten } from '../../components/atomic/molecules/AddEinheiten.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
 import { GenericForm } from '../../components/atomic/organisms/GenericForm.component.js';
 import { PiAmbulance, PiBell } from 'react-icons/pi';
@@ -93,10 +93,8 @@ function Einheiten() {
         </Button>
       </div>
 
-      {einheitenImEinsatz.isFetched &&
-        (einheitenImEinsatz.data?.length ? <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} /> :
-          <EmptyEinheitenState />)}
-      <EmptyEinheitenState />
+      {einheitenImEinsatz.data?.length && <EinheitenlisteComponent einheiten={einheitenImEinsatz.data} />}
+      <AddEinheiten classNameContainer="mt-12" />
     </>
   );
 }
