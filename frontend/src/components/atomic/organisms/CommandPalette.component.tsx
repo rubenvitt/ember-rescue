@@ -83,7 +83,7 @@ export function CommandPalette() {
           className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
         >
           <Combobox
-            onChange={(item) => {
+            onChange={(item: { url: Location }) => {
               if (item) {
                 window.location = item.url;
               }

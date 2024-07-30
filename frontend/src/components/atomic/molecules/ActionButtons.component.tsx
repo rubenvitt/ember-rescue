@@ -4,7 +4,7 @@ import { ActionButton } from '../../../types/ui/expandableList.types.js';
 
 export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[], item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">
-    {buttons.map((button, index) =>
+    {buttons.map((button) =>
       button.dialog ? (
         <FlexibleDialog
           key={button.label}

@@ -8,13 +8,13 @@ import { ValidatedInput } from '../atoms/inputs/validated-input.component.js';
 import { GenericFormProps } from '../../../types/ui/form.types.js';
 
 interface ListFormRowProps<T> {
-  item: T,
-  onSave: (updatedItem: T) => void,
-  onDelete: () => void,
-  formProps: Omit<GenericFormProps<T>, 'onSubmit' | 'defaultValues'>,
-  renderFunctions?: Partial<Record<keyof T, (value: T[keyof T]) => React.ReactNode>>,
-  isNew?: boolean,
-  produceDefaultItem?: (item: T) => T,
+  item: T;
+  onSave: (updatedItem: T) => void;
+  onDelete: () => void;
+  formProps: Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'>;
+  renderFunctions?: Partial<Record<keyof T, (value: T[keyof T]) => React.ReactNode>>;
+  isNew?: boolean;
+  produceDefaultItem?: (item: T) => T;
 }
 
 const buttonStyles = cva('px-2 py-1 rounded', {
@@ -43,24 +43,33 @@ export function ListFormRow<T extends Record<string, any>>({
 
   const form = useForm<T>({
     defaultValues: produceDefaultItem?.(item) ?? item,
-    onSubmit: useCallback(async ({ value }: { value: T }) => {
+    onSubmit: useCallback(
+      async ({ value }: { value: T }) => {
         onSave(value);
         if (!isNew) {
           setIsEditing(false);
         }
-      }, [onSave, isNew],
+      },
+      [onSave, isNew],
     ),
   });
 
-  const getFieldConfig = useCallback((key: string): BaseFormField<T, any, any, any> => {
-    const field = formProps.sections[0].fields.find((f: BaseFormField<T, any, any, any>) => f.name === key);
-    return field || {
-      name: key,
-      label: key,
-      type: 'text',
-      readonly: false,
-    };
-  }, [formProps.sections]);
+  const getFieldConfig = useCallback(
+    (key: string): BaseFormField<T, any, any, any> => {
+      const field = formProps.sections?.[0].fields.find(
+        (f: BaseFormField<T, any, any, any>) => f.name === key,
+      );
+      return (
+        field || {
+          name: key,
+          label: key,
+          type: 'text',
+          readonly: false,
+        }
+      );
+    },
+    [formProps.sections],
+  );
 
   const handleCancel = useCallback(() => {
     if (isNew) {
@@ -71,12 +80,17 @@ export function ListFormRow<T extends Record<string, any>>({
     }
   }, [isNew, onDelete, form]);
 
-  const renderValue = useCallback((key: keyof T, value: T[keyof T]) => {
-    if (renderFunctions?.[key]) {
-      return renderFunctions[key]!(value);
-    }
-    return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value);
-  }, [renderFunctions]);
+  const renderValue = useCallback(
+    (key: keyof T, value: T[keyof T]) => {
+      if (renderFunctions?.[key]) {
+        return renderFunctions[key]!(value);
+      }
+      return typeof value === 'object' && value !== null
+        ? JSON.stringify(value)
+        : String(value);
+    },
+    [renderFunctions],
+  );
 
   const itemEntries = useMemo(() => Object.entries(item), [item]);
 
@@ -113,26 +127,28 @@ export function ListFormRow<T extends Record<string, any>>({
               type="submit"
               className={buttonStyles({ intent: 'primary' })}
             >
-              Save
+              Speichern
             </button>
             <button
-              type="button"
               onClick={handleCancel}
+              type="button"
               className={buttonStyles({ intent: 'secondary' })}
             >
-              Cancel
+              Abbrechen
             </button>
           </>
         ) : (
           <>
             <button
               onClick={() => setIsEditing(true)}
+              type="button"
               className={buttonStyles({ intent: 'primary' })}
             >
               Bearbeiten
             </button>
             <button
               onClick={onDelete}
+              type="button"
               className={buttonStyles({ intent: 'danger' })}
             >
               Löschen

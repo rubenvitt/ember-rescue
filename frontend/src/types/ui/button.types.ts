@@ -12,10 +12,15 @@ export type ButtonProps = VariantProps<typeof buttonVariants> & {
   | Omit<ComponentPropsWithoutRef<typeof Link>, 'className'>
   )
   & (
-  { icon: never, iconPosition: never, iconSize: never, children: ReactNode; }
+  | { icon: never, iconPosition: never, iconSize: never, children: ReactNode; }
   | {
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
   iconPosition?: 'left' | 'right';
   children?: ReactNode;
   iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-});
+})
+  & (
+  | { href?: never, onclick?: never, type: 'submit' }
+  | { href: string; onClick?: never; }
+  | { href?: never; onClick: () => unknown | Promise<unknown>; }
+  );

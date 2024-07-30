@@ -80,12 +80,12 @@ const IconComponent: React.FC = () => {
                 if (!katwarnungenSichtbar) {
                   map?.addLayer(katwarnLayer);
 
-                  map?.on('click', 'warnings-layer', (e) => {
-                    console.log('you have clicked on', e.features.map(feature => feature.properties));
-                    const clickedWarnIds = e.features.map(f => f.properties.warnId) as string[];
+                  map?.on('click', 'warnings-layer', (e: any) => {
+                    console.log('you have clicked on', e.features.map((feature: any) => feature.properties));
+                    const clickedWarnIds = e.features.map((f: any) => f.properties.warnId) as string[];
                     new mapboxgl.Popup({}).setLngLat(e.lngLat).setHTML(`${warnDetails.data?.filter(detail => clickedWarnIds.includes(detail.identifier)).map(detail => {
                       console.log('searching detail', detail);
-                      return detail.info.filter(info => (info.language as String)?.includes?.('DE') ?? true).map(info => {
+                      return detail.info.filter((info: any) => (info.language as String)?.includes?.('DE') ?? true).map((info: any) => {
                         return `<div class="scroll-y-auto max-h-48 overflow-y-scroll">
                         <p>${info.headline} (${(info.category as String[]).join(', ')}) ${info.description} ${info.instruction}} ${info.senderName}<a href="${info.web?.startsWith('http') ? info.web : 'https://' + info.web}">${info.web}</a> </p></div>`;
                       });
@@ -108,7 +108,7 @@ interface MyControlComponentProps {
 
 function AddEinheitComponent() {
   const { einheitenImEinsatz } = useEinheiten();
-  const { markerPerEinheit, addMarkerForEinheit, map } = useMapStore();
+  const { map } = useMapStore();
   const randomEinheit = useMemo<EinheitDto | undefined>(() => {
     return einheitenImEinsatz.data?.find(() => true);
   }, [einheitenImEinsatz.data]);
@@ -122,13 +122,13 @@ function AddEinheitComponent() {
       einheit: 'zug',
       fachaufgabe: 'iuk',
       name: einheit.funkrufname,
-      farbe: statusRgbColors.get(einheit.status.code),
+      farbe: statusRgbColors[einheit.status.code],
     }).svg;
     element.innerHTML = svg.render();
     element.className = 'w-20 h-20 text-red-500';
     element.id = `einheit-${einheit.funkrufname}`;
     map && new mapboxgl.Marker({ element, draggable: true })
-      .setPopup(new mapboxgl.Popup().setHTML(`<div>${einheit.einheitTyp.label} ${einheit.funkrufname} | ${formatMGRS(mgrs(map.getCenter()))} <button onclick="console.log('should delete...')">Löschen</button></div>`))
+      .setPopup(new mapboxgl.Popup().setHTML(`<div>${einheit.einheitTyp.label} ${einheit.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`))
       .setLngLat(map.getCenter())
       .addTo(map);
   }, [map]);
@@ -235,11 +235,11 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   }, [map]);
 
   const mouseCoordinates = useMemo(() => {
-    return formatMGRS(mgrs(mouseLngLat));
+    return formatMGRS(mgrs(mouseLngLat)!);
   }, [mouseLngLat]);
 
   const centerCoordinates = useMemo(() => {
-    return formatMGRS(mgrs(mapCenterLngLat));
+    return formatMGRS(mgrs(mapCenterLngLat)!);
   }, [mouseLngLat]);
 
   return <>
@@ -275,7 +275,7 @@ export class RescueControl implements IControl {
     return this.container;
   };
 
-  onRemove: (map: Map) => void = (map) => {
+  onRemove: (map: Map) => void = () => {
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }

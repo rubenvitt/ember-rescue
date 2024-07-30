@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useTheme } from '../../../hooks/theme.hook.js';
-import mapboxgl, { LngLat } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -27,7 +27,6 @@ function _MapboxComponent() {
   const { secret } = useSecret({ secretKey: 'mapboxApi' });
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
-  const [center, setCenter] = useState<LngLat>();
 
   useEffect(() => {
     console.log('recreate map', mapDiv);

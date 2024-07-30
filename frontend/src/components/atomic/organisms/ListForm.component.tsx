@@ -9,6 +9,7 @@ interface ListFormProps<T> extends Omit<GenericFormProps<T>, 'defaultValues' | '
   onItemsChange: (newItems: T[]) => void;
   itemTemplate: T;
   renderFunctions?: Partial<Record<keyof T, (value: T[keyof T]) => ReactNode>>;
+  produceDefaultItem?: (item: T) => T;
 }
 
 export function ListForm<T extends Record<string, any>>({
@@ -18,14 +19,12 @@ export function ListForm<T extends Record<string, any>>({
                                                           renderFunctions,
                                                           produceDefaultItem,
                                                           ...genericFormProps
-                                                        }: ListFormProps<T> & {
-  produceDefaultItem?: (item: T) => T
-}) {
+                                                        }: ListFormProps<T>) {
   const [newItem, setNewItem] = useState<T | null>(null);
 
   const handleAddItem = useCallback(() => {
     setNewItem({ ...itemTemplate });
-  }, [itemTemplate, produceDefaultItem]);
+  }, [itemTemplate]);
 
   const handleSaveItem = useCallback((updatedItem: T, index: number) => {
     onItemsChange(items.map((item, i) => i === index ? updatedItem : item));
@@ -50,13 +49,12 @@ export function ListForm<T extends Record<string, any>>({
         <TableHeaderComponent itemTemplate={itemTemplate} />
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
         {items.map((item, index) => (
-          // @ts-ignore
           <ListFormRow
             key={index}
             item={item}
             onSave={(updatedItem) => handleSaveItem(updatedItem, index)}
             onDelete={() => handleDeleteItem(index)}
-            formProps={genericFormProps}
+            formProps={genericFormProps as Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'>}
             renderFunctions={renderFunctions}
             produceDefaultItem={produceDefaultItem}
           />
@@ -66,7 +64,7 @@ export function ListForm<T extends Record<string, any>>({
             item={newItem}
             onSave={handleSaveNewItem}
             onDelete={handleCancelNewItem}
-            formProps={genericFormProps}
+            formProps={genericFormProps as Omit<GenericFormProps<T>, 'defaultValues' | 'onSubmit'>}
             renderFunctions={renderFunctions}
             produceDefaultItem={produceDefaultItem}
             isNew

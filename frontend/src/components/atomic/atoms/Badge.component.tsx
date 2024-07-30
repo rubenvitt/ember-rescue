@@ -38,6 +38,7 @@ const badgeStyles = cva(
 );
 
 type BadgeProps = VariantProps<typeof badgeStyles> & React.ComponentPropsWithoutRef<'span'>;
+export type BadgeColor = BadgeProps['color'];
 
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ color, className, ...props }, ref) => {

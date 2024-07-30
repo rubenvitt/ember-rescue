@@ -2,13 +2,13 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Badge } from './Badge.component.js';
+import { Badge, BadgeColor } from './Badge.component.js';
 
 describe('Badge Component', () => {
   const badgeColors = [
     'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal',
     'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'zinc',
-  ];
+  ] as BadgeColor[];
 
   badgeColors.forEach(color => {
     it(`renders correctly with color ${color}`, () => {

@@ -18,14 +18,14 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
     queryFn: services.backend.bearbeiter.fetchAllBearbeiter.queryFn,
   });
 
-  const singleBearbeiter = useQuery<Bearbeiter, unknown, Bearbeiter | null>({
+  const singleBearbeiter = useQuery<Bearbeiter | null, unknown>({
     queryKey: services.backend.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.id }),
-    queryFn: async () => {
-      if (bearbeiter && !bearbeiter?.id) return null;
+    queryFn: async (): Promise<Bearbeiter | null> => {
+      if (!bearbeiter || !bearbeiter.id) return null; // Korrigierte Überprüfung
       try {
-        const foundBearbeiter = await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter!.id });
-        console.log('found single berater', bearbeiter, foundBearbeiter);
-        if (!foundBearbeiter) return Promise.reject('no bearbeiter found');
+        const foundBearbeiter = await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter.id });
+        console.log('found single bearbeiter', bearbeiter, foundBearbeiter);
+        if (!foundBearbeiter) return Promise.reject(new Error('no bearbeiter found'));
         return foundBearbeiter;
       } catch (error) {
         if (requireBearbeiter) {

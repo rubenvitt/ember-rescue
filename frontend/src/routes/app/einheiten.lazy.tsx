@@ -1,7 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { EinheitenlisteComponent } from '../../components/atomic/organisms/Einheitenliste.component.js';
-import { useQualifikationen } from '../../hooks/qualifikationen.hook.js';
 import { useEinheiten } from '../../hooks/einheiten/einheiten.hook.js';
 import { EmptyEinheitenState } from '../../components/atomic/molecules/EmptyEinheitenState.component.js';
 import { ItemType } from '../../components/atomic/molecules/Combobox.component.js';
@@ -22,7 +21,7 @@ type AddEinheitType = {
 }
 
 function Einheiten() {
-  const { qualifikationen } = useQualifikationen();
+  //const { qualifikationen } = useQualifikationen();
   const {
     einheiten,
     einheitenImEinsatz,

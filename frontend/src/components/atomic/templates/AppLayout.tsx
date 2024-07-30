@@ -22,7 +22,6 @@ import { twMerge } from 'tailwind-merge';
 import { CommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { queryKey } from '../../../services/backend/bearbeiter.js';
 
 const mainNavigation = [
   { name: 'Dashboard', href: '/app', icon: PiGauge },
@@ -40,7 +39,6 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const { contextualNavigation } = useStore();
   const queryClient = useQueryClient();
   const unreadNotification = false; // TODO implement me
-  const bearbeiterState = queryClient.getQueryState([queryKey]);
 
   const userNavigation = useMemo<DropdownItemType[]>(() => {
     return [
