@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "start-frontend": "pnpm --filter frontend tauri:dev",
-    "start-backend": "pnpm --filter backend start:dev"
+    "start-backend": "pnpm --filter backend start:dev",
+    "start-documentation": "pnpm --filter documentation dev"
   },
   "devDependencies": {
     "pnpm": "^9.6.0"

@@ -18,6 +18,7 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   absender: string;
   empfaenger: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter' | 'archived' | 'createdAt'>

@@ -94,13 +94,22 @@ export function EinsatztagebuchComponent() {
       cell: ({ getValue, row }) => {
         const valueAsNato = format(getValue(), natoDateTime);
         const createdAsNato = format(row.original.createdAt, natoDateTime);
+        const updatedAsNato = format(row.original.updatedAt, natoDateTime);
         return (
-          <span className="block">
-            {valueAsNato}
-            {createdAsNato !== valueAsNato && (
-              <span className="block text-gray-400 text-xs">(erstellt: {createdAsNato})</span>
+          <div className="grid grid-cols-2 overflow-hidden w-24">
+            <span className="col-span-2 text-right block">{valueAsNato}</span>
+            {createdAsNato !== valueAsNato && (<>
+                <span className="block text-gray-400 dark:text-gray-600 text-xs">erstellt:</span>
+                <span className="block text-gray-400 dark:text-gray-600 text-xs text-right">{createdAsNato}</span>
+              </>
             )}
-          </span>
+            {row.original.archived && (<>
+                <span className="block text-red-400 dark:text-red-600 text-xs">gelöscht:</span>
+                <span
+                  className="block text-red-400 dark:text-red-600 text-xs text-right">{updatedAsNato}</span>
+              </>
+            )}
+          </div>
         );
       },
     }),
