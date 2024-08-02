@@ -30,7 +30,7 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
       } catch (error) {
         if (requireBearbeiter) {
           console.warn('Bearbeiter not found, redirecting to login');
-          navigate({ to: '/signout' });
+          navigate({ to: '/auth/signout' });
         }
         return null;
       }
