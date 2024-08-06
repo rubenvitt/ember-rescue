@@ -1,5 +1,4 @@
 import { MapProvider } from 'react-map-gl';
-import { useSecret } from '../../../hooks/secrets.hook.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -18,25 +17,28 @@ import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
 import { RescueControl } from './mapbox/Controls.js';
 import { Button } from '../molecules/Button.component.tsx';
 
+interface Props {
+  mapboxToken: string;
+}
 
-function _MapboxComponent() {
+function _MapboxComponent({ mapboxToken }: Props) {
   const { isDark } = useTheme();
   const initialMapStyle = useMemo<string>(() => {
     return isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard';
   }, []);
-  const { secret } = useSecret({ secretKey: 'mapboxApi' });
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     console.log('recreate map', mapDiv);
-    if (!secret.data) return;
+    if (!mapboxToken) return;
+    console.log('mapboxToken', mapboxToken);
     const map = new mapboxgl.Map({
       container: 'map',
       style: initialMapStyle,
       center: [10.55, 52.96],
       zoom: 11,
-      accessToken: secret.data?.value,
+      accessToken: mapboxToken,
     });
 
     const draw = new MapboxDraw({
@@ -52,7 +54,7 @@ function _MapboxComponent() {
     const zoomControl = new ZoomControl();
 
     const mapboxGeocoder = new MapboxGeocoder({
-      accessToken: secret.data.value,
+      accessToken: mapboxToken,
       // @ts-ignore
       mapboxgl: mapboxgl,
       countries: 'de',
@@ -101,7 +103,7 @@ function _MapboxComponent() {
     });
 
     setMap(map);
-  }, [mapDiv, secret.data]);
+  }, [mapDiv, mapboxToken]);
 
   const { einheitenImEinsatz } = useEinheiten();
 
@@ -197,6 +199,6 @@ function _MapboxComponent() {
   </>;
 }
 
-export const MapboxComponent = () => <MapProvider>
-  <_MapboxComponent />
+export const MapboxComponent = ({ mapboxToken }: Props) => <MapProvider>
+  <_MapboxComponent mapboxToken={mapboxToken} />
 </MapProvider>;

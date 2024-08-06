@@ -11,6 +11,7 @@ export const Route = createFileRoute('/auth/signout')({
 
     useEffect(() => {
       if (bearbeiter.isLoading) return;
+      console.log('open signIn')
       openSignin({ closeOnNavigate: true });
     }, [bearbeiter.data]);
 

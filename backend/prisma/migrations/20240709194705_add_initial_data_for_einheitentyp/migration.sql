@@ -1,5 +1,3 @@
--- This is an empty migration.
-
 INSERT INTO "EinheitTyp" (id, label, grundzeichen, description)
 VALUES (generate_cuid(), 'RTW', 'kraftfahrzeug-landgebunden', 'Rettungstransportwagen'),
        (generate_cuid(), 'FüKW', 'kraftfahrzeug-landgebunden', 'Führungskraftwagen'),
@@ -30,3 +28,9 @@ VALUES (generate_cuid(), 'RTW', 'kraftfahrzeug-landgebunden', 'Rettungstransport
        (generate_cuid(), 'UG-SanEL', 'kraftfahrzeug-landgebunden', 'Unterstützungsgruppe Sanitätseinsatzleitung'),
        (generate_cuid(), 'AB-Alles', 'abrollbehaelter', 'Abrollbehälter Alles (Universalbehälter)'),
        (generate_cuid(), 'San-Station', 'abrollbehaelter', 'Sanitätsstation (Abrollbehälter)');
+
+-- Einfügen eines Platzhalter-Rettungsmittels
+INSERT INTO einheiten (id, funkrufname, kapazitaet, "istTemporaer", "createdAt", "updatedAt", "aktuellerStatusId",
+                       "einheitTypId", fachaufgabe, organisation, verwaltungsstufe)
+VALUES (generate_cuid(), '1-1-1', 0, false, now(), now(), null,
+        (select id from "EinheitTyp" as ET where ET.label = 'FüKW' limit 1), '', '', '');

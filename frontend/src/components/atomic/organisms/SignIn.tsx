@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
@@ -12,6 +12,7 @@ import { useAppWindow, useWindowSetup } from '../../../hooks/window.hook.ts';
 import { LogicalSize } from '@tauri-apps/api/window';
 import { WindowOptions, Windows } from '../../../utils/window.js';
 import { Bearbeiter, CreateBearbeiter } from '../../../types/app/bearbeiter.types.js';
+import { webviewWindow } from '@tauri-apps/api';
 
 
 export const SignIn: React.FC = () => {
@@ -27,9 +28,12 @@ export const SignIn: React.FC = () => {
         item,
       })) ?? [],
     [allBearbeiter.data]);
+  useEffect(() => {
+    console.log("My Window is", webviewWindow.getCurrent())
+  }, []);
 
   useWindowSetup({
-    title: 'Project Rescue • Anmelden',
+    title: `Project Rescue • Anmelden ${webviewWindow.getCurrent().label}`,
     alwaysOnTop: true,
     center: true,
     resizable: false,
