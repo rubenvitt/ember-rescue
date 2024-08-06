@@ -43,6 +43,10 @@ export type CreateEinsatzDto = {
   alarmstichwort?: string;
 };
 
+export type UpdateEinsatzDto = {
+  alarmstichwort?: string;
+};
+
 export enum EinsatztagebuchEintragEnum {
   USER = 'USER',
   GENERISCH = 'GENERISCH',

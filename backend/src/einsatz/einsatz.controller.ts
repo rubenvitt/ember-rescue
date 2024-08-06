@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { EinsatzService } from './einsatz.service';
-import { CreateEinsatzDto } from '../types';
+import { CreateEinsatzDto, UpdateEinsatzDto } from '../types';
 import { extractBearbeiterId } from '../utils/header.utils';
 
 @Controller('einsatz')
@@ -61,6 +61,16 @@ export class EinsatzController {
         },
       },
     });
+  }
+
+  @Put(':id')
+  async changeEinsatz(
+    @Param('id') einsatzId: string,
+    @Headers('bearbeiter') bearbeiterId: string,
+    @Body() updateEinsatzDto: UpdateEinsatzDto,
+  ) {
+    this.logger.log('Change EinsatzDaten', { einsatzId });
+    return this.einsatzService.changeEinsatz(einsatzId, updateEinsatzDto);
   }
 
   @Put('/:id/close')

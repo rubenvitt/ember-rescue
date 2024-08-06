@@ -7,5 +7,6 @@ import { DatabaseModule } from '../database/database.module';
   controllers: [AlarmstichwortController],
   providers: [AlarmstichwortService],
   imports: [DatabaseModule],
+  exports: [AlarmstichwortService],
 })
 export class AlarmstichwortModule {}

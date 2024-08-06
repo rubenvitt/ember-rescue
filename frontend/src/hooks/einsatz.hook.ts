@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
-import { CreateEinsatz, Einsatz } from '../types/app/einsatz.types.js';
+import { CreateEinsatz, Einsatz, UpdateEinsatz } from '../types/app/einsatz.types.js';
 
 export function useEinsatz() {
   const queryClient = useQueryClient();
@@ -29,11 +29,18 @@ export function useEinsatz() {
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
 
+  const updateEinsatz = useMutation<Einsatz, unknown, { id: string, data: UpdateEinsatz }>({
+    mutationKey: services.backend.einsatze.updateEinsatz.mutationKey,
+    mutationFn: services.backend.einsatze.updateEinsatz.mutationFn,
+    onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
+  });
+
   const einsatzAbschliessen = useMutation<unknown, unknown, Einsatz>({
     mutationKey: services.backend.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
     mutationFn: services.backend.einsatze.einsatzAbschliessen.mutationFn,
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
+
 
   function saveEinsatz(einsatz: Einsatz) {
     setEinsatz(einsatz);
@@ -44,6 +51,7 @@ export function useEinsatz() {
     einsatz: { ...singleEinsatz, isDisabled: !einsatzId },
     saveEinsatz,
     createEinsatz,
+    updateEinsatz,
     offeneEinsaetze,
     einsatzAbschliessen,
   };

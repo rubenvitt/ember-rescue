@@ -1,6 +1,6 @@
 import { backendFetch } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
-import { CreateEinsatz, Einsatz } from '../../types/app/einsatz.types.js';
+import { CreateEinsatz, Einsatz, UpdateEinsatz } from '../../types/app/einsatz.types.js';
 import { QueryClient } from '@tanstack/react-query';
 
 // Export des queryKey
@@ -32,6 +32,20 @@ export const createEinsatz = {
   mutationFn: async (data: CreateEinsatz) => {
     return await backendFetch<Einsatz>('/einsatz', {
       method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  },
+};
+
+// PUT Existing Einsatz
+export const updateEinsatz = {
+  mutationKey: [queryKey, 'update'],
+  mutationFn: async ({ id, data }: { id: string, data: UpdateEinsatz }) => {
+    return await backendFetch<Einsatz>(`/einsatz/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',

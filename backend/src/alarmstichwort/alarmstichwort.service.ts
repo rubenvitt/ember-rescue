@@ -10,4 +10,10 @@ export class AlarmstichwortService {
   findAll() {
     return this.prismaService.alarmstichwort.findMany({});
   }
+
+  find(alarmstichwortId: string) {
+    return this.prismaService.alarmstichwort.findUnique({
+      where: { id: alarmstichwortId },
+    });
+  }
 }
