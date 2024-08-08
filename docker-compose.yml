@@ -20,6 +20,8 @@ services:
       - "9900:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
+      SERVER_NAME: ${SERVER_NAME}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
     networks:
       internal:
       proxy-net:
