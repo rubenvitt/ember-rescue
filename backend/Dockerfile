@@ -1,0 +1,40 @@
+# Basis-Image
+FROM node:22-alpine AS build
+
+# pnpm installieren
+RUN npm install -g pnpm
+
+# Arbeitsverzeichnis erstellen
+WORKDIR /usr/src/app
+
+# Abhängigkeiten kopieren und installieren
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Quellcode kopieren
+COPY . .
+
+# Anwendung bauen
+RUN pnpm run build
+
+# Production-Image
+FROM node:22-alpine
+
+# pnpm installieren
+RUN npm install -g pnpm
+
+# Arbeitsverzeichnis erstellen
+WORKDIR /usr/src/app
+
+# Nur produktionsrelevante Abhängigkeiten installieren
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+# Kompilierte Anwendung aus dem Build-Stage kopieren
+COPY --from=build /usr/src/app/dist ./dist
+
+# Port freigeben
+EXPOSE 3000
+
+# Anwendung starten
+CMD ["node", "dist/main"]
