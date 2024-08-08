@@ -14,8 +14,8 @@ services:
   backend:
     image: ghcr.io/rubenvitt/project-rescue:release
     build:
-      context: .
-      dockerfile: backend.Dockerfile
+      context: backend
+      dockerfile: backend/Dockerfile
     ports:
       - "9900:3000"
     environment:

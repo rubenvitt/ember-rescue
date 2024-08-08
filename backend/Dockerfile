@@ -38,4 +38,4 @@ COPY --from=build /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Anwendung starten
-CMD ["node", "dist/main"]
+CMD ["pnpm", "start:migrate:prod"]
