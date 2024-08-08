@@ -37,7 +37,7 @@ const mainNavigation = [
   { name: '(?) Einsatzabschnitte', href: '#', icon: PiChartPie },
   { name: '(?) Schäden', href: '/app/schaden', icon: PiWrench },
   { name: '(?) Gefahren', href: '/app/gefahren', icon: PiWarningDiamond },
-  { name: '(?) Notizen & Erinnerungen', href: '#', icon: PiPaperclip },
+  { name: '(?) Notizen & Erinnerungen', href: '/app/notizen', icon: PiPaperclip },
 ];
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {

@@ -25,6 +25,7 @@ const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
 const AppSchadenLazyImport = createFileRoute('/app/schaden')()
+const AppNotizenLazyImport = createFileRoute('/app/notizen')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
 const AppGefahrenLazyImport = createFileRoute('/app/gefahren')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
@@ -75,6 +76,11 @@ const AppSchadenLazyRoute = AppSchadenLazyImport.update({
   path: '/schaden',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/schaden.lazy').then((d) => d.Route))
+
+const AppNotizenLazyRoute = AppNotizenLazyImport.update({
+  path: '/notizen',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/app/notizen.lazy').then((d) => d.Route))
 
 const AppLagekarteLazyRoute = AppLagekarteLazyImport.update({
   path: '/lagekarte',
@@ -198,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLagekarteLazyImport
       parentRoute: typeof AppImport
     }
+    '/app/notizen': {
+      id: '/app/notizen'
+      path: '/notizen'
+      fullPath: '/app/notizen'
+      preLoaderRoute: typeof AppNotizenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/schaden': {
       id: '/app/schaden'
       path: '/schaden'
@@ -240,6 +253,7 @@ export const routeTree = rootRoute.addChildren({
     AppEinsatztagebuchLazyRoute,
     AppGefahrenLazyRoute,
     AppLagekarteLazyRoute,
+    AppNotizenLazyRoute,
     AppSchadenLazyRoute,
     AppIndexLazyRoute,
   }),
@@ -279,6 +293,7 @@ export const routeTree = rootRoute.addChildren({
         "/app/einsatztagebuch",
         "/app/gefahren",
         "/app/lagekarte",
+        "/app/notizen",
         "/app/schaden",
         "/app/"
       ]
@@ -314,6 +329,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/app/lagekarte": {
       "filePath": "app/lagekarte.lazy.tsx",
+      "parent": "/app"
+    },
+    "/app/notizen": {
+      "filePath": "app/notizen.lazy.tsx",
       "parent": "/app"
     },
     "/app/schaden": {
