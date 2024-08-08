@@ -3,6 +3,8 @@ services:
     image: postgres:13
     ports:
       - "9901:5432"
+    networks:
+      internal:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -19,6 +21,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
     networks:
+      internal:
       proxy-net:
         aliases:
           - ember-rescue
@@ -28,6 +31,7 @@ services:
       - postgres
 
 networks:
+  internal:
   proxy-net:
     external: true
 
