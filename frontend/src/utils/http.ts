@@ -29,7 +29,7 @@ export async function backendFetch<T>(path: string, init?: RequestInit) {
   const einsatzId = storage().readLocalStorage<string>('einsatz');
   const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
   const additionalHeaders: { Bearbeiter?: string, Einsatz?: string, Authorization?: string } = {};
-
+  
   if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
   if (einsatzId) additionalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
   if (backendAccessToken) additionalHeaders.Authorization = `AUTH: ${backendAccessToken}`;

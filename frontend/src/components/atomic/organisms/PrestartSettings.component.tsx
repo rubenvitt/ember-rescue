@@ -5,7 +5,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useLocalServer } from '../../../hooks/local-network.hook.js';
 import { ItemType } from '../molecules/Combobox.component.js';
 import { ServerMetadata } from '../../../types/app/server.types.js';
-import { useModal } from '../../../hooks/modal.hook.js';
 
 export type LocalSettings = {
   baseUrl: string;
@@ -18,7 +17,6 @@ export const PrestartSettings: React.FC = () => {
 
   const { localServers } = useLocalServer();
   const [servers, setServers] = useState<ItemType<{ id: string, url: string, metadata?: ServerMetadata }>[]>([]);
-  const { closeModal, openModal } = useModal();
 
   useEffect(() => {
     console.log('setting servers...', localServers);
@@ -28,30 +26,6 @@ export const PrestartSettings: React.FC = () => {
       item,
     })));
   }, [localServers]);
-
-  useEffect(() => {
-    const handleRequestAccessToken = () => {
-      openModal({
-        title: 'Access Token',
-        content: <GenericForm<{ accessToken: string }>
-          onSubmit={(data) => {
-            storage().writeLocalStorage('backendAccessToken', data.accessToken);
-            closeModal();
-          }}
-          field={{
-            label: 'Access Token Required',
-            name: 'accessToken',
-            type: 'password',
-          }}
-        />,
-      });
-    };
-
-    window.addEventListener('requestAccessToken', handleRequestAccessToken);
-    return () => {
-      window.removeEventListener('requestAccessToken', handleRequestAccessToken);
-    };
-  }, []);
 
   const handleSubmit = (data: LocalSettings) => {
     const newUrl = servers.find(server => server.item.id === data.baseUrl)?.item?.url ?? data.baseUrl;
