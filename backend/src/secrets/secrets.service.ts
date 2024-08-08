@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../database/prisma/prisma.service';
 import * as crypto from 'crypto';
+import { config } from '../config/configuration';
 
 @Injectable()
 export class SecretsService {
@@ -12,7 +13,7 @@ export class SecretsService {
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
   ) {
-    const key = this.configService.get<string>('ENCRYPTION_KEY');
+    const key = this.configService.get<string>(config.encryptionKey);
     if (!key) {
       throw new Error('ENCRYPTION_KEY must be set in the environment');
     }

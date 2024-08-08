@@ -22,6 +22,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
       SERVER_NAME: ${SERVER_NAME}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      AUTH_TOKEN: ${AUTH_TOKEN}
     networks:
       internal:
       proxy-net:

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -16,6 +16,9 @@ import { SettingsModule } from './settings/settings.module';
 import { MetaModule } from './meta/meta.module';
 import { NinaModule } from './apis/bund/nina/nina.module';
 import { MapModule } from './map/map.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
@@ -44,6 +47,16 @@ import { MapModule } from './map/map.module';
     MapModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
+}
