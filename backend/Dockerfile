@@ -15,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Anwendung bauen
-RUN pnpx prisma generate
+RUN pnpm run prisma:generate
 RUN pnpm run build
 
 # Production-Image
@@ -38,4 +38,4 @@ COPY --from=build /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Anwendung starten
-CMD ["pnpm", "start:migrate:prod"]
+CMD ["node", "dist/main"]
