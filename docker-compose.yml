@@ -4,23 +4,32 @@ services:
     ports:
       - "9901:5432"
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: project-rescue
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-project-rescue}
     volumes:
       - postgres:/var/lib/postgresql/data
   backend:
+    image: ghcr.io/rubenvitt/project-rescue:release
     build:
       context: .
       dockerfile: backend.Dockerfile
     ports:
       - "9900:3000"
     environment:
-      DATABASE_URL: postgres://user:password@postgres:5432/project-rescue
+      DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
+    networks:
+      proxy-net:
+        aliases:
+          - ember-rescue
     env_file:
       - .env
     depends_on:
       - postgres
+
+networks:
+  proxy-net:
+    external: true
 
 volumes:
   postgres:
