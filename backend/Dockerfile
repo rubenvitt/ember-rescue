@@ -31,6 +31,12 @@ WORKDIR /usr/src/app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 
+# Prisma-Treiber und -Dateien kopieren
+COPY prisma ./prisma/
+COPY --from=build /usr/src/app/node_modules node_modules
+RUN rm -rf node_modules/.cache
+RUN pnpm prune
+
 # Kompilierte Anwendung aus dem Build-Stage kopieren
 COPY --from=build /usr/src/app/dist ./dist
 
