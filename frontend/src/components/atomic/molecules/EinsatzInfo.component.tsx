@@ -18,7 +18,7 @@ export const EinsatzInfoComponent: React.FC = () => {
         </h3>
         <p className="-mt-0.5 text-sm text-gray-200">
           Beginn: {einsatz.data?.beginn && format(einsatz.data?.beginn, natoDateTime)}<br />
-          Aktuell: {time}
+          Aktuell: <b>{time}</b>
         </p>
       </div>
     </div>

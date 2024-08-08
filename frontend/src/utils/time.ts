@@ -1,1 +1,1 @@
-export const natoDateTime = 'dd(HHmm)LLLyy';
+export const natoDateTime = 'ddHHmmLLLyy';

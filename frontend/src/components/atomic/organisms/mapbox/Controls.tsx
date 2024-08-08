@@ -119,7 +119,6 @@ function AddEinheitComponent() {
     let svg = erzeugeTaktischesZeichen({
       grundzeichen: 'fahrzeug',
       organisation: 'hilfsorganisation',
-      einheit: 'zug',
       fachaufgabe: 'iuk',
       name: einheit.funkrufname,
       farbe: statusRgbColors[einheit.status.code],
