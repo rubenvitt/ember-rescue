@@ -24,3 +24,9 @@ DROP TABLE "EinheitOnEinheitTyp";
 
 -- AddForeignKey
 ALTER TABLE "einheiten" ADD CONSTRAINT "einheiten_einheitTypId_fkey" FOREIGN KEY ("einheitTypId") REFERENCES "EinheitTyp"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Einfügen eines Platzhalter-Rettungsmittels
+INSERT INTO einheiten (id, funkrufname, kapazitaet, "istTemporaer", "createdAt", "updatedAt", "aktuellerStatusId",
+                       "einheitTypId", fachaufgabe, organisation, verwaltungsstufe)
+VALUES (generate_cuid(), '1-1-1', 0, false, now(), now(), null,
+        (select id from "EinheitTyp" as ET where ET.label = 'FüKW' limit 1), '', '', '');
