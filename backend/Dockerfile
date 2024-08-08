@@ -15,6 +15,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Anwendung bauen
+RUN pnpx prisma generate
 RUN pnpm run build
 
 # Production-Image
