@@ -27,17 +27,19 @@ export async function backendFetch<T>(path: string, init?: RequestInit) {
   const baseUrl = storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000';
   const bearbeiter = storage().readLocalStorage<Bearbeiter>('bearbeiter');
   const einsatzId = storage().readLocalStorage<string>('einsatz');
-  const additonalHeaders: { Bearbeiter?: string, Einsatz?: string } = {};
+  const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
+  const additionalHeaders: { Bearbeiter?: string, Einsatz?: string, Authorization?: string } = {};
 
-  if (bearbeiter) additonalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
-  if (einsatzId) additonalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
+  if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
+  if (einsatzId) additionalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
+  if (backendAccessToken) additionalHeaders.Authorization = `AUTH: ${backendAccessToken}`;
 
   const requestInit: RequestInit & ClientOptions = {
     ...init,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...additonalHeaders,
+      ...additionalHeaders,
       ...init?.headers,
     },
   };
@@ -47,6 +49,11 @@ export async function backendFetch<T>(path: string, init?: RequestInit) {
   const res = await (isTauri() ? tauriFetch(fetchUrl, requestInit) : fetch(fetchUrl, requestInit));
 
   if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      const event = new CustomEvent('requestAccessToken');
+      window.dispatchEvent(event);
+    }
+
     const error = await res.json();
     throw new Error(error.message);
   }

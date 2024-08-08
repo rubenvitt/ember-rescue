@@ -7,6 +7,7 @@ export type FieldType =
   'text'
   | 'date'
   | 'datetime-local'
+  | 'password'
   | 'select'
   | 'textarea'
   | 'checkbox'

@@ -86,6 +86,33 @@ export const DateTimeInput: React.FC<BaseInputProps> = ({
   );
 };
 
+export const PasswordInput: React.FC<BaseInputProps> = ({
+                                                          name,
+                                                          value,
+                                                          onChange,
+                                                          onBlur,
+                                                          placeholder,
+                                                          className,
+                                                          readOnly,
+                                                          errors,
+                                                        }) => {
+  const { hasErrors } = useValidation(errors);
+
+  return (
+    <input
+      name={name}
+      value={value as string}
+      onChange={onChange}
+      onBlur={onBlur}
+      type="password"
+      placeholder={placeholder}
+      className={`${inputStyles({ hasErrors })} ${className}`}
+      readOnly={readOnly}
+    />
+  );
+};
+
+
 export const NumberInput: React.FC<BaseInputProps> = ({
                                                         name,
                                                         value,

@@ -5,6 +5,7 @@ import {
   DateInput,
   DateTimeInput,
   NumberInput,
+  PasswordInput,
   RadioInput,
   SelectInput,
   TextareaInput,
@@ -62,6 +63,8 @@ export function FormField<
       return <DateInput {...commonProps} />;
     case 'datetime-local':
       return <DateTimeInput {...commonProps} />;
+      case 'password':
+        return <PasswordInput {...commonProps} />;
     case 'number':
       return <NumberInput {...commonProps} />;
     case 'select':
