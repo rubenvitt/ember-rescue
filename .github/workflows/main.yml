@@ -12,7 +12,7 @@ env:
 # This workflow will trigger on each push to the `release` branch to create or update a GitHub release, build your app, and upload the artifacts to the release.
 
 jobs:
-  build-and-push-backend:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,13 +42,13 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./backend
+          file: ./backend/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
   publish-tauri:
     permissions:
       contents: write
@@ -72,12 +72,12 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*            
+          node-version: lts/*
       - name: Setup pnpm
         # You may pin to the exact commit or the version.
         # uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
         uses: pnpm/action-setup@v4.0.0
-          
+
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
