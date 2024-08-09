@@ -16,6 +16,7 @@ import { webviewWindow } from '@tauri-apps/api';
 import { useModal } from '../../../hooks/modal.hook.js';
 import { GenericForm } from './GenericForm.component.js';
 import storage from '../../../utils/storage.js';
+import { isTauri } from '@tauri-apps/api/core';
 
 
 export const SignIn: React.FC = () => {
@@ -32,11 +33,11 @@ export const SignIn: React.FC = () => {
         })) ?? [],
       [allBearbeiter.data]);
     useEffect(() => {
-      console.log('My Window is', webviewWindow.getCurrent());
+      if (isTauri()) console.log('My Window is', webviewWindow.getCurrent());
     }, []);
 
     useWindowSetup({
-      title: `Project Rescue • Anmelden ${webviewWindow.getCurrent().label}`,
+      title: `Project Rescue • Anmelden ${isTauri() && webviewWindow.getCurrent().label}`,
       alwaysOnTop: true,
       center: true,
       resizable: false,
