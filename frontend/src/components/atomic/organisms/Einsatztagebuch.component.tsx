@@ -28,7 +28,7 @@ export function EinsatztagebuchComponent() {
   const { einheiten } = useEinheiten();
 
   const { einheitenAsItems } = useEinheitenItems({
-    include: ['einsatztagebuch', 'einheitenImEinsatz', 'einheitenNichtImEinsatz'],
+    include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
   });
 
   const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {

@@ -1,8 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as process from 'node:process';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+const logger = new Logger('main.ts');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +29,11 @@ async function bootstrap() {
   };
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {});
+  if (process.env.AUTH_TOKEN) {
+    logger.log('AUTH_TOKEN is required', process.env.AUTH_TOKEN);
+  } else {
+    logger.warn('AUTH_TOKEN is not required');
+  }
   await app.listen(process.env.PORT || 3000);
 }
 

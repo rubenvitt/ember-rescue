@@ -5,7 +5,6 @@ import { formatISO } from 'date-fns';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { z } from 'zod';
 import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { einsatztagebuchItem } from '../../../hooks/einheiten/einheiten-items.hook.ts';
 import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
 
 interface Props {
@@ -17,7 +16,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
   const { einsatz } = useEinsatz();
 
   const { einheitenAsItems } = useEinheitenItems({
-    include: ['einsatztagebuch', 'einheitenImEinsatz', 'einheitenNichtImEinsatz'],
+    include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
   });
 
   const handleSubmit = useCallback(async (data: CreateEinsatztagebuchEintrag) => {
@@ -69,8 +68,8 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       onSubmit={handleSubmit}
       defaultValues={{
         timestamp: '',
-        absender: einsatz?.data?.aufnehmendesRettungsmittelId ?? '',
-        empfaenger: einsatztagebuchItem.item.id,
+        absender: '',
+        empfaenger: einsatz?.data?.aufnehmendesRettungsmittelId ?? '',
         content: '',
       }}
     />
