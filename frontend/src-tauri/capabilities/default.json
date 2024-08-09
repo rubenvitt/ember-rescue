@@ -10,25 +10,33 @@
     "docs"
   ],
   "permissions": [
-    "path:default",
-    "event:default",
-    "window:default",
-    "window:allow-close",
-    "app:default",
-    "image:default",
-    "resources:default",
-    "menu:default",
-    "tray:default",
-    "shell:allow-open",
-    "http:default",
+    "core:app:default",
+    "core:event:default",
+    "core:image:default",
+    "core:menu:default",
+    "core:path:default",
+    "core:resources:default",
+    "core:tray:default",
+    "core:webview:allow-create-webview",
+    "core:webview:allow-create-webview-window",
+    "core:window:allow-close",
+    "core:window:allow-create",
+    "core:window:allow-center",
+    "core:window:allow-maximize",
+    "core:window:allow-set-always-on-top",
+    "core:window:allow-set-effects",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-set-resizable",
+    "core:window:allow-set-size",
+    "core:window:allow-set-title",
+    "core:window:default",
+    "fs:allow-download-write",
+    "fs:default",
     {
       "identifier": "http:default",
       "allow": [
         {
           "url": "http://**"
-        },
-        {
-          "url": "https://**"
         },
         {
           "url": "http://*.*.*.*:*"
@@ -37,21 +45,15 @@
           "url": "http://localhost:3000"
         },
         {
+          "url": "https://**"
+        },
+        {
           "url": "https://nina.api.proxy.bund.dev"
         }
       ]
     },
+    "http:default",
     "network:allow-all",
-    "window:allow-maximize",
-    "window:allow-set-title",
-    "window:allow-set-effects",
-    "window:allow-set-size",
-    "window:allow-set-always-on-top",
-    "window:allow-center",
-    "window:allow-set-resizable",
-    "window:allow-set-fullscreen",
-    "window:allow-create",
-    "webview:allow-create-webview",
-    "webview:allow-create-webview-window"
+    "shell:allow-open"
   ]
 }

@@ -12,6 +12,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        current: 'currentColor',
         primary: colors.sky,
       },
     },

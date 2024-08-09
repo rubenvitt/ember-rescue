@@ -15,11 +15,15 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   }, [Icon, children]);
 
   const actualIntent = useMemo(() => {
-    return intent || isIconOnly ? 'plain' : 'solid';
+    return intent ? intent : (isIconOnly ? 'plain' : 'solid');
   }, [isIconOnly, intent]);
 
-  const buttonClasses = twMerge(buttonVariants({ intent: actualIntent, color }), isIconOnly && 'p-2', className);
-
+  const buttonClasses = useMemo(() => {
+    return twMerge(buttonVariants({
+      intent: actualIntent,
+      color,
+    }), isIconOnly && 'p-2', className);
+  }, [actualIntent, color, isIconOnly, className]);
 
   const iconSizeClasses = useMemo(() => {
     switch (iconSize) {
