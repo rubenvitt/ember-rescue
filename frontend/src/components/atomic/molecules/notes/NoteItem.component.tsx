@@ -3,7 +3,7 @@ import { PiPen } from 'react-icons/pi';
 import { useState } from 'react';
 import { TextareaInput } from '../../atoms/Inputs.component.js';
 
-export function NoteItem({ person, onEdit }) {
+export function NoteItem({ person, onEdit }: { person: any, onEdit: (x: any) => void }) {
   const [isEdit, setIsEdit] = useState(false);
 
   return (
@@ -18,7 +18,10 @@ export function NoteItem({ person, onEdit }) {
               className=""
               name="edit-note"
               value={person.content}
-              onBlur={() => { setIsEdit(false); onEdit(person); }}
+              onBlur={() => {
+                setIsEdit(false);
+                onEdit(person);
+              }}
               onChange={(e) => (person.content = e.target.value)}
               placeholder="Content"
             />

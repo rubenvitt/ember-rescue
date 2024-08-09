@@ -1,5 +1,4 @@
 import { Identifiable } from '../utils/common.types.js';
-import { Alarmstichwort } from './alarmstichwort.types.js';
 
 export type Einsatz = Identifiable & {
   id: string;
@@ -25,5 +24,5 @@ export interface CreateEinsatz {
 }
 
 export interface UpdateEinsatz {
-  alarmstichwort: Alarmstichwort;
+  alarmstichwort: string;
 }

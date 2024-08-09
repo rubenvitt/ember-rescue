@@ -2,7 +2,20 @@ import { useState } from 'react';
 import { TextareaInput } from '../../atoms/Inputs.component.js';
 import { Button } from '../Button.component.js';
 
-export function EmptyState({ addNote }) {
+type Note = {
+  name: string;
+  content: string;
+  role: string;
+  email: string;
+  telephone: string;
+  imageUrl: string;
+};
+
+type EmptyStateProps = {
+  addNote: (note: Note) => void;
+};
+
+export function EmptyState({ addNote }: EmptyStateProps) {
   const [content, setContent] = useState('');
 
   const handleAdd = () => {
@@ -26,6 +39,9 @@ export function EmptyState({ addNote }) {
           className=""
           name="new-note"
           value={content}
+          onBlur={() => {
+            // do nothing
+          }}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Neue Notiz anlegen"
         />

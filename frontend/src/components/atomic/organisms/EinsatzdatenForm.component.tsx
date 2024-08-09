@@ -6,7 +6,7 @@ import { ItemType } from '../molecules/Combobox.component.js';
 import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
 
 interface Einsatzdaten {
-  alarmstichwort: Alarmstichwort;
+  alarmstichwort: string;
 }
 
 export function EinsatzdatenForm(): JSX.Element {

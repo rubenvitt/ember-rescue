@@ -18,7 +18,7 @@ const initialPeople = [
 export function NotesList() {
   const [people, setPeople] = useState(initialPeople);
 
-  const addNote = (newNote) => {
+  const addNote = (newNote: any) => {
     setPeople([...people, newNote]);
   };
 
