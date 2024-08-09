@@ -24,11 +24,11 @@ interface Props {
 function _MapboxComponent({ mapboxToken }: Props) {
   const { isDark } = useTheme();
   const initialMapStyle = useMemo<string>(() => {
-    return isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard';
+    return isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/outdoors-v12';
   }, []);
   const [map, setMap] = useState<mapboxgl.Map | null>();
   const mapDiv = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     console.log('recreate map', mapDiv);
     if (!mapboxToken) return;
@@ -62,6 +62,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
     });
     const stylesControl = new StylesControl({
       styles: [
+        { styleName: 'Outdoor', styleUrl: 'mapbox://styles/mapbox/outdoors-v12', label: 'Outdoor' },
         { styleName: 'Standard', styleUrl: 'mapbox://styles/mapbox/standard', label: 'Standard' },
         { styleName: 'Straßen', styleUrl: 'mapbox://styles/mapbox/streets-v12', label: 'Straßen' },
         { styleName: 'Dark', styleUrl: 'mapbox://styles/mapbox/dark-v11', label: 'Dark' },
