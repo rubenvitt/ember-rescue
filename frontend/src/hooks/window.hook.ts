@@ -1,4 +1,4 @@
-import { getCurrent, LogicalSize, type WindowOptions } from '@tauri-apps/api/window';
+import { getCurrentWindow, LogicalSize, type WindowOptions } from '@tauri-apps/api/window';
 import { useCallback, useEffect } from 'react';
 import { isTauri } from '@tauri-apps/api/core';
 import { Windows, WindowUrls } from '../utils/window.js';
@@ -24,7 +24,7 @@ export const useWindowSetup = ({
   useEffect(() => {
     const setupWindow = async () => {
       try {
-        const window = getCurrent();
+        const window = getCurrentWindow();
         if (title !== undefined) await window.setTitle(title);
         if (fullscreen !== undefined) await window.setFullscreen(fullscreen);
         if (size !== undefined) await window.setSize(size);
@@ -61,7 +61,7 @@ export const useAppWindow = ({ window, windowOptions }: UseAppWindowParameters) 
       });
       webviewWindow.once('tauri://created', () => {
         if (closeOnNavigate) {
-          getCurrent().close();
+          getCurrentWindow().close();
         }
       });
     } else {

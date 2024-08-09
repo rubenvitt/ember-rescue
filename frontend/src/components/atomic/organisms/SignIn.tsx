@@ -33,11 +33,11 @@ export const SignIn: React.FC = () => {
         })) ?? [],
       [allBearbeiter.data]);
     useEffect(() => {
-      if (isTauri()) console.log('My Window is', webviewWindow.getCurrent());
+      if (isTauri()) console.log('My Window is', webviewWindow.getCurrentWebviewWindow());
     }, []);
 
     useWindowSetup({
-      title: `Project Rescue • Anmelden ${isTauri() && webviewWindow.getCurrent().label}`,
+      title: `Project Rescue • Anmelden ${isTauri() && webviewWindow.getCurrentWebviewWindow().label}`,
       alwaysOnTop: true,
       center: true,
       resizable: false,
