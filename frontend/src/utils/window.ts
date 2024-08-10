@@ -39,7 +39,7 @@ export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
     alwaysOnTop: true,
   },
   [Windows.APP]: {
-    fullscreen: true,
+    fullscreen: process.env.NODE_ENV !== 'development',
     resizable: true,
     title: 'Project Rescue',
   },

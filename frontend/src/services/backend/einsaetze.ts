@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { CreateEinsatz, Einsatz, UpdateEinsatz } from '../../types/app/einsatz.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ export const fetchSingleEinsatz = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
   queryFn: function({ einsatzId }: { einsatzId: string | null }) {
     requireParams(einsatzId);
-    return backendFetch<Einsatz>(`/einsatz/${einsatzId}`);
+    return backendFetchJson<Einsatz>(`/einsatz/${einsatzId}`);
   },
 };
 
@@ -22,7 +22,7 @@ export const fetchSingleEinsatz = {
 export const fetchOffeneEinsaetze = {
   queryKey: [queryKey, 'offeneEinsaetze'],
   queryFn: function() {
-    return backendFetch<Einsatz[]>('/einsatz?abgeschlossen=false');
+    return backendFetchJson<Einsatz[]>('/einsatz?abgeschlossen=false');
   },
 };
 
@@ -30,7 +30,7 @@ export const fetchOffeneEinsaetze = {
 export const createEinsatz = {
   mutationKey: [queryKey, 'add'],
   mutationFn: async (data: CreateEinsatz) => {
-    return await backendFetch<Einsatz>('/einsatz', {
+    return await backendFetchJson<Einsatz>('/einsatz', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -44,7 +44,7 @@ export const createEinsatz = {
 export const updateEinsatz = {
   mutationKey: [queryKey, 'update'],
   mutationFn: async ({ id, data }: { id: string, data: UpdateEinsatz }) => {
-    return await backendFetch<Einsatz>(`/einsatz/${id}`, {
+    return await backendFetchJson<Einsatz>(`/einsatz/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: {
@@ -59,7 +59,7 @@ export const einsatzAbschliessen = {
   mutationKey: ({ einsatzId }: { einsatzId: string | null }) => [queryKey, einsatzId, 'close'],
   mutationFn: async (einsatz: Einsatz) => {
     requireParams(einsatz);
-    return await backendFetch(`/einsatz/${einsatz.id}/close`, {
+    return await backendFetchJson(`/einsatz/${einsatz.id}/close`, {
       method: 'PUT',
     });
   },

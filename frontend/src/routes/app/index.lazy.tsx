@@ -17,7 +17,7 @@ function App() {
   useWindowSetup({
     title: 'Project Rescue',
     resizable: true,
-    fullscreen: true,
+    fullscreen: process.env.NODE_ENV !== 'development',
   });
 
   useEffect(() => {

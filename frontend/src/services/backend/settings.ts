@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { Settings } from '../../hooks/settings.hook.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 export const fetchSettings = {
   queryKey: [queryKey],
   queryFn: function() {
-    return backendFetch<Settings>('settings');
+    return backendFetchJson<Settings>('settings');
   },
 };
 
@@ -21,7 +21,7 @@ export const fetchSettings = {
 export const saveSettings = {
   mutationKey: [queryKey],
   mutationFn: function(settings: Settings) {
-    return backendFetch('/settings', {
+    return backendFetchJson('/settings', {
       body: JSON.stringify(settings),
       method: 'POST',
     });

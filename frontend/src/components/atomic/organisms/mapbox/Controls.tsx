@@ -6,7 +6,7 @@ import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
 import { useToggle } from '@reactuses/core';
 import { create } from 'zustand';
 import clsx from 'clsx';
-import { backendFetch } from '../../../../utils/http.js';
+import { backendFetchJson } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
 import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
@@ -59,7 +59,7 @@ const IconComponent: React.FC = () => {
   const warnDetails = useQuery<any[]>({
     queryKey: ['warnings', 'details'],
     queryFn: () => {
-      return backendFetch<any[]>('/apis/bund/nina/warnings');
+      return backendFetchJson<any[]>('/apis/bund/nina/warnings');
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,
@@ -172,7 +172,7 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   const geoJson = useQuery<GeoJSON.GeoJSON>({
     queryKey: ['warnings', 'geojson'],
     queryFn: async () => {
-      const d = await backendFetch<GeoJSON.GeoJSON>('/apis/bund/nina/warnings.geojson');
+      const d = await backendFetchJson<GeoJSON.GeoJSON>('/apis/bund/nina/warnings.geojson');
       await queryClient.invalidateQueries({
         queryKey: ['warnings', 'details'],
       });
@@ -187,7 +187,7 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   useQuery<unknown[]>({
     queryKey: ['warnings', 'details'],
     queryFn: () => {
-      return backendFetch<unknown[]>('/apis/bund/nina/warnings');
+      return backendFetchJson<unknown[]>('/apis/bund/nina/warnings');
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,

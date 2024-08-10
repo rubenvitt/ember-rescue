@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../../types/app/einsatztagebuch.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 export const fetchAllEinsatztagebuchEintraege = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
   queryFn: function() {
-    return backendFetch<EinsatztagebuchEintrag[]>('einsatztagebuch');
+    return backendFetchJson<EinsatztagebuchEintrag[]>('einsatztagebuch');
   },
 };
 
@@ -21,7 +21,7 @@ export const fetchAllEinsatztagebuchEintraege = {
 export const createEinsatztagebuchEintrag = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
   mutationFn: async (einsatztagebuchEintrag: CreateEinsatztagebuchEintrag) => {
-    return await backendFetch<EinsatztagebuchEintrag>('/einsatztagebuch', {
+    return await backendFetchJson<EinsatztagebuchEintrag>('/einsatztagebuch', {
       method: 'POST',
       body: JSON.stringify(einsatztagebuchEintrag),
       headers: {
@@ -36,7 +36,7 @@ export const archiveEinsatztagebuchEintrag = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'archive'],
   mutationFn: async ({ einsatztagebuchEintragId }: { einsatztagebuchEintragId: string }) => {
     requireParams(einsatztagebuchEintragId);
-    return await backendFetch(`/einsatztagebuch/${einsatztagebuchEintragId}/archive`, {
+    return await backendFetchJson(`/einsatztagebuch/${einsatztagebuchEintragId}/archive`, {
       method: 'POST',
     });
   },

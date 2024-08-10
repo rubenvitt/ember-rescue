@@ -10,6 +10,7 @@ import { AlarmstichwortModule } from '../alarmstichwort/alarmstichwort.module';
 @Module({
   controllers: [EinsatzController],
   providers: [EinsatzService],
+  exports: [EinsatzService],
   imports: [
     AlarmstichwortModule,
     DatabaseModule,

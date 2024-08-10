@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -16,7 +16,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 export const fetchAllEinheiten = {
   queryKey: [queryKey],
   queryFn: function() {
-    return backendFetch<EinheitDto[]>('einheiten');
+    return backendFetchJson<EinheitDto[]>('einheiten');
   },
 };
 
@@ -24,7 +24,7 @@ export const fetchAllEinheitenImEinsatz = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
   queryFn: ({ einsatzId }: { einsatzId: string | null }) => function() {
     requireParams(einsatzId);
-    return backendFetch<EinheitDto[]>(`/einsatz/${einsatzId}/einheiten`);
+    return backendFetchJson<EinheitDto[]>(`/einsatz/${einsatzId}/einheiten`);
   },
 };
 
@@ -32,7 +32,7 @@ export const postAddEinheitToEinsatz = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
   mutationFn: ({ einsatzId }: { einsatzId: string | null }) => async ({ einheitId }: { einheitId: string }) => {
     console.log('Add einheit to einsatz', einheitId, einsatzId);
-    return await backendFetch<{ status: string }>(`/einsatz/${einsatzId}/einheiten/add`, {
+    return await backendFetchJson<{ status: string }>(`/einsatz/${einsatzId}/einheiten/add`, {
       body: JSON.stringify({
         einheitId,
       }),
@@ -45,7 +45,7 @@ export const postAddEinheitToEinsatz = {
 export const fetchEinheitenTypen = {
   queryKey: [queryKey, 'typen'],
   queryFn: function() {
-    return backendFetch<EinheitTypDto[]>('/einheiten/typen');
+    return backendFetchJson<EinheitTypDto[]>('/einheiten/typen');
   },
 };
 
@@ -58,7 +58,7 @@ export const deleteEinheitFromEinsatz = {
   }) => [queryKey, einsatzId, einheitId, 'remove'],
   mutationFn: ({ einheitId, einsatzId }: { einheitId?: string, einsatzId: string | null }) => async function() {
     requireParams(einheitId, einsatzId);
-    return await backendFetch(`/einsatz/${einsatzId}/einheiten/${einheitId}`, {
+    return await backendFetchJson(`/einsatz/${einsatzId}/einheiten/${einheitId}`, {
       method: 'DELETE',
     });
   },
@@ -72,7 +72,7 @@ export const postStatusForEinheit = {
     statusId: string
   }) => {
     requireParams(einheitId, einsatzId);
-    return await backendFetch(`/einsatz/${einsatzId}/einheiten/${einheitId}/status`, {
+    return await backendFetchJson(`/einsatz/${einsatzId}/einheiten/${einheitId}/status`, {
       body: JSON.stringify({
         statusId,
       }),
@@ -86,7 +86,7 @@ export const postStatusForEinheit = {
 export const patchEinheiten = {
   mutationKey: [queryKey, 'status'],
   mutationFn: async (einheiten: PatchEinheitenType) => {
-    return await backendFetch('/einheiten', {
+    return await backendFetchJson('/einheiten', {
       method: 'PATCH',
       body: JSON.stringify(einheiten),
     });

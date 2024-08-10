@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { Alarmstichwort } from '../../types/app/alarmstichwort.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -13,6 +13,6 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 export const fetchAllAlarmstichworte = {
   queryKey: [queryKey],
   queryFn: function() {
-    return backendFetch<Alarmstichwort[]>('alarmstichwort');
+    return backendFetchJson<Alarmstichwort[]>('alarmstichwort');
   },
 };

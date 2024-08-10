@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
 
@@ -19,7 +19,7 @@ export const invalidateQueries = (secretKey: PossibleSecrets, queryClient: Query
 export const fetchSecret = {
   queryKey,
   queryFn: function(secretKey: PossibleSecrets) {
-    return backendFetch<Secrets>(`/secrets/${secretKey}`);
+    return backendFetchJson<Secrets>(`/secrets/${secretKey}`);
   },
 };
 
@@ -27,7 +27,7 @@ export const fetchSecret = {
 export const saveSecret = {
   mutationKey: queryKey,
   mutationFn: function(secretKey: PossibleSecrets) {
-    return (value: string) => backendFetch('/secrets', {
+    return (value: string) => backendFetchJson('/secrets', {
       body: JSON.stringify({
         key: secretKey,
         value: value,

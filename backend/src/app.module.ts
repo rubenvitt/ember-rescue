@@ -19,6 +19,8 @@ import { MapModule } from './map/map.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { ExportModule } from './export/export.module';
+import { PdfModule } from './pdf/pdf.module';
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import { AuthMiddleware } from './auth/auth.middleware';
     MetaModule,
     NinaModule,
     MapModule,
+    ExportModule,
+    PdfModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,7 +1,7 @@
 // @ts-ignore
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
 import { createInvalidateQueries } from '../../utils/queries.js';
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 
 import { ServerMetadata } from '../../types/app/server.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -16,7 +16,7 @@ export const invalidateQueries = (ip: string, port: number, queryClient: QueryCl
 export const fetchLocalServerMeta = {
   queryKey: (ip: string, port: number) => queryKey(ip, port),
   queryFn: function(ip: string, port: number) {
-    return backendFetch<ServerMetadata>(`http://${ip}:${port}/meta`);
+    return backendFetchJson<ServerMetadata>(`http://${ip}:${port}/meta`);
   },
 };
 
@@ -24,7 +24,7 @@ export const fetchLocalServerMeta = {
 export const fetchSingleServerMeta = {
   queryKey: (url: string) => ['server', url],
   queryFn: function(url: string) {
-    return backendFetch<ServerMetadata>(`${url}/meta`);
+    return backendFetchJson<ServerMetadata>(`${url}/meta`);
   },
 };
 

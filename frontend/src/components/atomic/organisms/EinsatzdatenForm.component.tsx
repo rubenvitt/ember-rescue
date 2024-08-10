@@ -11,6 +11,8 @@ import { useModal } from '../../../hooks/modal.hook.js';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
 import { natoDateTime } from '../../../utils/time.js';
 import { format } from 'date-fns';
+import { backendFetchBlob } from '../../../utils/http.js';
+import { isTauri } from '@tauri-apps/api/core';
 
 
 interface Einsatzdaten {
@@ -35,20 +37,35 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
               icon={PiDownload}
               onClick={async () => {
                 try {
-                  const response = await fetch('http://localhost:3000/meta/test');
 
-                  if (!response.ok) {
-                    throw new Error(`Fehler beim Abrufen der Datei: ${response.statusText}`);
+                  const fileContent = await backendFetchBlob('/export/pdf');
+                  const fileName = `${props.einsatz.einsatz_alarmstichwort?.bezeichnung}-${format(props.einsatz.beginn, natoDateTime)}.pdf`;
+                  if (isTauri()) {
+                    console.log('Größe der heruntergeladenen Datei:', fileContent.size);
+                    const arrayBuffer = await fileContent.arrayBuffer();
+                    await writeFile(fileName, new Uint8Array(arrayBuffer), { baseDir: BaseDirectory.Download });
+                    console.log('Datei wurde erfolgreich gespeichert.');
+                  } else {
+                    // browser download:
+                    try {
+                      // Erstellt eine URL für den Blob
+                      const url = window.URL.createObjectURL(fileContent);
+
+                      // Erstellt ein verstecktes a-Element und simuliert einen Klick darauf
+                      const a = document.createElement('a');
+                      a.style.display = 'none';
+                      a.href = url;
+                      a.download = fileName;
+                      document.body.appendChild(a);
+                      a.click();
+
+                      // Entfernt das a-Element und die Blob-URL
+                      window.URL.revokeObjectURL(url);
+                      document.body.removeChild(a);
+                    } catch (error) {
+                      console.error('Fehler beim Herunterladen des Blobs:', error);
+                    }
                   }
-
-                  const fileContent = await response.blob();
-
-                  console.log('Größe der heruntergeladenen Datei:', fileContent.size);
-
-                  const arrayBuffer = await fileContent.arrayBuffer();
-
-                  await writeFile(`${props.einsatz.einsatz_alarmstichwort?.bezeichnung}-${format(props.einsatz.beginn, natoDateTime)}.pdf`, new Uint8Array(arrayBuffer), { baseDir: BaseDirectory.Download });
-                  console.log('Datei wurde erfolgreich gespeichert.');
                   setEtbExported(true);
                 } catch (error) {
                   console.error('Fehler beim Abrufen und Speichern der Datei:', error);

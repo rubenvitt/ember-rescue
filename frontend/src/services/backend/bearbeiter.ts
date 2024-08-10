@@ -1,4 +1,4 @@
-import { backendFetch } from '../../utils/http.js';
+import { backendFetchJson } from '../../utils/http.js';
 import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
 import { Bearbeiter, CreateBearbeiter } from '../../types/app/bearbeiter.types.js';
 import { QueryClient } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 export const fetchAllBearbeiter = {
   queryKey: [queryKey],
   queryFn: function() {
-    return backendFetch<Bearbeiter[]>('bearbeiter');
+    return backendFetchJson<Bearbeiter[]>('bearbeiter');
   },
 };
 
@@ -20,7 +20,7 @@ export const fetchSingleBearbeiter = {
   queryKey: ({ bearbeiterId }: { bearbeiterId?: string }) => [queryKey, bearbeiterId],
   queryFn: function({ bearbeiterId }: { bearbeiterId: string }) {
     requireParams(bearbeiterId);
-    return backendFetch<Bearbeiter | null>(`/bearbeiter/${bearbeiterId}`);
+    return backendFetchJson<Bearbeiter | null>(`/bearbeiter/${bearbeiterId}`);
   },
 };
 
@@ -28,7 +28,7 @@ export const fetchSingleBearbeiter = {
 export const postNewBearbeiter = {
   mutationKey: [queryKey, 'add'],
   mutationFn: async (bearbeiter: Bearbeiter | CreateBearbeiter) => {
-    return await backendFetch<Bearbeiter>('/bearbeiter', {
+    return await backendFetchJson<Bearbeiter>('/bearbeiter', {
       method: 'POST',
       body: JSON.stringify(bearbeiter),
       headers: {
