@@ -15,7 +15,7 @@ services:
     image: ghcr.io/rubenvitt/ember-rescue:release
     build:
       context: backend
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "9900:3000"
     environment:
