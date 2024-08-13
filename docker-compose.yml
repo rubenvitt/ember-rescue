@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
   backend:
-    image: ghcr.io/rubenvitt/project-rescue:release
+    image: ghcr.io/rubenvitt/ember-rescue:release
     build:
       context: backend
       dockerfile: backend/Dockerfile
