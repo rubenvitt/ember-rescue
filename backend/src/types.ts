@@ -82,3 +82,19 @@ export class CreateEinsatztagebuchDto {
   @ApiProperty({ pattern: 'YYYY-MM-ddThh:mm:ss' })
   timestamp: string;
 }
+
+export class CreateNotizDto {
+  id?: never;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  content: string;
+}
+
+export class UpdateNotizDto {
+  id?: never;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  content: string;
+}

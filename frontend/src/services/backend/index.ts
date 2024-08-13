@@ -7,6 +7,7 @@ import * as status from './status.js';
 import * as qualifikationen from './qualifikationen.js';
 import * as settings from './settings.js';
 import * as secrets from './secrets.js';
+import * as notizen from './notizen.js';
 
 
 export default {
@@ -19,4 +20,5 @@ export default {
   qualifikationen,
   settings,
   secrets,
+  notizen
 };

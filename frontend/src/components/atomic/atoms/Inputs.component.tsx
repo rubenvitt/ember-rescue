@@ -11,7 +11,7 @@ import { ComboInput } from '../molecules/Combobox.component.js';
 import { useValidation } from '../../../hooks/validation.hook.js';
 import { Identifiable } from '../../../types/utils/common.types.js';
 
-const inputStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
+const inputStyles = cva('w-full rounded-md border-0 bg-white pb-1.5 pl-3 pr-12 text-gray-900 dark:text-white dark:bg-gray-900/80 dark:placeholder:text-gray-200 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6', {
   variants: {
     hasErrors: {
       true: 'ring-red-500 focus:ring-red-500 placeholder:text-red-300 text-red-900',
