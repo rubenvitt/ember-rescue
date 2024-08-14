@@ -1,11 +1,12 @@
-import { PiAlarm, PiPen } from 'react-icons/pi';
-import { useCallback, useState } from 'react';
+import { PiAlarm, PiArrowBendRightUp, PiCheck, PiListPlus, PiPen } from 'react-icons/pi';
+import { useCallback, useMemo, useState } from 'react';
 import { TextareaInput } from '../../atoms/Inputs.component.js';
 import { NotizDto } from '../../../../types/app/notes.types.js';
 import { useForm } from '@tanstack/react-form';
 import { ChangeEvent } from '../../../../types/ui/inputs.types.js';
 import { Button } from '../Button.component.tsx';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
+import { formatNatoDateTime } from '../../../../utils/time.js';
 
 export function NotizItem({ notiz }: { notiz: NotizDto }) {
   const [isEdit, setIsEdit] = useState(false);
@@ -17,6 +18,7 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
       setIsEdit(false);
     },
   });
+  const { toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
 
   const onAbbrechenClick = useCallback(() => {
     form.reset();
@@ -30,10 +32,35 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
     setIsEdit(false);
   }, [form]);
 
+  const onCheckButtonClick = useCallback(() => {
+    toggleCompleteNotiz.mutate();
+  }, [toggleCompleteNotiz]);
+
+  const itemDateMeta = useMemo(() => {
+    const createdAt = formatNatoDateTime(notiz.createdAt);
+    const updatedAt = formatNatoDateTime(notiz.updatedAt);
+    const doneAt = formatNatoDateTime(notiz.doneAt);
+    return <>
+      <p><PiListPlus className="inline" aria-label="Erstellt um" /> {createdAt}</p>
+      {createdAt !== updatedAt &&
+        <p><PiPen className="inline" aria-label="Geändert um" /> {updatedAt}</p>}
+      {doneAt &&
+        <p><PiCheck className="inline" aria-label="Abgeschlossen um" /> {doneAt}</p>}
+    </>;
+  }, [notiz]);
+
   return (
-    <li className="col-span-1 divide-y divide-gray-200 dark:divide-gray-800 rounded-lg bg-white dark:bg-gray-700 shadow flex flex-col justify-between">
+    <li
+      className="col-span-1 divide-y divide-gray-200 dark:divide-gray-800 rounded-lg bg-white dark:bg-gray-700 shadow flex flex-col justify-between relative">
+      <div className="absolute top-2 right-2">
+        <Button
+          icon={notiz.doneAt ? PiArrowBendRightUp : PiCheck}
+          className={notiz.doneAt ? 'text-primary-500' : 'text-green-500'}
+          onClick={onCheckButtonClick}
+        />
+      </div>
       <div className="flex w-full items-center justify-between space-x-6 p-6">
-        <div className="flex-1 truncate">
+        <div className="flex flex-col flex-1 truncate">
           <div className="flex items-center space-x-3">
             <h3 className="truncate text-sm font-medium text-gray-500 dark:text-gray-200">{notiz.bearbeiter.name}</h3>
           </div>
@@ -48,11 +75,17 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
                   onBlur={fieldApi.handleBlur}
                 />)}
             </form.Field>
-            : <p className="mt-1 text-sm text-gray-900 dark:text-white break-words whitespace-normal flex-1">{notiz.content}</p>}
+            : <p className="mt-1 text-sm text-gray-900 dark:text-white break-words whitespace-normal flex-1">
+              {notiz.content}
+            </p>
+          }
         </div>
         {/*<img alt="" src={note.imageUrl} className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />*/}
       </div>
-      <div>
+      <div className="p-2 text-sm text-gray-500 dark:text-gray-200 flex space-x-2 overflow-auto">
+        {itemDateMeta}
+      </div>
+      <div className={notiz.doneAt && 'hidden'}>
         {isEdit
           ? <div className="flex w-full justify-between p-6">
             <Button

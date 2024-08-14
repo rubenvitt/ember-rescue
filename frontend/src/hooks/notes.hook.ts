@@ -11,10 +11,15 @@ export function useNotizen(props?: Props) {
   const queryClient = useQueryClient();
   const { einsatzId } = useEinsatz();
 
-  const alleNotizen = useQuery<NotizDto[]>({
-    queryKey: services.backend.notizen.fetchNotizenForEinsatz.queryKey({ einsatzId }),
-    queryFn: services.backend.notizen.fetchNotizenForEinsatz.queryFn({ einsatzId }),
+  const activeNotizen = useQuery<NotizDto[]>({
+    queryKey: services.backend.notizen.fetchNotizenUndoneForEinsatz.queryKey({ einsatzId }),
+    queryFn: services.backend.notizen.fetchNotizenUndoneForEinsatz.queryFn({ einsatzId }),
   });
+
+  const archivedNotizen = useQuery<NotizDto[]>({
+    queryKey: services.backend.notizen.fetchNotizenDoneForEinsatz.queryKey({ einsatzId }),
+    queryFn: services.backend.notizen.fetchNotizenDoneForEinsatz.queryFn({ einsatzId }),
+  })
 
   const createNotiz = useMutation<NotizDto, unknown, CreateNotizDto>({
     mutationKey: services.backend.notizen.postAddNotizToEinsatz.mutationKey({ einsatzId }),
@@ -23,8 +28,14 @@ export function useNotizen(props?: Props) {
   });
 
   const deleteNotiz = useMutation<unknown, unknown, NotizDto>({
-    mutationKey: services.backend.notizen.deleteNotizFromEinsatz.mutationKey({ einsatzId }),
-    mutationFn: services.backend.notizen.deleteNotizFromEinsatz.mutationFn({ einsatzId }),
+    mutationKey: services.backend.notizen.deleteNotizFromEinsatz.mutationKey({ einsatzId, notizId: props?.notizId }),
+    mutationFn: services.backend.notizen.deleteNotizFromEinsatz.mutationFn({ einsatzId, notizId: props?.notizId }),
+    onSuccess: services.backend.notizen.invalidateQueries(queryClient),
+  });
+
+  const toggleCompleteNotiz = useMutation<unknown, unknown, void>({
+    mutationKey: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationKey({ einsatzId, notizId: props?.notizId }),
+    mutationFn: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationFn({ einsatzId, notizId: props?.notizId }),
     onSuccess: services.backend.notizen.invalidateQueries(queryClient),
   });
 
@@ -37,7 +48,9 @@ export function useNotizen(props?: Props) {
   return {
     createNotiz,
     changeNotiz,
-    alleNotizen,
+    activeNotizen,
+    archivedNotizen,
+    toggleCompleteNotiz,
     deleteNotiz,
   };
 }

@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Logger,
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { NotizenService } from './notizen.service';
 import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
@@ -22,10 +24,11 @@ export class NotizenController {
   getNotizen(
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
+    @Query('done') done: boolean = false,
   ) {
     const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
     const einsatzId = extractEinsatzId(einsatzHeader);
-    return this.notizenService.findAllNotizen(einsatzId, bearbeiterId);
+    return this.notizenService.findAllNotizen(einsatzId, bearbeiterId, done);
   }
 
   @Post()
@@ -60,5 +63,31 @@ export class NotizenController {
       notizDto,
       notizId,
     });
+  }
+
+  @Delete(':notizId')
+  deleteNotiz(
+    @Param('notizId') notizId: string,
+    @Headers('einsatz') einsatzHeader: string,
+    @Headers('bearbeiter') bearbeiterHeader: string,
+  ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const einsatzId = extractEinsatzId(einsatzHeader);
+    return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiterId);
+  }
+
+  @Post(':notizId/toggle-complete')
+  completeNotiz(
+    @Param('notizId') notizId: string,
+    @Headers('einsatz') einsatzHeader: string,
+    @Headers('bearbeiter') bearbeiterHeader: string,
+  ) {
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const einsatzId = extractEinsatzId(einsatzHeader);
+    return this.notizenService.toggleCompleteNotiz(
+      notizId,
+      einsatzId,
+      bearbeiterId,
+    );
   }
 }

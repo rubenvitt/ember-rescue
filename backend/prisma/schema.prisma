@@ -236,7 +236,7 @@ model Notiz {
   doneAt       DateTime?
   deletedAt    DateTime?
   createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   bearbeiterId String
   bearbeiter   Bearbeiter @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einsatzId    String

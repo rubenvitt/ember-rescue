@@ -1,19 +1,24 @@
 import { EmptyState } from '../molecules/notes/EmptyState.component.js';
 import { NotizItem } from '../molecules/notes/NotizItem.component.js';
-import { useNotizen } from '../../../hooks/notes.hook.js';
-import { CreateNotizDto } from '../../../types/app/notes.types.js';
+import { CreateNotizDto, NotizDto } from '../../../types/app/notes.types.js';
+import { useCallback } from 'react';
 
-export function NotesList() {
-  const { alleNotizen, createNotiz } = useNotizen();
+interface NotesListProps {
+  notizen: NotizDto[],
+  addNotiz?: any
+}
 
-  const addNote = (newNote: CreateNotizDto) => {
-    createNotiz.mutate({content: newNote.content})
-  };
+export function NotesList({ notizen, addNotiz }: NotesListProps) {
+
+
+  const createNote = useCallback((newNote: CreateNotizDto) => {
+    addNotiz?.({ content: newNote.content });
+  }, [addNotiz]);
 
   return (
-    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <EmptyState addNote={addNote} />
-      {alleNotizen.data?.map((note) => (
+    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {addNotiz && <EmptyState addNote={createNote} />}
+      {notizen.map((note) => (
         <NotizItem key={note.id} notiz={note} />
       ))}
     </ul>

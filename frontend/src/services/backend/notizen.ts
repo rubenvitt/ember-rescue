@@ -9,11 +9,19 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 
 /// fetch
 
-export const fetchNotizenForEinsatz = {
-  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
+export const fetchNotizenUndoneForEinsatz = {
+  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, "archived=false"],
   queryFn: ({ einsatzId }: { einsatzId: string | null }) => function() {
     requireParams(einsatzId);
-    return backendFetchJson<NotizDto[]>(`/notizen`);
+    return backendFetchJson<NotizDto[]>(`/notizen?done=false`);
+  },
+};
+
+export const fetchNotizenDoneForEinsatz = {
+  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'archived=true'],
+  queryFn: ({ einsatzId }: { einsatzId: string | null }) => function() {
+    requireParams(einsatzId);
+    return backendFetchJson<NotizDto[]>(`/notizen?done=true`);
   },
 };
 
@@ -49,13 +57,25 @@ export const updateNotiz = {
 };
 
 export const deleteNotizFromEinsatz = {
-  mutationKey: ({ einsatzId }: {
-    einsatzId: unknown,
-  }) => [queryKey, einsatzId, 'remove'],
+  mutationKey: ({ einsatzId, notizId }: {
+    einsatzId: unknown, notizId: unknown,
+  }) => [queryKey, einsatzId, notizId, 'remove'],
   mutationFn: ({ notizId, einsatzId }: { notizId?: string, einsatzId: string | null }) => async function() {
     requireParams(notizId, einsatzId);
     return await backendFetchJson(`/notizen/${notizId}`, {
       method: 'DELETE',
+    });
+  },
+};
+
+export const toggleCompleteNotizInEinsatz = {
+  mutationKey: ({ einsatzId, notizId }: {
+    einsatzId: unknown, notizId: unknown,
+  }) => [queryKey, einsatzId, notizId, 'complete'],
+  mutationFn: ({ notizId, einsatzId }: { notizId?: string, einsatzId: string | null }) => async function() {
+    requireParams(notizId, einsatzId);
+    return await backendFetchJson(`/notizen/${notizId}/toggle-complete`, {
+      method: 'POST',
     });
   },
 };

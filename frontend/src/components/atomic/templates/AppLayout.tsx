@@ -7,6 +7,7 @@ import { useStore } from '../../../hooks/store.hook.js';
 import {
   PiAmbulance,
   PiChartPie,
+  PiChecks,
   PiFirstAid,
   PiGauge,
   PiMagnifyingGlass,
@@ -14,7 +15,6 @@ import {
   PiNotebook,
   PiNotification,
   PiNotificationBold,
-  PiPaperclip,
   PiSignOut,
   PiSpinner,
   PiSun,
@@ -37,7 +37,7 @@ const mainNavigation = [
   { name: '(?) Einsatzabschnitte', href: '#', icon: PiChartPie },
   { name: '(?) Schäden', href: '/app/schaden', icon: PiWrench },
   { name: '(?) Gefahren', href: '/app/gefahren', icon: PiWarningDiamond },
-  { name: '(?) Notizen & Erinnerungen', href: '/app/notizen', icon: PiPaperclip },
+  { name: 'Notizen & Erinnerungen', href: '/app/notizen', icon: PiChecks },
 ];
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
