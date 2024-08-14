@@ -62,7 +62,7 @@ export const deleteNotizFromEinsatz = {
   }) => [queryKey, einsatzId, notizId, 'remove'],
   mutationFn: ({ notizId, einsatzId }: { notizId?: string, einsatzId: string | null }) => async function() {
     requireParams(notizId, einsatzId);
-    return await backendFetchJson(`/notizen/${notizId}`, {
+    return await backendFetchJson<NotizDto>(`/notizen/${notizId}`, {
       method: 'DELETE',
     });
   },
@@ -74,7 +74,7 @@ export const toggleCompleteNotizInEinsatz = {
   }) => [queryKey, einsatzId, notizId, 'complete'],
   mutationFn: ({ notizId, einsatzId }: { notizId?: string, einsatzId: string | null }) => async function() {
     requireParams(notizId, einsatzId);
-    return await backendFetchJson(`/notizen/${notizId}/toggle-complete`, {
+    return await backendFetchJson<NotizDto>(`/notizen/${notizId}/toggle-complete`, {
       method: 'POST',
     });
   },

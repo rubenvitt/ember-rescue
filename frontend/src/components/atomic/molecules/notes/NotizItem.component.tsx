@@ -1,4 +1,4 @@
-import { PiAlarm, PiArrowBendRightUp, PiCheck, PiListPlus, PiPen } from 'react-icons/pi';
+import { PiAlarm, PiArrowBendRightUp, PiCheck, PiListPlus, PiPen, PiTrash } from 'react-icons/pi';
 import { useCallback, useMemo, useState } from 'react';
 import { TextareaInput } from '../../atoms/Inputs.component.js';
 import { NotizDto } from '../../../../types/app/notes.types.js';
@@ -18,7 +18,7 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
       setIsEdit(false);
     },
   });
-  const { toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
+  const { toggleCompleteNotiz, deleteNotiz } = useNotizen({ notizId: notiz.id });
 
   const onAbbrechenClick = useCallback(() => {
     form.reset();
@@ -32,9 +32,9 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
     setIsEdit(false);
   }, [form]);
 
-  const onCheckButtonClick = useCallback(() => {
-    toggleCompleteNotiz.mutate();
-  }, [toggleCompleteNotiz]);
+  const onCheckButtonClick = useCallback(() => toggleCompleteNotiz.mutate(), [toggleCompleteNotiz]);
+
+  const onDeleteButtonClick = useCallback(() => deleteNotiz.mutate(), [deleteNotiz]);
 
   const itemDateMeta = useMemo(() => {
     const createdAt = formatNatoDateTime(notiz.createdAt);
@@ -53,6 +53,11 @@ export function NotizItem({ notiz }: { notiz: NotizDto }) {
     <li
       className="col-span-1 divide-y divide-gray-200 dark:divide-gray-800 rounded-lg bg-white dark:bg-gray-700 shadow flex flex-col justify-between relative">
       <div className="absolute top-2 right-2">
+        {notiz.doneAt && <Button
+          icon={PiTrash}
+          className={'text-red-500'}
+          onClick={onDeleteButtonClick}
+        />}
         <Button
           icon={notiz.doneAt ? PiArrowBendRightUp : PiCheck}
           className={notiz.doneAt ? 'text-primary-500' : 'text-green-500'}

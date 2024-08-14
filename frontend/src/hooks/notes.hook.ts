@@ -27,7 +27,7 @@ export function useNotizen(props?: Props) {
     onSuccess: services.backend.notizen.invalidateQueries(queryClient),
   });
 
-  const deleteNotiz = useMutation<unknown, unknown, NotizDto>({
+  const deleteNotiz = useMutation<NotizDto, unknown, void>({
     mutationKey: services.backend.notizen.deleteNotizFromEinsatz.mutationKey({ einsatzId, notizId: props?.notizId }),
     mutationFn: services.backend.notizen.deleteNotizFromEinsatz.mutationFn({ einsatzId, notizId: props?.notizId }),
     onSuccess: services.backend.notizen.invalidateQueries(queryClient),

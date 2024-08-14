@@ -14,6 +14,7 @@ export class NotizenService {
         einsatzId,
         bearbeiterId,
         doneAt: done ? { not: null } : null,
+        deletedAt: null,
       },
       include: {
         bearbeiter: {
