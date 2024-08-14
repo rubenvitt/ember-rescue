@@ -26,6 +26,7 @@ import { twMerge } from 'tailwind-merge';
 import { CommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 
 const mainNavigation = [
   { name: 'Dashboard', href: '/app', icon: PiGauge },
@@ -46,7 +47,8 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const { toggleTheme } = useTheme();
   const { contextualNavigation } = useStore();
   const queryClient = useQueryClient();
-  const unreadNotification = false; // TODO implement me
+  const notificationCenter = useNotificationCenter()
+  const unreadNotification = notificationCenter.unreadCount; // TODO implement me
 
   const userNavigation = useMemo<DropdownItemType[]>(() => {
     return [

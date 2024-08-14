@@ -23,7 +23,7 @@ export const SignIn: React.FC = () => {
     const { saveBearbeiter, allBearbeiter } = useBearbeiter();
     const navigate = useNavigate({ from: '/signin' });
     const openApp = useAppWindow({
-      window: Windows.APP,
+      appWindow: Windows.APP,
       windowOptions: WindowOptions.app,
     });
     const allBearbeiterItems = React.useMemo<ItemType<Bearbeiter>[]>(() =>

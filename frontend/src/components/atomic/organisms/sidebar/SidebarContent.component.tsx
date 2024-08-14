@@ -8,8 +8,8 @@ import { PiQuestion } from 'react-icons/pi';
 import { useAppWindow } from '../../../../hooks/window.hook.js';
 
 export const SidebarContentComponent: React.FC<SidebarContentProps> = ({ navigation, contextualNavigation }) => {
-  const openAdmin = useAppWindow({ window: Windows.ADMIN, windowOptions: WindowOptions.admin });
-  const openDocs = useAppWindow({ window: Windows.DOCS, windowOptions: WindowOptions.docs });
+  const openAdmin = useAppWindow({ appWindow: Windows.ADMIN, windowOptions: WindowOptions.admin });
+  const openDocs = useAppWindow({ appWindow: Windows.DOCS, windowOptions: WindowOptions.docs });
 
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 dark:bg-primary-950 px-6 pb-4">

@@ -44,19 +44,19 @@ export const useWindowSetup = ({
 export type AppWindowOptions = Omit<WebviewOptions, 'x' | 'y' | 'width' | 'height' | 'url'> & WindowOptions
 
 interface UseAppWindowParameters {
-  window: Windows;
+  appWindow: Windows;
   windowOptions?: AppWindowOptions;
 }
 
-export const useAppWindow = ({ window, windowOptions }: UseAppWindowParameters) => {
+export const useAppWindow = ({ appWindow, windowOptions }: UseAppWindowParameters) => {
   const browserNavigate = useNavigate();
 
   return useCallback((props: { closeOnNavigate: boolean } = { closeOnNavigate: false }) => {
     const { closeOnNavigate } = props;
     if (isTauri()) {
       console.trace('using tauri for window creation');
-      const webviewWindow = new WebviewWindow(window, {
-        url: WindowUrls[window],
+      const webviewWindow = new WebviewWindow(appWindow, {
+        url: WindowUrls[appWindow],
         ...(windowOptions ? windowOptions : {}),
       });
       webviewWindow.once('tauri://created', () => {
@@ -66,7 +66,12 @@ export const useAppWindow = ({ window, windowOptions }: UseAppWindowParameters) 
       });
     } else {
       console.trace('not using tauri for window creation');
-      browserNavigate({ to: WindowUrls[window] });
+      if (WindowUrls[appWindow].startsWith('http')) {
+        // navigate with browser api
+        window.open(WindowUrls[appWindow]);
+      } else {
+        browserNavigate({ to: WindowUrls[appWindow] });
+      }
     }
-  }, [browserNavigate, window]);
+  }, [browserNavigate, appWindow]);
 };

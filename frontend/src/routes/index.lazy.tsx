@@ -11,7 +11,7 @@ export const Route = createLazyFileRoute('/')({
 function Index() {
   const { bearbeiter } = useBearbeiter({ requireBearbeiter: true });
   let navigate = useNavigate({ from: '/' });
-  const openApp = useAppWindow({ window: Windows.APP, windowOptions: WindowOptions.app });
+  const openApp = useAppWindow({ appWindow: Windows.APP, windowOptions: WindowOptions.app });
 
   useEffect(() => {
     if (bearbeiter.isPending) {
