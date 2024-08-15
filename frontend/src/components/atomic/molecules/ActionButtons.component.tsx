@@ -1,6 +1,6 @@
-import { Button } from './Button.component.tsx';
 import { FlexibleDialog } from './Dialog.js';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
+import { Button } from 'antd';
 
 export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[], item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">
@@ -23,13 +23,13 @@ export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>
           title={button.dialog.title}
         >
           {({ open }) => (
-            <Button onClick={open} color={button.color}>
+            <Button onClick={open} type="dashed">
               {button.label}
             </Button>
           )}
         </FlexibleDialog>
       ) : (
-        <Button key={button.label} onClick={() => button.onClick(item)} color={button.color}>
+        <Button key={button.label} onClick={() => button.onClick(item)} type="primary">
           {button.label}
         </Button>
       ),

@@ -7,7 +7,6 @@ import {
   NumberInput,
   PasswordInput,
   RadioInput,
-  SelectInput,
   TextareaInput,
   TextInput,
 } from '../atoms/Inputs.component.js';
@@ -18,6 +17,7 @@ import { BaseFormField } from '../../../types/ui/formfield.types.js';
 import { ChangeEvent } from '../../../types/ui/inputs.types.ts';
 import { useValidation } from '../../../hooks/validation.hook.js';
 import { Identifiable } from '../../../types/utils/common.types.js';
+import { Select } from 'antd';
 
 export function FormField<
   TFormData,
@@ -68,7 +68,7 @@ export function FormField<
     case 'number':
       return <NumberInput {...commonProps} />;
     case 'select':
-      return <SelectInput {...commonProps} options={field.options} />;
+      return <Select />
     case 'textarea':
       return <TextareaInput {...commonProps} />;
     case 'checkbox':

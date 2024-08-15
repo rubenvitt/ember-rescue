@@ -14,9 +14,9 @@ function Index() {
   const openApp = useAppWindow({ appWindow: Windows.APP, windowOptions: WindowOptions.app });
 
   useEffect(() => {
-    if (bearbeiter.isPending) {
+    if (bearbeiter.isLoading) {
       // do nothing
-    } else if (bearbeiter?.data?.id) {
+    } else if (bearbeiter.data?.id) {
       openApp({ closeOnNavigate: true });
     } else {
       navigate({ to: '/auth/signout' });

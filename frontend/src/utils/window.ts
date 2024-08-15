@@ -1,8 +1,8 @@
 import { AppWindowOptions } from '../hooks/window.hook.js';
+import { LogicalSize } from '@tauri-apps/api/window';
 
 export enum Windows {
   MAIN = 'main',
-  SIGN_IN = 'signin',
   APP = 'app',
   ADMIN = 'admin',
   DOCS = 'docs',
@@ -10,36 +10,28 @@ export enum Windows {
 
 
 export const WindowUrls: Readonly<Record<Windows, string>> = {
-  [Windows.MAIN]: '/',
-  [Windows.SIGN_IN]: '/signin',
+  [Windows.MAIN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
   [Windows.DOCS]: process.env.NODE_ENV !== 'development' ? 'http://localhost:3001' : 'https://project-rescue-docs.vercel.app',
 };
 
-export const WindowOptions: Readonly<Record<Windows, AppWindowOptions>> = {
+export const WindowOptions: Readonly<Record<Windows, AppWindowOptions & { size?: LogicalSize }>> = {
   [Windows.MAIN]: {
-    titleBarStyle: 'transparent',
-    hiddenTitle: true,
-    closable: false,
-    width: 0,
-    height: 0,
-    focus: false,
-    alwaysOnBottom: true,
-    visible: false,
-  },
-  [Windows.SIGN_IN]: {
     title: 'Project Rescue • Anmelden',
     center: true,
     maximizable: false,
     minimizable: false,
     width: 400,
     height: 600,
+    size: new LogicalSize(400, 600),
     resizable: false,
-    alwaysOnTop: true,
+    alwaysOnTop: process.env.NODE_ENV !== 'development',
   },
   [Windows.APP]: {
     fullscreen: process.env.NODE_ENV !== 'development',
+    width: 1600,
+    height: 1200,
     resizable: true,
     title: 'Project Rescue',
   },
