@@ -10,7 +10,6 @@ import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/nunito';
 import { Modal } from '../components/atomic/organisms/modal/Modal.component.js';
-import { PushNotifications } from '../components/atomic/organisms/notifications/PushNotifications.component.js';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
@@ -58,7 +57,6 @@ export const Route = createRootRoute({
         <ThemeProvider>
           <Outlet />
           <Modal />
-          <PushNotifications />
           <ToastContainer />
           <ReactQueryDevtools initialIsOpen />
           <Suspense>
