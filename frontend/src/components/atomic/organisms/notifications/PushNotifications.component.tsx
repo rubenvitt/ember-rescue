@@ -1,8 +1,6 @@
 import { useNotifications } from '../../../../hooks/notifications.hook.js';
 import { useEffect } from 'react';
 import { PushNotification } from '../../molecules/PushNotification.component.js';
-import { toast } from 'react-toastify';
-import { PiWrench } from 'react-icons/pi';
 import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 
 export function PushNotifications() {
@@ -15,12 +13,6 @@ export function PushNotifications() {
 
   useEffect(() => {
     setTimeout(() => {
-      toast('Juhu, ein Toast', {
-        icon: PiWrench,
-        toastId: 'manual',
-        type: 'success',
-        autoClose: false,
-      });
     }, 2000);
   }, []);
 

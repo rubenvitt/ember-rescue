@@ -17,6 +17,7 @@ import { useModal } from '../../../hooks/modal.hook.js';
 import { GenericForm } from './GenericForm.component.js';
 import storage from '../../../utils/storage.js';
 import { isTauri } from '@tauri-apps/api/core';
+import { AutoComplete, Image, Select } from 'antd';
 
 
 export const SignIn: React.FC = () => {
@@ -61,7 +62,7 @@ export const SignIn: React.FC = () => {
               onReset={async () => {
                 await navigateToSettings();
                 window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
-                closeModal()
+                closeModal();
               }}
               // FIXME: verliert bei jedem Event(?) den Fokus.
               field={{
@@ -103,8 +104,9 @@ export const SignIn: React.FC = () => {
             iconSize="lg"
           />
         </div>
-        <div className={cva('sm:mx-auto sm:w-full sm:max-w-sm')()}>
-          <img className={cva('mx-auto h-36 w-auto')()} src="/logo.png" alt="Project Rescue Logo" />
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col">
+          <Image src="/logo.png" preview={false} wrapperClassName="bg-green-500 w-36 mx-auto h-36"
+                 alt="EmberRescue Logo" />
           <h2
             className={cva('mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white')()}>Project
             Rescue • Anmelden</h2>
@@ -123,23 +125,43 @@ export const SignIn: React.FC = () => {
               }}
             >
               {(field) => (
-                <ComboInput<Bearbeiter>
-                  items={allBearbeiterItems}
-                  errors={field.state.meta.errors}
-                  label="Anmelden als:"
-                  addValueLabel="Bearbeiter anlegen:"
-                  allowNewValues={true}
-                  onAddNewValue={(name) => field.handleChange({ name, id: 'hans' })}
-                  onChange={(e) => e && field.handleChange({
-                    id: e,
-                    name: allBearbeiter.data?.find(b => b.id === e)?.name ?? e,
-                  })}
-                  inputProps={{
-                    name: field.name,
-                    onBlur: field.handleBlur,
-                    placeholder: allBearbeiter.isFetched ? 'Bearbeiter auswählen' : 'Bearbeiter laden...',
-                  }}
-                />
+                <>
+                  <div className="w-full flex flex-col">
+                    <AutoComplete
+                      options={allBearbeiterItems.map(value => ({
+                        label: value.label,
+                        value: value.label,
+                        item: value.item,
+                      }))}
+                      placeholder="Bearbeiter auswählen"
+                      style={{ width: '100%' }}
+                      className="w-full" />
+                    <Select
+                      showSearch
+                      options={allBearbeiterItems.map(value => ({
+                        label: <div className="flex justify-between"><p>{value.label}</p><p>{value.item.id}</p></div>,
+                      }))}
+                    />
+                  </div>
+
+                  <ComboInput<Bearbeiter>
+                    items={allBearbeiterItems}
+                    errors={field.state.meta.errors}
+                    label="Anmelden als:"
+                    addValueLabel="Bearbeiter anlegen:"
+                    allowNewValues={true}
+                    onAddNewValue={(name) => field.handleChange({ name, id: 'hans' })}
+                    onChange={(e) => e && field.handleChange({
+                      id: e,
+                      name: allBearbeiter.data?.find(b => b.id === e)?.name ?? e,
+                    })}
+                    inputProps={{
+                      name: field.name,
+                      onBlur: field.handleBlur,
+                      placeholder: allBearbeiter.isFetched ? 'Bearbeiter auswählen' : 'Bearbeiter laden...',
+                    }}
+                  />
+                </>
               )}
             </form.Field>
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
