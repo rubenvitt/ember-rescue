@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { isTauri } from '@tauri-apps/api/core';
 import { Windows, WindowUrls } from '../utils/window.js';
 import { useNavigate } from '@tanstack/react-router';
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { getCurrentWebviewWindow, WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { WebviewOptions } from '@tauri-apps/api/webview';
 
 export const useWindowSetup = ({
@@ -14,7 +14,7 @@ export const useWindowSetup = ({
                                  alwaysOnTop = false,
                                  resizable = true,
                                }: {
-  title: string,
+  title?: string,
   fullscreen?: boolean,
   size?: LogicalSize,
   center?: boolean,
@@ -53,8 +53,7 @@ export const useAppWindow = ({ appWindow, windowOptions }: UseAppWindowParameter
 
   return useCallback((props: { closeOnNavigate: boolean } = { closeOnNavigate: false }) => {
     const { closeOnNavigate } = props;
-    if (isTauri()) {
-      console.trace('using tauri for window creation');
+    if (isTauri() && getCurrentWebviewWindow().label !== appWindow) {
       const webviewWindow = new WebviewWindow(appWindow, {
         url: WindowUrls[appWindow],
         ...(windowOptions ? windowOptions : {}),

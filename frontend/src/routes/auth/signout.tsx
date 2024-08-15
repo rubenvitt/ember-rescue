@@ -7,11 +7,10 @@ import { useAppWindow } from '../../hooks/window.hook.js';
 export const Route = createFileRoute('/auth/signout')({
   component: () => {
     const { bearbeiter } = useBearbeiter();
-    const openSignin = useAppWindow({ windowOptions: WindowOptions.signin, appWindow: Windows.SIGN_IN });
+    const openSignin = useAppWindow({ windowOptions: WindowOptions.main, appWindow: Windows.MAIN });
 
     useEffect(() => {
       if (bearbeiter.isLoading) return;
-      console.log('open signIn')
       openSignin({ closeOnNavigate: true });
     }, [bearbeiter.data]);
 

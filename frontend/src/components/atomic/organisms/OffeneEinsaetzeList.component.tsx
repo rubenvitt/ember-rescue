@@ -4,10 +4,12 @@ import { natoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { Badge } from '../atoms/Badge.component.js';
-import { ExpandableList } from './ExpandableList.component.tsx';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
 import { Einsatz } from '../../../types/app/einsatz.types.js';
+import { List, Tag } from 'antd';
+import { ExpandableListItem } from '../molecules/ExpandableListItem.component.js';
+import { listStyles } from '../../../styles/expandableList.styles.js';
+import { PiNetwork } from 'react-icons/pi';
 
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
@@ -21,10 +23,9 @@ export const OffeneEinsaetzeList: React.FC = () => {
       <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
           <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
+            Stichwort: {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
           </p>
-          <Badge color="blue">Lokaler Einsatz</Badge>
-          <Badge color="orange">Remote Einsatz</Badge>
+          <Tag icon={<PiNetwork className="inline mr-1" />} color="blue">Remote-Einsatz</Tag>
         </div>
         <div className="mt-1 text-right flex flex-col text-xs leading-5 text-blue-800 dark:text-blue-300">
           <p>
@@ -71,12 +72,11 @@ export const OffeneEinsaetzeList: React.FC = () => {
     },
   ], [einsatzAbschliessen, saveEinsatz]);
 
-  return (
-    <ExpandableList<Einsatz>
-      items={offeneEinsaetze.data ?? []}
-      renderItem={renderEinsatz}
-      renderExpandedContent={renderExpandedContent}
-      actionButtons={actionButtons}
-    />
+  return (<>
+      <List className={listStyles()} itemLayout="horizontal" dataSource={offeneEinsaetze.data}
+            renderItem={(item) => <ExpandableListItem item={item} renderContent={renderEinsatz}
+                                                      renderExpandedContent={renderExpandedContent}
+                                                      actionButtons={actionButtons} />} />
+    </>
   );
 };

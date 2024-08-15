@@ -6,8 +6,10 @@ export type BearbeiterDto = {
   name: string;
 };
 
-export type CreateBearbeiterDto = Omit<BearbeiterDto, 'id'>;
-
+export class CreateBearbeiterDto {
+  @IsNotEmpty()
+  name: string;
+}
 export type QualifikationDto = {
   id: string;
   bezeichnung: string;
