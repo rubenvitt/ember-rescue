@@ -1,24 +1,19 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { format } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { natoDateTime } from '../../../utils/time.js';
-import VirtualizedTable from '../molecules/VirtualizedTable.component.js';
-import { BadgeButton } from '../atoms/Badge.component.js';
 import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { useModal } from '../../../hooks/modal.hook.js';
-import { PiGitPullRequest, PiPen } from 'react-icons/pi';
+import { PiEmpty, PiGitPullRequest, PiPen, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { GenericForm } from './GenericForm.component.js';
 import { z } from 'zod';
 import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-
-const columnHelper = createColumnHelper<EinsatztagebuchEintrag>();
+import { Button, Empty, Table, TableColumnsType, Tooltip } from 'antd';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
@@ -88,101 +83,80 @@ export function EinsatztagebuchComponent() {
     });
   }, [openModal]);
 
-  const columns = useMemo<ColumnDef<EinsatztagebuchEintrag, any>[]>(() => [
-    columnHelper.accessor('timestamp', {
-      header: 'Zeitpunkt',
-      cell: ({ getValue, row }) => {
-        const valueAsNato = format(getValue(), natoDateTime);
-        const createdAsNato = format(row.original.createdAt, natoDateTime);
-        const updatedAsNato = format(row.original.updatedAt, natoDateTime);
-        return (
-          <div className="grid grid-cols-2 overflow-hidden w-24">
-            <span className="col-span-2 text-right block">{valueAsNato}</span>
-            {createdAsNato !== valueAsNato && (<>
-                <span className="block text-gray-400 dark:text-gray-600 text-xs">erstellt:</span>
-                <span className="block text-gray-400 dark:text-gray-600 text-xs text-right">{createdAsNato}</span>
-              </>
-            )}
-            {row.original.archived && (<>
-                <span className="block text-red-400 dark:text-red-600 text-xs">gelöscht:</span>
-                <span
-                  className="block text-red-400 dark:text-red-600 text-xs text-right">{updatedAsNato}</span>
-              </>
-            )}
-          </div>
-        );
+  const myColumns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
+    return [
+      {
+        title: '#', dataIndex: 'fortlaufende_nummer', key: 'fortlaufende_nummer', fixed: true,
+        width: 80,
       },
-    }),
-    columnHelper.accessor('absender', {
-      header: 'Absender',
-      cell: ({ getValue }) => getValue(),
-      enableGrouping: true,
-    }),
-    columnHelper.accessor('empfaenger', {
-      header: 'Empfänger',
-      cell: ({ getValue }) => getValue(),
-      enableGrouping: true,
-    }),
-    columnHelper.accessor('content', {
-      header: 'Inhalt',
-      meta: { classNames: 'text-gray-900 dark:text-white' },
-      cell: ({ getValue, row }) => (
-        <span className={twMerge(
-          row.original.type !== 'USER' && 'text-gray-400 dark:text-gray-600',
-          row.original.archived && 'line-through decoration-red-500/75 text-gray-400 dark:text-gray-600',
-        )}>
-          {getValue()}
-        </span>
-      ),
-    }),
-    columnHelper.accessor('type', {
-      header: 'Typ',
-      cell: ({ getValue }) => getValue(),
-      enableGlobalFilter: true,
-    }),
-    columnHelper.display({
-      header: 'Aktionen',
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          {!row.original.archived && (
+      {
+        title: 'Zeitpunkt', key: 'timestamp', width: 200, render: (_, record) => {
+          const timestampAsNato = format(record.timestamp, natoDateTime);
+          const createdAsNato = format(record.createdAt, natoDateTime);
+          const updatedAsNato = format(record.updatedAt, natoDateTime);
+          return (
             <>
-              <BadgeButton color="orange"
-                           onClick={() => !isOpen && modifyEntry(row.original)}>
-                Eintrag überschreiben
-              </BadgeButton>
-              <BadgeButton color="red"
-                           onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: row.original.id })}>
-                Löschen
-              </BadgeButton>
+              <span>{timestampAsNato}</span>
+              {createdAsNato !== timestampAsNato && (<>
+                  <span className="block text-gray-400 dark:text-gray-600 text-xs">erstellt: {createdAsNato}</span>
+                </>
+              )}
+              {record.archived && (<>
+                  <span className="block text-red-400 dark:text-red-600 text-xs">gelöscht: {updatedAsNato}</span>
+                </>
+              )}
+            </>
+          );
+        },
+      },
+      { title: 'Absender', dataIndex: 'absender', key: 'absender', width: 100 },
+      { title: 'Empfänger', dataIndex: 'empfaenger', key: 'empfaenger', width: 120 },
+      {
+        title: 'Inhalt',
+        dataIndex: 'content',
+        key: 'content',
+        width: 500,
+        render: (value, record) => <span className={twMerge(
+          record.type !== 'USER' && 'text-gray-400 dark:text-gray-600',
+          record.archived && 'line-through decoration-red-500/75 text-gray-400 dark:text-gray-600',
+        )}>
+          {value}
+        </span>,
+      },
+      { title: 'Typ', dataIndex: 'type', key: 'type', width: 100 },
+      {
+        render: (_, record) => <div className="flex gap-2">
+          {!record.archived && (
+            <>
+              <Tooltip title="Eintrag überschreiben">
+                <Button onClick={() => !isOpen && modifyEntry(record)} type="default" shape="circle"
+                        icon={<PiSwap />} />
+              </Tooltip>
+              <Tooltip title="Eintrag streichen">
+                <Button
+                  onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: record.id })}
+                  type="default" danger shape="circle" icon={<PiTextStrikethrough />} />
+              </Tooltip>
             </>
           )}
-        </div>
-      ),
-      enableGrouping: true,
-    }),
-  ], [archiveEinsatztagebuchEintrag]);
-
-  const table = useReactTable({
-    data: einsatztagebuch ?? [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  const virtualizer = useVirtualizer({
-    count: einsatztagebuch?.length ?? 0,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 34,
-    overscan: 150,
-  });
-
+        </div>,
+        dataIndex: 'id', width: 150,
+      },
+    ];
+  }, []);
+  
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <EinsatztagebuchHeaderComponent inputVisible={inputVisible} setInputVisible={setInputVisible} />
       <EinsatztagebuchFormWrapperComponent inputVisible={inputVisible} closeForm={() => setInputVisible(false)} />
-      <div ref={parentRef} className="mt-8 flow-root" style={{ height: '800px', overflow: 'auto' }}>
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <VirtualizedTable table={table} virtualizer={virtualizer} />
+      <div ref={parentRef} className="mt-8">
+        <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+          <div className="w-full py-2 align-middle sm:px-6 lg:px-8">
+            <Table dataSource={einsatztagebuch} columns={myColumns} virtual scroll={{ x: true }}
+                   pagination={false}
+                   locale={{
+                     emptyText: <Empty image={<PiEmpty size={48} />} description="Keine Einträge verfügbar" />,
+                   }} />
           </div>
         </div>
       </div>

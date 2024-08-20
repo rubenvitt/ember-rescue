@@ -7,7 +7,11 @@ import { useAppWindow } from '../../hooks/window.hook.js';
 export const Route = createFileRoute('/auth/signout')({
   component: () => {
     const { bearbeiter } = useBearbeiter();
-    const openSignin = useAppWindow({ windowOptions: WindowOptions.main, appWindow: Windows.MAIN });
+    const openSignin = useAppWindow({
+      // @ts-ignore
+      windowOptions: { ...WindowOptions.main, size: undefined },
+      appWindow: Windows.MAIN,
+    });
 
     useEffect(() => {
       if (bearbeiter.isLoading) return;
@@ -15,5 +19,5 @@ export const Route = createFileRoute('/auth/signout')({
     }, [bearbeiter.data]);
 
     return <></>;
-  },
+  }
 });

@@ -1,13 +1,18 @@
-import React, { useMemo } from 'react';
-import { GenericForm } from '../../organisms/GenericForm.component.js';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
-import { format } from 'date-fns';
 import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
-import { CreateEinsatz } from '../../../../types/app/einsatz.types.js';
-import { SearchBox } from '@mapbox/search-js-react';
-import { useSecret } from '../../../../hooks/secrets.hook.js';
+import * as Yup from 'yup';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
+import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
+import dayjs from 'dayjs';
+import { PiArrowCircleUpRight } from 'react-icons/pi';
+import { FormSection } from '../../organisms/form/FormSection.component.js';
+import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
+import { InputWithLabel } from '../../atoms/InputWithLabel.component.js';
+import { DatePicker, Select } from 'formik-antd';
+import { natoDateTimeAnt } from '../../../../utils/time.js';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -52,90 +57,96 @@ import { useSecret } from '../../../../hooks/secrets.hook.js';
 //   );
 // };
 
-export const SetupEinsatzForm: React.FC = () => {
-  const navigate = useNavigate();
-  const { secret } = useSecret({ secretKey: 'mapboxApi' });
+const SetupEinsatzSchema = Yup.object().shape({
+  erstAlarmiert: Yup.string().required('Zeitpunkt der Erstalarmierung wird benötigt'),
+  aufnehmendesRettungsmittel: Yup.string().required('Das Aufnehmende Rettungsmittel wird benötigt'),
+  alarmstichwort: Yup.string().required('Geben Sie ein Einsatzstichwort an'),
+});
 
+export function NewSetupEinsatzForm() {
   const { einheiten } = useEinheiten();
-  const { createEinsatz, saveEinsatz } = useEinsatz();
   const { alarmstichworte } = useAlarmstichworte();
-  const alarmstichworteItems = useMemo(() => alarmstichworte.data?.map(item => ({
-    item,
-    label: item.bezeichnung,
-    secondary: item.beschreibung,
-  })) ?? [], [alarmstichworte.data]);
+  const { createEinsatz, saveEinsatz } = useEinsatz();
+  const navigate = useNavigate();
 
+  const einheitenItems = useMemo<DefaultOptionType[] | undefined>(() => {
+    return einheiten.data?.map(einheit => ({
+      value: einheit.id,
+      searchString: einheit.funkrufname.toLowerCase() + einheit.einheitTyp.label.toLowerCase(),
+      label: <div className="flex justify-between gap-4">
+        <span className="flex-shrink-0 truncate">{einheit.funkrufname}</span>
+        <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{einheit.einheitTyp.label}</span>
+      </div>,
+      item: einheit,
+    } as DefaultOptionType));
+  }, [einheiten.data]);
 
-  return (
-    <section id="newEinsatzForm" className="w-full pb-6">
-      {secret.data &&
-        // @ts-ignore
-        <SearchBox value="" accessToken={secret.data?.value ?? ''} theme={{ variables: { colorPrimary: 'red' } }}
-                   options={{ language: 'de', country: 'de', proximity: [10.55, 52.96] }} />
-      }
-      <GenericForm<CreateEinsatz>
-        layout="complex"
-        resetText="Abbrechen"
-        submitText="Einsatz erstellen"
-        onReset={() => {
-          navigate({ to: '/auth/signout' });
-        }}
-        onSubmit={async (values) => {
-          await createEinsatz.mutateAsync(values).then((einsatz) => {
-            saveEinsatz(einsatz);
-            navigate({ to: '/app/' });
-          });
-        }} defaultValues={{
-        erstAlarmiert: format(new Date(), `yyyy-MM-dd'T'HH:mm`),
-      }} sections={[
-        {
-          fields: [
-            {
-              label: 'Aufnehmendes Rettungsmittel',
-              name: 'aufnehmendesRettungsmittel',
-              type: 'combo',
-              items: einheiten.data?.map((einheit) => ({
-                item: einheit,
-                label: einheit.funkrufname,
-                secondary: einheit.einheitTyp.label,
-              })) ?? [],
-              validators: {
-                onChange: ({ value }: { value: string }) => {
-                  if (value === '') {
-                    return 'Bitte wählen Sie das aufnehmende Rettungsmittel aus';
-                  }
-                },
-              },
-            },
-          ],
-          title: 'Einsatzdaten',
-          description: 'Basisdaten des Einsatzes',
-        },
-        {
-          fields: [
-            {
-              name: 'erstAlarmiert',
-              label: 'Erstalarmierung',
-              type: 'datetime-local',
-            },
-            {
-              name: 'alarmstichwort',
-              label: 'Einsatzstichwort der Alarmierung',
-              type: 'combo',
-              items: alarmstichworteItems,
-              validators: {
-                onChange: ({ value }: { value: string }) => {
-                  if (value === '') {
-                    return 'Bitte wählen Sie das Einsatzstichwort der Alarmierung aus';
-                  }
-                },
-              },
-            },
-          ],
-          title: 'Alarmierung',
-          description: 'Informationen zur Alarmierung',
-        },
-      ]} />
-    </section>
-  );
-};
+  const alarmstichworteItems = useMemo<DefaultOptionType[] | undefined>(() => {
+    return alarmstichworte.data?.map(stichwort => ({
+      value: stichwort.id,
+      searchString: (stichwort.bezeichnung + stichwort.beschreibung).toLowerCase(),
+      label: <div className="flex justify-between gap-4">
+        <span className="flex-shrink-0 truncate">{stichwort.bezeichnung}</span>
+        <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{stichwort.beschreibung}</span>
+      </div>,
+    } as DefaultOptionType));
+  }, [alarmstichworte.data]);
+
+  const handleAbbrechen = useCallback(() => navigate({ to: '/auth/signout' }), [navigate]);
+
+  return <FormLayout type="sectioned" formik={{
+    validationSchema: SetupEinsatzSchema,
+    initialValues: { erstAlarmiert: dayjs().toISOString(), aufnehmendesRettungsmittel: '', alarmstichwort: '' },
+    onSubmit: async (data) => {
+      console.log('my data', { data });
+      await createEinsatz.mutateAsync({ ...data }).then((einsatz) => {
+        saveEinsatz(einsatz);
+        navigate({ to: '/app/' });
+      });
+    },
+  }} buttons={{
+    cancel: { type: 'dashed', onClick: handleAbbrechen, children: 'Abbrechen' },
+    submit: {
+      type: 'primary',
+      htmlType: 'submit',
+      icon: <PiArrowCircleUpRight />,
+      iconPosition: 'end',
+      children: 'Einsatz anlegen',
+    },
+  }}
+  >
+    <FormSection heading="Einsatzdaten" subHeading="Grundlegende Daten zum Einsatz">
+      <FormContentBox>
+        <InputWithLabel label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel">
+          <Select name="aufnehmendesRettungsmittel" placeholder="Aufnehmendes Rettungsmittel" className="w-full"
+                  showSearch
+            // @ts-ignore
+                  spellCheck={false}
+                  filterOption={(inputValue, option) => option?.searchString.includes(inputValue.toLowerCase())}
+                  options={einheitenItems} loading={einheiten.isLoading} />
+        </InputWithLabel>
+      </FormContentBox>
+    </FormSection>
+
+    <FormSection heading="Alarmierung" subHeading="Informationen zur Alarmierung">
+      <FormContentBox>
+        <InputWithLabel label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert">
+          <DatePicker className="w-full" showTime showSecond={false} format={{ format: natoDateTimeAnt }}
+                      name="erstAlarmiert" />
+        </InputWithLabel>
+        <InputWithLabel label="Einsatzstichwort der Alarmierung" name="alarm">
+          <Select name="alarmstichwort" placeholder="Einsatzstichwort der Alarmierung" className="w-full"
+                  showSearch
+            // @ts-ignore
+                  spellCheck={false}
+                  filterOption={(inputValue, option) => {
+                    // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
+                    const regex = new RegExp(inputValue.split('').join('.*'), 'i');
+                    return regex.test(option?.searchString);
+                  }}
+                  options={alarmstichworteItems} loading={alarmstichworte.isLoading} />
+        </InputWithLabel>
+      </FormContentBox>
+    </FormSection>
+  </FormLayout>;
+}

@@ -8,7 +8,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       errorFormat: 'pretty',
       log: [
         {
-          emit: 'event',
+          emit: 'stdout',
           level: 'query',
         },
         {
