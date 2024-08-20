@@ -24,9 +24,16 @@ export class EinsatzEinheitenService {
       id: einheitId,
     });
 
+    const einsatz = await this.prismaService.einsatz.findUnique({
+      where: { id: einsatzId },
+      select: {
+        aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
+      },
+    });
+
     await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-      absender: 'ETB',
-      empfaenger: 'ETB',
+      absender: existingEinheit.funkrufname,
+      empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
@@ -85,6 +92,13 @@ export class EinsatzEinheitenService {
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode);
 
+    const einsatz = await this.prismaService.einsatz.findUnique({
+      where: { id: einsatzId },
+      select: {
+        aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
+      },
+    });
+
     await this.prismaService.$transaction(async (transaction) => {
       await transaction.einheitStatusHistorie.create({
         data: {
@@ -111,7 +125,7 @@ export class EinsatzEinheitenService {
         bearbeiterId,
         type: 'RESSOURCEN',
         absender: einheit.funkrufname,
-        empfaenger: 'ETB',
+        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
         content: `${einheit.funkrufname} (${einheit.einheitTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
       });
     });
@@ -127,6 +141,13 @@ export class EinsatzEinheitenService {
         id: einheitId,
       });
 
+      const einsatz = await transaction.einsatz.findUnique({
+        where: { id: einsatzId },
+        select: {
+          aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
+        },
+      });
+
       await transaction.einheitOnEinsatz.delete({
         where: {
           einsatzId_einheitId: {
@@ -138,7 +159,7 @@ export class EinsatzEinheitenService {
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag({
         absender: existingEinheit.funkrufname,
-        empfaenger: 'ETB',
+        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
         type: 'RESSOURCEN',
         einsatzId,
         bearbeiterId,

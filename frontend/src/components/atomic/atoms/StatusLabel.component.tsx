@@ -1,6 +1,7 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import { SmallStatusDto, StatusCode } from '../../../types/app/status.types.js';
+import { Tag } from 'antd';
 
 export const statusLabel = cva<{ status: { [key in StatusCode]: string } }>(
   'rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset',
@@ -45,8 +46,8 @@ interface StatusLabelProps {
 
 export const StatusLabel: React.FC<StatusLabelProps> = ({ status }) => {
   return (
-    <div className={statusLabel({ status: status.code as SmallStatusDto['code'] })}>
+    <Tag className={statusLabel({ status: status.code as SmallStatusDto['code'] })}>
       {status.code} ({status.bezeichnung})
-    </div>
+    </Tag>
   );
 };
