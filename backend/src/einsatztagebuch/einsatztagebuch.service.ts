@@ -30,6 +30,7 @@ export class EinsatztagebuchService {
       einsatzId: item.einsatzId,
       bearbeiterId: item.bearbeiterId,
       id: undefined,
+      fortlaufende_nummer: undefined,
       createdAt: undefined,
       updatedAt: undefined,
     });

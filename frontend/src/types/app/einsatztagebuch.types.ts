@@ -11,6 +11,7 @@ export type EinsatztagebuchTypes =
   'BETROFFENE';
 
 export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
+  fortlaufende_nummer: number;
   bearbeiter: Bearbeiter;
   type?: EinsatztagebuchTypes;
   content: string;

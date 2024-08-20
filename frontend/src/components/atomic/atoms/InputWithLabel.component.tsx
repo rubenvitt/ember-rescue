@@ -1,16 +1,19 @@
+import { Form } from 'formik-antd';
 import React from 'react';
-import { FormikFieldProps } from 'formik-antd/lib/FieldProps.js';
 
 interface Props {
   children: React.ReactNode;
   label: string;
+  name: string;
 }
 
-export function InputWithLabel({ label, children, name }: Props & Pick<FormikFieldProps, 'name'>) {
+export function InputWithLabel({ label, children, name }: Props) {
   return (
     <div className="space-y-2">
-      <label htmlFor={name}>{label}</label>
-      {children}
+      <Form.Item name={name}>
+        <label htmlFor={name}>{label}</label>
+        {children}
+      </Form.Item>
     </div>
   );
 }
