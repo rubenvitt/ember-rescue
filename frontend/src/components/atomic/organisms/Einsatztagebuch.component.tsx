@@ -129,7 +129,7 @@ export function EinsatztagebuchComponent() {
           {!record.archived && (
             <>
               <Tooltip title="Eintrag überschreiben">
-                <Button onClick={() => !isOpen && modifyEntry(record)} type="default" shape="circle"
+                <Button onClick={() => !isOpen && modifyEntry(record)} type="dashed" shape="circle"
                         icon={<PiSwap />} />
               </Tooltip>
               <Tooltip title="Eintrag streichen">
