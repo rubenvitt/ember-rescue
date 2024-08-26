@@ -8,6 +8,8 @@ import { ItemType } from '../../components/atomic/molecules/Combobox.component.j
 // @ts-ignore
 import type { IpPortPair } from 'tauri-plugin-network-api';
 import { EinheitDto, EinheitTypDto } from '../../types/app/einheit.types.js';
+import { TableColumnsType } from 'antd';
+import { EditableEinheitenTable } from '../../components/atomic/organisms/table/EditableEinheitenTable.component.js';
 
 export const Route = createFileRoute('/admin/')({
   component: AdminPage,
@@ -46,6 +48,13 @@ function AdminPage() {
     })) ?? [];
   }, [einheiten.data]);
 
+  const colums = useMemo<TableColumnsType<EinheitDto>>(() => {
+    return [
+      { dataIndex: 'funkrufname', title: 'Funkrufname' },
+      { dataIndex: 'kapazitaet', title: 'Kapazität', editable: true },
+      {dataIndex: 'einheitTyp', title: 'EinheitTyp', editable: true },
+    ];
+  }, []);
 
   if (!settings.isFetchedAfterMount || !settings.data) return null;
 
@@ -70,6 +79,8 @@ function AdminPage() {
             ],
           },
         ]} />
+
+      <EditableEinheitenTable />
 
       {einheiten.data &&
         <ListForm<typeof einheitTemplate>

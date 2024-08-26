@@ -83,7 +83,7 @@ export function EinsatztagebuchComponent() {
     });
   }, [openModal]);
 
-  const myColumns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
+  const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
     return [
       {
         title: '#', dataIndex: 'fortlaufende_nummer', key: 'fortlaufende_nummer', fixed: true,
@@ -152,7 +152,7 @@ export function EinsatztagebuchComponent() {
       <div ref={parentRef} className="mt-8">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="w-full py-2 align-middle sm:px-6 lg:px-8">
-            <Table dataSource={einsatztagebuch} columns={myColumns} virtual scroll={{ x: true }}
+            <Table dataSource={einsatztagebuch} columns={columns} virtual scroll={{ x: true }}
                    pagination={false}
                    locale={{
                      emptyText: <Empty image={<PiEmpty size={48} />} description="Keine Einträge verfügbar" />,
