@@ -8,7 +8,6 @@ import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHead
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { PiEmpty, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
-import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { Button, Drawer, Empty, Table, TableColumnsType, Tooltip } from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
@@ -26,11 +25,7 @@ export function EinsatztagebuchComponent() {
     setEditingEintrag(null);
     setIsOpen(false);
   }, []);
-
-  const { einheitenAsItems } = useEinheitenItems({
-    include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
-  });
-
+  
   const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {
     setIsOpen(true);
     setEditingEintrag(entry);
@@ -113,7 +108,8 @@ export function EinsatztagebuchComponent() {
           </div>
         </div>
       </div>
-      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
+      <Drawer open={isOpen} onClose={onDrawerClose}
+              title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
         {editingEintrag && <FormLayout<EinsatztagebuchEintrag> formik={{
           initialValues: {
             ...editingEintrag,
