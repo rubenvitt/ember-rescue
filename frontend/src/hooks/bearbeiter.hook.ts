@@ -23,7 +23,6 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
     queryFn: async (): Promise<Bearbeiter | null> => {
       if (!bearbeiter || !bearbeiter.id) return null; // Korrigierte Überprüfung
       const foundBearbeiter = await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({ bearbeiterId: bearbeiter.id });
-      console.log('found single bearbeiter', bearbeiter, foundBearbeiter);
       if (!foundBearbeiter) return Promise.reject(new Error('no bearbeiter found'));
       return foundBearbeiter;
     },

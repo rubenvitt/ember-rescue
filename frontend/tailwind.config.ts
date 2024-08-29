@@ -1,6 +1,7 @@
+// @ts-ignore
 import colors from 'tailwindcss/colors';
+import type { Config } from 'tailwindcss';
 
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     './index.html',
@@ -15,5 +16,5 @@ export default {
       },
     },
   },
-};
+} satisfies Config;
 

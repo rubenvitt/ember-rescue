@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { buttonVariants } from '../../styles/button.styles.js';
 import { VariantProps } from 'class-variance-authority';
-import { Identifiable } from '../utils/common.types.js';
 
 export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
   label: string;
+  danger?: boolean;
 } & (
   | {
   onClick: (item: T) => void;
@@ -25,14 +25,6 @@ export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
 export type ExpandableListItemProps<T> = {
   item: T;
   renderContent: (item: T) => ReactNode;
-  renderExpandedContent?: (item: T) => ReactNode;
-  actionButtons?: ActionButton<T>[];
-  isExpandable?: boolean;
-};
-
-export type ExpandableListProps<T extends Identifiable> = {
-  items: T[];
-  renderItem: (item: T) => ReactNode;
   renderExpandedContent?: (item: T) => ReactNode;
   actionButtons?: ActionButton<T>[];
   isExpandable?: boolean;

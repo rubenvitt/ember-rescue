@@ -7,81 +7,34 @@ import { natoDateTime } from '../../../utils/time.js';
 import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { useModal } from '../../../hooks/modal.hook.js';
-import { PiEmpty, PiGitPullRequest, PiPen, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
-import { GenericForm } from './GenericForm.component.js';
-import { z } from 'zod';
+import { PiEmpty, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { Button, Empty, Table, TableColumnsType, Tooltip } from 'antd';
+import { Button, Drawer, Empty, Table, TableColumnsType, Tooltip } from 'antd';
+import { FormLayout } from './form/FormLayout.comonent.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { Input, Select } from 'formik-antd';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const [inputVisible, setInputVisible] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
-  const { openModal, isOpen, closeModal } = useModal();
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingEintrag, setEditingEintrag] = useState<EinsatztagebuchEintrag | null>(null);
   const { einheiten } = useEinheiten();
+  const onDrawerClose = useCallback(() => {
+    setEditingEintrag(null);
+    setIsOpen(false);
+  }, []);
 
   const { einheitenAsItems } = useEinheitenItems({
     include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
   });
 
   const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {
-    openModal({
-      content: <GenericForm<EinsatztagebuchEintrag>
-        defaultValues={{
-          ...entry,
-          absender: einheiten.data?.find(e => e.funkrufname === entry.absender)?.id ?? entry.absender,
-          empfaenger: einheiten.data?.find(e => e.funkrufname === entry.empfaenger)?.id ?? entry.empfaenger,
-        }}
-        submitText="Eintrag ändern"
-        submitIcon={PiGitPullRequest}
-        onSubmit={async (data) => {
-          await createEinsatztagebuchEintrag.mutateAsync({
-            ...data,
-            absender: einheiten.data?.find(e => e.id === data.absender)?.funkrufname ?? data.absender,
-            empfaenger: einheiten.data?.find(e => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
-          });
-          await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: entry.id });
-          closeModal();
-        }}
-        sections={[
-          {
-            fields: [
-              {
-                name: 'absender', label: 'Absender', type: 'combo', placeholder: 'Empfänger des Eintrags', validators: {
-                  onChange: z.string({ message: 'Ein Absender wird benötigt' }).min(0),
-                },
-                items: einheitenAsItems,
-                width: 'half',
-              },
-              {
-                name: 'empfaenger',
-                label: 'Empfänger',
-                type: 'combo',
-                placeholder: 'Empfänger des Eintrags',
-                validators: {
-                  onChange: z.string({ message: 'Ein Empfänger wird benötigt' }).min(0),
-                },
-                items: einheitenAsItems,
-                width: 'half',
-              },
-              {
-                name: 'content', label: 'Inhalt', type: 'textarea', placeholder: 'Inhalt des Eintrags', validators: {
-                  onChange: z.string().min(0, { message: 'Ein Inhalt wird für den Einsatztagebucheintrag benötigt' }),
-                },
-              },
-            ],
-          },
-        ]}
-      />,
-      icon: PiPen,
-      fullWidth: false,
-      panelColor: 'primary',
-      title: `Eintrag von ${format(entry.timestamp, natoDateTime)} bearbeiten`,
-      variant: 'panel',
-    });
-  }, [openModal]);
+    setIsOpen(true);
+    setEditingEintrag(entry);
+  }, []);
 
   const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
     return [
@@ -144,7 +97,7 @@ export function EinsatztagebuchComponent() {
       },
     ];
   }, []);
-  
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <EinsatztagebuchHeaderComponent inputVisible={inputVisible} setInputVisible={setInputVisible} />
@@ -160,6 +113,82 @@ export function EinsatztagebuchComponent() {
           </div>
         </div>
       </div>
+      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
+        {editingEintrag && <FormLayout<EinsatztagebuchEintrag> formik={{
+          initialValues: {
+            ...editingEintrag,
+            absender: einheiten.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
+            empfaenger: einheiten.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
+          },
+          onSubmit: async (data) => {
+            await createEinsatztagebuchEintrag.mutateAsync({
+              ...data,
+              absender: einheiten.data?.find(e => e.id === data.absender)?.funkrufname ?? data.absender,
+              empfaenger: einheiten.data?.find(e => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
+            });
+            await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?.id });
+            setIsOpen(false);
+            setEditingEintrag(null);
+          },
+        }}>
+          <InputWrapper label="Absender" name="absender">
+            <Select name="absender" />
+          </InputWrapper>
+          <InputWrapper label="Empfänger" name="empfaenger">
+            <Select name="empfaenger" />
+          </InputWrapper>
+          <InputWrapper label="Notiz" name="content">
+            <Input.TextArea name="content" rows={5} />
+          </InputWrapper>
+        </FormLayout>
+          // <GenericForm<EinsatztagebuchEintrag>
+          //   defaultValues={{
+          //     ...editingEintrag,
+          //     absender: einheiten.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
+          //     empfaenger: einheiten.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
+          //   }}
+          //   submitText="Eintrag ändern"
+          //   submitIcon={PiGitPullRequest}
+          //   sections={[
+          //     {
+          //       fields: [
+          //         {
+          //           name: 'absender',
+          //           label: 'Absender',
+          //           type: 'combo',
+          //           placeholder: 'Empfänger des Eintrags',
+          //           validators: {
+          //             onChange: z.string({ message: 'Ein Absender wird benötigt' }).min(0),
+          //           },
+          //           items: einheitenAsItems,
+          //           width: 'half',
+          //         },
+          //         {
+          //           name: 'empfaenger',
+          //           label: 'Empfänger',
+          //           type: 'combo',
+          //           placeholder: 'Empfänger des Eintrags',
+          //           validators: {
+          //             onChange: z.string({ message: 'Ein Empfänger wird benötigt' }).min(0),
+          //           },
+          //           items: einheitenAsItems,
+          //           width: 'half',
+          //         },
+          //         {
+          //           name: 'content',
+          //           label: 'Inhalt',
+          //           type: 'textarea',
+          //           placeholder: 'Inhalt des Eintrags',
+          //           validators: {
+          //             onChange: z.string().min(0, { message: 'Ein Inhalt wird für den Einsatztagebucheintrag benötigt' }),
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   ]}
+          // />
+        }
+      </Drawer>
     </div>
   );
 }

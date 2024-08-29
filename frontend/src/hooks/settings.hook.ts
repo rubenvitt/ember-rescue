@@ -1,10 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
-import { EinheitDto } from '../types/app/einheit.types.js';
 
 export type Settings = {
   mapboxApi: string;
-  einheiten: EinheitDto[];
 };
 
 export function useSettings() {

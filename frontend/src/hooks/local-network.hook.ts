@@ -11,7 +11,7 @@ export function useLocalServer(singleServer?: string) {
     if (!singleServer) {
       services.localNetwork.localServer.scanLocalNetworkHosts(3000).then((result: IpPortPair[]) => {
         setDevices(result);
-        console.log(result);
+        console.log('found devices on local network', { result });
       });
     }
   }, []);

@@ -1,10 +1,12 @@
 import { useRecommendedEinheiten } from '../../../hooks/einheiten/recommended-einheiten.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
+import { PiAmbulance, PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
 import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { GenericForm } from '../organisms/GenericForm.component.js';
 import { twMerge } from 'tailwind-merge';
+import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
+import { Select } from 'formik-antd';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
 
 const RecommendedEinheit: React.FC<{ einheit: any, onAdd: (id: string) => void }> = ({ einheit, onAdd }) => (
   <li>
@@ -36,7 +38,7 @@ interface Props {
 
 export function AddEinheiten({ classNameContainer }: Props) {
   const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
-  const { addEinheitToEinsatz, einheitenNichtImEinsatz, einheitenImEinsatz } = useEinheiten();
+  const { addEinheitToEinsatz, einheitenNichtImEinsatz, einheitenImEinsatz, einheiten } = useEinheiten();
   const form = useForm<{ einheit: string }>({
     onSubmit({ value }) {
       handleAddEinheit(value.einheit);
@@ -48,6 +50,18 @@ export function AddEinheiten({ classNameContainer }: Props) {
     return einheitenNichtImEinsatz?.map((einheit) => ({
       label: einheit.funkrufname,
       secondary: einheit.einheitTyp.label,
+      item: einheit,
+    }));
+  }, [einheitenNichtImEinsatz]);
+
+  const einheitenNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
+    return einheitenNichtImEinsatz?.map(einheit => ({
+      value: einheit.id,
+      searchString: einheit.funkrufname.toLowerCase() + einheit.einheitTyp.label.toLowerCase(),
+      label: <div className="flex justify-between gap-4">
+        <span className="flex-shrink-0 truncate">{einheit.funkrufname}</span>
+        <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{einheit.einheitTyp.label}</span>
+      </div>,
       item: einheit,
     }));
   }, [einheitenNichtImEinsatz]);
@@ -72,16 +86,34 @@ export function AddEinheiten({ classNameContainer }: Props) {
         }
       </div>
 
-      <GenericForm<{ einheitId: string }>
-        field={{
-          name: 'einheitId',
-          label: 'Einheit',
-          type: 'combo',
-          items: einheitenComboItems,
-        }}
-        withoutIcon={true}
-        onSubmit={form => handleAddEinheit(form.einheitId)} submitText="Disponieren" />
-
+      <FormLayout<{ einheitId: string }> type="oneLine" formik={{
+        initialValues: { einheitId: '' },
+        async onSubmit(data) {
+          await handleAddEinheit(data.einheitId);
+        },
+      }}
+                                         buttons={{
+                                           submit: {
+                                             type: 'primary',
+                                             htmlType: 'submit',
+                                             icon: <PiAmbulance />,
+                                             iconPosition: 'end',
+                                             children: 'Disponieren',
+                                           },
+                                         }}
+                                         resetOnSubmit={true}
+      >
+        <Select name="einheitId" placeholder="Einheit dem Einsatz hinzufügen" className="w-full"
+                showSearch
+          // @ts-ignore
+                spellCheck={false}
+                filterOption={(inputValue, option) => {
+                  // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
+                  const regex = new RegExp(inputValue.split('').join('.*'), 'i');
+                  return regex.test(option?.searchString);
+                }}
+                options={einheitenNichtImEinsatzItems} loading={einheiten.isLoading} />
+      </FormLayout>
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">Empfohlene Einheiten</h3>
         {empfohleneEinheiten.length > 0

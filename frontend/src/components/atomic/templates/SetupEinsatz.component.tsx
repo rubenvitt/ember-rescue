@@ -4,7 +4,6 @@ import { SetupEinsatzOffeneEinsaetze } from '../molecules/setup-einsatz/OffeneEi
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { NewSetupEinsatzForm } from '../molecules/setup-einsatz/Form.component.js';
 
-
 export const SetupEinsatzTemplate: React.FC = () => {
   const { offeneEinsaetze } = useEinsatz();
   const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.length > 0, [offeneEinsaetze.data]);

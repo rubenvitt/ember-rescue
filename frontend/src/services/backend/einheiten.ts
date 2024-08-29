@@ -5,9 +5,11 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryKey = 'einheiten';
 
-export type PatchEinheitenType = (Omit<EinheitDto, '_count' | 'status' | 'einheitTyp' | 'id'> & Partial<Pick<EinheitDto, 'id'>> & {
+export type PatchEinheitType = (Omit<EinheitDto, '_count' | 'status' | 'einheitTyp' | 'id'> & Partial<Pick<EinheitDto, 'id'>> & {
   einheitTypId: string
-})[]
+})
+
+export type PatchEinheitenType = PatchEinheitType[]
 
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 

@@ -10,9 +10,8 @@ import dayjs from 'dayjs';
 import { PiArrowCircleUpRight } from 'react-icons/pi';
 import { FormSection } from '../../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
-import { InputWithLabel } from '../../atoms/InputWithLabel.component.js';
+import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { DatePicker, Select } from 'formik-antd';
-import { natoDateTimeAnt } from '../../../../utils/time.js';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -47,7 +46,6 @@ import { natoDateTimeAnt } from '../../../../utils/time.js';
 //       />
 //       {suggestions.length > 0 && (
 //         <ul>
-//           {/* @ts-ignore FIXME */}
 //           {suggestions.map((suggestion, index) => (
 //             <li key={index}>{suggestion.place_name}</li>
 //           ))}
@@ -117,24 +115,24 @@ export function NewSetupEinsatzForm() {
   >
     <FormSection heading="Einsatzdaten" subHeading="Grundlegende Daten zum Einsatz">
       <FormContentBox>
-        <InputWithLabel label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel">
+        <InputWrapper label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel">
           <Select name="aufnehmendesRettungsmittel" placeholder="Aufnehmendes Rettungsmittel" className="w-full"
                   showSearch
             // @ts-ignore
                   spellCheck={false}
                   filterOption={(inputValue, option) => option?.searchString.includes(inputValue.toLowerCase())}
                   options={einheitenItems} loading={einheiten.isLoading} />
-        </InputWithLabel>
+        </InputWrapper>
       </FormContentBox>
     </FormSection>
 
     <FormSection heading="Alarmierung" subHeading="Informationen zur Alarmierung">
       <FormContentBox>
-        <InputWithLabel label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert">
-          <DatePicker className="w-full" showTime showSecond={false} format={{ format: natoDateTimeAnt }}
+        <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert">
+          <DatePicker className="w-full" showTime showSecond={false}
                       name="erstAlarmiert" />
-        </InputWithLabel>
-        <InputWithLabel label="Einsatzstichwort der Alarmierung" name="alarm">
+        </InputWrapper>
+        <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarm">
           <Select name="alarmstichwort" placeholder="Einsatzstichwort der Alarmierung" className="w-full"
                   showSearch
             // @ts-ignore
@@ -145,7 +143,7 @@ export function NewSetupEinsatzForm() {
                     return regex.test(option?.searchString);
                   }}
                   options={alarmstichworteItems} loading={alarmstichworte.isLoading} />
-        </InputWithLabel>
+        </InputWrapper>
       </FormContentBox>
     </FormSection>
   </FormLayout>;

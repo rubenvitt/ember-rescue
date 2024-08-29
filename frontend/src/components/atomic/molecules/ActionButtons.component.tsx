@@ -1,35 +1,32 @@
-import { FlexibleDialog } from './Dialog.js';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
+
+const { confirm } = Modal;
 
 export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[], item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">
     {buttons.map((button) =>
       button.dialog ? (
-        <FlexibleDialog
-          key={button.label}
-          variant="critical"
-          size="md"
-          actions={[
-            { label: button.dialog.cancelLabel },
-            {
-              onClick: () => button.dialog!.onConfirm(item),
-              label: button.dialog.confirmLabel,
-              variant: 'error',
-              primary: true,
+        <Button danger={button.danger} onClick={() => {
+          confirm({
+            title: button.dialog?.title,
+            content: button.dialog?.message,
+            okText: button.dialog?.confirmLabel,
+            cancelText: button.dialog?.cancelLabel,
+            onOk: () => button.dialog?.onConfirm(item),
+            type: 'warning',
+            closable: true,
+            maskClosable: true,
+            okButtonProps: {
+              danger: button.danger,
             },
-          ]}
-          message={button.dialog.message}
-          title={button.dialog.title}
-        >
-          {({ open }) => (
-            <Button onClick={open} type="dashed">
-              {button.label}
-            </Button>
-          )}
-        </FlexibleDialog>
+          });
+        }} type="dashed">
+          {button.label}
+        </Button>
+
       ) : (
-        <Button key={button.label} onClick={() => button.onClick(item)} type="primary">
+        <Button key={button.label} danger={button.danger} onClick={() => button.onClick(item)} type="primary">
           {button.label}
         </Button>
       ),

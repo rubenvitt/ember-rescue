@@ -32,6 +32,9 @@ export class EinheitenService {
           },
         },
       },
+      orderBy: {
+        funkrufname: 'asc',
+      },
     });
   }
 

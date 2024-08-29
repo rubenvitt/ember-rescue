@@ -1,45 +1,65 @@
-import { useState } from 'react';
-import { TextareaInput } from '../../atoms/Inputs.component.js';
-import { Button } from '../Button.component.js';
+import { useCallback } from 'react';
 import { CreateNotizDto } from '../../../../types/app/notes.types.js';
+import { Button, Card } from 'antd';
+import { Input } from 'formik-antd';
+import { PiAlarm, PiNote } from 'react-icons/pi';
+import * as Yup from 'yup';
+import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 
 type EmptyStateProps = {
   addNote: (note: CreateNotizDto) => void;
 };
 
-export function EmptyState({ addNote }: EmptyStateProps) {
-  const [content, setContent] = useState('');
+const CreateNotizSchema = Yup.object().shape({
+  content: Yup.string().required('Um etwas zu notieren, sollte eine Notiz angegeben werden.'),
+});
 
-  const handleAdd = () => {
-    if (content.trim()) {
-      addNote({
-        content,
-      });
-      setContent('');
-    }
-  };
+export function EmptyState({ addNote }: EmptyStateProps) {
+  const handleSubmit = useCallback((data: CreateNotizDto) => {
+    addNote(data);
+  }, [addNote]);
 
   return (
-    <li className="col-span-1 divide-y divide-gray-200 dark:divide-gray-800 rounded-lg bg-white dark:bg-gray-700 shadow">
-      <div className="flex w-full items-center justify-between space-x-6 p-6">
-        <TextareaInput
-          className=""
-          name="new-note"
-          value={content}
-          onBlur={() => {
-            // do nothing
-          }}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Neue Notiz anlegen"
-        />
-      </div>
-      <div className="flex w-full justify-end p-6">
-        <Button
-          onClick={handleAdd}
-        >
-          Notiz anlegen
-        </Button>
-      </div>
-    </li>
+    <FormLayout<CreateNotizDto> type="sectioned" formik={{
+      validationSchema: CreateNotizSchema,
+      initialValues: { content: '' },
+      onSubmit: (data) => handleSubmit(data),
+    }}>
+      {(props) => (
+        <Card classNames={{
+          actions: 'bg-green-500',
+        }} actions={[
+          <div className="flex gap-x-4 justify-center">
+            <Button
+              icon={<PiNote />}
+              type="primary"
+              onClick={() => {
+                props.handleSubmit();
+              }}
+            >
+              Notiz anlegen
+            </Button>,
+            <Button
+              icon={<PiAlarm />}
+              onClick={() => props.handleSubmit()}
+            >
+              Erinnerung anlegen
+            </Button>
+          </div>,
+        ]}>
+          <InputWrapper name={'content'}>
+            <Input.TextArea
+              name="content"
+              rows={5}
+              onBlur={() => {
+                // do nothing
+              }}
+              placeholder="Inhalt der Notiz oder Erinnerung"
+            />
+          </InputWrapper>
+        </Card>
+      )}
+    </FormLayout>
   );
 }

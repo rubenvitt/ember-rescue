@@ -1,5 +1,4 @@
 import { gridItemStyles } from '../../../styles/dynamicGrid.styles.ts';
-import { ItemType } from './Combobox.component.js';
 import { Fragment, ReactNode, useMemo } from 'react';
 import { Identifiable } from '../../../types/utils/common.types.js';
 
@@ -8,12 +7,12 @@ export function DynamicGrid<T extends Identifiable>({
                                                       render,
                                                       columns = 3,
                                                     }: {
-  items?: ItemType<T>[];
+  items?: T[];
   render: (item: T, className: string) => ReactNode;
   columns?: number;
 }) {
   const renderItems = useMemo(() => {
-    return items.map((itemWrapper, index) => {
+    return items.map((item, index) => {
       const isLastItem = index === items.length - 1;
       const remainingItems = items.length % columns;
 
@@ -28,8 +27,8 @@ export function DynamicGrid<T extends Identifiable>({
       const className = gridItemStyles({ span });
 
       return (
-        <Fragment key={itemWrapper.item.id}>
-          {render(itemWrapper.item, className)}
+        <Fragment key={item.id}>
+          {render(item, className)}
         </Fragment>
       );
     });
@@ -38,8 +37,8 @@ export function DynamicGrid<T extends Identifiable>({
   // noinspection com.intellij.reactbuddy.ArrayToJSXMapInspection
   return (
     <div
-      className={`grid gap-4 auto-rows-auto justify-items-center`}
-      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      className={`grid gap-4 auto-rows-auto justify-items-center
+              grid-cols-1 md:grid-cols-${columns}`}
     >
       {renderItems}
     </div>

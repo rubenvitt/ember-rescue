@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import { natoDateTime } from '../../../utils/time.js';
 import { twMerge } from 'tailwind-merge';
 
+// TODO[ant-design](rubeen, 26.08.24): implement with real data
+
 const people = [
   {
     name: 'Leslie Alexander',
@@ -65,6 +67,7 @@ const people = [
   },
 ];
 
+// TODO[ant-design](rubeen, 26.08.24): use ant dataList
 export function BetroffeneList() {
   return (
     <ul
