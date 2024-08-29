@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { formatDate, formatDistanceToNow, formatISO } from 'date-fns';
-import { natoDateTime } from '../../../utils/time.js';
+import { formatDistanceToNow, formatISO } from 'date-fns';
+import { formatNatoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
@@ -31,7 +31,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
           <p>
             Beginn:{' '}
             <time dateTime={formatISO(einsatz.beginn)}>
-              {formatDate(einsatz.beginn, natoDateTime)}
+              {formatNatoDateTime(einsatz.beginn)}
             </time>
             {' '}
             (Laufzeit bisher: {beginnToNow})
@@ -56,7 +56,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
   const actionButtons: ActionButton<Einsatz>[] = useMemo(() => [
     {
       label: 'Archivieren',
-      color: 'red',
+      danger: true,
       dialog: {
         title: 'Laufenden Einsatz wirklich archivieren?',
         message: 'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',

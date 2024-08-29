@@ -1,7 +1,6 @@
 export default function storage() {
 
   function readLocalStorage<T>(key: string): T | null {
-    console.debug('Reading from local storage:', key);
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) as T : null;
   }

@@ -1,29 +1,10 @@
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
-import { ArrowLeftIcon } from '@heroicons/react/16/solid/index.js';
-import { PrestartSettings } from '../../components/atomic/organisms/PrestartSettings.component.js';
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { SettingsTemplate } from '../../components/atomic/templates/Settings.component.js';
 
 export const Route = createLazyFileRoute('/prestart/settings')({
   component: () => <Settings />,
 });
 
 export function Settings() {
-  const navigate = useNavigate({ from: '/prestart/settings' });
-  return <div>
-    <div className="absolute top-4 left-4">
-      <button
-        onClick={() => {
-          navigate({
-            to: '/signin',
-          });
-        }}
-        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        aria-label="Zurück"
-      >
-        <ArrowLeftIcon className="h-6 w-6" aria-hidden="true" />
-      </button>
-    </div>
-    <div className="mt-12 px-6">
-      <PrestartSettings />
-    </div>
-  </div>;
+  return <SettingsTemplate />;
 }

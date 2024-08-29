@@ -15,7 +15,7 @@ import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
 import { RescueControl } from './mapbox/Controls.js';
-import { Button } from '../molecules/Button.component.tsx';
+import { Button } from 'antd';
 
 interface Props {
   mapboxToken: string;
@@ -115,7 +115,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
         {einheitenImEinsatz.data?.map(einheit => (
           <Button
             key={einheit.id}
-            intent="outline"
+            type="link"
             className="break-keep"
             onClick={() => {
               let presentMarker = map?._markers?.find((m) => m.getElement().id === `einheit-${einheit.funkrufname}`);

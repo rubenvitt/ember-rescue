@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { PiGear, PiSecurityCamera } from 'react-icons/pi';
+import { PiGear, PiSecurityCamera, PiSkipBack } from 'react-icons/pi';
 import { cva } from 'class-variance-authority';
 import { useWindowSetup } from '../../../hooks/window.hook.ts';
 import { WindowOptions } from '../../../utils/window.js';
-import { useModal } from '../../../hooks/modal.hook.js';
-import { GenericForm } from './GenericForm.component.js';
 import storage from '../../../utils/storage.js';
-import { Button, Image } from 'antd';
+import { Button, Image, Modal } from 'antd';
 import { LoginForm } from '../molecules/LoginForm.component.tsx';
+import { FormLayout } from './form/FormLayout.comonent.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { Input } from 'formik-antd';
 
 
 export const SignIn: React.FC = () => {
@@ -16,54 +17,25 @@ export const SignIn: React.FC = () => {
 
     useWindowSetup(WindowOptions.main);
     const navigateToSettings = useCallback(() => navigate({ to: '/prestart/settings' }), [navigate]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const password = useRef<HTMLInputElement | null>(null);
 
-    const { closeModal, openModal, isOpen } = useModal();
+    const handleRequestAccessToken = useCallback(() => {
+      if (!isModalOpen) {
+        setIsModalOpen(true);
+        setTimeout(() => {
+          password.current?.focus();
+        }, 100);
+        storage().writeLocalStorage('backendAccessToken', null);
+      }
+    }, [setIsModalOpen]);
+
     useEffect(() => {
-      const handleRequestAccessToken = () => {
-        console.log('Request Access Token', { isOpen });
-        if (!isOpen) {
-          openModal({
-            title: 'Access Token',
-            content: <GenericForm<{ accessToken: string }>
-              onSubmit={(data) => {
-                storage().writeLocalStorage('backendAccessToken', data.accessToken);
-                closeModal();
-                window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
-              }}
-              onReset={async () => {
-                await navigateToSettings();
-                window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
-                closeModal();
-              }}
-              // FIXME: verliert bei jedem Event(?) den Fokus.
-              field={{
-                label: 'Access Token Required',
-                name: 'accessToken',
-                type: 'password',
-              }}
-              submitText={'Speichern'}
-              submitIcon={PiSecurityCamera}
-              resetText={'Abbrechen'}
-            />,
-          });
-          storage().writeLocalStorage('backendAccessToken', null);
-        }
-      };
       window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
       return () => {
         window.removeEventListener('requestAccessToken', handleRequestAccessToken);
       };
     }, []);
-
-    // TODO[ant-design](rubeen, 15.08.24): remove this code
-    // const formSubmit = useCallback(({ value }: { value: { bearbeiter: Bearbeiter | CreateBearbeiter } }) =>
-    //     saveBearbeiter(value.bearbeiter).then(() => openApp({ closeOnNavigate: true })),
-    //   [saveBearbeiter, navigate]);
-    //
-    // const form = useForm<{ bearbeiter: Bearbeiter | CreateBearbeiter }>({
-    //   defaultValues: { bearbeiter: { name: '', id: null } },
-    //   onSubmit: formSubmit,
-    // });
 
     return (
       <div className={cva('flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 relative')()}>
@@ -88,6 +60,39 @@ export const SignIn: React.FC = () => {
         <div className={'mt-10 sm:mx-auto sm:w-full sm:max-w-sm'}>
           <LoginForm />
         </div>
+
+        <FormLayout<{ accessToken: string }> formik={{
+          initialValues: { accessToken: '' },
+          onSubmit: (data) => {
+            storage().writeLocalStorage('backendAccessToken', data.accessToken);
+            setIsModalOpen(false);
+            window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
+          },
+          onReset: async () => {
+            await navigateToSettings();
+            window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
+            setIsModalOpen(false);
+          },
+        }}>
+          {(props) => (
+            <Modal
+              onClose={() => props.resetForm()}
+              onCancel={() => props.resetForm()}
+              okText="Speichern"
+              okButtonProps={{
+                icon: <PiSecurityCamera />,
+              }}
+              cancelButtonProps={{
+                icon: <PiSkipBack />,
+              }}
+              onOk={props.submitForm} open={isModalOpen} title="Access Token">
+              <InputWrapper name="accessToken">
+                <Input.Password ref={password} autoFocus={true} size="large" placeholder="Access Token benötigt"
+                                name="accessToken" />
+              </InputWrapper>
+            </Modal>
+          )}
+        </FormLayout>
       </div>
     )
       ;

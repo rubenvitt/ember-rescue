@@ -8,8 +8,6 @@ import { SidebarContentComponent } from './SidebarContent.component.js';
 export const MobileSidebarComponent: React.FC<MobileSidebarProps> = ({
                                                                        sidebarOpen,
                                                                        setSidebarOpen,
-                                                                       navigation,
-                                                                       contextualNavigation,
                                                                      }) => (
   <Dialog className="relative z-50 lg:hidden" open={sidebarOpen} onClose={setSidebarOpen}>
     <DialogBackdrop
@@ -38,7 +36,7 @@ export const MobileSidebarComponent: React.FC<MobileSidebarProps> = ({
             </button>
           </div>
         </TransitionChild>
-        <SidebarContentComponent navigation={navigation} contextualNavigation={contextualNavigation} />
+        <SidebarContentComponent />
       </DialogPanel>
     </div>
   </Dialog>

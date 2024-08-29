@@ -2,6 +2,8 @@ import { clsx } from 'clsx';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { PiAddressBook, PiAmbulance, PiCake, PiCheck, PiEye, PiFlag, PiMapPin, PiNote } from 'react-icons/pi';
 
+// TODO[ant-design](rubeen, 26.08.24): use real data
+
 export function BetroffeneDetail() {
   return (
     <div className="col-span-12 overflow-hidden bg-white dark:bg-gray-950/25 shadow sm:rounded-lg">

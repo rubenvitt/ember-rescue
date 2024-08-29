@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import storage from '../utils/storage.js';
-import { ContextualNavigation } from '../types/ui/nav.types.js';
 import { Einsatz } from '../types/app/einsatz.types.js';
 import { Bearbeiter } from '../types/app/bearbeiter.types.js';
 
@@ -18,9 +17,6 @@ type Store = {
     setDark: (dark: ((old: boolean) => boolean) | boolean) => void;
     setAuto: (dark?: boolean) => void;
   }
-
-  contextualNavigation?: ContextualNavigation;
-  setContextualNavigation: (contextualNavigation: ContextualNavigation | undefined) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -63,7 +59,4 @@ export const useStore = create<Store>((set, get) => ({
       }));
     },
   },
-
-
-  setContextualNavigation: (contextualNavigation) => set({ contextualNavigation }),
 }));

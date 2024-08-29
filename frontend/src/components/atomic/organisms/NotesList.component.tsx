@@ -1,26 +1,22 @@
-import { EmptyState } from '../molecules/notes/EmptyState.component.js';
-import { NotizItem } from '../molecules/notes/NotizItem.component.js';
 import { CreateNotizDto, NotizDto } from '../../../types/app/notes.types.js';
 import { useCallback } from 'react';
+import { List } from 'antd';
+import { NotesListItem } from '../molecules/notes/NotesListItem.component.js';
+import { EmptyState } from '../molecules/notes/EmptyState.component.js';
 
 interface NotesListProps {
-  notizen: NotizDto[],
+  notizen?: NotizDto[],
   addNotiz?: any
 }
 
 export function NotesList({ notizen, addNotiz }: NotesListProps) {
-
-
   const createNote = useCallback((newNote: CreateNotizDto) => {
     addNotiz?.({ content: newNote.content });
   }, [addNotiz]);
 
   return (
-    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-      {addNotiz && <EmptyState addNote={createNote} />}
-      {notizen.map((note) => (
-        <NotizItem key={note.id} notiz={note} />
-      ))}
-    </ul>
+    <>{addNotiz && <EmptyState addNote={createNote} />}
+      <List loading={!notizen} dataSource={notizen} renderItem={(item) => <NotesListItem notiz={item} />} />
+    </>
   );
 }

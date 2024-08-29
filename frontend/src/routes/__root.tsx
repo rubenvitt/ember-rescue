@@ -9,7 +9,6 @@ import { setDefaultOptions } from 'date-fns';
 import '@fontsource-variable/montserrat';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/nunito';
-import { Modal } from '../components/atomic/organisms/modal/Modal.component.js';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
@@ -24,6 +23,25 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+// turn off spellcheck for all inputs. We don't want that.
+const interception = React.createElement.bind(React);
+//@ts-ignore
+React.createElement = (...args) => {
+  const [type, props] = args;
+  if (['input', 'textarea'].includes(type)) {
+    args[1] = {
+      ...props,
+      ...{
+        autoCorrect: 'off',
+        autoCapitalize: 'off',
+        spellCheck: false,
+      },
+    };
+  }
+  // @ts-ignore
+  return interception(...args);
+};
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
   import('@tanstack/react-query-devtools/production').then((d) => ({
@@ -56,7 +74,6 @@ export const Route = createRootRoute({
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <Outlet />
-          <Modal />
           <ToastContainer />
           <ReactQueryDevtools initialIsOpen />
           <Suspense>

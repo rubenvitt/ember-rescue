@@ -1,67 +1,36 @@
 import React, { useMemo, useState } from 'react';
-import { Bars3Icon, InformationCircleIcon } from '@heroicons/react/24/outline';
-import { UserProfileDropdown } from '../molecules/UserProfileDropdown.js';
+import { Bars3Icon } from '@heroicons/react/24/outline';
+import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import { SidebarComponent } from './Sidebar.component.js';
-import { useStore } from '../../../hooks/store.hook.js';
-import {
-  PiAmbulance,
-  PiChartPie,
-  PiChecks,
-  PiFirstAid,
-  PiGauge,
-  PiMagnifyingGlass,
-  PiMapTrifold,
-  PiNotebook,
-  PiNotification,
-  PiNotificationBold,
-  PiSignOut,
-  PiSpinner,
-  PiSun,
-  PiWarningDiamond,
-  PiWrench,
-} from 'react-icons/pi';
-import { DropdownItemType } from '../molecules/GenericDropdown.component.js';
+import { PiMagnifyingGlass, PiNotification, PiNotificationBold, PiSignOut, PiSpinner, PiSun } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { CommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
-
-const mainNavigation = [
-  { name: 'Dashboard', href: '/app', icon: PiGauge },
-  { name: 'Einsatztagebuch', href: '/app/einsatztagebuch', icon: PiNotebook },
-  { name: 'Einheiten', href: '/app/einheiten', icon: PiAmbulance },
-  { name: 'Betroffene', href: '/app/betroffene', icon: PiFirstAid },
-  { name: 'Lagekarte', href: '/app/lagekarte', icon: PiMapTrifold },
-  { name: 'Einsatzdaten', href: '/app/einsatzdaten', icon: InformationCircleIcon },
-  { name: '(?) Einsatzabschnitte', href: '#', icon: PiChartPie },
-  { name: '(?) Schäden', href: '/app/schaden', icon: PiWrench },
-  { name: '(?) Gefahren', href: '/app/gefahren', icon: PiWarningDiamond },
-  { name: 'Notizen & Erinnerungen', href: '/app/notizen', icon: PiChecks },
-];
+import { useNavigate } from '@tanstack/react-router';
+import { MenuItem } from '../../../types/ui/menu.types.js';
+import { Dropdown } from 'antd';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useBearbeiter({ requireBearbeiter: true });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toggleTheme } = useTheme();
-  const { contextualNavigation } = useStore();
   const queryClient = useQueryClient();
-  const notificationCenter = useNotificationCenter()
+  const notificationCenter = useNotificationCenter();
   const unreadNotification = notificationCenter.unreadCount; // TODO implement me
+  const navigate = useNavigate();
 
-  const userNavigation = useMemo<DropdownItemType[]>(() => {
-    return [
-      { text: 'Theme wechseln', onClick: toggleTheme, icon: PiSun },
-      { text: 'Abmelden', to: '/auth/signout', icon: PiSignOut },
-    ];
-  }, []);
+  const userNavigation = useMemo<MenuItem[]>(() => [
+    { key: 'theme', label: 'Theme wechseln', onClick: () => toggleTheme(), icon: <PiSun /> },
+    { key: 'signout', label: 'Abmelden', onClick: () => navigate({ to: '/auth/signout' }), icon: <PiSignOut /> },
+  ], []);
 
   return (
     <div>
       <CommandPalette />
-      <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} navigation={mainNavigation}
-                        contextualNavigation={contextualNavigation} />
+      <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="lg:pl-72">
         <div
           className="bg-white dark:bg-gray-900/80 sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
@@ -94,24 +63,34 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
             <div className="flex items-center gap-x-4 lg:gap-x-6 text-gray-900 dark:text-gray-200">
               {(queryClient.isMutating() > 0 || queryClient.isFetching() > 0) &&
                 <PiSpinner size={14} className={queryClient.isMutating() > 0 ? 'animate-ping' : 'animate-spin'} />}
-              <button type="button"
-                      className={twMerge('-m-2.5 p-2.5 text-gray-400 hover:text-gray-500', unreadNotification && 'text-primary-500 hover:animate-none animate-ping')}>
-                <span className="sr-only">View notifications</span>
-                {
-                  unreadNotification
-                    ? <PiNotificationBold
-                      className="h-6 w-6"
-                      aria-hidden="true" />
-                    : <PiNotification className="h-6 w-6"
-                                      aria-hidden="true" />
-                }
-              </button>
+              <Dropdown menu={{
+                items: notificationCenter.notifications.map((value) => ({
+                  label: <p className={value.read ? '' : 'bg-green-400'}>{value.content.slice(0, 100)}</p>,
+                  onClick: () => {
+                    notificationCenter.markAsRead(value.id);
+                  },
+                  key: value.id,
+                })),
+              }}>
+                <button type="button"
+                        className={twMerge('-m-2.5 p-2.5 text-gray-400 hover:text-gray-500', unreadNotification && 'text-primary-500 hover:animate-none animate-ping')}>
+                  <span className="sr-only">View notifications</span>
+                  {
+                    unreadNotification
+                      ? <PiNotificationBold
+                        className="h-6 w-6"
+                        aria-hidden="true" />
+                      : <PiNotification className="h-6 w-6"
+                                        aria-hidden="true" />
+                  }
+                </button>
+              </Dropdown>
 
               {/* Separator */}
               <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
 
               {/* Profile dropdown */}
-              <UserProfileDropdown dropdownItems={userNavigation} />
+              <UserProfileMenu dropdownItems={userNavigation} />
             </div>
           </div>
         </div>
