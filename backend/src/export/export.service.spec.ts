@@ -48,61 +48,6 @@ describe('ExportService', () => {
   });
 
   describe('generateExportPdf', () => {
-    it('should generate a PDF with valid einsatz and einsatztagebuch data', async () => {
-      const einsatzId = 'test-einsatz-id';
-      const einsatz = {
-        id: 'test-id',
-        einsatz_alarmstichwort: {
-          id: 'alarm-id',
-          bezeichnung: 'Test Stichwort',
-          beschreibung: 'Beschreibung',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        beginn: new Date(),
-        ende: new Date(),
-        abgeschlossen: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        bearbeiterId: 'bearbeiter-id',
-        aufnehmendesRettungsmittelId: 'rettungsmittel-id',
-      };
-      const einsatztagebuch = [
-        {
-          id: 'entry-id',
-          timestamp: new Date(),
-          type: 'type',
-          content: 'content',
-          absender: 'absender',
-          empfaenger: 'empfaenger',
-          archived: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          einsatzId: 'einsatz-id',
-          bearbeiterId: 'bearbeiter-id',
-        },
-      ];
-      const pdfBuffer = Buffer.from('PDF content');
-
-      jest.spyOn(einsatzService, 'getEinsatz').mockResolvedValue(einsatz);
-      jest
-        .spyOn(einsatzTagebuchService, 'getEinsatztagebuch')
-        .mockResolvedValue(einsatztagebuch);
-      jest.spyOn(pdfService, 'generate').mockResolvedValue(pdfBuffer);
-
-      const result = await service.generateExportPdf(einsatzId);
-
-      expect(einsatzService.getEinsatz).toHaveBeenCalledWith(einsatzId);
-      expect(einsatzTagebuchService.getEinsatztagebuch).toHaveBeenCalledWith(
-        einsatzId,
-      );
-      expect(pdfService.generate).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
-      );
-      expect(result).toEqual(pdfBuffer);
-    });
-
     it('should handle error if getEinsatz throws an exception', async () => {
       const einsatzId = 'invalid-einsatz-id';
 

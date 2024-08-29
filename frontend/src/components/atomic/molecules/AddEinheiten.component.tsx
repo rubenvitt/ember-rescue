@@ -45,15 +45,7 @@ export function AddEinheiten({ classNameContainer }: Props) {
       form.reset();
     },
   });
-
-  const einheitenComboItems = useMemo(() => {
-    return einheitenNichtImEinsatz?.map((einheit) => ({
-      label: einheit.funkrufname,
-      secondary: einheit.einheitTyp.label,
-      item: einheit,
-    }));
-  }, [einheitenNichtImEinsatz]);
-
+  
   const einheitenNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
     return einheitenNichtImEinsatz?.map(einheit => ({
       value: einheit.id,

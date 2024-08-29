@@ -65,7 +65,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
                 <PiSpinner size={14} className={queryClient.isMutating() > 0 ? 'animate-ping' : 'animate-spin'} />}
               <Dropdown menu={{
                 items: notificationCenter.notifications.map((value) => ({
-                  label: <p className={value.read ? '' : 'bg-green-400'}>{value.content.slice(0, 100)}</p>,
+                  label: <p className={value.read ? '' : 'bg-green-400'}>{(value.content as string | undefined)?.slice(0, 100)}</p>,
                   onClick: () => {
                     notificationCenter.markAsRead(value.id);
                   },
