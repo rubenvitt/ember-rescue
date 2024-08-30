@@ -8,6 +8,7 @@ import {
   PiChecks,
   PiClock,
   PiCloud,
+  PiDrone,
   PiFadersHorizontal,
   PiFirstAid,
   PiGauge,
@@ -77,6 +78,11 @@ const tempNavigation: MenuItem[] = [
         icon: <PiCloud size={24} />,
       },
     ],
+  },
+  {
+    key: '/app/uav',
+    label: 'Drohne',
+    icon: <PiDrone size={24} />,
   },
   {
     key: '/app/einsatzdaten',
