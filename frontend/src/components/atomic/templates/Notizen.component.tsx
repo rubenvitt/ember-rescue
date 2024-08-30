@@ -1,32 +1,24 @@
 import { useNotizen } from '../../../hooks/notes.hook.js';
-import { useToggle } from '@reactuses/core';
-import { NotesList } from '../organisms/NotesList.component.js';
-import { Button } from 'antd';
-import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
+import { NotizenList } from '../organisms/NotizenList.component.js';
+import { Collapse } from 'antd';
+import { useMemo } from 'react';
+import { ItemType } from 'rc-collapse/es/interface.js';
 
 export function NotizenTemplate() {
   const { activeNotizen, createNotiz, archivedNotizen } = useNotizen();
-  const [expanded, toggleExpanded] = useToggle(false);
+
+  const items = useMemo<ItemType[]>(() => {
+    return [{
+      label: 'Abgeschlossene Notizen',
+      children: <NotizenList loading={archivedNotizen.isLoading} notizen={archivedNotizen.data} />,
+    }];
+  }, [archivedNotizen.data]);
 
   return <div>
-    <NotesList notizen={activeNotizen.data} addNotiz={createNotiz.mutate} />
+    <NotizenList loading={activeNotizen.isLoading} notizen={activeNotizen.data} addNotiz={createNotiz.mutate} />
     {archivedNotizen.data && archivedNotizen.data.length > 0 && (
-      <div className="mt-8 flex flex-col gap-8">
-        <hr />
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-between">
-            <p className="truncate">Abgeschlossene Notizen</p>
-            <Button
-              type="text"
-              shape="circle"
-              icon={expanded ? <PiCaretUp /> : <PiCaretDown />}
-              onClick={toggleExpanded}
-            />
-          </div>
-          {expanded && <NotesList notizen={archivedNotizen.data} />}
-        </div>
-      </div>)
-    }
+      <Collapse className="mt-8 flex flex-col gap-8" items={items} />
+    )}
   </div>;
 
 }

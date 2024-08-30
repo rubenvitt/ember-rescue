@@ -39,7 +39,7 @@ export function EmptyState({ addNote }: EmptyStateProps) {
               }}
             >
               Notiz anlegen
-            </Button>,
+            </Button>
             <Button
               icon={<PiAlarm />}
               onClick={() => props.handleSubmit()}

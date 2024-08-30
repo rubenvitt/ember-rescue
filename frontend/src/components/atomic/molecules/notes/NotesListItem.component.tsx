@@ -7,6 +7,7 @@ import { Input } from 'formik-antd';
 import { Bounce, toast } from 'react-toastify';
 import { twConfig } from '../../../../styles/tailwindcss.styles.js';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
+import { formatNatoDateTime } from '../../../../utils/time.js';
 
 interface Props {
   notiz: NotizDto;
@@ -16,9 +17,7 @@ interface _NotesListItemProps {
   props?: FormikProps<{ content: string }>;
 }
 
-// FIXME[ant-design](rubeen, 27.08.24): beim Schreiben verliert das Fenster irgendwo den Fokus.
-
-export function NotesListItem({ notiz }: Props) {
+export function NotizenListItem({ notiz }: Props) {
   const [isEdit, setIsEdit] = useState(false);
   const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
 
@@ -87,7 +86,12 @@ export function NotesListItem({ notiz }: Props) {
     >
       <div className="w-full">
         <List.Item.Meta
-          title={notiz.bearbeiter.name}
+          title={<p>
+            <span>{notiz.bearbeiter.name}</span>
+            <span className="text-gray-500"> (erstellt: {formatNatoDateTime(notiz.createdAt)})</span>
+            {notiz.doneAt &&
+              <span className="text-primary-500/50"> (abgeschlossen: {formatNatoDateTime(notiz.doneAt)})</span>}
+          </p>}
         />
         {isEdit ? <Input.TextArea rows={4} name="content" /> : <p className="whitespace-pre-line">{notiz.content}</p>}
       </div>
