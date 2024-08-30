@@ -22,6 +22,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { ExportModule } from './export/export.module';
 import { PdfModule } from './pdf/pdf.module';
 import { NotizenModule } from './notizen/notizen.module';
+import { RemindersModule } from './reminders/reminders.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { NotizenModule } from './notizen/notizen.module';
     ExportModule,
     PdfModule,
     NotizenModule,
+    RemindersModule,
   ],
   controllers: [AppController],
   providers: [

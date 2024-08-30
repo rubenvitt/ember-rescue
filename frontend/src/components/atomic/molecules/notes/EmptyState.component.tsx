@@ -43,6 +43,7 @@ export function EmptyState({ addNote }: EmptyStateProps) {
             <Button
               icon={<PiAlarm />}
               onClick={() => props.handleSubmit()}
+              disabled
             >
               Erinnerung anlegen
             </Button>

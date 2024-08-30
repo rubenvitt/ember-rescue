@@ -17,6 +17,7 @@ model Bearbeiter {
   einsatz                 Einsatz[]
   einsatztagebuch_eintrag EinsatztagebuchEintrag[]
   Notizen                 Notiz[]
+  Reminder                Reminder[]
 
   @@map("bearbeiter")
 }
@@ -83,6 +84,7 @@ model Einsatz {
   einsatztagebuch_eintrag      EinsatztagebuchEintrag[]
   einsatz_alarmstichwort       EinsatzOnAlarmstichwort[]
   Notiz                        Notiz[]
+  Reminder                     Reminder[]
 
   @@map("einsaetze")
 }
@@ -234,7 +236,6 @@ model Secret {
 model Notiz {
   id           String     @id() @default(cuid())
   content      String
-  reminder     DateTime?
   doneAt       DateTime?
   deletedAt    DateTime?
   createdAt    DateTime   @default(now())
@@ -243,6 +244,23 @@ model Notiz {
   bearbeiter   Bearbeiter @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einsatzId    String
   einsatz      Einsatz    @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reminderId   String?
+  reminder     Reminder[]
 
   @@map("notizen")
+}
+
+model Reminder {
+  id                String      @id() @default(cuid())
+  reminderTimestamp DateTime
+  notified          DateTime?
+  read              DateTime?
+  einsatzId         String
+  einsatz           Einsatz     @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  bearbeiterId      String?
+  bearbeiter        Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  noteId            String
+  note              Notiz       @relation(fields: [noteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("reminders")
 }

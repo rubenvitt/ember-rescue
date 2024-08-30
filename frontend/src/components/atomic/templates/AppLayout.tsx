@@ -12,6 +12,7 @@ import { useNotificationCenter } from 'react-toastify/addons/use-notification-ce
 import { useNavigate } from '@tanstack/react-router';
 import { MenuItem } from '../../../types/ui/menu.types.js';
 import { Dropdown } from 'antd';
+import { useReminders } from '../../../hooks/reminders.hook.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useBearbeiter({ requireBearbeiter: true });
@@ -21,6 +22,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const notificationCenter = useNotificationCenter();
   const unreadNotification = notificationCenter.unreadCount; // TODO implement me
   const navigate = useNavigate();
+  useReminders();
 
   const userNavigation = useMemo<MenuItem[]>(() => [
     { key: 'theme', label: 'Theme wechseln', onClick: () => toggleTheme(), icon: <PiSun /> },
@@ -65,7 +67,8 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
                 <PiSpinner size={14} className={queryClient.isMutating() > 0 ? 'animate-ping' : 'animate-spin'} />}
               <Dropdown menu={{
                 items: notificationCenter.notifications.map((value) => ({
-                  label: <p className={value.read ? '' : 'bg-green-400'}>{(value.content as string | undefined)?.slice(0, 100)}</p>,
+                  label: <p
+                    className={value.read ? '' : 'bg-green-400'}>{(value.content as string | undefined)?.slice(0, 100)}</p>,
                   onClick: () => {
                     notificationCenter.markAsRead(value.id);
                   },

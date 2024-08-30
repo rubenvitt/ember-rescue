@@ -2,12 +2,11 @@ import { NotizDto } from '../../../../types/app/notes.types.js';
 import { useCallback, useMemo, useState } from 'react';
 import { Formik, FormikProps } from 'formik';
 import { Button, List, Tooltip } from 'antd';
-import { PiAlarmBold, PiCheck, PiClock, PiFloppyDisk, PiPencil, PiX } from 'react-icons/pi';
+import { PiCheck, PiClock, PiFloppyDisk, PiPencil, PiX } from 'react-icons/pi';
 import { Input } from 'formik-antd';
-import { Bounce, toast } from 'react-toastify';
-import { twConfig } from '../../../../styles/tailwindcss.styles.js';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
 import { formatNatoDateTime } from '../../../../utils/time.js';
+import { useReminders } from '../../../../hooks/reminders.hook.tsx';
 
 interface Props {
   notiz: NotizDto;
@@ -20,6 +19,7 @@ interface _NotesListItemProps {
 export function NotizenListItem({ notiz }: Props) {
   const [isEdit, setIsEdit] = useState(false);
   const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
+  const { createReminder } = useReminders();
 
   function _NotesListItem({ props }: _NotesListItemProps) {
     const toggleEdit = useCallback((fixed?: boolean) => {
@@ -46,20 +46,7 @@ export function NotizenListItem({ notiz }: Props) {
         !isEdit && <Tooltip title="Erinnerung anlegen">
           <Button onClick={() => {
             // TODO[ant-design](rubeen, 27.08.24): implement this
-            toast.info(notiz.content.slice(0, 100), {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              style: { background: twConfig.theme.colors.primary['500'], color: twConfig.theme.colors.white },
-              draggable: true,
-              progress: undefined,
-              data: notiz,
-              theme: 'light',
-              transition: Bounce,
-              icon: <PiAlarmBold size={24} />,
-            });
+            createReminder.mutate({ reminderTime: new Date(), noteId: notiz.id });
           }} key="list-loadmore-more" icon={<PiClock />} />
         </Tooltip>,
         !isEdit && <Tooltip title="Abschließen">
