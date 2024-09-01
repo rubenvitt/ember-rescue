@@ -53,7 +53,7 @@ export function useReminders() {
   }, [createReminder.mutate]);
 
   const actualCreateReminder = useMemo(() => {
-    return (noteId: string, { onOk }: { onOk: () => unknown }) => {
+    return (noteId: string, props?: { onOk: () => unknown }) => {
       console.log('creating reminder');
       Modal.confirm({
         icon: <PiNote size={24} />,
@@ -74,7 +74,7 @@ export function useReminders() {
             },
             onSubmit: async (data) => {
               await submitCreateReminder(noteId, new Date(data.reminderTime));
-              onOk();
+              props?.onOk();
               Modal.destroyAll();
             },
             validationSchema: CreateReminderValidationSchema,
