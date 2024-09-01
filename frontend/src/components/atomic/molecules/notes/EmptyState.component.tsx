@@ -1,14 +1,15 @@
 import { useCallback } from 'react';
-import { CreateNotizDto } from '../../../../types/app/notes.types.js';
+import { CreateNotizDto, NotizDto } from '../../../../types/app/notes.types.js';
 import { Button, Card } from 'antd';
 import { Input } from 'formik-antd';
 import { PiAlarm, PiNote } from 'react-icons/pi';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
+import { useReminders } from '../../../../hooks/reminders.hook.js';
 
 type EmptyStateProps = {
-  addNote: (note: CreateNotizDto) => void;
+  addNote: (note: CreateNotizDto) => Promise<NotizDto> | undefined;
 };
 
 const CreateNotizSchema = Yup.object().shape({
@@ -16,14 +17,17 @@ const CreateNotizSchema = Yup.object().shape({
 });
 
 export function EmptyState({ addNote }: EmptyStateProps) {
+  const { actualCreateReminder } = useReminders();
   const handleSubmit = useCallback((data: CreateNotizDto) => {
-    addNote(data);
+    return addNote({ content: data.content })?.then((notiz) => {
+      actualCreateReminder(notiz.id);
+    });
   }, [addNote]);
 
   return (
-    <FormLayout<CreateNotizDto> type="sectioned" formik={{
+    <FormLayout<CreateNotizDto & { reminder: boolean }> type="sectioned" formik={{
       validationSchema: CreateNotizSchema,
-      initialValues: { content: '' },
+      initialValues: { content: '', reminder: false },
       onSubmit: (data) => handleSubmit(data),
     }}>
       {(props) => (
@@ -34,7 +38,8 @@ export function EmptyState({ addNote }: EmptyStateProps) {
             <Button
               icon={<PiNote />}
               type="primary"
-              onClick={() => {
+              onClick={async () => {
+                await props.setFieldValue('reminder', false);
                 props.handleSubmit();
               }}
             >
@@ -42,8 +47,10 @@ export function EmptyState({ addNote }: EmptyStateProps) {
             </Button>
             <Button
               icon={<PiAlarm />}
-              onClick={() => props.handleSubmit()}
-              disabled
+              onClick={async () => {
+                await props.setFieldValue('reminder', true);
+                props.handleSubmit();
+              }}
             >
               Erinnerung anlegen
             </Button>

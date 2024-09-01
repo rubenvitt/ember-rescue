@@ -7,13 +7,13 @@ import { useReminders } from '../../../hooks/reminders.hook.tsx';
 
 interface NotesListProps {
   notizen?: NotizDto[],
-  addNotiz?: any
+  addNotiz?: (notiz: CreateNotizDto) => Promise<NotizDto>
   loading: boolean
 }
 
 export function NotizenList({ notizen, addNotiz, loading }: NotesListProps) {
   const createNote = useCallback((newNote: CreateNotizDto) => {
-    addNotiz?.({ content: newNote.content });
+    return addNotiz?.({ content: newNote.content });
   }, [addNotiz]);
 
   const { dueReminders } = useReminders();
