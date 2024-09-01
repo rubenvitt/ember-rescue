@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import { useReminders } from '../../../../hooks/reminders.hook.js';
+import { FormikHelpers } from 'formik/dist/types.js';
 
 type EmptyStateProps = {
   addNote: (note: CreateNotizDto) => Promise<NotizDto> | undefined;
@@ -18,17 +19,22 @@ const CreateNotizSchema = Yup.object().shape({
 
 export function EmptyState({ addNote }: EmptyStateProps) {
   const { actualCreateReminder } = useReminders();
-  const handleSubmit = useCallback((data: CreateNotizDto) => {
-    return addNote({ content: data.content })?.then((notiz) => {
-      actualCreateReminder(notiz.id);
+  const handleSubmit = useCallback(async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
+    await addNote({ content: data.content })?.then((notiz) => {
+      if (data.reminder) {
+        actualCreateReminder(notiz.id, {
+          onOk: formik.resetForm,
+        });
+      }
     });
-  }, [addNote]);
+  }, [addNote, actualCreateReminder]);
 
   return (
     <FormLayout<CreateNotizDto & { reminder: boolean }> type="sectioned" formik={{
       validationSchema: CreateNotizSchema,
+      validateOnChange: false,
       initialValues: { content: '', reminder: false },
-      onSubmit: (data) => handleSubmit(data),
+      onSubmit: (data, formikHelpers) => handleSubmit(data, formikHelpers),
     }}>
       {(props) => (
         <Card classNames={{

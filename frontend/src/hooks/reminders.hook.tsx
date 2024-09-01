@@ -49,11 +49,11 @@ export function useReminders() {
   });
   const { activeNotizen } = useNotizen();
   const submitCreateReminder = useCallback((noteId: string, reminderTime: Date) => {
-    createReminder.mutate({ reminderTime, noteId });
+    return createReminder.mutateAsync({ reminderTime, noteId });
   }, [createReminder.mutate]);
 
   const actualCreateReminder = useMemo(() => {
-    return (noteId: string) => {
+    return (noteId: string, { onOk }: { onOk: () => unknown }) => {
       console.log('creating reminder');
       Modal.confirm({
         icon: <PiNote size={24} />,
@@ -72,8 +72,9 @@ export function useReminders() {
             initialValues: {
               reminderTime: addMinutes(new Date(), 10).toISOString(),
             },
-            onSubmit: (data) => {
-              submitCreateReminder(noteId, new Date(data.reminderTime));
+            onSubmit: async (data) => {
+              await submitCreateReminder(noteId, new Date(data.reminderTime));
+              onOk();
               Modal.destroyAll();
             },
             validationSchema: CreateReminderValidationSchema,
