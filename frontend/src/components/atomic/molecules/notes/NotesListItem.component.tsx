@@ -19,7 +19,7 @@ interface _NotesListItemProps {
 export function NotizenListItem({ notiz }: Props) {
   const [isEdit, setIsEdit] = useState(false);
   const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
-  const { createReminder } = useReminders();
+  const { actualCreateReminder } = useReminders();
 
   function _NotesListItem({ props }: _NotesListItemProps) {
     const toggleEdit = useCallback((fixed?: boolean) => {
@@ -45,8 +45,7 @@ export function NotizenListItem({ notiz }: Props) {
         </Tooltip>,
         !isEdit && <Tooltip title="Erinnerung anlegen">
           <Button onClick={() => {
-            // TODO[ant-design](rubeen, 27.08.24): implement this
-            createReminder.mutate({ reminderTime: new Date(), noteId: notiz.id });
+            actualCreateReminder(notiz.id);
           }} key="list-loadmore-more" icon={<PiClock />} />
         </Tooltip>,
         !isEdit && <Tooltip title="Abschließen">

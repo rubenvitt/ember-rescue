@@ -22,6 +22,8 @@ const CreateEtbShema = Yup.object().shape({
   content: Yup.string().required('Ein Eintrag benötigt eine Nachricht'),
 });
 
+// TODO[main](rubeen, 01.09.24): Lagemeldungen sollten möglich sein - eventuell mit einer Checkbox `isLagemeldung`?
+//  oder type: 'lagemeldung' ein bisschen erweiterbarer.
 export function EinsatztagebuchForm({ closeForm }: Props) {
   const { createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const { einsatz } = useEinsatz();

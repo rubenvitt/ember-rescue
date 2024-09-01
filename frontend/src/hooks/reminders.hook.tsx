@@ -2,11 +2,25 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEinsatz } from './einsatz.hook.js';
 import { ReminderDto } from '../types/app/reminders.types.js';
 import { services } from '../services/index.js';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useNotizen } from './notes.hook.js';
 import { Bounce, toast } from 'react-toastify';
 import { twConfig } from '../styles/tailwindcss.styles.js';
-import { PiAlarmBold } from 'react-icons/pi';
+import { PiAlarmBold, PiNote } from 'react-icons/pi';
+import { Button, Modal } from 'antd';
+import { FormLayout } from '../components/atomic/organisms/form/FormLayout.comonent.js';
+import { InputWrapper } from '../components/atomic/atoms/InputWrapper.component.js';
+import { DatePicker } from 'formik-antd';
+import { addDays, addMinutes } from 'date-fns';
+import dayjs from 'dayjs';
+import { natoDateTimeAnt } from '../utils/time.js';
+import * as Yup from 'yup';
+
+const CreateReminderValidationSchema = Yup.object().shape({
+  reminderTime: Yup.date().required()
+    .min(addMinutes(new Date(), 1), 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen')
+    .max(addDays(new Date(), 1), 'Die Erinnerungszeit ist nicht plausibel'),
+});
 
 export function useReminders() {
   const queryClient = useQueryClient();
@@ -34,6 +48,49 @@ export function useReminders() {
     onSuccess: services.backend.reminders.invalidateQueries(queryClient),
   });
   const { activeNotizen } = useNotizen();
+  const submitCreateReminder = useCallback((noteId: string, reminderTime: Date) => {
+    createReminder.mutate({ reminderTime, noteId });
+  }, [createReminder.mutate]);
+
+  const actualCreateReminder = useMemo(() => {
+    return (noteId: string) => {
+      console.log('creating reminder');
+      Modal.confirm({
+        icon: <PiNote size={24} />,
+        okButtonProps: {
+          className: 'hidden',
+        },
+        cancelButtonProps: {
+          className: 'hidden',
+        },
+        type: 'confirm',
+        maskClosable: true,
+        closable: true,
+        content: <div>
+          <h2 className="font-bold">Zeitpunkt der Erinnerung</h2>
+          <FormLayout<{ reminderTime: string }> form={{ className: 'block mt-2' }} formik={{
+            initialValues: {
+              reminderTime: addMinutes(new Date(), 10).toISOString(),
+            },
+            onSubmit: (data) => {
+              submitCreateReminder(noteId, new Date(data.reminderTime));
+              Modal.destroyAll();
+            },
+            validationSchema: CreateReminderValidationSchema,
+          }}>
+            {(props) => (<>
+              <InputWrapper name="reminderTime">
+                <DatePicker showTime format={natoDateTimeAnt} showSecond={false}
+                            maxDate={dayjs(addDays(new Date(), 1).toISOString())}
+                            minDate={dayjs(addMinutes(new Date(), 1).toISOString())} name="reminderTime" />
+              </InputWrapper>
+              <Button type="primary" htmlType="submit" onClick={() => props.submitForm()}>Erinnerung erstellen</Button>
+            </>)}
+          </FormLayout>
+        </div>,
+      });
+    };
+  }, []);
 
   useEffect(() => {
     const relevantNotes = dueReminders.data?.map((reminder) => ({
@@ -66,7 +123,7 @@ export function useReminders() {
           },
         });
       });
-      new Audio("/sounds/notification.mp3").play()
+      new Audio('/sounds/notification.mp3').play();
     }
   }, [dueReminders.data]);
 
@@ -75,5 +132,6 @@ export function useReminders() {
     markAsNotified,
     markAsRead,
     createReminder,
+    actualCreateReminder,
   };
 }
