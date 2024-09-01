@@ -243,17 +243,17 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   }, [mouseLngLat]);
 
   return <>
-    <div className="rounded-xl bg-white mapboxgl-ctrl p-2">
+    <div className="rounded-xl bg-white dark:bg-gray-900 mapboxgl-ctrl p-2">
       <h3 className="font-bold">Positionierung</h3>
       <p><PiMouse size={16} className="inline" />: {mouseCoordinates}</p>
       <p><PiMapPin size={16} className="inline" />: {centerCoordinates}</p>
     </div>
 
-    <div className="rounded bg-white mapboxgl-ctrl">
+    <div className="rounded bg-white dark:bg-gray-900 mapboxgl-ctrl">
       <IconComponent />
     </div>
 
-    <div className="rounded bg-white mapboxgl-ctrl">
+    <div className="rounded bg-white dark:bg-gray-900 mapboxgl-ctrl">
       <AddEinheitComponent />
     </div>
   </>;

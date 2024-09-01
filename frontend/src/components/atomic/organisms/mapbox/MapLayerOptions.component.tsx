@@ -170,7 +170,7 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
     <QueryClientProvider client={queryClient}>
       <Tooltip title="Map Layer umschalten">
         <Dropdown menu={{ items }}>
-          <div className="rounded bg-white mapboxgl-ctrl">
+          <div className="rounded bg-white dark:bg-gray-900 mapboxgl-ctrl">
             <button
               onClick={(e) => {
                 e.preventDefault();
