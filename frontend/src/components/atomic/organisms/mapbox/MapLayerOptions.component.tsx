@@ -134,12 +134,14 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
 
   useEffect(() => {
     setMap(map);
-    Object.keys(layerConfigurations).forEach(key => {
-      const sourceId = `${key}-source`;
-      const config = layerConfigurations[key as keyof typeof layerConfigurations];
-      if (!map.getSource(sourceId)) {
-        map.addSource(sourceId, config.source);
-      }
+    map.on('load', () => {
+      Object.keys(layerConfigurations).forEach(key => {
+        const sourceId = `${key}-source`;
+        const config = layerConfigurations[key as keyof typeof layerConfigurations];
+        if (!map.getSource(sourceId)) {
+          map.addSource(sourceId, config.source);
+        }
+      });
     });
   }, [map]);
 
@@ -161,7 +163,7 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
       Object.keys(layerConfigurations).forEach(key => removeLayer(map, key as keyof typeof layerConfigurations));
       setActiveLayer('');
     },
-    label: 'Remove all layers'
+    label: 'Remove all layers',
   });
 
   return (
