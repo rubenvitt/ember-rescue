@@ -14,7 +14,7 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
-import { RescueControl } from './mapbox/Controls.js';
+import { LayersControl, RescueControl } from './mapbox/Controls.js';
 import { Button } from 'antd';
 
 interface Props {
@@ -60,9 +60,30 @@ function _MapboxComponent({ mapboxToken }: Props) {
       countries: 'de',
       collapsed: true,
     });
+    const layerControl = new LayersControl();
     const stylesControl = new StylesControl({
       styles: [
         { styleName: 'Outdoor', styleUrl: 'mapbox://styles/mapbox/outdoors-v12', label: 'Outdoor' },
+        {
+          styleName: 'OSM | Basemap',
+          styleUrl: 'https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_col.json',
+          label: 'Basemap',
+        },
+        {
+          styleName: 'OSM | Basemap Topo',
+          styleUrl: 'https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_top.json',
+          label: 'OSM | Basemap Topo',
+        },
+        {
+          styleName: 'OSM | Basemap Beta Binär',
+          styleUrl: 'https://basemap.de/data/produkte/web_vektor/styles/bm_web_bin.json',
+          label: 'OSM | Basemap Beta Binär',
+        },
+        {
+          styleName: 'OSM | Basemap Beta Night',
+          styleUrl: 'https://basemap.de/data/produkte/web_vektor/styles/bm_web_drk.json',
+          label: 'OSM | Basemap Beta Night',
+        },
         { styleName: 'Standard', styleUrl: 'mapbox://styles/mapbox/standard', label: 'Standard' },
         { styleName: 'Straßen', styleUrl: 'mapbox://styles/mapbox/streets-v12', label: 'Straßen' },
         { styleName: 'Dark', styleUrl: 'mapbox://styles/mapbox/dark-v11', label: 'Dark' },
@@ -79,6 +100,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
     map.addControl(zoomControl, 'bottom-right');
     // @ts-ignore
     map.addControl(stylesControl, 'bottom-left');
+    map.addControl(layerControl, 'bottom-left');
 
     map.addControl(new RescueControl());
 

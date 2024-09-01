@@ -13,8 +13,9 @@ import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
 import { EinheitDto } from '../../../../types/app/einheit.types.js';
+import { MapLayerOptions } from './MapLayerOptions.component.tsx';
 
-const useMapStore = create<{
+export const useMapStore = create<{
   map?: Map,
   setMap: (map: Map) => void,
   markerPerEinheit: { [einheitId: string]: Marker }
@@ -258,6 +259,7 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   </>;
 };
 
+
 export class RescueControl implements IControl {
   getDefaultPosition?: () => 'top-right';
   private container: HTMLElement | null = null;
@@ -280,4 +282,25 @@ export class RescueControl implements IControl {
     }
     this.container = null;
   };
+}
+
+export class LayersControl implements IControl {
+  getDefaultPosition?: () => 'bottom-left';
+  private container: HTMLElement | null = null;
+
+  onRemove(): void {
+    if (this.container && this.container.parentNode) {
+      this.container.parentNode.removeChild(this.container);
+    }
+    this.container = null;
+  }
+
+  onAdd(map: Map): HTMLElement {
+    this.container = document.createElement('div');
+    const root = createRoot(this.container);
+
+    root.render(<MapLayerOptions map={map} />);
+
+    return this.container;
+  }
 }
