@@ -23,11 +23,13 @@ import { ExportModule } from './export/export.module';
 import { PdfModule } from './pdf/pdf.module';
 import { NotizenModule } from './notizen/notizen.module';
 import { RemindersModule } from './reminders/reminders.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     DatabaseModule,
     BearbeiterModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
