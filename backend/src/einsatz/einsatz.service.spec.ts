@@ -190,7 +190,7 @@ describe('EinsatzService', () => {
       type: 'LAGE', // Adjust if 'LAGE' is from an enum or other source
       content: 'Das Alarmstichwort wurde angepasst zu: New Test',
       absender: 'TestFunk',
-      empfaenger: 'ETB',
+      empfaenger: 'TestFunk',
     });
     expect(prismaService.einsatz.update).toHaveBeenCalledWith({
       where: { id: einsatzId },

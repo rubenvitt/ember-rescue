@@ -110,7 +110,7 @@ export class EinsatzService {
         type: EinsatztagebuchEintragEnum.LAGE,
         content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort.bezeichnung}`,
         absender: aufnehmendesRettungsmittel.funkrufname,
-        empfaenger: 'ETB',
+        empfaenger: aufnehmendesRettungsmittel.funkrufname,
       });
       return this.prismaService.einsatz.update({
         where: { id: einsatzId },
