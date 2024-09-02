@@ -46,7 +46,7 @@ export function EinsatztagebuchComponent() {
             <>
               <span>{timestampAsNato}</span>
               {createdAsNato !== timestampAsNato && (<>
-                  <span className="block text-gray-400 dark:text-gray-600 text-xs">erstellt: {createdAsNato}</span>
+                  <span className="block text-gray-400 dark:text-gray-200/65 text-xs">erstellt: {createdAsNato}</span>
                 </>
               )}
               {record.archived && (<>
@@ -65,8 +65,8 @@ export function EinsatztagebuchComponent() {
         key: 'content',
         width: 500,
         render: (value, record) => <span className={twMerge(
-          record.type !== 'USER' && 'text-gray-400 dark:text-gray-600',
-          record.archived && 'line-through decoration-red-500/75 text-gray-400 dark:text-gray-600',
+          record.type !== 'USER' && 'text-gray-400 dark:text-gray-200/65',
+          record.archived && 'line-through decoration-red-500/75 text-gray-400 dark:text-gray-200/65',
         )}>
           {value}
         </span>,

@@ -74,6 +74,7 @@ export const PrestartSettings: React.FC = () => {
           <>
             <InputWrapper name="baseUrl" label="URL zum Backend">
               <AutoComplete
+                variant='filled'
                 // @ts-ignore
                 spellCheck={false}
                 backfill={true} filterOption={true} optionFilterProp={'filter'}

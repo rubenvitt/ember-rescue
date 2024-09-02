@@ -153,7 +153,7 @@ function tempNavigation(navigate: UseNavigateResult<string>): MenuItem[] {
         {
           type: 'item',
           key: '/app/uav',
-          label: 'Drohne',
+          label: 'UAV',
           icon: <PiDrone size={24} />,
           onClick: () => navigate({ to: '/app/uav' }),
         },
