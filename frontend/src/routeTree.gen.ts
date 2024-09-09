@@ -244,25 +244,169 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexLazyRoute,
-  AppRoute: AppRoute.addChildren({
-    AppBetroffeneLazyRoute,
-    AppEinheitenLazyRoute,
-    AppEinsatzdatenLazyRoute,
-    AppEinsatztagebuchLazyRoute,
-    AppGefahrenLazyRoute,
-    AppLagekarteLazyRoute,
-    AppNotizenLazyRoute,
-    AppSchadenLazyRoute,
-    AppIndexLazyRoute,
-  }),
-  SetupEinsatzLazyRoute,
-  SigninLazyRoute,
-  AuthSignoutRoute,
-  PrestartSettingsLazyRoute,
-  AdminIndexRoute,
-})
+interface AppRouteChildren {
+  AppBetroffeneLazyRoute: typeof AppBetroffeneLazyRoute
+  AppEinheitenLazyRoute: typeof AppEinheitenLazyRoute
+  AppEinsatzdatenLazyRoute: typeof AppEinsatzdatenLazyRoute
+  AppEinsatztagebuchLazyRoute: typeof AppEinsatztagebuchLazyRoute
+  AppGefahrenLazyRoute: typeof AppGefahrenLazyRoute
+  AppLagekarteLazyRoute: typeof AppLagekarteLazyRoute
+  AppNotizenLazyRoute: typeof AppNotizenLazyRoute
+  AppSchadenLazyRoute: typeof AppSchadenLazyRoute
+  AppIndexLazyRoute: typeof AppIndexLazyRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppBetroffeneLazyRoute: AppBetroffeneLazyRoute,
+  AppEinheitenLazyRoute: AppEinheitenLazyRoute,
+  AppEinsatzdatenLazyRoute: AppEinsatzdatenLazyRoute,
+  AppEinsatztagebuchLazyRoute: AppEinsatztagebuchLazyRoute,
+  AppGefahrenLazyRoute: AppGefahrenLazyRoute,
+  AppLagekarteLazyRoute: AppLagekarteLazyRoute,
+  AppNotizenLazyRoute: AppNotizenLazyRoute,
+  AppSchadenLazyRoute: AppSchadenLazyRoute,
+  AppIndexLazyRoute: AppIndexLazyRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
+  '/app': typeof AppRouteWithChildren
+  '/setupEinsatz': typeof SetupEinsatzLazyRoute
+  '/signin': typeof SigninLazyRoute
+  '/auth/signout': typeof AuthSignoutRoute
+  '/app/betroffene': typeof AppBetroffeneLazyRoute
+  '/app/einheiten': typeof AppEinheitenLazyRoute
+  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
+  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/app/gefahren': typeof AppGefahrenLazyRoute
+  '/app/lagekarte': typeof AppLagekarteLazyRoute
+  '/app/notizen': typeof AppNotizenLazyRoute
+  '/app/schaden': typeof AppSchadenLazyRoute
+  '/prestart/settings': typeof PrestartSettingsLazyRoute
+  '/admin': typeof AdminIndexRoute
+  '/app/': typeof AppIndexLazyRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
+  '/setupEinsatz': typeof SetupEinsatzLazyRoute
+  '/signin': typeof SigninLazyRoute
+  '/auth/signout': typeof AuthSignoutRoute
+  '/app/betroffene': typeof AppBetroffeneLazyRoute
+  '/app/einheiten': typeof AppEinheitenLazyRoute
+  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
+  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/app/gefahren': typeof AppGefahrenLazyRoute
+  '/app/lagekarte': typeof AppLagekarteLazyRoute
+  '/app/notizen': typeof AppNotizenLazyRoute
+  '/app/schaden': typeof AppSchadenLazyRoute
+  '/prestart/settings': typeof PrestartSettingsLazyRoute
+  '/admin': typeof AdminIndexRoute
+  '/app': typeof AppIndexLazyRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/app': typeof AppRouteWithChildren
+  '/setupEinsatz': typeof SetupEinsatzLazyRoute
+  '/signin': typeof SigninLazyRoute
+  '/auth/signout': typeof AuthSignoutRoute
+  '/app/betroffene': typeof AppBetroffeneLazyRoute
+  '/app/einheiten': typeof AppEinheitenLazyRoute
+  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
+  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/app/gefahren': typeof AppGefahrenLazyRoute
+  '/app/lagekarte': typeof AppLagekarteLazyRoute
+  '/app/notizen': typeof AppNotizenLazyRoute
+  '/app/schaden': typeof AppSchadenLazyRoute
+  '/prestart/settings': typeof PrestartSettingsLazyRoute
+  '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexLazyRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/setupEinsatz'
+    | '/signin'
+    | '/auth/signout'
+    | '/app/betroffene'
+    | '/app/einheiten'
+    | '/app/einsatzdaten'
+    | '/app/einsatztagebuch'
+    | '/app/gefahren'
+    | '/app/lagekarte'
+    | '/app/notizen'
+    | '/app/schaden'
+    | '/prestart/settings'
+    | '/admin'
+    | '/app/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/setupEinsatz'
+    | '/signin'
+    | '/auth/signout'
+    | '/app/betroffene'
+    | '/app/einheiten'
+    | '/app/einsatzdaten'
+    | '/app/einsatztagebuch'
+    | '/app/gefahren'
+    | '/app/lagekarte'
+    | '/app/notizen'
+    | '/app/schaden'
+    | '/prestart/settings'
+    | '/admin'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/setupEinsatz'
+    | '/signin'
+    | '/auth/signout'
+    | '/app/betroffene'
+    | '/app/einheiten'
+    | '/app/einsatzdaten'
+    | '/app/einsatztagebuch'
+    | '/app/gefahren'
+    | '/app/lagekarte'
+    | '/app/notizen'
+    | '/app/schaden'
+    | '/prestart/settings'
+    | '/admin/'
+    | '/app/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
+  AppRoute: typeof AppRouteWithChildren
+  SetupEinsatzLazyRoute: typeof SetupEinsatzLazyRoute
+  SigninLazyRoute: typeof SigninLazyRoute
+  AuthSignoutRoute: typeof AuthSignoutRoute
+  PrestartSettingsLazyRoute: typeof PrestartSettingsLazyRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  AppRoute: AppRouteWithChildren,
+  SetupEinsatzLazyRoute: SetupEinsatzLazyRoute,
+  SigninLazyRoute: SigninLazyRoute,
+  AuthSignoutRoute: AuthSignoutRoute,
+  PrestartSettingsLazyRoute: PrestartSettingsLazyRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 

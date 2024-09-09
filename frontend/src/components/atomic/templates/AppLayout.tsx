@@ -3,15 +3,15 @@ import { Bars3Icon } from '@heroicons/react/24/outline';
 import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import { SidebarComponent } from './Sidebar.component.js';
-import { PiMagnifyingGlass, PiNotification, PiNotificationBold, PiSignOut, PiSpinner, PiSun } from 'react-icons/pi';
+import { PiNotification, PiNotificationBold, PiRabbit, PiSignOut, PiSpinner, PiSun } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
-import { CommandPalette } from '../organisms/CommandPalette.component.js';
+import { CommandPalette, useCommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 import { useNavigate } from '@tanstack/react-router';
 import { MenuItem } from '../../../types/ui/menu.types.js';
-import { Dropdown } from 'antd';
+import { Button, Dropdown } from 'antd';
 import { useReminders } from '../../../hooks/reminders.hook.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
@@ -23,6 +23,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const unreadNotification = notificationCenter.unreadCount; // TODO implement me
   const navigate = useNavigate();
   useReminders();
+  const { openPalette } = useCommandPalette();
 
   const userNavigation = useMemo<MenuItem[]>(() => [
     { key: 'theme', label: 'Theme wechseln', onClick: () => toggleTheme(), icon: <PiSun /> },
@@ -47,20 +48,14 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <form className="relative flex flex-1" action="#" method="GET">
-              <label htmlFor="search-field" className="sr-only">
-                Search
-              </label>
-              <PiMagnifyingGlass
-                className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                aria-hidden="true"
-              />
-              <input
+              <Button
                 id="search-field"
-                className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm dark:bg-gray-900/80 dark:text-gray-200 dark:placeholder-gray-400"
-                placeholder="Search..."
-                type="search"
+                onClick={openPalette}
+                icon={<PiRabbit className="h-6 w-6" />}
+                type="text"
+                className="flex items-center justify-start h-full w-full bg-transparent"
                 name="search"
-              />
+              >Schnellzugriff</Button>
             </form>
             <div className="flex items-center gap-x-4 lg:gap-x-6 text-gray-900 dark:text-gray-200">
               {(queryClient.isMutating() > 0 || queryClient.isFetching() > 0) &&

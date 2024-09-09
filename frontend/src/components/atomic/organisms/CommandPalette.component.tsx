@@ -10,12 +10,14 @@ import {
   DialogPanel,
 } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { ExclamationTriangleIcon, FolderIcon, LifebuoyIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { FolderIcon, LifebuoyIcon } from '@heroicons/react/24/outline';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-
-// TODO implement with https://github.com/pacocoursey/cmdk/blob/main/website/components/cmdk/raycast.tsx
-
+import { create } from 'zustand';
+import { navigation } from '../molecules/Navigation.js';
+import { useNavigate } from '@tanstack/react-router';
+import { MenuItem } from '../../../types/ui/menu.types.js';
+import { PiEmpty } from 'react-icons/pi';
 
 const projects = [
   { id: 1, name: 'Workflow Inc. / Website Redesign', category: 'Projects', url: '#' },
@@ -33,21 +35,68 @@ const users = [
   // More users...
 ];
 
+type CommandPaletteStore = {
+  openPalette: () => void,
+  closePalette: () => void,
+  togglePalette: () => void,
+  isOpen: boolean,
+}
+
+export const useCommandPalette = create<CommandPaletteStore>((set, get) => ({
+  isOpen: false,
+  closePalette: () => set({ isOpen: false }),
+  openPalette: () => set({ isOpen: true }),
+  togglePalette: () => set({ isOpen: !get().isOpen }),
+}));
+
 export function CommandPalette() {
-  const [open, setOpen] = useState(false);
+  const { isOpen, togglePalette, closePalette } = useCommandPalette();
   const [rawQuery, setRawQuery] = useState('');
   const query = rawQuery.toLowerCase().replace(/^[#>]/, '');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const keyEvent = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        togglePalette();
       }
     };
     document.addEventListener('keydown', keyEvent);
     return () => document.removeEventListener('keydown', keyEvent);
   }, []);
+
+  const navigationItems = useMemo(() => {
+    const extractItems = (items: MenuItem[], groupName: string | undefined | ReactNode = ''): any[] => {
+      return items.flatMap((item: MenuItem) => {
+        if (!item) {
+          return undefined;
+        }
+        if (item.type === 'item') {
+          return {
+            id: item.key,
+            name: groupName ? `${groupName} / ${item.label}` : item.label,
+            onClick: item.onClick,
+          };
+        } else if ((item.type === 'submenu' || item.type === 'group') && (item.children?.length ?? 0) > 0) {
+          return extractItems(item.children ?? [], item.label);
+        } else {
+          return [];
+        }
+      }).filter(item => item);
+    };
+
+    return extractItems(navigation(navigate));
+  }, [navigate]);
+
+
+  const filteredNavigationItems =
+    rawQuery === '>'
+      ? navigationItems
+      : query === '' || rawQuery.startsWith('#')
+        ? []
+        : navigationItems.filter((item) => item.name.toLowerCase().includes(query),
+        );
 
   const filteredProjects =
     rawQuery === '#'
@@ -56,19 +105,16 @@ export function CommandPalette() {
         ? []
         : projects.filter((project) => project.name.toLowerCase().includes(query));
 
-  const filteredUsers =
-    rawQuery === '>'
-      ? users
-      : query === '' || rawQuery.startsWith('#')
-        ? []
-        : users.filter((user) => user.name.toLowerCase().includes(query));
+  const filteredUsers = query === '' || rawQuery.startsWith('#') || rawQuery.startsWith('#')
+    ? []
+    : users.filter((user) => user.name.toLowerCase().includes(query));
 
   return (
     <Dialog
       className="relative z-50"
-      open={open}
+      open={isOpen}
       onClose={() => {
-        setOpen(false);
+        closePalette();
         setRawQuery('');
       }}
     >
@@ -83,9 +129,13 @@ export function CommandPalette() {
           className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
         >
           <Combobox
-            onChange={(item: { url: Location }) => {
-              if (item) {
-                window.location = item.url;
+            onChange={(item: { url?: string; onClick?: () => void }) => {
+              if (item?.url) {
+                closePalette();
+                window.location.href = item.url;
+              } else if (item?.onClick) {
+                closePalette();
+                item.onClick();
               }
             }}
           >
@@ -103,7 +153,7 @@ export function CommandPalette() {
               />
             </div>
 
-            {(filteredProjects.length > 0 || filteredUsers.length > 0) && (
+            {(filteredProjects.length > 0 || filteredUsers.length > 0 || filteredNavigationItems.length > 0) && (
               <ComboboxOptions
                 static
                 as="ul"
@@ -148,30 +198,49 @@ export function CommandPalette() {
                     </ul>
                   </li>
                 )}
+                {filteredNavigationItems.length > 0 && (
+                  <li>
+                    <h2 className="text-xs font-semibold text-gray-900">Navigation Items</h2>
+                    <ul className="-mx-4 mt-2 text-sm text-gray-700">
+                      {filteredNavigationItems.map((item) => (
+                        <ComboboxOption
+                          as="li"
+                          key={item!!.id}
+                          value={item}
+                          className="flex cursor-default select-none items-center px-4 py-2 data-[focus]:bg-indigo-600 data-[focus]:text-white"
+                        >
+                          <span className="ml-3 flex-auto truncate">{item!!.name}</span>
+                        </ComboboxOption>
+                      ))}
+                    </ul>
+                  </li>
+                )}
               </ComboboxOptions>
             )}
 
             {rawQuery === '?' && (
               <div className="px-6 py-14 text-center text-sm sm:px-14">
                 <LifebuoyIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                <p className="mt-4 font-semibold text-gray-900">Help with searching</p>
+                <p className="mt-4 font-semibold text-gray-900">Hilfe beim Suchen</p>
                 <p className="mt-2 text-gray-500">
-                  Use this tool to quickly search for users and projects across our entire platform. You can also use
-                  the search modifiers found in the footer below to limit the results to just users or projects.
+                  Verwenden Sie dieses Tool, um schnell nach Benutzern und Projekten in unserer gesamten Plattform zu
+                  suchen. Sie können auch die Suchmodifikatoren unten im Footer verwenden, um die Ergebnisse nur auf
+                  Benutzer oder Projekte zu beschränken.
                 </p>
               </div>
             )}
 
-            {query !== '' && rawQuery !== '?' && filteredProjects.length === 0 && filteredUsers.length === 0 && (
+            {query !== '' && rawQuery !== '?' && filteredProjects.length === 0 && filteredUsers.length === 0 && filteredNavigationItems.length === 0 && (
               <div className="px-6 py-14 text-center text-sm sm:px-14">
-                <ExclamationTriangleIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                <p className="mt-4 font-semibold text-gray-900">No results found</p>
-                <p className="mt-2 text-gray-500">We couldn’t find anything with that term. Please try again.</p>
+                <PiEmpty className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
+                <p className="mt-4 font-semibold text-gray-900">Keine Ergebnisse verfügbar</p>
+                <p className="mt-2 text-gray-500">Zu diesem Suchbegriff konnte nichts gefunden werden. Bitte erneut
+                  versuchen.</p>
               </div>
             )}
 
             <div className="flex flex-wrap items-center bg-gray-50 px-4 py-2.5 text-xs text-gray-700">
-              Type{' '}
+              Tippe{' '}
               <kbd
                 className={clsx(
                   'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold sm:mx-2',
@@ -199,7 +268,7 @@ export function CommandPalette() {
               >
                 ?
               </kbd>{' '}
-              for help.
+              für Hilfe.
             </div>
           </Combobox>
         </DialogPanel>
