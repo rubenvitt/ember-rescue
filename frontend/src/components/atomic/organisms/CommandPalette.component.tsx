@@ -162,9 +162,8 @@ export function CommandPalette() {
                 <LifebuoyIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                 <p className="mt-4 font-semibold text-gray-900">Hilfe beim Suchen</p>
                 <p className="mt-2 text-gray-500">
-                  Verwenden Sie dieses Tool, um schnell nach Benutzern und Projekten in unserer gesamten Plattform zu
-                  suchen. Sie können auch die Suchmodifikatoren unten im Footer verwenden, um die Ergebnisse nur auf
-                  Benutzer oder Projekte zu beschränken.
+                  Die Command Bar hilft, um schnell in der App zu navigieren oder Dinge auszuführen.
+                  Erreichbar über den Shortcut STRG (Mac: CMD) + K.
                 </p>
               </div>
             )}
