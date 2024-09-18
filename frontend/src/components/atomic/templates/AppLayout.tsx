@@ -11,8 +11,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 import { useNavigate } from '@tanstack/react-router';
 import { MenuItem } from '../../../types/ui/menu.types.js';
-import { Button, Dropdown } from 'antd';
+import { Dropdown } from 'antd';
 import { useReminders } from '../../../hooks/reminders.hook.js';
+import { ButtonWithShortcut } from '../atoms/ButtonWithShortcut.component.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useBearbeiter({ requireBearbeiter: true });
@@ -48,14 +49,16 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <form className="relative flex flex-1" action="#" method="GET">
-              <Button
+              <ButtonWithShortcut
+                shortcut={navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘ K' : 'STRG K' /*TODO: this one is deprecated,
+                need replacement*/}
                 id="search-field"
                 onClick={openPalette}
                 icon={<PiRabbit className="h-6 w-6" />}
                 type="text"
                 className="flex items-center justify-start h-full w-full bg-transparent"
                 name="search"
-              >Schnellzugriff</Button>
+              >Schnellzugriff</ButtonWithShortcut>
             </form>
             <div className="flex items-center gap-x-4 lg:gap-x-6 text-gray-900 dark:text-gray-200">
               {(queryClient.isMutating() > 0 || queryClient.isFetching() > 0) &&
