@@ -168,7 +168,7 @@ export function CommandPalette() {
               </div>
             )}
 
-            {query !== '' && rawQuery !== '?' === 0 && filteredNavigationItems.length === 0 && /* INSERT MORE ITEMS HERE */ (
+            {query !== '' && rawQuery !== '?' && filteredNavigationItems.length === 0 && /* INSERT MORE ITEMS HERE */ (
               <div className="px-6 py-14 text-center text-sm sm:px-14">
                 <PiEmpty className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                 <p className="mt-4 font-semibold text-gray-900">Keine Ergebnisse verfügbar</p>
