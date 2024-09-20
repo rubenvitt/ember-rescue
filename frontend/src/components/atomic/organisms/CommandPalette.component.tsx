@@ -132,15 +132,13 @@ function useActions() {
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
   // @ts-ignore
-  const userItems = useMemo<CommandItem[]>(
-    () =>
-      userNavigation(navigate, toggleTheme).map((item: MenuItemType) => ({
-        id: item!.key,
-        name: item!.label,
-        icon: item!.icon,
-        onClick: item!.onClick,
-        type: 'action',
-      })),
+  const userItems = useMemo<CommandItem[]>(() => userNavigation(navigate, toggleTheme).map((item: MenuItemType) => ({
+      id: item!.key,
+      name: item!.label,
+      icon: item!.icon,
+      onClick: item!.onClick,
+      type: 'action',
+    })),
     [navigate, toggleTheme],
   );
 
@@ -201,7 +199,8 @@ export function CommandPalette() {
     <Dialog className="relative z-50" open={isOpen} onClose={closePalette}>
       <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
-        <DialogPanel className="mx-auto max-w-xl transform overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+        <DialogPanel
+          className="mx-auto max-w-xl transform overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
           <Combobox onChange={handleChange}>
             <div className="relative">
               <MagnifyingGlassIcon
