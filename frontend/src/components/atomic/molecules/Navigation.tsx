@@ -15,10 +15,20 @@ import {
   PiMapTrifold,
   PiNotebook,
   PiPlus,
+  PiSignOut,
+  PiSun,
   PiUsers,
   PiWarningDiamond,
   PiWrench,
 } from 'react-icons/pi';
+import { MenuItemType } from 'antd/lib/menu/interface.js';
+
+export function userNavigation(navigate: UseNavigateResult<string>, toggleTheme: () => unknown): MenuItemType[] {
+  return [
+    { key: 'theme', label: 'Theme wechseln', onClick: () => toggleTheme(), icon: <PiSun /> },
+    { key: 'signout', label: 'Abmelden', onClick: () => navigate({ to: '/auth/signout' }), icon: <PiSignOut /> },
+  ];
+}
 
 export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
   return [

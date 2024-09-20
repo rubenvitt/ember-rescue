@@ -3,7 +3,7 @@ import { Bars3Icon } from '@heroicons/react/24/outline';
 import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
 import { useTheme } from '../../../hooks/theme.hook.js';
 import { SidebarComponent } from './Sidebar.component.js';
-import { PiNotification, PiNotificationBold, PiRabbit, PiSignOut, PiSpinner, PiSun } from 'react-icons/pi';
+import { PiNotification, PiNotificationBold, PiRabbit, PiSpinner } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { CommandPalette, useCommandPalette } from '../organisms/CommandPalette.component.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
@@ -14,6 +14,7 @@ import { MenuItem } from '../../../types/ui/menu.types.js';
 import { Dropdown } from 'antd';
 import { useReminders } from '../../../hooks/reminders.hook.js';
 import { ButtonWithShortcut } from '../atoms/ButtonWithShortcut.component.js';
+import { userNavigation } from '../molecules/Navigation.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useBearbeiter({ requireBearbeiter: true });
@@ -26,10 +27,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useReminders();
   const { openPalette } = useCommandPalette();
 
-  const userNavigation = useMemo<MenuItem[]>(() => [
-    { key: 'theme', label: 'Theme wechseln', onClick: () => toggleTheme(), icon: <PiSun /> },
-    { key: 'signout', label: 'Abmelden', onClick: () => navigate({ to: '/auth/signout' }), icon: <PiSignOut /> },
-  ], []);
+  const userNav = useMemo<MenuItem[]>(() => userNavigation(navigate, toggleTheme), [navigate, toggleTheme]);
 
   return (
     <div>
@@ -91,7 +89,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
               <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
 
               {/* Profile dropdown */}
-              <UserProfileMenu dropdownItems={userNavigation} />
+              <UserProfileMenu dropdownItems={userNav} />
             </div>
           </div>
         </div>
