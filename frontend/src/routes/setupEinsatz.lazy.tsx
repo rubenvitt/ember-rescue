@@ -12,7 +12,6 @@ function SetupEinsatz() {
   const { einsatz } = useEinsatz();
   const navigate = useNavigate({ from: '/setupEinsatz' });
 
-
   useEffect(() => {
     console.log('Maybe navigate to app');
     if (einsatz.isFetched && einsatz.data) {
@@ -21,5 +20,5 @@ function SetupEinsatz() {
     }
   }, [navigate, einsatz.isFetched]);
 
-  return (<SetupEinsatzTemplate />);
+  return <SetupEinsatzTemplate />;
 }

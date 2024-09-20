@@ -19,49 +19,58 @@ const CreateNotizSchema = Yup.object().shape({
 
 export function EmptyState({ addNote }: EmptyStateProps) {
   const { actualCreateReminder } = useReminders();
-  const handleSubmit = useCallback(async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
-    await addNote({ content: data.content })?.then((notiz) => {
-      if (data.reminder) {
-        actualCreateReminder(notiz.id, {
-          onOk: formik.resetForm,
-        });
-      }
-    });
-  }, [addNote, actualCreateReminder]);
+  const handleSubmit = useCallback(
+    async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
+      await addNote({ content: data.content })?.then((notiz) => {
+        if (data.reminder) {
+          actualCreateReminder(notiz.id, {
+            onOk: formik.resetForm,
+          });
+        }
+      });
+    },
+    [addNote, actualCreateReminder],
+  );
 
   return (
-    <FormLayout<CreateNotizDto & { reminder: boolean }> type="sectioned" formik={{
-      validationSchema: CreateNotizSchema,
-      validateOnChange: false,
-      initialValues: { content: '', reminder: false },
-      onSubmit: (data, formikHelpers) => handleSubmit(data, formikHelpers),
-    }}>
+    <FormLayout<CreateNotizDto & { reminder: boolean }>
+      type="sectioned"
+      formik={{
+        validationSchema: CreateNotizSchema,
+        validateOnChange: false,
+        initialValues: { content: '', reminder: false },
+        onSubmit: (data, formikHelpers) => handleSubmit(data, formikHelpers),
+      }}
+    >
       {(props) => (
-        <Card classNames={{
-          actions: 'bg-green-500',
-        }} actions={[
-          <div className="flex gap-x-4 justify-center">
-            <Button
-              icon={<PiNote />}
-              type="primary"
-              onClick={async () => {
-                await props.setFieldValue('reminder', false);
-                props.handleSubmit();
-              }}
-            >
-              Notiz anlegen
-            </Button>
-            <Button
-              icon={<PiAlarm />}
-              onClick={async () => {
-                await props.setFieldValue('reminder', true);
-                props.handleSubmit();
-              }}
-            >
-              Erinnerung anlegen
-            </Button>
-          </div>,
-        ]}>
+        <Card
+          classNames={{
+            actions: 'bg-green-500',
+          }}
+          actions={[
+            <div className="flex justify-center gap-x-4">
+              <Button
+                icon={<PiNote />}
+                type="primary"
+                onClick={async () => {
+                  await props.setFieldValue('reminder', false);
+                  props.handleSubmit();
+                }}
+              >
+                Notiz anlegen
+              </Button>
+              <Button
+                icon={<PiAlarm />}
+                onClick={async () => {
+                  await props.setFieldValue('reminder', true);
+                  props.handleSubmit();
+                }}
+              >
+                Erinnerung anlegen
+              </Button>
+            </div>,
+          ]}
+        >
           <InputWrapper name={'content'}>
             <Input.TextArea
               name="content"

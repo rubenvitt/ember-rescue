@@ -37,7 +37,7 @@ export const useNotificationsStore = create<NotificationsStore>((set) => ({
   pushNotifications: {
     items: [],
     clearPushNotifications() {
-      set(state => ({
+      set((state) => ({
         pushNotifications: {
           items: [],
           clearPushNotifications: state.pushNotifications.clearPushNotifications,

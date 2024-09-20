@@ -4,13 +4,13 @@ import { ExpandIcon } from '../atoms/ExpandIcon.component.js';
 import { ExpandableListItemProps } from '../../../types/ui/expandableList.types.ts';
 import { useCallback, useState } from 'react';
 
-export const ExpandableListItem = <T, >({
-                                          item,
-                                          renderContent,
-                                          renderExpandedContent,
-                                          actionButtons = [],
-                                          isExpandable = true,
-                                        }: ExpandableListItemProps<T>) => {
+export const ExpandableListItem = <T,>({
+  item,
+  renderContent,
+  renderExpandedContent,
+  actionButtons = [],
+  isExpandable = true,
+}: ExpandableListItemProps<T>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = useCallback(() => {

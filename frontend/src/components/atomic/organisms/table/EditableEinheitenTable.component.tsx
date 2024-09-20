@@ -25,10 +25,10 @@ import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 
 type EditingStore = {
   id: null | string;
-  isEditing: (id: string) => boolean
+  isEditing: (id: string) => boolean;
   setEditingId: (id: string) => void;
   resetEditingId: () => void;
-}
+};
 
 const PatchEinheitSchema = Yup.object().shape({
   kapazitaet: Yup.number().required('Kapazitaet wird benötigt').min(0, 'Eine negative Stärke ist unzulässig.'),
@@ -46,8 +46,8 @@ const useEditingStore = create<EditingStore>((setState, getState) => ({
 }));
 
 type EditableColumnsType<RecordType = AnyObject> = ((ColumnGroupType<RecordType> | ColumnType<RecordType>) & {
-  editable?: boolean,
-  dataIndex?: string,
+  editable?: boolean;
+  dataIndex?: string;
 })[];
 
 function selectInputType(dataIndex?: string) {
@@ -87,16 +87,25 @@ export function EditableEinheitenTable() {
     if (newEinheitTemplate.id === id) {
       return newEinheitTemplate;
     }
-    return einheiten.data?.find(einheit => einheit.id === id);
+    return einheiten.data?.find((einheit) => einheit.id === id);
   }, [einheiten.data, id]);
 
   const einheitenTypItems = useMemo(() => {
-    return einheitenTypen.data?.map(einheitTyp => ({
-      value: einheitTyp.id,
-      search: [einheitTyp.label, einheitTyp.description].join(' '),
-      label: <div className="flex justify-between"><span>{einheitTyp.label}</span><span>{einheitTyp.description}</span>
-      </div>,
-    }) satisfies DefaultOptionType) ?? [];
+    return (
+      einheitenTypen.data?.map(
+        (einheitTyp) =>
+          ({
+            value: einheitTyp.id,
+            search: [einheitTyp.label, einheitTyp.description].join(' '),
+            label: (
+              <div className="flex justify-between">
+                <span>{einheitTyp.label}</span>
+                <span>{einheitTyp.description}</span>
+              </div>
+            ),
+          }) satisfies DefaultOptionType,
+      ) ?? []
+    );
   }, [einheitenTypen.data]);
 
   function selectOptions(dataIndex?: string) {
@@ -126,114 +135,145 @@ export function EditableEinheitenTable() {
     formRef.current?.submitForm().then(resetEditingId);
   }, [formRef.current, resetEditingId]);
 
-  const columns = useMemo<EditableColumnsType<EinheitDto>>(() => ([
-    {
-      title: 'Interne ID',
-      dataIndex: 'id',
-      editable: false,
-      width: 100,
-      render: (value) => {
-        return <Tooltip title={value} trigger={'click'}>
-          <Button type="text" shape="circle"><PiFingerprint /></Button>
-        </Tooltip>;
+  const columns = useMemo<EditableColumnsType<EinheitDto>>(
+    () => [
+      {
+        title: 'Interne ID',
+        dataIndex: 'id',
+        editable: false,
+        width: 100,
+        render: (value) => {
+          return (
+            <Tooltip title={value} trigger={'click'}>
+              <Button type="text" shape="circle">
+                <PiFingerprint />
+              </Button>
+            </Tooltip>
+          );
+        },
       },
-    },
-    { title: 'Funkrufname', dataIndex: 'funkrufname', editable: true },
-    {
-      title: 'Typ der Einheit',
-      dataIndex: 'einheitTyp',
-      editable: true,
-      render: (value: EinheitTypDto) => value.label,
-    },
-    { title: 'Stärke', dataIndex: 'kapazitaet', editable: true },
-    {
-      title: 'Temporär',
-      dataIndex: 'istTemporaer',
-      editable: true,
-      render: (value) => <AntSwitch value={value} disabled={true} />,
-    },
-    {
-      title: <div className="flex justify-center">
-        <Tooltip title="Neue Einheit hinzufügen">
-          <Button icon={<PiPlus />} onClick={() => setEditingId('create.einheit')} />
-        </Tooltip>
-      </div>,
-      dataIndex: 'actions',
-      render: ((_, record) => {
-        const editing = isEditing(record.id);
-        if (editing) {
-          return <div className="flex justify-around">
-            <Tooltip title="Bearbeitung abbrechen"><Button danger onClick={cancel} icon={<PiX />} /></Tooltip>
-            <Tooltip title="Änderungen bestätigen"><Button type="primary" onClick={save}
-                                                           icon={<PiCheck />} /></Tooltip>
-          </div>;
+      { title: 'Funkrufname', dataIndex: 'funkrufname', editable: true },
+      {
+        title: 'Typ der Einheit',
+        dataIndex: 'einheitTyp',
+        editable: true,
+        render: (value: EinheitTypDto) => value.label,
+      },
+      { title: 'Stärke', dataIndex: 'kapazitaet', editable: true },
+      {
+        title: 'Temporär',
+        dataIndex: 'istTemporaer',
+        editable: true,
+        render: (value) => <AntSwitch value={value} disabled={true} />,
+      },
+      {
+        title: (
+          <div className="flex justify-center">
+            <Tooltip title="Neue Einheit hinzufügen">
+              <Button icon={<PiPlus />} onClick={() => setEditingId('create.einheit')} />
+            </Tooltip>
+          </div>
+        ),
+        dataIndex: 'actions',
+        render: (_, record) => {
+          const editing = isEditing(record.id);
+          if (editing) {
+            return (
+              <div className="flex justify-around">
+                <Tooltip title="Bearbeitung abbrechen">
+                  <Button danger onClick={cancel} icon={<PiX />} />
+                </Tooltip>
+                <Tooltip title="Änderungen bestätigen">
+                  <Button type="primary" onClick={save} icon={<PiCheck />} />
+                </Tooltip>
+              </div>
+            );
+          }
+          return (
+            <div className="flex justify-center">
+              <Button
+                type="text"
+                icon={<PiPencil />}
+                onClick={() => {
+                  form.setFieldsValue(record);
+                  setEditingId(record.id);
+                }}
+              />
+            </div>
+          );
+        },
+      },
+    ],
+    [einheiten.data],
+  );
+
+  const mergedColumns = useMemo(
+    () =>
+      columns.map((col) => {
+        if (!col.editable) {
+          return col;
         }
-        return <div className="flex justify-center">
-          <Button type="text" icon={<PiPencil />} onClick={() => {
-            form.setFieldsValue(record);
-            setEditingId(record.id);
-          }} />
-        </div>;
+        // noinspection JSUnusedGlobalSymbols, onCell is used.
+        return {
+          ...col,
+          onCell: (record: EinheitDto) => ({
+            record,
+            inputType: selectInputType(col.dataIndex),
+            options: selectOptions(col.dataIndex),
+            dataIndex: col.dataIndex,
+            title: col.title,
+            editing: isEditing(record.id),
+          }),
+        };
       }),
-    },
-  ]), [einheiten.data]);
+    [columns, isEditing],
+  );
 
-  const mergedColumns = useMemo(() => columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    // noinspection JSUnusedGlobalSymbols, onCell is used.
-    return {
-      ...col,
-      onCell: (record: EinheitDto) => ({
-        record,
-        inputType: selectInputType(col.dataIndex),
-        options: selectOptions(col.dataIndex),
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record.id),
-      }),
-    };
-  }), [columns, isEditing]);
-
-  const dataSource = useMemo(() => (
-    [id === newEinheitTemplate.id ? [newEinheitTemplate] : undefined, einheiten.data].filter(value => value !== undefined).flat()
-  ), [newEinheitTemplate, id, einheiten.data]);
-  return <Formik<EditableEinheitType>
-    validateOnChange={false}
-    validationSchema={PatchEinheitSchema}
-    onSubmit={(data) => {
-      console.log('submitting with data', { data });
-      patchEinheiten.mutate([{ ...data, einheitTypId: data.einheitTyp }]);
-    }}
-    initialValues={{
-      id: editingEinheit?.id ?? '',
-      funkrufname: editingEinheit?.funkrufname ?? '',
-      einheitTyp: editingEinheit?.einheitTyp.id ?? '',
-      istTemporaer: editingEinheit?.istTemporaer ?? false,
-      kapazitaet: editingEinheit?.kapazitaet ?? 0,
-    }}
-    innerRef={formRef}>
-    <Form form={form}>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        bordered
-        dataSource={dataSource}
-        loading={einheiten.isLoading}
-        // @ts-ignore
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        pagination={{
-          pageSize: 10,
-          onChange: cancel,
-        }}
-      />
-    </Form>
-  </Formik>;
+  const dataSource = useMemo(
+    () =>
+      [id === newEinheitTemplate.id ? [newEinheitTemplate] : undefined, einheiten.data]
+        .filter((value) => value !== undefined)
+        .flat(),
+    [newEinheitTemplate, id, einheiten.data],
+  );
+  return (
+    <Formik<EditableEinheitType>
+      validateOnChange={false}
+      validationSchema={PatchEinheitSchema}
+      onSubmit={(data) => {
+        console.log('submitting with data', { data });
+        patchEinheiten.mutate([{ ...data, einheitTypId: data.einheitTyp }]);
+      }}
+      initialValues={{
+        id: editingEinheit?.id ?? '',
+        funkrufname: editingEinheit?.funkrufname ?? '',
+        einheitTyp: editingEinheit?.einheitTyp.id ?? '',
+        istTemporaer: editingEinheit?.istTemporaer ?? false,
+        kapazitaet: editingEinheit?.kapazitaet ?? 0,
+      }}
+      innerRef={formRef}
+    >
+      <Form form={form}>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={dataSource}
+          loading={einheiten.isLoading}
+          // @ts-ignore
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          pagination={{
+            pageSize: 10,
+            onChange: cancel,
+          }}
+        />
+      </Form>
+    </Formik>
+  );
 }
 
 interface EditableCellProps<Item> extends HTMLAttributes<HTMLElement> {
@@ -253,16 +293,16 @@ function getMin(dataIndex: string) {
 }
 
 function EditableCell<Item>({
-                              editing,
-                              dataIndex,
-                              title,
-                              inputType,
-                              record,
-                              index,
-                              options,
-                              children,
-                              ...restProps
-                            }: PropsWithChildren<EditableCellProps<Item>>): ReactNode {
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  options,
+  children,
+  ...restProps
+}: PropsWithChildren<EditableCellProps<Item>>): ReactNode {
   let inputNode: ReactElement;
   switch (inputType) {
     case 'number':
@@ -275,11 +315,18 @@ function EditableCell<Item>({
       inputNode = <Switch name={dataIndex} />;
       break;
     case 'select':
-      inputNode = <Select name={dataIndex} options={options} showSearch filterOption={(inputValue, option) => {
-        // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
-        const regex = new RegExp(inputValue.split('').join('.*'), 'i');
-        return regex.test(option?.search);
-      }} />;
+      inputNode = (
+        <Select
+          name={dataIndex}
+          options={options}
+          showSearch
+          filterOption={(inputValue, option) => {
+            // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
+            const regex = new RegExp(inputValue.split('').join('.*'), 'i');
+            return regex.test(option?.search);
+          }}
+        />
+      );
       break;
   }
 

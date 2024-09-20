@@ -17,7 +17,8 @@ import { natoDateTimeAnt } from '../utils/time.js';
 import * as Yup from 'yup';
 
 const CreateReminderValidationSchema = Yup.object().shape({
-  reminderTime: Yup.date().required()
+  reminderTime: Yup.date()
+    .required()
     .min(addMinutes(new Date(), 1), 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen')
     .max(addDays(new Date(), 1), 'Die Erinnerungszeit ist nicht plausibel'),
 });
@@ -48,9 +49,12 @@ export function useReminders() {
     onSuccess: services.backend.reminders.invalidateQueries(queryClient),
   });
   const { activeNotizen } = useNotizen();
-  const submitCreateReminder = useCallback((noteId: string, reminderTime: Date) => {
-    return createReminder.mutateAsync({ reminderTime, noteId });
-  }, [createReminder.mutate]);
+  const submitCreateReminder = useCallback(
+    (noteId: string, reminderTime: Date) => {
+      return createReminder.mutateAsync({ reminderTime, noteId });
+    },
+    [createReminder.mutate],
+  );
 
   const actualCreateReminder = useMemo(() => {
     return (noteId: string, props?: { onOk: () => unknown }) => {
@@ -66,42 +70,58 @@ export function useReminders() {
         type: 'confirm',
         maskClosable: true,
         closable: true,
-        content: <div>
-          <h2 className="font-bold">Zeitpunkt der Erinnerung</h2>
-          <FormLayout<{ reminderTime: string }> form={{ className: 'block mt-2' }} formik={{
-            initialValues: {
-              reminderTime: addMinutes(new Date(), 10).toISOString(),
-            },
-            onSubmit: async (data) => {
-              await submitCreateReminder(noteId, new Date(data.reminderTime));
-              props?.onOk();
-              Modal.destroyAll();
-            },
-            validationSchema: CreateReminderValidationSchema,
-          }}>
-            {(props) => (<>
-              <InputWrapper name="reminderTime">
-                <DatePicker showTime format={natoDateTimeAnt} showSecond={false}
-                            maxDate={dayjs(addDays(new Date(), 1).toISOString())}
-                            minDate={dayjs(addMinutes(new Date(), 1).toISOString())} name="reminderTime" />
-              </InputWrapper>
-              <Button type="primary" htmlType="submit" onClick={() => props.submitForm()}>Erinnerung erstellen</Button>
-            </>)}
-          </FormLayout>
-        </div>,
+        content: (
+          <div>
+            <h2 className="font-bold">Zeitpunkt der Erinnerung</h2>
+            <FormLayout<{ reminderTime: string }>
+              form={{ className: 'block mt-2' }}
+              formik={{
+                initialValues: {
+                  reminderTime: addMinutes(new Date(), 10).toISOString(),
+                },
+                onSubmit: async (data) => {
+                  await submitCreateReminder(noteId, new Date(data.reminderTime));
+                  props?.onOk();
+                  Modal.destroyAll();
+                },
+                validationSchema: CreateReminderValidationSchema,
+              }}
+            >
+              {(props) => (
+                <>
+                  <InputWrapper name="reminderTime">
+                    <DatePicker
+                      showTime
+                      format={natoDateTimeAnt}
+                      showSecond={false}
+                      maxDate={dayjs(addDays(new Date(), 1).toISOString())}
+                      minDate={dayjs(addMinutes(new Date(), 1).toISOString())}
+                      name="reminderTime"
+                    />
+                  </InputWrapper>
+                  <Button type="primary" htmlType="submit" onClick={() => props.submitForm()}>
+                    Erinnerung erstellen
+                  </Button>
+                </>
+              )}
+            </FormLayout>
+          </div>
+        ),
       });
     };
   }, []);
 
   useEffect(() => {
-    const relevantNotes = dueReminders.data?.map((reminder) => ({
-        note: activeNotizen.data?.find((note) => note.id === reminder.noteId),
-        reminder,
-      }
-    )).filter(pair => Boolean(pair.note && pair.reminder)) ?? [];
+    const relevantNotes =
+      dueReminders.data
+        ?.map((reminder) => ({
+          note: activeNotizen.data?.find((note) => note.id === reminder.noteId),
+          reminder,
+        }))
+        .filter((pair) => Boolean(pair.note && pair.reminder)) ?? [];
 
     if (relevantNotes.length > 0) {
-      relevantNotes.forEach(pair => {
+      relevantNotes.forEach((pair) => {
         toast.info(pair.note!.content.slice(0, 100), {
           toastId: pair.reminder!.id,
           position: 'top-right',

@@ -5,7 +5,6 @@ export const Route = createLazyFileRoute('/app/betroffene')({
   component: Betroffene,
 });
 
-
 function Betroffene() {
   return <BetroffeneTemplate />;
 }

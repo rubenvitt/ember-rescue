@@ -6,7 +6,9 @@ export const NavListComponent: React.FC<NavListProps> = ({ items, title }) => (
   <li>
     {title && <div className="text-xs font-semibold leading-6 text-white">{title}</div>}
     <ul className="-mx-2 mt-2 space-y-1">
-      {items.map((item) => <NavItemComponent key={item.name} item={item} />)}
+      {items.map((item) => (
+        <NavItemComponent key={item.name} item={item} />
+      ))}
     </ul>
   </li>
 );

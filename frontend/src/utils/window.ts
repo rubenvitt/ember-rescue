@@ -8,12 +8,12 @@ export enum Windows {
   DOCS = 'docs',
 }
 
-
 export const WindowUrls: Readonly<Record<Windows, string>> = {
   [Windows.MAIN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
-  [Windows.DOCS]: process.env.NODE_ENV !== 'development' ? 'http://localhost:3001' : 'https://project-rescue-docs.vercel.app',
+  [Windows.DOCS]:
+    process.env.NODE_ENV !== 'development' ? 'http://localhost:3001' : 'https://project-rescue-docs.vercel.app',
 };
 
 export const WindowOptions: Readonly<Record<Windows, AppWindowOptions & { size?: LogicalSize }>> = {

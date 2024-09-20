@@ -32,62 +32,76 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
     include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
   });
 
-  const handleSubmit = useCallback(async (data: CreateEinsatztagebuchEintrag) => {
-    closeForm();
-    await createEinsatztagebuchEintrag.mutateAsync({
-      content: data.content,
-      empfaenger: einheitenAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
-      absender: einheitenAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
-      timestamp: data.timestamp,
-    });
-  }, [closeForm, createEinsatztagebuchEintrag]);
+  const handleSubmit = useCallback(
+    async (data: CreateEinsatztagebuchEintrag) => {
+      closeForm();
+      await createEinsatztagebuchEintrag.mutateAsync({
+        content: data.content,
+        empfaenger:
+          einheitenAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
+        absender: einheitenAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
+        timestamp: data.timestamp,
+      });
+    },
+    [closeForm, createEinsatztagebuchEintrag],
+  );
 
   const aufnehmendesRettungsmittelId = useMemo(() => {
     return einsatz?.data?.aufnehmendesRettungsmittelId ?? '';
   }, [einsatz?.data?.aufnehmendesRettungsmittelId]);
 
   return (
-    <FormLayout<CreateEinsatztagebuchEintrag> form={{ rootClassName: 'grid grid-cols-2 gap-4' }} formik={{
-      initialValues: {
-        timestamp: formatISO(new Date()),
-        absender: '',
-        empfaenger: aufnehmendesRettungsmittelId,
-        content: '',
-      },
-      onSubmit: async (data, formikHelpers) => {
-        await handleSubmit(data);
-        formikHelpers.resetForm();
-      },
-      validationSchema: CreateEtbShema,
-    }}>
+    <FormLayout<CreateEinsatztagebuchEintrag>
+      form={{ rootClassName: 'grid grid-cols-2 gap-4' }}
+      formik={{
+        initialValues: {
+          timestamp: formatISO(new Date()),
+          absender: '',
+          empfaenger: aufnehmendesRettungsmittelId,
+          content: '',
+        },
+        onSubmit: async (data, formikHelpers) => {
+          await handleSubmit(data);
+          formikHelpers.resetForm();
+        },
+        validationSchema: CreateEtbShema,
+      }}
+    >
       {(props) => (
         <>
           <InputWrapper name="absender" label="Absender">
-            <Select name="absender"
-                    showSearch options={einheitenAsItems}
-                    loading={loading}
-                    placeholder="Absender auswählen"
+            <Select
+              name="absender"
+              showSearch
+              options={einheitenAsItems}
+              loading={loading}
+              placeholder="Absender auswählen"
             />
           </InputWrapper>
           <InputWrapper name="empfaenger" label="Empfänger">
-            <Select name="empfaenger"
-                    showSearch options={einheitenAsItems}
-                    loading={loading}
-                    placeholder="Empfönger auswählen"
+            <Select
+              name="empfaenger"
+              showSearch
+              options={einheitenAsItems}
+              loading={loading}
+              placeholder="Empfönger auswählen"
             />
           </InputWrapper>
           <InputWrapper name="content" className="col-span-2" label="Inhalt">
             <Input.TextArea name="content" rows={3} />
           </InputWrapper>
           <InputWrapper name="timestamp" label="Zeitpunkt der Meldung">
-            <DatePicker
-              className="w-full"
-              showTime showSecond={false}
-              name={'timestamp'} />
+            <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} />
           </InputWrapper>
-          <Button className="col-span-2" type="primary" onClick={props.submitForm} htmlType="submit"
-                  icon={<PiCaretDown size={24} />}>ETB
-            Eintrag anlegen</Button>
+          <Button
+            className="col-span-2"
+            type="primary"
+            onClick={props.submitForm}
+            htmlType="submit"
+            icon={<PiCaretDown size={24} />}
+          >
+            ETB Eintrag anlegen
+          </Button>
         </>
       )}
     </FormLayout>

@@ -6,5 +6,5 @@ export type Bearbeiter = Identifiable & {
 
 export type CreateBearbeiter = {
   name: string;
-  id: null
-}
+  id: null;
+};

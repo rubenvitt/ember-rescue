@@ -19,5 +19,5 @@ export const Route = createFileRoute('/auth/signout')({
     }, [bearbeiter.data]);
 
     return <></>;
-  }
+  },
 });

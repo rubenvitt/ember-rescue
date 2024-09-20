@@ -12,7 +12,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET All Qualifikationen
 export const fetchAllQualifikationen = {
   queryKey: [queryKey],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<QualifikationTypes[]>('qualifikationen');
   },
 };

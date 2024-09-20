@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { ButtonColor } from './button.styles.js';
 
 type ColorVariants = {
-  [color in ButtonColor]: string
+  [color in ButtonColor]: string;
 };
 
 const colorVariants: ColorVariants = {
@@ -32,56 +32,47 @@ const colorVariants: ColorVariants = {
   'dark/zinc': 'bg-zinc-800 text-white',
 };
 
-export const modalPanel = cva(
-  'pointer-events-auto transform transition-all',
-  {
-    variants: {
-      variant: {
-        dialog: 'relative rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg overflow-hidden',
-        panel: 'w-screen shadow-xl my-4 rounded-l-lg overflow-y-scroll',
-      },
-      fullWidth: {
-        true: 'w-full md:ml-24',
-        false: 'max-w-md',
-      },
+export const modalPanel = cva('pointer-events-auto transform transition-all', {
+  variants: {
+    variant: {
+      dialog: 'relative rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg overflow-hidden',
+      panel: 'w-screen shadow-xl my-4 rounded-l-lg overflow-y-scroll',
     },
-    defaultVariants: {
-      variant: 'dialog',
-      fullWidth: false,
+    fullWidth: {
+      true: 'w-full md:ml-24',
+      false: 'max-w-md',
     },
   },
-);
+  defaultVariants: {
+    variant: 'dialog',
+    fullWidth: false,
+  },
+});
 
 export type ModalPanelProps = VariantProps<typeof modalPanel>;
 
-export const modalHeader = cva(
-  'px-4 py-5 sm:p-6',
-  {
-    variants: {
-      panelColor: colorVariants,
-    },
-    defaultVariants: {
-      panelColor: 'primary',
-    },
+export const modalHeader = cva('px-4 py-5 sm:p-6', {
+  variants: {
+    panelColor: colorVariants,
   },
-);
+  defaultVariants: {
+    panelColor: 'primary',
+  },
+});
 
 export type ModalHeaderProps = VariantProps<typeof modalHeader>;
 
-export const modalBody = cva(
-  'px-4 py-5 sm:p-6 bg-white',
-  {
-    variants: {
-      variant: {
-        dialog: '',
-        panel: 'flex-1 overflow-y-auto',
-      },
-    },
-    defaultVariants: {
-      variant: 'dialog',
+export const modalBody = cva('px-4 py-5 sm:p-6 bg-white', {
+  variants: {
+    variant: {
+      dialog: '',
+      panel: 'flex-1 overflow-y-auto',
     },
   },
-);
+  defaultVariants: {
+    variant: 'dialog',
+  },
+});
 
 export type ModalBodyProps = VariantProps<typeof modalBody>;
 
@@ -89,19 +80,17 @@ export type ModalBodyProps = VariantProps<typeof modalBody>;
 const hoverColorVariants: ColorVariants = Object.fromEntries(
   Object.entries(colorVariants).map(([key, value]) => [
     key,
-    value.replace('text-white', 'text-white/80 hover:text-white')
+    value
+      .replace('text-white', 'text-white/80 hover:text-white')
       .replace('text-gray-800', 'text-gray-800/80 hover:text-gray-800'),
   ]),
 );
 
-export const modalCloseButton = cva(
-  'rounded-md focus:outline-none focus:ring-2 focus:ring-white/20',
-  {
-    variants: {
-      panelColor: hoverColorVariants,
-    },
+export const modalCloseButton = cva('rounded-md focus:outline-none focus:ring-2 focus:ring-white/20', {
+  variants: {
+    panelColor: hoverColorVariants,
   },
-);
+});
 
 export type ModalCloseButtonProps = VariantProps<typeof modalCloseButton>;
 

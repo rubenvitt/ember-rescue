@@ -13,7 +13,7 @@ interface LayerConfig {
 }
 
 const layerConfigurations: Record<string, LayerConfig> = {
-  'osm': {
+  osm: {
     layer: {
       type: 'raster',
       paint: {},
@@ -32,7 +32,10 @@ const layerConfigurations: Record<string, LayerConfig> = {
     },
     source: {
       type: 'raster',
-      tiles: ['https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', 'https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png/'],
+      tiles: [
+        'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+        'https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png/',
+      ],
       tileSize: 256,
     },
     label: 'OSM.fr Source',
@@ -49,26 +52,32 @@ const layerConfigurations: Record<string, LayerConfig> = {
     },
     label: 'Open Cycle Map',
   },
-  'openTopoMap': {
+  openTopoMap: {
     layer: {
       type: 'raster',
       paint: {},
     },
     source: {
       type: 'raster',
-      tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png', 'https://b.tile.opentopomap.org/{z}/{x}/{y}.png', 'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
+      tiles: [
+        'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png',
+      ],
       tileSize: 256,
     },
     label: 'Open Topo Map',
   },
-  'basemap': {
+  basemap: {
     layer: {
       type: 'raster',
       paint: {},
     },
     source: {
       type: 'raster',
-      tiles: ['https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_farbe/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png'],
+      tiles: [
+        'https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_farbe/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png',
+      ],
       tileSize: 256,
     },
     label: 'Basemap Raster',
@@ -87,9 +96,8 @@ const layerConfigurations: Record<string, LayerConfig> = {
   },
 };
 
-
 function toggleLayer(map: Map, layerName: keyof typeof layerConfigurations, setActiveLayer: (layer: string) => void) {
-  Object.keys(layerConfigurations).forEach(key => {
+  Object.keys(layerConfigurations).forEach((key) => {
     const layerId = `${key}-layer`;
 
     if (map.getLayer(layerId)) {
@@ -135,7 +143,7 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
   useEffect(() => {
     setMap(map);
     map.on('load', () => {
-      Object.keys(layerConfigurations).forEach(key => {
+      Object.keys(layerConfigurations).forEach((key) => {
         const sourceId = `${key}-source`;
         const config = layerConfigurations[key as keyof typeof layerConfigurations];
         if (!map.getSource(sourceId)) {
@@ -145,7 +153,7 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
     });
   }, [map]);
 
-  const items: MenuProps['items'] = Object.keys(layerConfigurations).map(key => ({
+  const items: MenuProps['items'] = Object.keys(layerConfigurations).map((key) => ({
     key,
     onClick: () => toggleLayer(map, key as keyof typeof layerConfigurations, setActiveLayer),
     label: (
@@ -160,7 +168,7 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
   items.push({
     key: 'remove-all',
     onClick: () => {
-      Object.keys(layerConfigurations).forEach(key => removeLayer(map, key as keyof typeof layerConfigurations));
+      Object.keys(layerConfigurations).forEach((key) => removeLayer(map, key as keyof typeof layerConfigurations));
       setActiveLayer('');
     },
     label: 'Remove all layers',
@@ -170,12 +178,13 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
     <QueryClientProvider client={queryClient}>
       <Tooltip title="Map Layer umschalten">
         <Dropdown menu={{ items }}>
-          <div className="rounded bg-white dark:bg-gray-900 mapboxgl-ctrl">
+          <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
             <button
               onClick={(e) => {
                 e.preventDefault();
               }}
-              className="p-2 cursor-pointer rounded">
+              className="cursor-pointer rounded p-2"
+            >
               <PiMapPinThin size={20} />
             </button>
           </div>

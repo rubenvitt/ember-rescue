@@ -6,7 +6,7 @@ import { PiAddressBook, PiAmbulance, PiCake, PiCheck, PiEye, PiFlag, PiMapPin, P
 
 export function BetroffeneDetail() {
   return (
-    <div className="col-span-12 overflow-hidden bg-white dark:bg-gray-950/25 shadow sm:rounded-lg">
+    <div className="col-span-12 overflow-hidden bg-white shadow sm:rounded-lg dark:bg-gray-950/25">
       <div className="px-4 py-6 sm:px-6">
         <h3 className="text-base font-semibold leading-7 text-gray-900">Patientenkarte</h3>
         <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Patient wurde angelegt (todo)</p>
@@ -36,7 +36,7 @@ export function Patientenbox() {
       <h2 className="sr-only">Summary</h2>
       <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5">
         <dl className="flex flex-wrap px-4">
-          <div className="flex-auto flex items-end px-6 pt-4">
+          <div className="flex flex-auto items-end px-6 pt-4">
             <dt className="sr-only">Status</dt>
             <dd className="mt-1 flex items-center gap-x-1.5">
               <div className="flex-none rounded-full bg-orange-500/20 p-1">
@@ -46,7 +46,7 @@ export function Patientenbox() {
             </dd>
           </div>
           <div className="flex-none self-end pl-6 pt-6">
-            <dt className="text-sm font-semibold leading-6 text-gray-900 sr-only">Sichtungskategorie</dt>
+            <dt className="sr-only text-sm font-semibold leading-6 text-gray-900">Sichtungskategorie</dt>
             <div aria-label="Gelber Patient" className="h-12 w-12 flex-none rounded-full bg-red-500" />
           </div>
           <div className="mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 px-6 pt-6">
@@ -73,7 +73,7 @@ export function Patientenbox() {
             <dd className="text-sm leading-6 text-gray-500">Uelzener Twiete 11, 29525 Uelzen</dd>
           </div>
         </dl>
-        <div className="mt-6 border-t border-gray-900/5 px-6 py-6 flex flex-col items-end">
+        <div className="mt-6 flex flex-col items-end border-t border-gray-900/5 px-6 py-6">
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
             Anpassen
           </a>
@@ -188,4 +188,3 @@ export function BetroffeneFeed() {
     </div>
   );
 }
-

@@ -17,33 +17,40 @@ export function useLocalServer(singleServer?: string) {
   }, []);
 
   const queries = useMemo(
-    () => devices?.map((device: IpPortPair) => ({
-      queryKey: services.localNetwork.localServer.fetchLocalServerMeta.queryKey(device.ip, device.port),
-      queryFn: () => services.localNetwork.localServer.fetchLocalServerMeta.queryFn(device.ip, device.port)
-        .then((result) => {
-          return { id: result.serverId, url: `http://${device.ip}:${device.port}`, metadata: result };
-        }),
-      retry: 2,
-    })),
+    () =>
+      devices?.map((device: IpPortPair) => ({
+        queryKey: services.localNetwork.localServer.fetchLocalServerMeta.queryKey(device.ip, device.port),
+        queryFn: () =>
+          services.localNetwork.localServer.fetchLocalServerMeta.queryFn(device.ip, device.port).then((result) => {
+            return { id: result.serverId, url: `http://${device.ip}:${device.port}`, metadata: result };
+          }),
+        retry: 2,
+      })),
     [devices],
   );
 
-  const results = useQueries<{
-    id: string;
-    url: string;
-    metadata: ServerMetadata
-  }[], { id: string; url: string; metadata: ServerMetadata }[]>({
-    queries: singleServer ? [
-      {
-        queryKey: services.localNetwork.localServer.fetchSingleServerMeta.queryKey(singleServer),
-        queryFn: () => services.localNetwork.localServer.fetchSingleServerMeta.queryFn(singleServer)
-          .then((result) => {
-            return { id: result.serverId, url: `http://${singleServer}`, metadata: result };
-          }),
-      },
-    ] : queries ?? [],
+  const results = useQueries<
+    {
+      id: string;
+      url: string;
+      metadata: ServerMetadata;
+    }[],
+    { id: string; url: string; metadata: ServerMetadata }[]
+  >({
+    queries: singleServer
+      ? [
+          {
+            queryKey: services.localNetwork.localServer.fetchSingleServerMeta.queryKey(singleServer),
+            queryFn: () =>
+              services.localNetwork.localServer.fetchSingleServerMeta.queryFn(singleServer).then((result) => {
+                return { id: result.serverId, url: `http://${singleServer}`, metadata: result };
+              }),
+          },
+        ]
+      : (queries ?? []),
     // @ts-ignore
-    combine: (results: UseQueryResult<{ id: string; url: string; metadata: ServerMetadata }>[],
+    combine: (
+      results: UseQueryResult<{ id: string; url: string; metadata: ServerMetadata }>[],
     ): { id: string; url: string; metadata: ServerMetadata }[] => {
       return [
         ...new Map(

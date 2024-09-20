@@ -11,7 +11,7 @@ export function formatNatoDateTime<DateType extends Date>(
     return undefined;
   }
 
-  if(isDayjs(dateTime)) {
+  if (isDayjs(dateTime)) {
     return dateTime.format(natoDateTime);
   }
   return format(dateTime, natoDateTime);

@@ -12,7 +12,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET All EinsatztagebuchEinträge
 export const fetchAllEinsatztagebuchEintraege = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<EinsatztagebuchEintrag[]>('einsatztagebuch');
   },
 };

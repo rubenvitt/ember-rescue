@@ -1,10 +1,13 @@
 import { cva } from 'class-variance-authority';
 
 export const styles: {
-  base: string[], solid: string[], outline: string[], plain: string[],
+  base: string[];
+  solid: string[];
+  outline: string[];
+  plain: string[];
   colors: {
-    [color: string]: string[],
-  }
+    [color: string]: string[];
+  };
 } = {
   base: [
     // Base
@@ -163,7 +166,6 @@ export const styles: {
     ],
   },
 };
-
 
 export type ButtonColor = keyof typeof styles.colors;
 

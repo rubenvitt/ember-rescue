@@ -12,13 +12,13 @@ type Secrets = {
 export const queryKey = (secretKey: PossibleSecrets) => ['secrets', secretKey];
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (secretKey: PossibleSecrets, queryClient: QueryClient) => createInvalidateQueries(queryKey(secretKey), queryClient);
-
+export const invalidateQueries = (secretKey: PossibleSecrets, queryClient: QueryClient) =>
+  createInvalidateQueries(queryKey(secretKey), queryClient);
 
 // GET Secret
 export const fetchSecret = {
   queryKey,
-  queryFn: function(secretKey: PossibleSecrets) {
+  queryFn: function (secretKey: PossibleSecrets) {
     return backendFetchJson<Secrets>(`/secrets/${secretKey}`);
   },
 };
@@ -26,13 +26,14 @@ export const fetchSecret = {
 // POST Secret
 export const saveSecret = {
   mutationKey: queryKey,
-  mutationFn: function(secretKey: PossibleSecrets) {
-    return (value: string) => backendFetchJson('/secrets', {
-      body: JSON.stringify({
-        key: secretKey,
-        value: value,
-      }),
-      method: 'POST',
-    });
+  mutationFn: function (secretKey: PossibleSecrets) {
+    return (value: string) =>
+      backendFetchJson('/secrets', {
+        body: JSON.stringify({
+          key: secretKey,
+          value: value,
+        }),
+        method: 'POST',
+      });
   },
 };

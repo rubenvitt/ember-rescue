@@ -29,38 +29,61 @@ export function LoginForm() {
   }, [selectedBearbeiter, saveBearbeiter]);
 
   const allBearbeiterItems = useMemo<BaseOptionType[]>(() => {
-    return allBearbeiter.data?.map(b => ({
-      title: b.name,
-      value: b.name,
-      item: b,
-    } as BaseOptionType)) ?? [];
+    return (
+      allBearbeiter.data?.map(
+        (b) =>
+          ({
+            title: b.name,
+            value: b.name,
+            item: b,
+          }) as BaseOptionType,
+      ) ?? []
+    );
   }, [allBearbeiter.data]);
 
-  return <form className="space-y-6" action="#" onSubmit={(event) => {
-    event.preventDefault();
-    isCreateUser ? onCreateNewBearbeiter() : onLoginBearbeiter();
-  }}>
-    {
-      isCreateUser ? <Input value={bearbeiter} onInput={(e) => setBearbeiter((e.target as any).value)}
-                            placeholder="Name des neuen Bearbeiters" /> :
-        <Select onSelect={(_, option) => setSelectedBearbeiter(option.item)} options={allBearbeiterItems}
-                loading={allBearbeiter.isLoading} placeholder="Bearbeiter auswählen"
-                className="w-full" />
-    }
-    <div className="grid grid-cols-2 justify-items-stretch gap-4">
-      {
-        isCreateUser
-          ? <>
+  return (
+    <form
+      className="space-y-6"
+      action="#"
+      onSubmit={(event) => {
+        event.preventDefault();
+        isCreateUser ? onCreateNewBearbeiter() : onLoginBearbeiter();
+      }}
+    >
+      {isCreateUser ? (
+        <Input
+          value={bearbeiter}
+          onInput={(e) => setBearbeiter((e.target as any).value)}
+          placeholder="Name des neuen Bearbeiters"
+        />
+      ) : (
+        <Select
+          onSelect={(_, option) => setSelectedBearbeiter(option.item)}
+          options={allBearbeiterItems}
+          loading={allBearbeiter.isLoading}
+          placeholder="Bearbeiter auswählen"
+          className="w-full"
+        />
+      )}
+      <div className="grid grid-cols-2 justify-items-stretch gap-4">
+        {isCreateUser ? (
+          <>
             <Button onClick={toggleCreateUser}>Abbrechen</Button>
-            <Button htmlType="submit" onClick={onCreateNewBearbeiter} type="primary"
-                    icon={<PiPlus />}>Erstellen</Button>
+            <Button htmlType="submit" onClick={onCreateNewBearbeiter} type="primary" icon={<PiPlus />}>
+              Erstellen
+            </Button>
           </>
-          : <>
-            <Button onClick={toggleCreateUser} className={'col-span-2'} icon={<PiPlus />}>Neuen Bearbeiter
-              erstellen</Button>
-            <Button htmlType="submit" className="col-span-2" type={'primary'} icon={<PiLock />}>Anmelden</Button>
+        ) : (
+          <>
+            <Button onClick={toggleCreateUser} className={'col-span-2'} icon={<PiPlus />}>
+              Neuen Bearbeiter erstellen
+            </Button>
+            <Button htmlType="submit" className="col-span-2" type={'primary'} icon={<PiLock />}>
+              Anmelden
+            </Button>
           </>
-      }
-    </div>
-  </form>;
+        )}
+      </div>
+    </form>
+  );
 }

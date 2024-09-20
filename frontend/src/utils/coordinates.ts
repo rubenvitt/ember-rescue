@@ -76,7 +76,7 @@ export function formatMGRS(mgrsString: string | LatLng | BoundingBox): string {
   const northing = mgrsString.slice(10, 15);
 
   // Format Easting and Northing with decimal points
-  const formattedEasting = easting.slice(0, 5) + (easting.length > 5 ? ('.' + easting.slice(5)) : '');
+  const formattedEasting = easting.slice(0, 5) + (easting.length > 5 ? '.' + easting.slice(5) : '');
   const formattedNorthing = northing.slice(0, 5) + (easting.length > 5 ? '.' + northing.slice(5) : '');
 
   // Assemble the formatted string
@@ -133,27 +133,42 @@ function LLtoUTM(ll: LatLng): UTMCoordinates {
     }
   }
 
-  LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3;  // +3 puts origin in middle of zone
+  LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; // +3 puts origin in middle of zone
   LongOriginRad = degToRad(LongOrigin);
 
-  const eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+  const eccPrimeSquared = eccSquared / (1 - eccSquared);
 
   const N = a / Math.sqrt(1 - eccSquared * Math.sin(LatRad) * Math.sin(LatRad));
   const T = Math.tan(LatRad) * Math.tan(LatRad);
   const C = eccPrimeSquared * Math.cos(LatRad) * Math.cos(LatRad);
   const A = Math.cos(LatRad) * (LongRad - LongOriginRad);
 
-  const M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256) * LatRad
-    - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.sin(2 * LatRad)
-    + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.sin(4 * LatRad)
-    - (35 * eccSquared * eccSquared * eccSquared / 3072) * Math.sin(6 * LatRad));
+  const M =
+    a *
+    ((1 - eccSquared / 4 - (3 * eccSquared * eccSquared) / 64 - (5 * eccSquared * eccSquared * eccSquared) / 256) *
+      LatRad -
+      ((3 * eccSquared) / 8 + (3 * eccSquared * eccSquared) / 32 + (45 * eccSquared * eccSquared * eccSquared) / 1024) *
+        Math.sin(2 * LatRad) +
+      ((15 * eccSquared * eccSquared) / 256 + (45 * eccSquared * eccSquared * eccSquared) / 1024) *
+        Math.sin(4 * LatRad) -
+      ((35 * eccSquared * eccSquared * eccSquared) / 3072) * Math.sin(6 * LatRad));
 
-  const UTMEasting = (k0 * N * (A + (1 - T + C) * A * A * A / 6
-      + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A / 120)
-    + EASTING_OFFSET);
+  const UTMEasting =
+    k0 *
+      N *
+      (A +
+        ((1 - T + C) * A * A * A) / 6 +
+        ((5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A) / 120) +
+    EASTING_OFFSET;
 
-  let UTMNorthing = (k0 * (M + N * Math.tan(LatRad) * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A / 24
-    + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A / 720)));
+  let UTMNorthing =
+    k0 *
+    (M +
+      N *
+        Math.tan(LatRad) *
+        ((A * A) / 2 +
+          ((5 - T + 9 * C + 4 * C * C) * A * A * A * A) / 24 +
+          ((61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A) / 720));
 
   if (Lat < 0) {
     UTMNorthing += NORTHING_OFFSET; // 10000000 meter offset for southern hemisphere
@@ -188,29 +203,40 @@ function UTMtoLL(utm: UTMCoordinates): LatLng {
   }
 
   // There are 60 zones with zone 1 being at West -180 to -174
-  const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3;  // +3 puts origin in middle of zone
+  const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin in middle of zone
 
-  const eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+  const eccPrimeSquared = eccSquared / (1 - eccSquared);
 
   const M = y / k0;
-  const mu = M / (a * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256));
+  const mu =
+    M /
+    (a * (1 - eccSquared / 4 - (3 * eccSquared * eccSquared) / 64 - (5 * eccSquared * eccSquared * eccSquared) / 256));
 
-  const phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math.sin(2 * mu)
-    + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math.sin(4 * mu)
-    + (151 * e1 * e1 * e1 / 96) * Math.sin(6 * mu);
+  const phi1Rad =
+    mu +
+    ((3 * e1) / 2 - (27 * e1 * e1 * e1) / 32) * Math.sin(2 * mu) +
+    ((21 * e1 * e1) / 16 - (55 * e1 * e1 * e1 * e1) / 32) * Math.sin(4 * mu) +
+    ((151 * e1 * e1 * e1) / 96) * Math.sin(6 * mu);
 
   const N1 = a / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
   const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
   const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
-  const R1 = a * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
+  const R1 = (a * (1 - eccSquared)) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
   const D = x / (N1 * k0);
 
-  let lat = phi1Rad - (N1 * Math.tan(phi1Rad) / R1) * (D * D / 2 - (5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) * D * D * D * D / 24
-    + (61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1) * D * D * D * D * D * D / 720);
+  let lat =
+    phi1Rad -
+    ((N1 * Math.tan(phi1Rad)) / R1) *
+      ((D * D) / 2 -
+        ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) * D * D * D * D) / 24 +
+        ((61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1) * D * D * D * D * D * D) / 720);
   lat = radToDeg(lat);
 
-  let lon = (D - (1 + 2 * T1 + C1) * D * D * D / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1)
-    * D * D * D * D * D / 120) / Math.cos(phi1Rad);
+  let lon =
+    (D -
+      ((1 + 2 * T1 + C1) * D * D * D) / 6 +
+      ((5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1) * D * D * D * D * D) / 120) /
+    Math.cos(phi1Rad);
   lon = LongOrigin + radToDeg(lon);
 
   return {
@@ -224,9 +250,13 @@ function encode(utm: UTMCoordinates, accuracy: number): string {
   const seasting = '00000' + utm.easting.toFixed(0);
   const snorthing = '00000' + utm.northing.toFixed(0);
 
-  return utm.zoneNumber + utm.zoneLetter + get100kID(utm.easting, utm.northing, utm.zoneNumber) +
+  return (
+    utm.zoneNumber +
+    utm.zoneLetter +
+    get100kID(utm.easting, utm.northing, utm.zoneNumber) +
     seasting.substr(seasting.length - 5, accuracy) +
-    snorthing.substr(snorthing.length - 5, accuracy);
+    snorthing.substr(snorthing.length - 5, accuracy)
+  );
 }
 
 function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
@@ -251,7 +281,7 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
   let i = 0;
 
   // Get Zone number
-  while (!/[A-Z]/.test(testChar = mgrsString.charAt(i))) {
+  while (!/[A-Z]/.test((testChar = mgrsString.charAt(i)))) {
     if (i >= 2) {
       return {
         easting: 0,
@@ -280,7 +310,14 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
   const zoneLetter = mgrsString.charAt(i++);
 
   // Should we check the zone letter here? Why not.
-  if (zoneLetter <= 'A' || zoneLetter === 'B' || zoneLetter === 'Y' || zoneLetter >= 'Z' || zoneLetter === 'I' || zoneLetter === 'O') {
+  if (
+    zoneLetter <= 'A' ||
+    zoneLetter === 'B' ||
+    zoneLetter === 'Y' ||
+    zoneLetter >= 'Z' ||
+    zoneLetter === 'I' ||
+    zoneLetter === 'O'
+  ) {
     return {
       easting: 0,
       northing: 0,
@@ -290,13 +327,12 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
     };
   }
 
-  hunK = mgrsString.substring(i, i += 2);
+  hunK = mgrsString.substring(i, (i += 2));
 
   const set = get100kSetForZone(zoneNumber);
 
   const east100k = getEastingFromChar(hunK.charAt(0), set);
-  let north100k = getNorthingFromChar(hunK.charAt(
-    1), set);
+  let north100k = getNorthingFromChar(hunK.charAt(1), set);
 
   // We have a bug where the northing may be 2000000 too low.
   // How do we know when to roll over?
@@ -328,7 +364,7 @@ function decode(mgrsString: string): UTMCoordinates & { accuracy: number } {
     northing: sepNorthing + north100k,
     zoneLetter: zoneLetter,
     zoneNumber: zoneNumber,
-    accuracy: (sep > 0) ? Math.pow(10, 5 - sep) : 0,
+    accuracy: sep > 0 ? Math.pow(10, 5 - sep) : 0,
   };
 }
 
@@ -392,11 +428,11 @@ function getLetter100kID(column: number, row: number, parm: number): string {
     rollover = false;
   }
 
-  if (((rowInt === I) || ((rowOrigin < I) && (rowInt > I))) || (((rowInt > I) || (rowOrigin < I)) && rollover)) {
+  if (rowInt === I || (rowOrigin < I && rowInt > I) || ((rowInt > I || rowOrigin < I) && rollover)) {
     rowInt++;
   }
 
-  if (((rowInt === O) || ((rowOrigin < O) && (rowInt > O))) || (((rowInt > O) || (rowOrigin < O)) && rollover)) {
+  if (rowInt === O || (rowOrigin < O && rowInt > O) || ((rowInt > O || rowOrigin < O) && rollover)) {
     rowInt++;
     if (rowInt === I) rowInt++;
   }
@@ -522,9 +558,9 @@ function getMinNorthing(zoneLetter: string): number {
 }
 
 function degToRad(deg: number): number {
-  return (deg * (Math.PI / 180.0));
+  return deg * (Math.PI / 180.0);
 }
 
 function radToDeg(rad: number): number {
-  return (rad / (Math.PI / 180.0));
+  return rad / (Math.PI / 180.0);
 }

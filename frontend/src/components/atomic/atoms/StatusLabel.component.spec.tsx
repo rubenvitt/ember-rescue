@@ -48,7 +48,9 @@ describe('StatusLabel', () => {
     const { container } = render(<StatusLabel status={status} />);
     const statusElement = container.firstChild;
 
-    expect(statusElement).toHaveClass('bg-green-200/30 text-green-900 ring-green-500 dark:bg-green-800/30 dark:text-green-100 hover:bg-green-500/30');
+    expect(statusElement).toHaveClass(
+      'bg-green-200/30 text-green-900 ring-green-500 dark:bg-green-800/30 dark:text-green-100 hover:bg-green-500/30',
+    );
   });
 
   it('renders with default status code if none provided', () => {
@@ -57,6 +59,8 @@ describe('StatusLabel', () => {
     const statusElement = getByText(`3 (Standardstatus)`);
 
     expect(statusElement).toBeInTheDocument();
-    expect(container.firstChild).toHaveClass('bg-yellow-200/30 text-yellow-900 ring-yellow-500 dark:bg-yellow-800/30 dark:text-yellow-100 hover:bg-yellow-500/30');
+    expect(container.firstChild).toHaveClass(
+      'bg-yellow-200/30 text-yellow-900 ring-yellow-500 dark:bg-yellow-800/30 dark:text-yellow-100 hover:bg-yellow-500/30',
+    );
   });
 });

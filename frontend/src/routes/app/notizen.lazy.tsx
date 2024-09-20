@@ -6,5 +6,5 @@ export const Route = createLazyFileRoute('/app/notizen')({
 });
 
 function Notizen() {
-  return <NotizenTemplate />
+  return <NotizenTemplate />;
 }

@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 
-type PossibleSecrets = 'mapboxApi'
+type PossibleSecrets = 'mapboxApi';
 
 type Secrets = {
-  key: string,
-  value: string
-}
+  key: string;
+  value: string;
+};
 
-type Props = { secretKey: PossibleSecrets }
+type Props = { secretKey: PossibleSecrets };
 
 export function useSecret({ secretKey }: Props) {
   const queryClient = useQueryClient();

@@ -8,9 +8,7 @@ export const Route = createLazyFileRoute('/app/einheiten')({
 });
 
 function Einheiten() {
-  const {
-    einheitenImEinsatz,
-  } = useEinheiten();
+  const { einheitenImEinsatz } = useEinheiten();
 
   return (
     <>

@@ -31,10 +31,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           components: {
             Menu: {
               colorSplit: 'transparent',
-              groupTitleColor: "rgba(255, 255, 255, 0.6)",
+              groupTitleColor: 'rgba(255, 255, 255, 0.6)',
             },
           },
-        }}>
+        }}
+      >
         {children}
       </ConfigProvider>
     </ThemeContext.Provider>

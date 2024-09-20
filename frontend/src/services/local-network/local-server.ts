@@ -10,12 +10,13 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryKey = (ip: string, port: number) => ['server', ip, port];
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (ip: string, port: number, queryClient: QueryClient) => createInvalidateQueries(queryKey(ip, port), queryClient);
+export const invalidateQueries = (ip: string, port: number, queryClient: QueryClient) =>
+  createInvalidateQueries(queryKey(ip, port), queryClient);
 
 // GET Metadaten von einem lokalen Server
 export const fetchLocalServerMeta = {
   queryKey: (ip: string, port: number) => queryKey(ip, port),
-  queryFn: function(ip: string, port: number) {
+  queryFn: function (ip: string, port: number) {
     return backendFetchJson<ServerMetadata>(`http://${ip}:${port}/meta`);
   },
 };
@@ -23,7 +24,7 @@ export const fetchLocalServerMeta = {
 // GET Metadaten von einem einzelnen Server
 export const fetchSingleServerMeta = {
   queryKey: (url: string) => ['server', url],
-  queryFn: function(url: string) {
+  queryFn: function (url: string) {
     return backendFetchJson<ServerMetadata>(`${url}/meta`);
   },
 };

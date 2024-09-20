@@ -27,16 +27,20 @@ export default function GeocoderControl(props: GeocoderControlProps) {
       });
       props.onLoading && ctrl.on('loading', props.onLoading);
       props.onResults && ctrl.on('results', props.onResults);
-      ctrl.on('result', evt => {
+      ctrl.on('result', (evt) => {
         props.onResult && props.onResult(evt);
 
         const { result } = evt;
         const location =
-          result &&
-          (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
+          result && (result.center || (result.geometry?.type === 'Point' && result.geometry.coordinates));
         if (location && props.marker) {
-          setMarker(<Marker {...(typeof props.marker !== 'boolean' ? props.marker : {})} longitude={location[0]}
-                            latitude={location[1]} />);
+          setMarker(
+            <Marker
+              {...(typeof props.marker !== 'boolean' ? props.marker : {})}
+              longitude={location[0]}
+              latitude={location[1]}
+            />,
+          );
           setTimeout(() => {
             setMarker(null);
           }, 10000);
@@ -107,8 +111,7 @@ export default function GeocoderControl(props: GeocoderControlProps) {
   return marker;
 }
 
-const noop = () => {
-};
+const noop = () => {};
 
 GeocoderControl.defaultProps = {
   marker: true,

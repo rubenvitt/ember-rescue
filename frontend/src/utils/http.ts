@@ -15,27 +15,33 @@ export function ensureSlashBetween(part1: string, part2: string) {
   return `${part1}/${part2}`.replace(/([^:]\/)\/+/g, '$1');
 }
 
-async function makeRequest(init: RequestInit | undefined | {
-  body?: BodyInit | null | undefined;
-  cache?: RequestCache | undefined;
-  credentials?: RequestCredentials | undefined;
-  headers?: HeadersInit | undefined;
-  integrity?: string | undefined;
-  keepalive?: boolean | undefined;
-  method?: string | undefined;
-  mode?: RequestMode | undefined;
-  priority?: RequestPriority | undefined;
-  redirect?: RequestRedirect | undefined;
-  referrer?: string | undefined;
-  referrerPolicy?: ReferrerPolicy | undefined;
-  signal?: AbortSignal | null | undefined;
-  window?: null | undefined
-}, path: string) {
+async function makeRequest(
+  init:
+    | RequestInit
+    | undefined
+    | {
+        body?: BodyInit | null | undefined;
+        cache?: RequestCache | undefined;
+        credentials?: RequestCredentials | undefined;
+        headers?: HeadersInit | undefined;
+        integrity?: string | undefined;
+        keepalive?: boolean | undefined;
+        method?: string | undefined;
+        mode?: RequestMode | undefined;
+        priority?: RequestPriority | undefined;
+        redirect?: RequestRedirect | undefined;
+        referrer?: string | undefined;
+        referrerPolicy?: ReferrerPolicy | undefined;
+        signal?: AbortSignal | null | undefined;
+        window?: null | undefined;
+      },
+  path: string,
+) {
   const baseUrl = storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000';
   const bearbeiter = storage().readLocalStorage<Bearbeiter>('bearbeiter');
   const einsatzId = storage().readLocalStorage<string>('einsatz');
   const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
-  const additionalHeaders: { Bearbeiter?: string, Einsatz?: string, Authorization?: string } = {};
+  const additionalHeaders: { Bearbeiter?: string; Einsatz?: string; Authorization?: string } = {};
 
   if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
   if (einsatzId) additionalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
@@ -74,14 +80,18 @@ async function makeRequest(init: RequestInit | undefined | {
  * @returns {Promise<T>} - A promise that resolves to the parsed JSON data from the response body.
  */
 export async function backendFetchJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await makeRequest({
-    ...init, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      ...init?.headers,
+  const res = await makeRequest(
+    {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...init?.headers,
+      },
     },
-  }, path);
-  return await res.json() as T;
+    path,
+  );
+  return (await res.json()) as T;
 }
 
 /**

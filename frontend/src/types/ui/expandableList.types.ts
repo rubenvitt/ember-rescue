@@ -6,20 +6,20 @@ export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
   label: string;
   danger?: boolean;
 } & (
-  | {
-  onClick: (item: T) => void;
-  dialog?: never;
-}
-  | {
-  dialog: {
-    title: string;
-    message: string;
-    confirmLabel: string;
-    cancelLabel: string;
-    onConfirm: (item: T) => void;
-  };
-  onClick?: never;
-}
+    | {
+        onClick: (item: T) => void;
+        dialog?: never;
+      }
+    | {
+        dialog: {
+          title: string;
+          message: string;
+          confirmLabel: string;
+          cancelLabel: string;
+          onConfirm: (item: T) => void;
+        };
+        onClick?: never;
+      }
   );
 
 export type ExpandableListItemProps<T> = {

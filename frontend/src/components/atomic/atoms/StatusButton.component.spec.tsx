@@ -6,7 +6,6 @@ import { StatusButtonComponent } from './StatusButton.component.tsx';
 import { StatusDto } from '../../../types/app/status.types.js';
 
 describe('StatusButtonComponent', () => {
-
   const mockOnClick = vi.fn();
 
   const statusItems: StatusDto[] = [
@@ -61,7 +60,9 @@ describe('StatusButtonComponent', () => {
       <StatusButtonComponent onClick={mockOnClick} item={status} className="custom-class" />,
     );
 
-    expect(container.firstChild).toHaveClass('bg-yellow-200/30 text-yellow-900 ring-yellow-500 dark:bg-yellow-800/30 dark:text-yellow-100 hover:bg-yellow-500/30');
+    expect(container.firstChild).toHaveClass(
+      'bg-yellow-200/30 text-yellow-900 ring-yellow-500 dark:bg-yellow-800/30 dark:text-yellow-100 hover:bg-yellow-500/30',
+    );
   });
 
   it('merges the provided custom class with statusLabel classes', () => {
@@ -71,6 +72,8 @@ describe('StatusButtonComponent', () => {
     );
 
     expect(container.firstChild).toHaveClass('custom-class');
-    expect(container.firstChild).toHaveClass('bg-purple-200/30 text-purple-900 ring-purple-500 dark:bg-purple-800/30 dark:text-purple-100 hover:bg-purple-500/30');
+    expect(container.firstChild).toHaveClass(
+      'bg-purple-200/30 text-purple-900 ring-purple-500 dark:bg-purple-800/30 dark:text-purple-100 hover:bg-purple-500/30',
+    );
   });
 });

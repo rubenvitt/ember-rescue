@@ -23,67 +23,87 @@ export const PrestartSettings: React.FC = () => {
 
   useEffect(() => {
     console.log('setting servers...', localServers);
-    setServers(localServers.map(item => ({
-      filter: [item.metadata.serverName, item.metadata.serverId, item.url].join(' '),
-      label: <div className="flex justify-between"><span>{item.metadata.serverName}</span> <span
-        className="truncate">{item.url}</span></div>,
-      value: item.url,
-      item,
-    })));
+    setServers(
+      localServers.map((item) => ({
+        filter: [item.metadata.serverName, item.metadata.serverId, item.url].join(' '),
+        label: (
+          <div className="flex justify-between">
+            <span>{item.metadata.serverName}</span> <span className="truncate">{item.url}</span>
+          </div>
+        ),
+        value: item.url,
+        item,
+      })),
+    );
   }, [localServers]);
-  
+
   useEffect(() => {
     console.log('baseUrl', localSettings?.baseUrlHistory);
   }, [localSettings?.baseUrlHistory]);
 
   const serverOptions = useMemo(() => {
-    return [{
-      value: 'http://localhost:3000',
-      filter: 'http://localhost:3000' + ' Lokaler Server',
-      label: <div className="flex justify-between"><span>Lokaler Server</span> <span
-        className="truncate">http://localhost:3000</span></div>,
-    }, ...(servers), ...(localSettings?.baseUrlHistory?.map(value => ({ value, history: true })) ?? [])]
-      .filter((value, index, array) => array.findIndex(a => a.value === value.value) === index)
+    return [
+      {
+        value: 'http://localhost:3000',
+        filter: 'http://localhost:3000' + ' Lokaler Server',
+        label: (
+          <div className="flex justify-between">
+            <span>Lokaler Server</span> <span className="truncate">http://localhost:3000</span>
+          </div>
+        ),
+      },
+      ...servers,
+      ...(localSettings?.baseUrlHistory?.map((value) => ({ value, history: true })) ?? []),
+    ]
+      .filter((value, index, array) => array.findIndex((a) => a.value === value.value) === index)
       .map((item: DefaultOptionType) => ({
         ...item,
-        label: item.history ?
-          <span className="text-gray-500"><PiClock className="inline" /> {item.value}</span> : item.label,
+        label: item.history ? (
+          <span className="text-gray-500">
+            <PiClock className="inline" /> {item.value}
+          </span>
+        ) : (
+          item.label
+        ),
       }));
   }, [servers, localSettings?.baseUrlHistory]);
 
   return (
-    <FormLayout<Pick<LocalSettings, 'baseUrl'>> formik={{
-      initialValues: {
-        baseUrl: localSettings?.baseUrl ?? '',
-      },
-      onSubmit: async (data) => {
-        console.log('save baseUrl...', { data });
-        const currentSettings = localSettings ?? { baseUrlHistory: [] };
-        const updatedSettings = {
-          baseUrl: data.baseUrl,
-          baseUrlHistory: [data.baseUrl, ...currentSettings.baseUrlHistory.filter(url => url !== data.baseUrl)],
-        };
-        storage().writeLocalStorage('localSettings', updatedSettings);
-        queryClient.getQueryCache().clear();
-        queryClient.removeQueries();
-        await queryClient.invalidateQueries({});
-      },
-    }}>
+    <FormLayout<Pick<LocalSettings, 'baseUrl'>>
+      formik={{
+        initialValues: {
+          baseUrl: localSettings?.baseUrl ?? '',
+        },
+        onSubmit: async (data) => {
+          console.log('save baseUrl...', { data });
+          const currentSettings = localSettings ?? { baseUrlHistory: [] };
+          const updatedSettings = {
+            baseUrl: data.baseUrl,
+            baseUrlHistory: [data.baseUrl, ...currentSettings.baseUrlHistory.filter((url) => url !== data.baseUrl)],
+          };
+          storage().writeLocalStorage('localSettings', updatedSettings);
+          queryClient.getQueryCache().clear();
+          queryClient.removeQueries();
+          await queryClient.invalidateQueries({});
+        },
+      }}
+    >
       {(props) => {
         return (
           <>
             <InputWrapper name="baseUrl" label="URL zum Backend">
               <AutoComplete
-                variant='filled'
+                variant="filled"
                 // @ts-ignore
                 spellCheck={false}
-                backfill={true} filterOption={true} optionFilterProp={'filter'}
+                backfill={true}
+                filterOption={true}
+                optionFilterProp={'filter'}
                 options={serverOptions}
-                name="baseUrl" />
+                name="baseUrl"
+              />
             </InputWrapper>
-            <Button type="primary"
-                    onClick={props.submitForm}
-                    icon={<PiCloudArrowDown size={24} />}>
+            <Button type="primary" onClick={props.submitForm} icon={<PiCloudArrowDown size={24} />}>
               Speichern
             </Button>
           </>

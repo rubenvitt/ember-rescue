@@ -6,7 +6,6 @@ export const Route = createLazyFileRoute('/app/lagekarte')({
   component: Lagekarte,
 });
 
-
 function Lagekarte() {
   const { secret } = useSecret({ secretKey: 'mapboxApi' });
 
@@ -18,11 +17,13 @@ function Lagekarte() {
     return <div>Missing Mapbox Key</div>;
   }
 
-  return <>
-    <div style={{ height: 'calc(100vh - 200px)', width: '100%' }}>
-      <MapboxComponent mapboxToken={secret.data.value} />
-    </div>
-  </>;
+  return (
+    <>
+      <div style={{ height: 'calc(100vh - 200px)', width: '100%' }}>
+        <MapboxComponent mapboxToken={secret.data.value} />
+      </div>
+    </>
+  );
   /*<div style={{ height: 'calc(100vh - 150px)', width: '100%' }}>*/
 
   /*  <LeafletMap />*/

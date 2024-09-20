@@ -12,7 +12,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET Settings
 export const fetchSettings = {
   queryKey: [queryKey],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<Settings>('settings');
   },
 };
@@ -20,7 +20,7 @@ export const fetchSettings = {
 // POST Settings
 export const saveSettings = {
   mutationKey: [queryKey],
-  mutationFn: function(settings: Settings) {
+  mutationFn: function (settings: Settings) {
     return backendFetchJson('/settings', {
       body: JSON.stringify(settings),
       method: 'POST',

@@ -3,10 +3,7 @@ import colors from 'tailwindcss/colors';
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'selector',
   theme: {
     extend: {
@@ -17,4 +14,3 @@ export default {
     },
   },
 } satisfies Config;
-

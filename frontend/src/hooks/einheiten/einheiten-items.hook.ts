@@ -12,8 +12,8 @@ function convertToItems(einheiten?: EinheitDto[]) {
   if (!einheiten) {
     return [];
   } else {
-    return einheiten.map(item => {
-      return ({
+    return einheiten.map((item) => {
+      return {
         label: item.funkrufname,
         value: item.id,
         title: item.funkrufname,
@@ -21,7 +21,7 @@ function convertToItems(einheiten?: EinheitDto[]) {
         // item,
         // label: item.funkrufname,
         // secondary: item.einheitTyp.label,
-      }) satisfies DefaultOptionType;
+      } satisfies DefaultOptionType;
     });
   }
 }
@@ -57,9 +57,7 @@ export function useEinheitenItems({ einheiten, include }: Props) {
       ...einheitenImEinsatzItems,
       ...einheitenNichtImEinsatzItems,
       ...allEinheitenItems,
-    ].filter((item, index, self) =>
-      index === self.findIndex((t) => t.value === item.value),
-    );
+    ].filter((item, index, self) => index === self.findIndex((t) => t.value === item.value));
   }, []) as DefaultOptionType[];
 
   return { einheitenAsItems, loading: allEinheiten.isLoading || einheitenImEinsatz.isLoading };

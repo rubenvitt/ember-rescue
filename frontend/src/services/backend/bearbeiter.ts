@@ -10,7 +10,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET All Bearbeiter
 export const fetchAllBearbeiter = {
   queryKey: [queryKey],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<Bearbeiter[]>('bearbeiter');
   },
 };
@@ -18,7 +18,7 @@ export const fetchAllBearbeiter = {
 // GET Single Bearbeiter
 export const fetchSingleBearbeiter = {
   queryKey: ({ bearbeiterId }: { bearbeiterId?: string }) => [queryKey, bearbeiterId],
-  queryFn: function({ bearbeiterId }: { bearbeiterId: string }) {
+  queryFn: function ({ bearbeiterId }: { bearbeiterId: string }) {
     requireParams(bearbeiterId);
     return backendFetchJson<Bearbeiter | null>(`/bearbeiter/${bearbeiterId}`);
   },

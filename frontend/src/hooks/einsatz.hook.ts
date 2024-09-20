@@ -29,7 +29,7 @@ export function useEinsatz() {
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
 
-  const updateEinsatz = useMutation<Einsatz, unknown, { id: string, data: UpdateEinsatz }>({
+  const updateEinsatz = useMutation<Einsatz, unknown, { id: string; data: UpdateEinsatz }>({
     mutationKey: services.backend.einsatze.updateEinsatz.mutationKey,
     mutationFn: services.backend.einsatze.updateEinsatz.mutationFn,
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
@@ -40,7 +40,6 @@ export function useEinsatz() {
     mutationFn: services.backend.einsatze.einsatzAbschliessen.mutationFn,
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
-
 
   function saveEinsatz(einsatz: Einsatz) {
     setEinsatz(einsatz);

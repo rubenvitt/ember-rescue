@@ -16,8 +16,8 @@ type Store = {
     dark: boolean;
     setDark: (dark: ((old: boolean) => boolean) | boolean) => void;
     setAuto: (dark?: boolean) => void;
-  }
-}
+  };
+};
 
 export const useStore = create<Store>((set, get) => ({
   bearbeiter: storage().readLocalStorage<Bearbeiter>('bearbeiter'),
@@ -41,9 +41,9 @@ export const useStore = create<Store>((set, get) => ({
     set({ einsatzId: null });
   },
 
-
   theme: {
-    dark: storage().readLocalStorage<boolean>('theme:dark') ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
+    dark:
+      storage().readLocalStorage<boolean>('theme:dark') ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
     setDark: (dark) => {
       let isDark = typeof dark === 'function' ? dark(get().theme.dark) : dark;
       storage().writeLocalStorage('theme:dark', isDark);

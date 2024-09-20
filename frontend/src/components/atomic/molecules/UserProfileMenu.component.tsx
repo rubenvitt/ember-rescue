@@ -22,6 +22,13 @@ export function UserProfileMenu({ dropdownItems }: UserProfileDropdownProps) {
     ];
   }, [bearbeiter.data]);
 
-  return <Menu className="bg-transparent" disabledOverflow={true} mode={'horizontal'} selectedKeys={['']}
-               items={menuItems} />;
+  return (
+    <Menu
+      className="bg-transparent"
+      disabledOverflow={true}
+      mode={'horizontal'}
+      selectedKeys={['']}
+      items={menuItems}
+    />
+  );
 }

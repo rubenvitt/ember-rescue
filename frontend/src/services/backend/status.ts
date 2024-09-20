@@ -12,7 +12,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET All Status
 export const fetchAllStatus = {
   queryKey: [queryKey],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<StatusDto[]>('status');
   },
 };

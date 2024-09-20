@@ -5,7 +5,7 @@ export type NavItem = {
   name: string;
   href: ToPathOption;
   current?: boolean;
-} & WithIcon
+} & WithIcon;
 
 export interface NavItemProps {
   item: NavItem;
@@ -16,8 +16,7 @@ export interface NavListProps {
   title?: string;
 }
 
-export interface SidebarContentProps {
-}
+export interface SidebarContentProps {}
 
 export interface MobileSidebarProps extends SidebarContentProps {
   sidebarOpen: boolean;

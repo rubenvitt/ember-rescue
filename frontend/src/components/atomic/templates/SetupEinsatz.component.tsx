@@ -9,8 +9,8 @@ export const SetupEinsatzTemplate: React.FC = () => {
   const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.length > 0, [offeneEinsaetze.data]);
 
   return (
-    <div className="flex gap-4 flex-col items-center min-h-screen px-4 mb-12">
-      <div className="w-full max-w-6xl flex flex-col gap-16 space-y-6">
+    <div className="mb-12 flex min-h-screen flex-col items-center gap-4 px-4">
+      <div className="flex w-full max-w-6xl flex-col gap-16 space-y-6">
         <SetupEinsatzHeader einsatzOffen={einsatzOffen ?? false} />
         {einsatzOffen && <SetupEinsatzOffeneEinsaetze />}
         <NewSetupEinsatzForm />

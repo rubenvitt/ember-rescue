@@ -72,11 +72,16 @@ export function BetroffeneList() {
   return (
     <ul
       role="list"
-      className="divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden dark:bg-gray-950/25 shadow-sm ring-1 ring-gray-900/5"
+      className="divide-y divide-gray-100 overflow-hidden shadow-sm ring-1 ring-gray-900/5 dark:divide-gray-700 dark:bg-gray-950/25"
     >
       {people.map((person) => (
-        <li key={person.email}
-            className={twMerge('relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 dark:hover:bg-gray-950 sm:px-6', person.active && 'bg-blue-300 hover:bg-blue-400 dark:bg-blue-950')}>
+        <li
+          key={person.email}
+          className={twMerge(
+            'relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 dark:hover:bg-gray-950',
+            person.active && 'bg-blue-300 hover:bg-blue-400 dark:bg-blue-950',
+          )}
+        >
           <div className="flex min-w-0 gap-x-4">
             <div aria-label="Gelber Patient" className="h-12 w-12 flex-none rounded-full bg-red-500" />
             <div className="min-w-0 flex-auto">
@@ -86,18 +91,17 @@ export function BetroffeneList() {
                   #1
                 </a>
               </p>
-              <p className="mt-1 flex text-xs leading-5 text-gray-500 dark:text-gray-100">
-                In Behandlung
-              </p>
+              <p className="mt-1 flex text-xs leading-5 text-gray-500 dark:text-gray-100">In Behandlung</p>
               {person.lastSeen ? (
                 <dl className="mt-1 text-xs leading-5 text-gray-500">
                   <dt>Erstkontakt</dt>
                   <dd>
-                    <time
-                      dateTime={person.lastSeenDateTime}>{format(person.lastSeenDateTime, natoDateTime)}</time>
+                    <time dateTime={person.lastSeenDateTime}>{format(person.lastSeenDateTime, natoDateTime)}</time>
                   </dd>
                 </dl>
-              ) : <></>}
+              ) : (
+                <></>
+              )}
               <div className="mt-1 flex items-center gap-x-1.5">
                 <div className="flex-none rounded-full bg-orange-500/20 p-1">
                   <div className="h-1.5 w-1.5 rounded-full bg-orange-500" />
@@ -110,9 +114,7 @@ export function BetroffeneList() {
             <div className="hidden sm:flex sm:flex-col sm:items-end">
               <p className="text-sm leading-6 text-gray-900 dark:text-white"></p>
             </div>
-            {person.active &&
-              <ChevronRightIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-            }
+            {person.active && <ChevronRightIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />}
           </div>
         </li>
       ))}

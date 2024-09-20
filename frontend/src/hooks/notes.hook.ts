@@ -5,7 +5,7 @@ import { useEinsatz } from './einsatz.hook.js';
 
 type Props = {
   notizId?: string;
-}
+};
 
 export function useNotizen(props?: Props) {
   const queryClient = useQueryClient();
@@ -19,7 +19,7 @@ export function useNotizen(props?: Props) {
   const archivedNotizen = useQuery<NotizDto[]>({
     queryKey: services.backend.notizen.fetchNotizenDoneForEinsatz.queryKey({ einsatzId }),
     queryFn: services.backend.notizen.fetchNotizenDoneForEinsatz.queryFn({ einsatzId }),
-  })
+  });
 
   const createNotiz = useMutation<NotizDto, unknown, CreateNotizDto>({
     mutationKey: services.backend.notizen.postAddNotizToEinsatz.mutationKey({ einsatzId }),
@@ -34,8 +34,14 @@ export function useNotizen(props?: Props) {
   });
 
   const toggleCompleteNotiz = useMutation<unknown, unknown, void>({
-    mutationKey: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationKey({ einsatzId, notizId: props?.notizId }),
-    mutationFn: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationFn({ einsatzId, notizId: props?.notizId }),
+    mutationKey: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationKey({
+      einsatzId,
+      notizId: props?.notizId,
+    }),
+    mutationFn: services.backend.notizen.toggleCompleteNotizInEinsatz.mutationFn({
+      einsatzId,
+      notizId: props?.notizId,
+    }),
     onSuccess: services.backend.notizen.invalidateQueries(queryClient),
   });
 

@@ -10,7 +10,6 @@ import * as secrets from './secrets.js';
 import * as notizen from './notizen.js';
 import * as reminders from './reminders.js';
 
-
 export default {
   reminders,
   einheiten,
@@ -22,5 +21,5 @@ export default {
   qualifikationen,
   settings,
   secrets,
-  notizen
+  notizen,
 };

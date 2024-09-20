@@ -8,7 +8,7 @@ import { useWindowSetup } from '../../../../hooks/window.hook.js';
 export function DefaultDashboard() {
   const { einsatz } = useEinsatz();
   const navigate = useNavigate({ from: '/app/' });
-  
+
   useWindowSetup({
     title: 'Project Rescue',
     resizable: true,
@@ -19,20 +19,19 @@ export function DefaultDashboard() {
     if (einsatz.isDisabled) navigate({ to: '/setupEinsatz' });
   }, [einsatz.isDisabled]);
 
-  if (einsatz.isLoading)
-    return null;
+  if (einsatz.isLoading) return null;
 
   const data = einsatz.data;
 
   if (data)
-    return <div>
-      <>
-        <p className="text-gray-900 dark:text-white">
-          Aktueller Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}
-        </p>
-        <p className="text-gray-500">
-          {data.einsatz_alarmstichwort?.beschreibung}
-        </p>
-      </>
-    </div>;
+    return (
+      <div>
+        <>
+          <p className="text-gray-900 dark:text-white">
+            Aktueller Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}
+          </p>
+          <p className="text-gray-500">{data.einsatz_alarmstichwort?.beschreibung}</p>
+        </>
+      </div>
+    );
 }

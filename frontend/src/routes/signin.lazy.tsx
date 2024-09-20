@@ -14,7 +14,5 @@ function SignInRoute() {
     removeBearbeiter();
   }, []);
 
-  return (
-    <SignIn />
-  );
+  return <SignIn />;
 }

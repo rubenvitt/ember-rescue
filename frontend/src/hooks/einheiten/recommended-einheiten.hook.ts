@@ -3,7 +3,6 @@ import { useEinheiten } from './einheiten.hook.js';
 
 import { EinheitDto } from '../../types/app/einheit.types.js';
 
-
 interface UseRecommendedEinheitenConfig {
   maxResults?: number;
   sortOrder?: 'asc' | 'desc';

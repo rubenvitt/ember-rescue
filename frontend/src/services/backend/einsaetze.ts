@@ -7,12 +7,13 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryKey = 'einsatz';
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
+export const invalidateQueries = (queryClient: QueryClient) =>
+  createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
 
 // GET Single Einsatz
 export const fetchSingleEinsatz = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
-  queryFn: function({ einsatzId }: { einsatzId: string | null }) {
+  queryFn: function ({ einsatzId }: { einsatzId: string | null }) {
     requireParams(einsatzId);
     return backendFetchJson<Einsatz>(`/einsatz/${einsatzId}`);
   },
@@ -21,7 +22,7 @@ export const fetchSingleEinsatz = {
 // GET All offene Einsätze
 export const fetchOffeneEinsaetze = {
   queryKey: [queryKey, 'offeneEinsaetze'],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<Einsatz[]>('/einsatz?abgeschlossen=false');
   },
 };
@@ -43,7 +44,7 @@ export const createEinsatz = {
 // PUT Existing Einsatz
 export const updateEinsatz = {
   mutationKey: [queryKey, 'update'],
-  mutationFn: async ({ id, data }: { id: string, data: UpdateEinsatz }) => {
+  mutationFn: async ({ id, data }: { id: string; data: UpdateEinsatz }) => {
     return await backendFetchJson<Einsatz>(`/einsatz/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),

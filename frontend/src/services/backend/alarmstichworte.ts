@@ -12,7 +12,7 @@ export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQ
 // GET All Alarmstichworte
 export const fetchAllAlarmstichworte = {
   queryKey: [queryKey],
-  queryFn: function() {
+  queryFn: function () {
     return backendFetchJson<Alarmstichwort[]>('alarmstichwort');
   },
 };

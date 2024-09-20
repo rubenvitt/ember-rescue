@@ -130,98 +130,108 @@ function _MapboxComponent({ mapboxToken }: Props) {
 
   const { einheitenImEinsatz } = useEinheiten();
 
-  return <>
-    <div className="border border-gray-500 mb-2 px-6 py-2 dark:text-white">
-      Einheiten der Karte hinzufügen (DEBUG)
-      <div className="flex gap-2 overflow-scroll flex-nowrap">
-        {einheitenImEinsatz.data?.map(einheit => (
-          <Button
-            key={einheit.id}
-            type="link"
-            className="break-keep"
-            onClick={() => {
-              let presentMarker = map?._markers?.find((m) => m.getElement().id === `einheit-${einheit.funkrufname}`);
-              if (presentMarker) {
-                alert('found item');
-                map?.setCenter(presentMarker.getLngLat());
-              } else {
-                let element = document.createElement('div');
-                let svg = erzeugeTaktischesZeichen({
-                  grundzeichen: 'fahrzeug',
-                  organisation: 'hilfsorganisation',
-                  einheit: 'zug',
-                  fachaufgabe: 'iuk',
-                  name: einheit.funkrufname,
-                }).svg;
-                element.innerHTML = svg.render();
-                element.className = 'w-20 h-20';
-                element.id = `einheit-${einheit.funkrufname}`;
-                map && new mapboxgl.Marker({ element, draggable: true })
-                  .setPopup(new mapboxgl.Popup().setText(`Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter())!)}`))
-                  .setLngLat(map.getCenter())
-                  .addTo(map);
-              }
-            }}>{einheit.funkrufname}</Button>
-        ))}
-
+  return (
+    <>
+      <div className="mb-2 border border-gray-500 px-6 py-2 dark:text-white">
+        Einheiten der Karte hinzufügen (DEBUG)
+        <div className="flex flex-nowrap gap-2 overflow-scroll">
+          {einheitenImEinsatz.data?.map((einheit) => (
+            <Button
+              key={einheit.id}
+              type="link"
+              className="break-keep"
+              onClick={() => {
+                let presentMarker = map?._markers?.find((m) => m.getElement().id === `einheit-${einheit.funkrufname}`);
+                if (presentMarker) {
+                  alert('found item');
+                  map?.setCenter(presentMarker.getLngLat());
+                } else {
+                  let element = document.createElement('div');
+                  let svg = erzeugeTaktischesZeichen({
+                    grundzeichen: 'fahrzeug',
+                    organisation: 'hilfsorganisation',
+                    einheit: 'zug',
+                    fachaufgabe: 'iuk',
+                    name: einheit.funkrufname,
+                  }).svg;
+                  element.innerHTML = svg.render();
+                  element.className = 'w-20 h-20';
+                  element.id = `einheit-${einheit.funkrufname}`;
+                  map &&
+                    new mapboxgl.Marker({ element, draggable: true })
+                      .setPopup(
+                        new mapboxgl.Popup().setText(
+                          `Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter())!)}`,
+                        ),
+                      )
+                      .setLngLat(map.getCenter())
+                      .addTo(map);
+                }
+              }}
+            >
+              {einheit.funkrufname}
+            </Button>
+          ))}
+        </div>
       </div>
-    </div>
-    <div ref={mapDiv} id="map" className="h-full w-full"></div>
-    {/*<Map*/}
-    {/*  id={'map'}*/}
-    {/*  onLoad={onMapLoaded}*/}
-    {/*  attributionControl={false}*/}
-    {/*  // @ts-ignore*/}
-    {/*  mapLib={import('mapbox-gl')}*/}
-    {/*  initialViewState={{*/}
-    {/*    longitude: -100,*/}
-    {/*    latitude: 40,*/}
-    {/*    zoom: 3.5,*/}
-    {/*  }}*/}
-    {/*  mapStyle={dark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard'}*/}
-    {/*  language={'de'}*/}
-    {/*  logoPosition={'bottom-right'}*/}
-    {/*  maxZoom={24}*/}
-    {/*  testMode={true}*/}
-    {/*  mapboxAccessToken={secret.data.value}>*/}
-    {/*  <ScaleControl />*/}
-    {/*  <GeocoderControl mapboxAccessToken={secret.data.value} position="top-left" countries="de" />*/}
-    {/*  <AttributionControl position="bottom-right" customAttribution="Project Rescue" compact />*/}
-    {/*  /!*{mapLoaded && dark && <Layer id="darkModeLayer" type="background" paint={{*!/*/}
-    {/*  /!*  'background-color': 'hsl(0,0,0)',*!/*/}
-    {/*  /!*  'background-opacity': 0.2,*!/*/}
-    {/*  /!*}} />}*!/*/}
+      <div ref={mapDiv} id="map" className="h-full w-full"></div>
+      {/*<Map*/}
+      {/*  id={'map'}*/}
+      {/*  onLoad={onMapLoaded}*/}
+      {/*  attributionControl={false}*/}
+      {/*  // @ts-ignore*/}
+      {/*  mapLib={import('mapbox-gl')}*/}
+      {/*  initialViewState={{*/}
+      {/*    longitude: -100,*/}
+      {/*    latitude: 40,*/}
+      {/*    zoom: 3.5,*/}
+      {/*  }}*/}
+      {/*  mapStyle={dark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/standard'}*/}
+      {/*  language={'de'}*/}
+      {/*  logoPosition={'bottom-right'}*/}
+      {/*  maxZoom={24}*/}
+      {/*  testMode={true}*/}
+      {/*  mapboxAccessToken={secret.data.value}>*/}
+      {/*  <ScaleControl />*/}
+      {/*  <GeocoderControl mapboxAccessToken={secret.data.value} position="top-left" countries="de" />*/}
+      {/*  <AttributionControl position="bottom-right" customAttribution="Project Rescue" compact />*/}
+      {/*  /!*{mapLoaded && dark && <Layer id="darkModeLayer" type="background" paint={{*!/*/}
+      {/*  /!*  'background-color': 'hsl(0,0,0)',*!/*/}
+      {/*  /!*  'background-opacity': 0.2,*!/*/}
+      {/*  /!*}} />}*!/*/}
 
+      {/*  <Marker longitude={-100} latitude={40} draggable>*/}
+      {/*    /!* @ts-ignore *!/*/}
+      {/*    <TaktischesZeichen*/}
+      {/*      className="h-24 w-24"*/}
+      {/*      grundzeichen="fahrzeug"*/}
+      {/*      organisation="hilfsorganisation"*/}
+      {/*      organisationName="DRK"*/}
+      {/*    />*/}
+      {/*  </Marker>*/}
 
-    {/*  <Marker longitude={-100} latitude={40} draggable>*/}
-    {/*    /!* @ts-ignore *!/*/}
-    {/*    <TaktischesZeichen*/}
-    {/*      className="h-24 w-24"*/}
-    {/*      grundzeichen="fahrzeug"*/}
-    {/*      organisation="hilfsorganisation"*/}
-    {/*      organisationName="DRK"*/}
-    {/*    />*/}
-    {/*  </Marker>*/}
-
-    {/*  <Popup*/}
-    {/*    anchor="top"*/}
-    {/*    longitude={52}*/}
-    {/*    latitude={11}*/}
-    {/*  >*/}
-    {/*    <div>*/}
-    {/*      Teststadt, ist hier |{' '}*/}
-    {/*      <a*/}
-    {/*        target="_new"*/}
-    {/*        href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=salzgitter, niedersachsen`}*/}
-    {/*      >*/}
-    {/*        Wikipedia*/}
-    {/*      </a>*/}
-    {/*    </div>*/}
-    {/*  </Popup>*/}
-    {/*</Map>*/}
-  </>;
+      {/*  <Popup*/}
+      {/*    anchor="top"*/}
+      {/*    longitude={52}*/}
+      {/*    latitude={11}*/}
+      {/*  >*/}
+      {/*    <div>*/}
+      {/*      Teststadt, ist hier |{' '}*/}
+      {/*      <a*/}
+      {/*        target="_new"*/}
+      {/*        href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=salzgitter, niedersachsen`}*/}
+      {/*      >*/}
+      {/*        Wikipedia*/}
+      {/*      </a>*/}
+      {/*    </div>*/}
+      {/*  </Popup>*/}
+      {/*</Map>*/}
+    </>
+  );
 }
 
-export const MapboxComponent = ({ mapboxToken }: Props) => <MapProvider>
-  <_MapboxComponent mapboxToken={mapboxToken} />
-</MapProvider>;
+export const MapboxComponent = ({ mapboxToken }: Props) => (
+  <MapProvider>
+    <_MapboxComponent mapboxToken={mapboxToken} />
+  </MapProvider>
+);

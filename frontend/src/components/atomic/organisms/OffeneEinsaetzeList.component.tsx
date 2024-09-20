@@ -25,58 +25,73 @@ export const OffeneEinsaetzeList: React.FC = () => {
           <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
             Stichwort: {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
           </p>
-          <Tag icon={<PiNetwork className="inline mr-1" />} color="blue">Remote-Einsatz</Tag>
+          <Tag icon={<PiNetwork className="mr-1 inline" />} color="blue">
+            Remote-Einsatz
+          </Tag>
         </div>
-        <div className="mt-1 text-right flex flex-col text-xs leading-5 text-blue-800 dark:text-blue-300">
+        <div className="mt-1 flex flex-col text-right text-xs leading-5 text-blue-800 dark:text-blue-300">
           <p>
-            Beginn:{' '}
-            <time dateTime={formatISO(einsatz.beginn)}>
-              {formatNatoDateTime(einsatz.beginn)}
-            </time>
-            {' '}
-            (Laufzeit bisher: {beginnToNow})
+            Beginn: <time dateTime={formatISO(einsatz.beginn)}>{formatNatoDateTime(einsatz.beginn)}</time> (Laufzeit
+            bisher: {beginnToNow})
           </p>
         </div>
       </div>
     );
   }, []);
 
-  const renderExpandedContent = useCallback((einsatz: Einsatz) => {
-    const einheit = einheiten.data?.find(value => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
-    const bearbeiter = allBearbeiter.data?.find(value => value.id === einsatz.bearbeiterId)?.name;
+  const renderExpandedContent = useCallback(
+    (einsatz: Einsatz) => {
+      const einheit = einheiten.data?.find((value) => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
+      const bearbeiter = allBearbeiter.data?.find((value) => value.id === einsatz.bearbeiterId)?.name;
 
-    return (
-      <div className="text-sm text-gray-700 dark:text-gray-300">
-        <p>Erstellt von: {bearbeiter ?? 'Unbekannt'}</p>
-        <p>Aufgenommen durch: {einheit ?? 'Unbekannt'}</p>
-      </div>
-    );
-  }, [einheiten.data, allBearbeiter.data]);
+      return (
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          <p>Erstellt von: {bearbeiter ?? 'Unbekannt'}</p>
+          <p>Aufgenommen durch: {einheit ?? 'Unbekannt'}</p>
+        </div>
+      );
+    },
+    [einheiten.data, allBearbeiter.data],
+  );
 
-  const actionButtons: ActionButton<Einsatz>[] = useMemo(() => [
-    {
-      label: 'Archivieren',
-      danger: true,
-      dialog: {
-        title: 'Laufenden Einsatz wirklich archivieren?',
-        message: 'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
-        confirmLabel: 'Einsatz archivieren',
-        cancelLabel: 'Abbrechen',
-        onConfirm: (einsatz) => einsatzAbschliessen.mutate(einsatz),
+  const actionButtons: ActionButton<Einsatz>[] = useMemo(
+    () => [
+      {
+        label: 'Archivieren',
+        danger: true,
+        dialog: {
+          title: 'Laufenden Einsatz wirklich archivieren?',
+          message:
+            'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
+          confirmLabel: 'Einsatz archivieren',
+          cancelLabel: 'Abbrechen',
+          onConfirm: (einsatz) => einsatzAbschliessen.mutate(einsatz),
+        },
       },
-    },
-    {
-      label: 'Einsatz öffnen',
-      onClick: (einsatz) => saveEinsatz(einsatz),
-      color: 'blue',
-    },
-  ], [einsatzAbschliessen, saveEinsatz]);
+      {
+        label: 'Einsatz öffnen',
+        onClick: (einsatz) => saveEinsatz(einsatz),
+        color: 'blue',
+      },
+    ],
+    [einsatzAbschliessen, saveEinsatz],
+  );
 
-  return (<>
-      <List className={listStyles()} itemLayout="horizontal" dataSource={offeneEinsaetze.data}
-            renderItem={(item) => <ExpandableListItem item={item} renderContent={renderEinsatz}
-                                                      renderExpandedContent={renderExpandedContent}
-                                                      actionButtons={actionButtons} />} />
+  return (
+    <>
+      <List
+        className={listStyles()}
+        itemLayout="horizontal"
+        dataSource={offeneEinsaetze.data}
+        renderItem={(item) => (
+          <ExpandableListItem
+            item={item}
+            renderContent={renderEinsatz}
+            renderExpandedContent={renderExpandedContent}
+            actionButtons={actionButtons}
+          />
+        )}
+      />
     </>
   );
 };

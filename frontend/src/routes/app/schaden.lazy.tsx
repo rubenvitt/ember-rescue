@@ -5,5 +5,9 @@ export const Route = createLazyFileRoute('/app/schaden')({
 });
 
 function Schaden() {
-  return <><p className="dark:text-white">Schäden</p></>;
+  return (
+    <>
+      <p className="dark:text-white">Schäden</p>
+    </>
+  );
 }

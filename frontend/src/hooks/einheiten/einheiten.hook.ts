@@ -22,8 +22,8 @@ export function useEinheiten(props?: { einheitId?: string }) {
     if (!einheiten.data || !einheitenImEinsatz.data) {
       return [];
     }
-    const einsatzEinheitenIds = new Set(einheitenImEinsatz.data.map(einheit => einheit.id));
-    return einheiten.data.filter(einheit => !einsatzEinheitenIds.has(einheit.id));
+    const einsatzEinheitenIds = new Set(einheitenImEinsatz.data.map((einheit) => einheit.id));
+    return einheiten.data.filter((einheit) => !einsatzEinheitenIds.has(einheit.id));
   }, [einheiten, einheitenImEinsatz]);
 
   const einheitenTypen = useQuery<EinheitTypDto[]>({
@@ -63,7 +63,6 @@ export function useEinheiten(props?: { einheitId?: string }) {
     mutationFn: services.backend.einheiten.postStatusForEinheit.mutationFn({ einsatzId, einheitId: props?.einheitId }),
     onSuccess: services.backend.einheiten.invalidateQueries(queryClient),
   });
-
 
   return {
     einheiten,

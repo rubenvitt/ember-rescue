@@ -19,62 +19,73 @@ export const SidebarContentComponent: React.FC<SidebarContentProps> = () => {
   const themeUtils = _useTheme();
 
   const navItems = useMemo<MenuItem[]>(() => {
-    return navigation(navigate).map(((item: MenuItem) => ({
-      onClick: async () => {
-        await navigate({ to: item!.key });
-      },
-      ...item,
-    } as MenuItem)));
+    return navigation(navigate).map(
+      (item: MenuItem) =>
+        ({
+          onClick: async () => {
+            await navigate({ to: item!.key });
+          },
+          ...item,
+        }) as MenuItem,
+    );
   }, [navigate]);
 
   return (
     <>
-      <ConfigProvider theme={{
-        algorithm: themeUtils.isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        components: {
-          Menu:
-            themeUtils.isDark ? {
-              itemBg: twConfig.theme.colors.primary['950'],
-              darkItemColor: twConfig.theme.colors.white,
-              itemHoverBg: twConfig.theme.colors.primary['600'],
-              itemSelectedBg: twConfig.theme.colors.primary['800'],
-              itemSelectedColor: twConfig.theme.colors.white,
-            } : {
-              itemBg: twConfig.theme.colors.primary['600'],
-              itemColor: twConfig.theme.colors.white,
-              itemHoverBg: twConfig.theme.colors.primary['200'],
-              itemSelectedBg: twConfig.theme.colors.white,
-              itemSelectedColor: twConfig.theme.colors.primary['600'],
-            },
-        },
-      }}>
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 dark:bg-primary-950 pb-4">
+      <ConfigProvider
+        theme={{
+          algorithm: themeUtils.isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+          components: {
+            Menu: themeUtils.isDark
+              ? {
+                  itemBg: twConfig.theme.colors.primary['950'],
+                  darkItemColor: twConfig.theme.colors.white,
+                  itemHoverBg: twConfig.theme.colors.primary['600'],
+                  itemSelectedBg: twConfig.theme.colors.primary['800'],
+                  itemSelectedColor: twConfig.theme.colors.white,
+                }
+              : {
+                  itemBg: twConfig.theme.colors.primary['600'],
+                  itemColor: twConfig.theme.colors.white,
+                  itemHoverBg: twConfig.theme.colors.primary['200'],
+                  itemSelectedBg: twConfig.theme.colors.white,
+                  itemSelectedColor: twConfig.theme.colors.primary['600'],
+                },
+          },
+        }}
+      >
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950">
           <div className="px-6">
             <EinsatzInfoComponent />
           </div>
           <Menu selectedKeys={[pathname]} mode="inline" items={navItems} />
-          <Menu className="mt-auto" selectedKeys={[pathname]} mode="inline" items={[
-            {
-              type: 'submenu',
-              key: '/admin',
-              label: 'Administration',
-              children: [
-                {
-                  key: '/admin-center',
-                  danger: true,
-                  label: 'Admin Center',
-                  icon: <PiFadersHorizontal size={24} />,
-                  onClick: () => openAdmin(),
-                },
-              ],
-            },
-            {
-              key: '/help',
-              label: 'Support',
-              icon: <PiQuestion size={24} />,
-              onClick: () => openDocs(),
-            },
-          ]} />
+          <Menu
+            className="mt-auto"
+            selectedKeys={[pathname]}
+            mode="inline"
+            items={[
+              {
+                type: 'submenu',
+                key: '/admin',
+                label: 'Administration',
+                children: [
+                  {
+                    key: '/admin-center',
+                    danger: true,
+                    label: 'Admin Center',
+                    icon: <PiFadersHorizontal size={24} />,
+                    onClick: () => openAdmin(),
+                  },
+                ],
+              },
+              {
+                key: '/help',
+                label: 'Support',
+                icon: <PiQuestion size={24} />,
+                onClick: () => openDocs(),
+              },
+            ]}
+          />
         </div>
       </ConfigProvider>
     </>

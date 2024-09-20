@@ -3,7 +3,8 @@ import { cva } from 'class-variance-authority';
 export const cellStyles = cva('py-4 px-4 text-sm', {
   variants: {
     type: {
-      header: 'font-semibold text-gray-900 bg-gray-50 bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 backdrop-blur backdrop-filter dark:bg-gray-950 dark:text-white',
+      header:
+        'font-semibold text-gray-900 bg-gray-50 bg-opacity-75 sticky top-0 z-10 border-b border-gray-300 backdrop-blur backdrop-filter dark:bg-gray-950 dark:text-white',
       body: 'text-gray-500 dark:text-white',
     },
     position: {

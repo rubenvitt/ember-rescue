@@ -17,10 +17,14 @@ export const StatusButtonComponent: React.FC<StatusButtonProps> = ({ onClick, it
     <Button
       onClick={onClickHandler}
       type="text"
-      className={twMerge('w-full h-full flex-col border border-gray-500', statusLabel({ status: item.code }), className)}
+      className={twMerge(
+        'h-full w-full flex-col border border-gray-500',
+        statusLabel({ status: item.code }),
+        className,
+      )}
     >
-      <p className="font-bold text-xl">{item.code}</p>
-      <p className="font-light text-xs text-wrap">{item.bezeichnung}</p>
+      <p className="text-xl font-bold">{item.code}</p>
+      <p className="text-wrap text-xs font-light">{item.bezeichnung}</p>
     </Button>
   );
 };

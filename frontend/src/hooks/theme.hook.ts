@@ -12,13 +12,17 @@ export function useTheme() {
   return context;
 }
 
-
 export function _useTheme() {
-  const { theme: { dark, setDark, setAuto } } = useStore();
+  const {
+    theme: { dark, setDark, setAuto },
+  } = useStore();
 
-  const handleColorSchemeChange = useCallback((e: MediaQueryListEvent) => {
-    setAuto(e.matches);
-  }, [setAuto]);
+  const handleColorSchemeChange = useCallback(
+    (e: MediaQueryListEvent) => {
+      setAuto(e.matches);
+    },
+    [setAuto],
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -35,11 +39,11 @@ export function _useTheme() {
   }, [dark]);
 
   const toggle = useCallback(() => {
-    setDark(prevDark => !prevDark);
+    setDark((prevDark) => !prevDark);
   }, [setDark]);
 
   return {
-    theme: dark ? 'dark' : 'light' as Theme,
+    theme: dark ? 'dark' : ('light' as Theme),
     isDark: dark,
     setIsDark: setDark,
     setAutoTheme: setAuto,
