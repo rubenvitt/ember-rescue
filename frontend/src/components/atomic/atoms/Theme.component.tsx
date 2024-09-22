@@ -3,6 +3,7 @@ import { createContext, ReactNode } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import deDE from 'antd/locale/de_DE.js';
 import { natoDateTimeAnt } from '../../../utils/time.js';
+import { twConfig } from '../../../styles/tailwindcss.styles.js';
 
 export const ThemeContext = createContext<ReturnType<typeof _useTheme> | undefined>(undefined);
 
@@ -32,6 +33,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             Menu: {
               colorSplit: 'transparent',
               groupTitleColor: 'rgba(255, 255, 255, 0.6)',
+              itemSelectedColor: twConfig.theme.colors.primary[600],
+              itemColor: 'white',
+              itemHoverColor: twConfig.theme.colors.primary[300],
             },
           },
         }}

@@ -23,9 +23,14 @@ export interface MobileSidebarProps extends SidebarContentProps {
   setSidebarOpen: (open: boolean) => void;
 }
 
-export type DesktopSidebarProps = SidebarContentProps;
+export type DesktopSidebarProps = SidebarContentProps & {
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean) => void;
+};
 
 export interface SidebarComponentProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean) => void;
 }

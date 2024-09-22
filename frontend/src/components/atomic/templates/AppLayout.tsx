@@ -19,6 +19,7 @@ import { userNavigation } from '../molecules/Navigation.js';
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   useBearbeiter({ requireBearbeiter: true });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const { toggleTheme } = useTheme();
   const queryClient = useQueryClient();
   const notificationCenter = useNotificationCenter();
@@ -32,8 +33,9 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   return (
     <div>
       <CommandPalette />
-      <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className="lg:pl-72">
+      <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isCollapsed={isCollapsed}
+                        setIsCollapsed={setIsCollapsed} />
+      <div className={twMerge('transition-all duration-300 ease-in-out', isCollapsed ? 'lg:pl-16' : 'lg:pl-72')}>
         <div
           className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-900/80">
           <button

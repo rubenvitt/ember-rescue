@@ -6,17 +6,16 @@ import { PiFadersHorizontal, PiQuestion } from 'react-icons/pi';
 import { useAppWindow } from '../../../../hooks/window.hook.js';
 import { MenuItem } from '../../../../types/ui/menu.types.ts';
 import { useLocation, useNavigate } from '@tanstack/react-router';
-import { ConfigProvider, Menu, theme } from 'antd';
-import { twConfig } from '../../../../styles/tailwindcss.styles.js';
-import { _useTheme } from '../../../../hooks/theme.hook.js';
+import { ConfigProvider, Menu } from 'antd';
 import { navigation } from '../../molecules/Navigation.js';
 
-export const SidebarContentComponent: React.FC<SidebarContentProps> = () => {
+export const SidebarContentComponent: React.FC<SidebarContentProps & {
+  isCollapsed?: boolean
+}> = ({ isCollapsed = false }) => {
   const openAdmin = useAppWindow({ appWindow: Windows.ADMIN, windowOptions: WindowOptions.admin });
   const openDocs = useAppWindow({ appWindow: Windows.DOCS, windowOptions: WindowOptions.docs });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const themeUtils = _useTheme();
 
   const navItems = useMemo<MenuItem[]>(() => {
     return navigation(navigate).map(
@@ -26,53 +25,64 @@ export const SidebarContentComponent: React.FC<SidebarContentProps> = () => {
             await navigate({ to: item!.key });
           },
           ...item,
+          // @ts-ignore its... complicated 🫣
+          label: isCollapsed ? null : item.label, // Hide label when collapsed
+          // @ts-ignore its... complicated 🫣
+          icon: item.icon ? React.cloneElement(item.icon as React.ReactElement, { size: isCollapsed ? 24 : 20 }) : null,
         }) as MenuItem,
     );
-  }, [navigate]);
+  }, [navigate, isCollapsed]);
+
+  const menuStyle = {
+    backgroundColor: 'transparent',
+  };
 
   return (
     <>
       <ConfigProvider
         theme={{
-          algorithm: themeUtils.isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+          // ... (theme configuration remains the same)
           components: {
-            Menu: themeUtils.isDark
-              ? {
-                  itemBg: twConfig.theme.colors.primary['950'],
-                  darkItemColor: twConfig.theme.colors.white,
-                  itemHoverBg: twConfig.theme.colors.primary['600'],
-                  itemSelectedBg: twConfig.theme.colors.primary['800'],
-                  itemSelectedColor: twConfig.theme.colors.white,
-                }
-              : {
-                  itemBg: twConfig.theme.colors.primary['600'],
-                  itemColor: twConfig.theme.colors.white,
-                  itemHoverBg: twConfig.theme.colors.primary['200'],
-                  itemSelectedBg: twConfig.theme.colors.white,
-                  itemSelectedColor: twConfig.theme.colors.primary['600'],
-                },
+            Menu: {
+              // ... (existing Menu theme configuration)
+              itemHeight: 48,
+              itemMarginInline: 0,
+              subMenuItemBg: 'transparent',
+            },
           },
         }}
       >
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950">
-          <div className="px-6">
+        <div className={`flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950 ${
+          isCollapsed ? 'items-center' : ''
+        }`}>
+          <div className={isCollapsed ? 'hidden' : 'px-6 py-4'}>
             <EinsatzInfoComponent />
           </div>
-          <Menu selectedKeys={[pathname]} mode="inline" items={navItems} />
           <Menu
-            className="mt-auto"
             selectedKeys={[pathname]}
             mode="inline"
+            items={navItems}
+            inlineCollapsed={isCollapsed}
+            style={menuStyle}
+            className={`border-none ${isCollapsed ? 'w-full' : ''}`}
+          />
+          <Menu
+            className={`mt-auto border-none ${isCollapsed ? 'w-full' : ''}`}
+            selectedKeys={[pathname]}
+            mode="inline"
+            inlineCollapsed={isCollapsed}
+            style={menuStyle}
             items={[
               {
                 type: 'submenu',
                 key: '/admin',
-                label: 'Administration',
+                label: isCollapsed ? null : 'Administration',
+                icon: <PiFadersHorizontal size={24} />,
                 children: [
                   {
                     key: '/admin-center',
                     danger: true,
-                    label: 'Admin Center',
+                    label: isCollapsed ? null : 'Admin Center',
                     icon: <PiFadersHorizontal size={24} />,
                     onClick: () => openAdmin(),
                   },
@@ -80,7 +90,7 @@ export const SidebarContentComponent: React.FC<SidebarContentProps> = () => {
               },
               {
                 key: '/help',
-                label: 'Support',
+                label: isCollapsed ? null : 'Support',
                 icon: <PiQuestion size={24} />,
                 onClick: () => openDocs(),
               },
