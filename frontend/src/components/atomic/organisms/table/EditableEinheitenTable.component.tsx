@@ -159,7 +159,7 @@ export function EditableEinheitenTable() {
         editable: true,
         render: (value: EinheitTypDto) => value.label,
       },
-      { title: 'Stärke', dataIndex: 'kapazitaet', editable: true },
+      { title: 'Standard-Stärke', dataIndex: 'kapazitaet', editable: true },
       {
         title: 'Temporär',
         dataIndex: 'istTemporaer',

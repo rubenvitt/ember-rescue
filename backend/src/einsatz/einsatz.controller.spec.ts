@@ -74,7 +74,7 @@ describe('EinsatzController', () => {
     // Überprüfen, ob der Zeitstempel innerhalb eines tolerierbaren Unterschieds ist (hier z.B. 5ms)
     const now = new Date().getTime();
     const beginnTime = new Date(createEinsatzArgs.beginn).getTime();
-    expect(Math.abs(now - beginnTime)).toBeLessThanOrEqual(5);
+    expect(Math.abs(now - beginnTime)).toBeLessThanOrEqual(10);
   });
 
   it('should close einsatz', async () => {

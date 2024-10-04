@@ -1,9 +1,9 @@
-import { _useTheme } from '../../../hooks/theme.hook.js';
+import { _useTheme } from '../../../hooks/theme.hook';
 import { createContext, ReactNode } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import deDE from 'antd/locale/de_DE.js';
-import { natoDateTimeAnt } from '../../../utils/time.js';
-import { twConfig } from '../../../styles/tailwindcss.styles.js';
+import { natoDateTimeAnt } from '../../../utils/time';
+import { twConfig } from '../../../styles/tailwindcss.styles';
 
 export const ThemeContext = createContext<ReturnType<typeof _useTheme> | undefined>(undefined);
 
@@ -24,6 +24,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
               ...deDE.DatePicker.lang,
               dateTimeFormat: natoDateTimeAnt,
               fieldDateTimeFormat: natoDateTimeAnt,
+            },
+            RangePicker: {
+              // @ts-ignore
+              ...deDE.DatePicker.RangePicker,
+              lang: {
+                // @ts-ignore
+                ...deDE.DatePicker.Rangepicker.lang,
+                dateTimeFormat: natoDateTimeAnt,
+                fieldDateTimeFormat: natoDateTimeAnt,
+              },
             },
           },
         }}

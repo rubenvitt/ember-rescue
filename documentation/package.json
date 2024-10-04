@@ -11,13 +11,13 @@
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
     "@algolia/autocomplete-core": "^1.17.4",
-    "@headlessui/react": "^2.1.8",
+    "@headlessui/react": "^2.1.9",
     "@markdoc/markdoc": "^0.4.0",
     "@markdoc/next.js": "^0.3.7",
     "@sindresorhus/slugify": "^2.2.1",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^22.5.5",
-    "@types/react": "^18.3.7",
+    "@types/node": "^22.7.4",
+    "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@types/react-highlight-words": "^0.20.0",
     "autoprefixer": "^10.4.20",
@@ -25,7 +25,7 @@
     "fast-glob": "^3.3.2",
     "flexsearch": "^0.7.43",
     "js-yaml": "^4.1.0",
-    "next": "^14.2.12",
+    "next": "^14.2.14",
     "next-themes": "^0.3.0",
     "prism-react-renderer": "^2.4.0",
     "react": "^18.3.1",
@@ -33,14 +33,14 @@
     "react-highlight-words": "^0.20.0",
     "react-icons": "^5.3.0",
     "simple-functional-loader": "^1.2.1",
-    "tailwindcss": "^3.4.12",
+    "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
   },
   "devDependencies": {
-    "eslint": "^9.10.0",
-    "eslint-config-next": "^14.2.12",
+    "eslint": "^9.11.1",
+    "eslint-config-next": "^14.2.14",
     "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.6",
+    "prettier-plugin-tailwindcss": "^0.6.8",
     "sharp": "0.33.5"
   }
 }
