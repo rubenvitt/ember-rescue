@@ -1,18 +1,29 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
-
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { natoDateTime } from '../../../utils/time.js';
 import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { PiEmpty, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
+import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
-import { Button, Drawer, Empty, Table, TableColumnsType, Tooltip } from 'antd';
+import {
+  Button,
+  Drawer,
+  Empty,
+  Input as AntInput,
+  InputRef,
+  Space,
+  Table,
+  TableColumnsType,
+  TableColumnType,
+  Tooltip,
+} from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { Input, Select } from 'formik-antd';
+import dayjs from 'dayjs';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
@@ -26,12 +37,72 @@ export function EinsatztagebuchComponent() {
     setIsOpen(false);
   }, []);
 
+  const searchInput = useRef<InputRef>(null);
+
+  const getColumnSearchProps = (dataIndex: keyof EinsatztagebuchEintrag): TableColumnType<EinsatztagebuchEintrag> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <AntInput
+          ref={searchInput}
+          placeholder={`Inhalt suchen`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<PiMagnifyingGlass />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Filtern
+          </Button>
+          <Button type="link" size="small" onClick={close}>
+            Abbrechen
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => <PiMagnifyingGlass style={{ color: filtered ? '#1677ff' : undefined }} />,
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ?.toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()) ?? false,
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+  });
+
   const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {
     setIsOpen(true);
     setEditingEintrag(entry);
   }, []);
 
   const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
+    const einheitTypen = einheiten.data?.reduce(
+      (acc, e) => {
+        if (!acc[e.einheitTyp.label]) {
+          acc[e.einheitTyp.label] = [];
+        }
+        acc[e.einheitTyp.label].push({ text: e.funkrufname, value: e.funkrufname });
+        return acc;
+      },
+      {} as Record<string, { text: string; value: string }[]>,
+    );
+    const rufnahmeFilter = einheitTypen
+      ? Object.entries(einheitTypen).map(([key, value]) => ({
+          text: key,
+          value: key,
+          children: value,
+        }))
+      : [];
+
     return [
       {
         title: '#',
@@ -39,6 +110,7 @@ export function EinsatztagebuchComponent() {
         key: 'fortlaufende_nummer',
         fixed: true,
         width: 80,
+        sorter: (a, b) => a.fortlaufende_nummer - b.fortlaufende_nummer,
       },
       {
         title: 'Zeitpunkt',
@@ -64,9 +136,30 @@ export function EinsatztagebuchComponent() {
             </>
           );
         },
+        sorter: (a, b) => dayjs(a.timestamp).unix() - dayjs(b.timestamp).unix(),
       },
-      { title: 'Absender', dataIndex: 'absender', key: 'absender', width: 100 },
-      { title: 'Empfänger', dataIndex: 'empfaenger', key: 'empfaenger', width: 120 },
+      {
+        title: 'Absender',
+        dataIndex: 'absender',
+        key: 'absender',
+        width: 100,
+        filters: rufnahmeFilter,
+        onFilter: (value, record) => record.absender === value,
+        filterMultiple: true,
+        filterSearch: true,
+        filterMode: 'tree',
+      },
+      {
+        title: 'Empfänger',
+        dataIndex: 'empfaenger',
+        key: 'empfaenger',
+        width: 120,
+        filters: rufnahmeFilter,
+        onFilter: (value, record) => record.empfaenger === value,
+        filterMultiple: true,
+        filterSearch: true,
+        filterMode: 'tree',
+      },
       {
         title: 'Inhalt',
         dataIndex: 'content',
@@ -82,8 +175,22 @@ export function EinsatztagebuchComponent() {
             {value}
           </span>
         ),
+        ...getColumnSearchProps('content'),
       },
-      { title: 'Typ', dataIndex: 'type', key: 'type', width: 100 },
+      {
+        title: 'Typ',
+        dataIndex: 'type',
+        key: 'type',
+        width: 100,
+        filters: [
+          { text: 'Meldung', value: 'USER' },
+          { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
+          { text: 'Ressourcen', value: 'RESSOURCEN' },
+          { text: 'Betroffene | Patienten', value: 'BETROFFENE_PATIENTEN' },
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.type === value,
+      },
       {
         render: (_, record) => (
           <div className="flex gap-2">

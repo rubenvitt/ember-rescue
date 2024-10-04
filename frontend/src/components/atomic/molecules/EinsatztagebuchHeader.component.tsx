@@ -11,7 +11,6 @@ export const EinsatztagebuchHeaderComponent: React.FC<{
     </div>
     <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
       <Button
-        color={inputVisible ? 'red' : 'primary'}
         danger={inputVisible}
         onClick={() => setInputVisible(!inputVisible)}
         type={inputVisible ? 'default' : 'primary'}

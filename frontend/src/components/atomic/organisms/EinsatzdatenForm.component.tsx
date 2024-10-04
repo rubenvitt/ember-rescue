@@ -13,12 +13,26 @@ import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Select } from 'formik-antd';
+import { DatePicker, Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
+import * as Yup from 'yup';
 
 interface Einsatzdaten {
   alarmstichwort: string;
+  einsatzleiter: { id?: string; name: string };
+  ort: string;
+  timeframe: [string, string | null];
 }
+
+const EinsatzdatenValidationSchema = Yup.object().shape({
+  alarmstichwort: Yup.string().required('Alarmstichwort ist ein Pflichtfeld'),
+  einsatzleiter: Yup.object().shape({
+    id: Yup.string().nullable(),
+    name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),
+  }),
+  ort: Yup.string().required('Ort ist ein Pflichtfeld'),
+  timeframe: Yup.date().required('Alarmierungszeit ist ein Pflichtfeld'),
+});
 
 function FinishEinsatz(props: { einsatz: Einsatz }) {
   const [etbExported, setEtbExported] = useState(false);
@@ -29,7 +43,7 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
   return (
     <>
       <Button
-        color="orange"
+        danger
         icon={<PiStopCircle />}
         type="dashed"
         iconPosition="end"
@@ -152,8 +166,15 @@ export function EinsatzdatenForm(): JSX.Element {
       <FormLayout<Einsatzdaten>
         type="sectioned"
         formik={{
+          validationSchema: EinsatzdatenValidationSchema,
+          validateOnBlur: true,
           initialValues: {
             alarmstichwort: defaultStichwort,
+            // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
+            // ort: einsatz.data.ort,
+            einsatzleiter: { name: 'Peter Müller' },
+            ort: 'Uelzen, Deutschland',
+            timeframe: [einsatz.data.beginn, einsatz.data.ende],
           },
           onSubmit: (data) => {
             console.log('submitting einsatzdaten', { data });
@@ -166,10 +187,34 @@ export function EinsatzdatenForm(): JSX.Element {
           <>
             <FormSection heading="Alarmierung">
               <FormContentBox>
-                <InputWrapper name="alarmstichwort">
+                <InputWrapper name="alarmstichwort" label="Alarmstichwort">
                   <Select name="alarmstichwort" loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
                 </InputWrapper>
+                <InputWrapper name="beginn" label="Alarmierungszeit">
+                  <DatePicker.RangePicker
+                    name="timeframe"
+                    showTime
+                    showSecond={false}
+                    placeholder={['', 'Laufend']}
+                    allowEmpty={[false, true]}
+                    onChange={(date, dateString) => {
+                      console.log(date, dateString);
+                    }}
+                  />
+                </InputWrapper>
+                <InputWrapper name="ort" label="Ort">
+                  {/* todo connect mapbox api */}
+                  <Select name="ort" disabled />
+                </InputWrapper>
               </FormContentBox>
+            </FormSection>
+            <FormSection heading="Laufender Einsatz">
+              <InputWrapper name="einsatzleiter" label="Einsatzleiter">
+                <Select name="einsatzleiter" disabled />
+              </InputWrapper>
+              <InputWrapper name="ende" label="Einsatzende">
+                <DatePicker className="w-full" showTime showSecond={false} name="beginn" />
+              </InputWrapper>
             </FormSection>
             <Button onClick={props.submitForm} type="primary" htmlType="submit">
               Speichern

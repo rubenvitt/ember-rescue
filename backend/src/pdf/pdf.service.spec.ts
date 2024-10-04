@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PdfService } from './pdf.service';
 import { Template } from '@pdfme/common';
 import { generate } from '@pdfme/generator';
-import { multiVariableText, readOnlyText, tableBeta } from '@pdfme/schemas';
+import { multiVariableText, table, text } from '@pdfme/schemas';
 
 jest.mock('@pdfme/generator');
 
@@ -43,8 +43,8 @@ describe('PdfService', () => {
         inputs,
         plugins: {
           multiVariableText,
-          readOnlyText,
-          tableBeta,
+          text,
+          table,
         },
       });
 

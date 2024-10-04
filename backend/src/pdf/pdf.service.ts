@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Template } from '@pdfme/common';
 import { generate } from '@pdfme/generator';
-import { multiVariableText, readOnlyText, tableBeta } from '@pdfme/schemas';
+import { multiVariableText, table, text } from '@pdfme/schemas';
 
 @Injectable()
 export class PdfService {
@@ -10,11 +10,10 @@ export class PdfService {
       // @ts-ignore
       template,
       inputs,
-      // @ts-ignore
       plugins: {
         multiVariableText,
-        readOnlyText,
-        tableBeta,
+        text,
+        table,
       },
     });
   }

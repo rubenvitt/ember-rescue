@@ -9,8 +9,9 @@ import { formatNatoDateTime } from '../utils/time';
 export class ExportService {
   private readonly pdfTemplate: Template = {
     schemas: [
-      {
-        stichwort_date: {
+      [
+        {
+          name: 'stichwort_date',
           type: 'multiVariableText',
           position: { x: 5.03, y: 4.04 },
           required: true,
@@ -32,8 +33,9 @@ export class ExportService {
           variables: ['stichwort', 'datetime'],
           fontName: 'NotoSerifJP-Regular',
         },
-        heading: {
-          type: 'readOnlyText',
+        {
+          name: 'heading',
+          type: 'text',
           content: 'Export Einsatztagebuch',
           position: { x: 4.76, y: 13.95 },
           width: 197.66,
@@ -53,7 +55,8 @@ export class ExportService {
           required: false,
           fontName: 'NotoSerifJP-Regular',
         },
-        etbTable: {
+        {
+          name: 'etbTable',
           type: 'table',
           position: { x: 3.17, y: 29.89 },
           width: 201.06,
@@ -96,9 +99,13 @@ export class ExportService {
           columnStyles: {},
           required: false,
         },
-      },
+      ],
     ],
-    basePdf: { width: 210, height: 297, padding: [0, 0, 0, 0] },
+    basePdf: {
+      width: 210,
+      height: 297,
+      padding: [0, 0, 0, 0],
+    },
     pdfmeVersion: '4.0.0',
   };
 

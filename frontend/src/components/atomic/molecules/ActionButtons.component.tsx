@@ -3,7 +3,7 @@ import { Button, Modal } from 'antd';
 
 const { confirm } = Modal;
 
-export const ActionButtons = <T,>({ buttons, item }: { buttons: ActionButton<T>[]; item: T }) => (
+export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[]; item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">
     {buttons.map((button) =>
       button.dialog ? (
