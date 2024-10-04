@@ -1,14 +1,16 @@
-import { _useTheme } from '../../../hooks/theme.hook';
+import { _useTheme } from '../../../hooks/theme.hook.js';
 import { createContext, ReactNode } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import deDE from 'antd/locale/de_DE.js';
-import { natoDateTimeAnt } from '../../../utils/time';
-import { twConfig } from '../../../styles/tailwindcss.styles';
+import { natoDateTimeAnt } from '../../../utils/time.js';
+import { twConfig } from '../../../styles/tailwindcss.styles.js';
 
 export const ThemeContext = createContext<ReturnType<typeof _useTheme> | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const themeUtils = _useTheme();
+
+  console.log('deDE is', deDE);
 
   return (
     <ThemeContext.Provider value={themeUtils}>
@@ -16,6 +18,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         // @ts-ignore
         locale={{
           ...deDE,
+          Calendar: {
+            // @ts-ignore
+            ...deDE.Calendar,
+            dateTimeFormat: natoDateTimeAnt,
+            fieldDateTimeFormat: natoDateTimeAnt,
+          },
           DatePicker: {
             // @ts-ignore
             ...deDE.DatePicker,
@@ -24,16 +32,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
               ...deDE.DatePicker.lang,
               dateTimeFormat: natoDateTimeAnt,
               fieldDateTimeFormat: natoDateTimeAnt,
-            },
-            RangePicker: {
-              // @ts-ignore
-              ...deDE.DatePicker.RangePicker,
-              lang: {
-                // @ts-ignore
-                ...deDE.DatePicker.Rangepicker.lang,
-                dateTimeFormat: natoDateTimeAnt,
-                fieldDateTimeFormat: natoDateTimeAnt,
-              },
             },
           },
         }}
