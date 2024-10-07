@@ -12,7 +12,8 @@
     "frontend"
   ],
   "devDependencies": {
-    "pnpm": "^9.12.1"
+    "pnpm": "^9.12.1",
+    "semantic-release": "^24.1.2"
   },
   "packageManager": "pnpm@9.12.1"
 }
