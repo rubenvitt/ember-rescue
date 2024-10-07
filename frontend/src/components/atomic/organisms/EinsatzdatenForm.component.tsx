@@ -212,7 +212,7 @@ export function EinsatzdatenForm(): JSX.Element {
                     showSecond={false}
                     placeholder={['', 'Laufend']}
                     allowEmpty={[false, true]}
-                    onChange={(date: RangeValue<Dayjs>, dateString) => {
+                    onChange={(date: RangeValue<Dayjs>) => {
                       console.log(date?.[0], date?.[1]);
                     }}
                   />
