@@ -4,7 +4,7 @@ import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
 import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
-import { natoDateTime } from '../../../utils/time.js';
+import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
 import { format } from 'date-fns';
 import { backendFetchBlob } from '../../../utils/http.js';
 import { isTauri } from '@tauri-apps/api/core';
@@ -16,6 +16,8 @@ import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { DatePicker, Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
+import { Dayjs } from 'dayjs';
+import { RangeValue } from '../../../types/ui/inputs.types.js';
 
 interface Einsatzdaten {
   alarmstichwort: string;
@@ -31,7 +33,19 @@ const EinsatzdatenValidationSchema = Yup.object().shape({
     name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),
   }),
   ort: Yup.string().required('Ort ist ein Pflichtfeld'),
-  timeframe: Yup.date().required('Alarmierungszeit ist ein Pflichtfeld'),
+  timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld').test(
+    'timeframe',
+    'Alarmierungszeit muss zwischen 10 Minuten und 24 Stunden liegen',
+    (value) => {
+      console.log('timeframe', value);
+      const [start, end] = value;
+      if (!start || !end) {
+        return false;
+      }
+      const startDiff = start.diff(end, 'minute');
+      return startDiff >= 10 && startDiff <= 1440;
+    },
+  ),
 });
 
 function FinishEinsatz(props: { einsatz: Einsatz }) {
@@ -194,11 +208,12 @@ export function EinsatzdatenForm(): JSX.Element {
                   <DatePicker.RangePicker
                     name="timeframe"
                     showTime
+                    format={{ format: natoDateTimeAnt }}
                     showSecond={false}
                     placeholder={['', 'Laufend']}
                     allowEmpty={[false, true]}
-                    onChange={(date, dateString) => {
-                      console.log(date, dateString);
+                    onChange={(date: RangeValue<Dayjs>, dateString) => {
+                      console.log(date?.[0], date?.[1]);
                     }}
                   />
                 </InputWrapper>
@@ -209,12 +224,11 @@ export function EinsatzdatenForm(): JSX.Element {
               </FormContentBox>
             </FormSection>
             <FormSection heading="Laufender Einsatz">
-              <InputWrapper name="einsatzleiter" label="Einsatzleiter">
-                <Select name="einsatzleiter" disabled />
-              </InputWrapper>
-              <InputWrapper name="ende" label="Einsatzende">
-                <DatePicker className="w-full" showTime showSecond={false} name="beginn" />
-              </InputWrapper>
+              <FormContentBox>
+                <InputWrapper name="einsatzleiter" label="Einsatzleiter">
+                  <Select name="einsatzleiter" disabled />
+                </InputWrapper>
+              </FormContentBox>
             </FormSection>
             <Button onClick={props.submitForm} type="primary" htmlType="submit">
               Speichern
