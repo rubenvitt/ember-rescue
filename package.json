@@ -12,6 +12,7 @@
     "frontend"
   ],
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
     "pnpm": "^9.12.1",
     "semantic-release": "^24.1.2"
   },
