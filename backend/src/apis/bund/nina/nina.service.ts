@@ -66,6 +66,11 @@ export class NinaService {
    * @throws {Error} - If there is an error in the HTTP request or response.
    */
   public async fetchWarningDetails(warningId: string): Promise<any> {
+    // Validate the warningId to ensure it matches the expected format
+    const validIdPattern = /^[a-zA-Z0-9_-]+$/;
+    if (!validIdPattern.test(warningId)) {
+      throw new Error('Invalid warning ID format');
+    }
     const url = `${this.ninaWarningApi}/${warningId}.json`;
     try {
       const response = await fetch(url);
