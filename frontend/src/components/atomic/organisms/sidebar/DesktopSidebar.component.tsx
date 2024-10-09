@@ -3,8 +3,9 @@ import { DesktopSidebarProps } from '../../../../types/ui/nav.types.js';
 import { SidebarContentComponent } from './SidebarContent.component.js';
 import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import { Button, Tooltip } from 'antd';
+import { _useTheme } from '../../../../hooks/theme.hook.js';
 
-export const DesktopSidebarComponent: React.FC<DesktopSidebarProps> = ({setIsCollapsed, isCollapsed}) => {
+export const DesktopSidebarComponent: React.FC<DesktopSidebarProps> = ({ setIsCollapsed, isCollapsed }) => {
   return (
     <div
       className={`hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col transition-all duration-300 ease-in-out ${
