@@ -37,15 +37,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         }}
         theme={{
           algorithm: themeUtils.isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-          components: {
-            Menu: {
-              colorSplit: 'transparent',
-              groupTitleColor: 'rgba(255, 255, 255, 0.6)',
-              itemSelectedColor: twConfig.theme.colors.primary[600],
-              itemColor: 'white',
-              itemHoverColor: twConfig.theme.colors.primary[300],
-            },
-          },
         }}
       >
         {children}

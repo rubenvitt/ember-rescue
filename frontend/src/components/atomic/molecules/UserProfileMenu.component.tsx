@@ -24,7 +24,6 @@ export function UserProfileMenu({ dropdownItems }: UserProfileDropdownProps) {
 
   return (
     <Menu
-      className="bg-transparent"
       disabledOverflow={true}
       mode={'horizontal'}
       selectedKeys={['']}
