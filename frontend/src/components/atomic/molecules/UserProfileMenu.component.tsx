@@ -24,7 +24,6 @@ export function UserProfileMenu({ dropdownItems }: UserProfileDropdownProps) {
 
   return (
     <Menu
-      style={{ color: 'green' }}
       disabledOverflow={true}
       mode={'horizontal'}
       selectedKeys={['']}
