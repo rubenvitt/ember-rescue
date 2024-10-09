@@ -16,6 +16,14 @@
           "CHANGELOG.md"
         ]
       }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          "frontend/src-tauri/target/bundle/dmg/*.dmg"
+        ]
+      }
     ]
   ]
 }
