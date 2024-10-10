@@ -13,6 +13,11 @@ export type Einsatz = Identifiable & {
     beschreibung: string;
     bezeichnung: string;
   };
+  einsatz_meta: EinsatzMeta;
+};
+
+export type EinsatzMeta = Identifiable & {
+  ort: string;
 };
 
 export interface CreateEinsatz {

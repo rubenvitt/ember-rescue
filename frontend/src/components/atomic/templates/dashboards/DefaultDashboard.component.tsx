@@ -4,6 +4,7 @@ import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useWindowSetup } from '../../../../hooks/window.hook.js';
+import { PiMapPin } from 'react-icons/pi';
 
 export function DefaultDashboard() {
   const { einsatz } = useEinsatz();
@@ -31,6 +32,10 @@ export function DefaultDashboard() {
             Aktueller Einsatz: {data.einsatz_alarmstichwort?.bezeichnung} von {format(data.beginn, natoDateTime)}
           </p>
           <p className="text-gray-500">{data.einsatz_alarmstichwort?.beschreibung}</p>
+          <p className="text-gray-500">
+            <PiMapPin className="mr-3 inline text-primary-500" />
+            {data.einsatz_meta?.ort}
+          </p>
         </>
       </div>
     );

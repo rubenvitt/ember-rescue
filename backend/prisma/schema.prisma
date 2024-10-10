@@ -85,8 +85,21 @@ model Einsatz {
   einsatz_alarmstichwort       EinsatzOnAlarmstichwort[]
   Notiz                        Notiz[]
   Reminder                     Reminder[]
+  einsatz_meta                 EinsatzMeta               @relation(fields: [id], references: [einsatzId], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("einsaetze")
+}
+
+model EinsatzMeta {
+  id String @id() @default(cuid())
+
+  ort String?
+
+  einsatzId String   @unique
+  einsatz   Einsatz?
+
+  @@index([einsatzId])
+  @@map("einsatzMeta")
 }
 
 model EinheitOnEinsatz {
