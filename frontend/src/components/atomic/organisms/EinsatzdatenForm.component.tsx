@@ -1,5 +1,5 @@
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
 import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
@@ -13,11 +13,13 @@ import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { DatePicker, Select } from 'formik-antd';
+import { AutoComplete, DatePicker, Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { Dayjs } from 'dayjs';
 import { RangeValue } from '../../../types/ui/inputs.types.js';
+import { Secret } from '../../../hooks/secrets.hook.js';
+import { useSearchBoxCore } from '@mapbox/search-js-react';
 
 interface Einsatzdaten {
   alarmstichwort: string;
@@ -33,10 +35,9 @@ const EinsatzdatenValidationSchema = Yup.object().shape({
     name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),
   }),
   ort: Yup.string().required('Ort ist ein Pflichtfeld'),
-  timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld').test(
-    'timeframe',
-    'Alarmierungszeit muss zwischen 10 Minuten und 24 Stunden liegen',
-    (value) => {
+  timeframe: Yup.array()
+    .required('Alarmierungszeit ist ein Pflichtfeld')
+    .test('timeframe', 'Alarmierungszeit muss zwischen 10 Minuten und 24 Stunden liegen', (value) => {
       console.log('timeframe', value);
       const [start, end] = value;
       if (!start || !end) {
@@ -44,8 +45,7 @@ const EinsatzdatenValidationSchema = Yup.object().shape({
       }
       const startDiff = start.diff(end, 'minute');
       return startDiff >= 10 && startDiff <= 1440;
-    },
-  ),
+    }),
 });
 
 function FinishEinsatz(props: { einsatz: Einsatz }) {
@@ -142,7 +142,13 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
   );
 }
 
-export function EinsatzdatenForm(): JSX.Element {
+interface EinsatzdatenFormProps {}
+
+interface EinsatzdatenFormProps {
+  mapboxApiKey?: Secret;
+}
+
+export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.Element {
   const { einsatz, updateEinsatz } = useEinsatz();
   const { alarmstichworte } = useAlarmstichworte();
 
@@ -170,6 +176,60 @@ export function EinsatzdatenForm(): JSX.Element {
     return alarmstichworte.data?.find((a) => a.bezeichnung === einsatz.data?.einsatz_alarmstichwort?.bezeichnung)?.id;
   }, [alarmstichworte.data, einsatz.data]);
 
+  const searchBoxCore = useSearchBoxCore({
+    accessToken: mapboxApiKey?.value,
+    language: 'de',
+    country: 'de',
+    // @ts-ignore api is newer
+    types: new Set([
+      'country',
+      'region',
+      'postcode',
+      'district',
+      'place',
+      'city',
+      'locality',
+      'neighborhood',
+      'street',
+      'address',
+      'poi',
+    ]),
+  });
+
+  // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): Places should be saved on submit
+  // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): create a new component for this place-searching feat
+  const optionsReducer = (state: DefaultOptionType[], action: { type: string; payload: any }): DefaultOptionType[] => {
+    console.log('optionsReducer', action);
+    switch (action.type) {
+      case 'SET_SUGGESTIONS':
+        return action.payload.map((suggestion: any) => ({
+          label: suggestion.name + `, ${suggestion.place_formatted}`,
+          value: suggestion.name + `, ${suggestion.place_formatted}`,
+        }));
+      default:
+        return state;
+    }
+  };
+
+  const [options, dispatch] = useReducer(optionsReducer, []);
+
+  const sessionToken = useMemo(() => {
+    return Math.random().toString(36).slice(2, 9);
+  }, []);
+
+  const handleSearch = useMemo(
+    () => async (query: string) => {
+      console.log('search', query);
+      const response = await searchBoxCore.suggest(query, {
+        sessionToken,
+        proximity: '10.55,52.96',
+      });
+      const suggestions = response.suggestions;
+      dispatch({ type: 'SET_SUGGESTIONS', payload: suggestions });
+    },
+    [sessionToken, dispatch, searchBoxCore],
+  );
+
   if (!einsatz.data || !defaultStichwort) {
     return <>Einsatz laden...</>;
   }
@@ -187,7 +247,7 @@ export function EinsatzdatenForm(): JSX.Element {
             // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
             // ort: einsatz.data.ort,
             einsatzleiter: { name: 'Peter Müller' },
-            ort: 'Uelzen, Deutschland',
+            ort: einsatz.data.einsatz_meta.ort,
             timeframe: [einsatz.data.beginn, einsatz.data.ende],
           },
           onSubmit: (data) => {
@@ -219,11 +279,12 @@ export function EinsatzdatenForm(): JSX.Element {
                 </InputWrapper>
                 <InputWrapper name="ort" label="Ort">
                   {/* todo connect mapbox api */}
-                  <Select name="ort" disabled />
+                  <AutoComplete onSearch={handleSearch} options={options} name="ort" />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
             <FormSection heading="Laufender Einsatz">
+              {JSON.stringify(einsatz.data)}
               <FormContentBox>
                 <InputWrapper name="einsatzleiter" label="Einsatzleiter">
                   <Select name="einsatzleiter" disabled />

@@ -22,6 +22,7 @@ export class EinsatzService {
       .findUnique({
         where: { id },
         include: {
+          einsatz_meta: {},
           einsatz_alarmstichwort: {
             include: {
               alarmstichwort: true,

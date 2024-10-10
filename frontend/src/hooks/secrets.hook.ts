@@ -3,7 +3,7 @@ import { services } from '../services/index.js';
 
 type PossibleSecrets = 'mapboxApi';
 
-type Secrets = {
+export type Secret = {
   key: string;
   value: string;
 };
@@ -12,7 +12,7 @@ type Props = { secretKey: PossibleSecrets };
 
 export function useSecret({ secretKey }: Props) {
   const queryClient = useQueryClient();
-  const secret = useQuery<Secrets>({
+  const secret = useQuery<Secret>({
     queryKey: services.backend.secrets.fetchSecret.queryKey(secretKey),
     queryFn: () => services.backend.secrets.fetchSecret.queryFn(secretKey),
   });
