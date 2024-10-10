@@ -46,7 +46,9 @@ export type CreateEinsatzDto = {
 };
 
 export type UpdateEinsatzDto = {
-  alarmstichwort?: string;
+  alarmstichwort: string;
+  ort: string;
+  timeframe: [string, string?];
 };
 
 export enum EinsatztagebuchEintragEnum {
