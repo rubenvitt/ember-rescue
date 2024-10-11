@@ -3,7 +3,6 @@ import { createContext, ReactNode } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import deDE from 'antd/locale/de_DE.js';
 import { natoDateTimeAnt } from '../../../utils/time.js';
-import { twConfig } from '../../../styles/tailwindcss.styles.js';
 
 export const ThemeContext = createContext<ReturnType<typeof _useTheme> | undefined>(undefined);
 
