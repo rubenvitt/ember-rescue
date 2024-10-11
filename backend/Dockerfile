@@ -8,8 +8,8 @@ RUN npm install -g pnpm
 WORKDIR /usr/src/app
 
 # Abhängigkeiten kopieren und installieren
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json ./
+RUN pnpm install
 
 # Quellcode kopieren
 COPY . .
@@ -28,8 +28,8 @@ RUN npm install -g pnpm
 WORKDIR /usr/src/app
 
 # Nur produktionsrelevante Abhängigkeiten installieren
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+COPY package.json ./
+RUN pnpm install --prod
 
 # Prisma-Treiber und -Dateien kopieren
 COPY prisma ./prisma/
