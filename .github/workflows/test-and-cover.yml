@@ -9,7 +9,40 @@ on:
     branches:
 
 jobs:
-  test-and-coverage:
+  frontend-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 20 ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: (frontend) Install dependencies
+        working-directory: frontend
+        run: pnpm install
+
+      - name: (frontend) Build
+        working-directory: frontend
+        run: pnpm build
+
+      - name: (documentation) Install dependencies
+        working-directory: documentation
+        run: pnpm install
+
+      - name: (documentation) Build
+        working-directory: documentation
+        run: pnpm build
+
+  backend-test-and-coverage:
     runs-on: ubuntu-latest
 
     strategy:
@@ -35,7 +68,3 @@ jobs:
       - name: Run tests and generate coverage
         working-directory: backend
         run: pnpm run test:cov
-
-      - name: Build frontend
-        working-directory: frontend
-        run: pnpm build
