@@ -49,10 +49,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=sha
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ env.TAGS }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
