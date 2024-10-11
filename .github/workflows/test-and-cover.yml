@@ -7,7 +7,6 @@ on:
       - release
   pull_request:
     branches:
-      - main
 
 jobs:
   test-and-coverage:
@@ -36,3 +35,7 @@ jobs:
       - name: Run tests and generate coverage
         working-directory: backend
         run: pnpm run test:cov
+
+      - name: Build frontend
+        working-directory: frontend
+        run: pnpm build
