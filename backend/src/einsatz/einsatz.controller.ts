@@ -70,6 +70,7 @@ export class EinsatzController {
     @Body() updateEinsatzDto: UpdateEinsatzDto,
   ) {
     this.logger.log('Change EinsatzDaten', { einsatzId });
+    this.logger.debug('UpdateEinsatzDto', { updateEinsatzDto });
     return this.einsatzService.changeEinsatz(einsatzId, updateEinsatzDto);
   }
 

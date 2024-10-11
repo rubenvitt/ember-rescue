@@ -22,6 +22,8 @@ export class EinsatzService {
       .findUnique({
         where: { id },
         include: {
+          aufnehmendes_rettungsmittel: {},
+          einsatz_meta: {},
           einsatz_alarmstichwort: {
             include: {
               alarmstichwort: true,
@@ -91,9 +93,53 @@ export class EinsatzService {
 
     const einsatz = await this.getEinsatz(einsatzId);
 
+    return await Promise.all([
+      this.updateEinsatzstichwort(einsatz, updateEinsatzDto, einsatzId),
+      this.updateEinsatzort(einsatz, updateEinsatzDto, einsatzId),
+    ]);
+  }
+
+  private async updateEinsatzort(
+    einsatz: any,
+    updateEinsatzDto: UpdateEinsatzDto,
+    einsatzId: string,
+  ) {
+    if (
+      this.einsatzortChanged(einsatz.einsatz_meta['ort'], updateEinsatzDto.ort)
+    ) {
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+        einsatzId: einsatzId,
+        type: EinsatztagebuchEintragEnum.GENERISCH,
+        content: `Der Einsatzort wurde von ${einsatz.einsatz_meta['ort']} nach ${updateEinsatzDto.ort} verschoben.`,
+        absender: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+      });
+      await this.prismaService.einsatzMeta.update({
+        where: {
+          einsatzId,
+        },
+        data: {
+          ort: updateEinsatzDto.ort,
+        },
+      });
+    } else {
+      this.logger.log('Einsatzort hat sich nicht geändert.');
+    }
+  }
+
+  private einsatzortChanged(currentOrt: string, updatedOrt: string) {
+    this.logger.log('einsatzortChanged?', { currentOrt, updatedOrt });
+    return currentOrt !== updatedOrt;
+  }
+
+  private async updateEinsatzstichwort(
+    einsatz: any,
+    updateEinsatzDto: UpdateEinsatzDto,
+    einsatzId: string,
+  ) {
     if (
       this.einsatzStichwortChanged(
-        einsatz.einsatz_alarmstichwort.id,
+        einsatz.einsatz_alarmstichwort['id'],
         updateEinsatzDto.alarmstichwort,
       )
     ) {
@@ -102,12 +148,12 @@ export class EinsatzService {
       );
       const aufnehmendesRettungsmittel =
         await this.einheitenService.findEinheit({
-          id: einsatz.aufnehmendesRettungsmittelId,
+          id: einsatz.aufnehmendes_rettungsmittel['id'],
         });
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag({
         einsatzId: einsatzId,
-        type: EinsatztagebuchEintragEnum.LAGE,
+        type: EinsatztagebuchEintragEnum.GENERISCH,
         content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort.bezeichnung}`,
         absender: aufnehmendesRettungsmittel.funkrufname,
         empfaenger: aufnehmendesRettungsmittel.funkrufname,
