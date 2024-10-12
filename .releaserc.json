@@ -14,7 +14,10 @@
       {
         "assets": [
           "CHANGELOG.md",
-          "frontend/src-tauri/target/bundle/dmg/*.dmg"
+          "RELEASE_NOTES.md",
+          "frontend-artifacts/**/*.dmg",
+          "frontend-artifacts/**/*.AppImage",
+          "frontend-artifacts/**/*.msi"
         ]
       }
     ]
