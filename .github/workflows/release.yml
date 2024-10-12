@@ -127,15 +127,6 @@ jobs:
           projectPath: frontend
           args: ${{ matrix.args }}
 
-      - name: List frontend artifacts
-        run: |
-          echo "Listing contents of frontend-artifacts directory:"
-          find frontend-artifacts -type d
-          echo "Listing all .dmg, .AppImage, and .msi files:"
-          find frontend-artifacts -type f \( -name "*.dmg" -o -name "*.AppImage" -o -name "*.msi" \)
-          echo "Listing contents of src-tauri/target directory:"
-          find frontend-artifacts -type d -name "src-tauri" -exec find {}/target -type f \( -name "*.dmg" -o -name "*.AppImage" -o -name "*.msi" \) \;
-
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -172,6 +163,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: frontend-artifacts
+
+      - name: List frontend artifacts
+        run: |
+          echo "Listing contents of frontend-artifacts directory:"
+          find frontend-artifacts -type d
+          echo "Listing all .dmg, .AppImage, and .msi files:"
+          find frontend-artifacts -type f \( -name "*.dmg" -o -name "*.AppImage" -o -name "*.msi" \)
+          echo "Listing contents of src-tauri/target directory:"
+          find frontend-artifacts -type d -name "src-tauri" -exec find {}/target -type f \( -name "*.dmg" -o -name "*.AppImage" -o -name "*.msi" \) \;
 
       - name: Prepare Release Notes
         run: |
