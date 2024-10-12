@@ -135,7 +135,7 @@ jobs:
 
   release:
     name: Create Release
-    needs: [build-backend, build-frontend]
+    needs: [ build-backend, build-frontend ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -150,6 +150,9 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Download Backend Image Tags
         uses: actions/download-artifact@v3
