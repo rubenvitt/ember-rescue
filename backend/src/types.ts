@@ -39,6 +39,12 @@ export type FahrzeugDto = {
   status: SmallStatusDto;
 };
 
+export type FahrzeugImportDto = {
+  funkrufname: string;
+  fahrzeugTyp: string;
+  kapazitaet: number;
+};
+
 export type CreateEinsatzDto = {
   erstAlarmiert: string;
   aufnehmendesRettungsmittel: string;
