@@ -18,59 +18,57 @@ import { Route as AuthSignoutImport } from './routes/auth/signout';
 
 // Create Virtual Routes
 
-const SigninLazyImport = createFileRoute('/signin')()
-const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
-const IndexLazyImport = createFileRoute('/')()
-const AppIndexLazyImport = createFileRoute('/app/')()
-const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
+const SigninLazyImport = createFileRoute('/signin')();
+const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')();
+const IndexLazyImport = createFileRoute('/')();
+const AppIndexLazyImport = createFileRoute('/app/')();
+const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')();
 const AppUavLazyImport = createFileRoute('/app/uav')();
-const AppSchadenLazyImport = createFileRoute('/app/schaden')()
-const AppNotizenLazyImport = createFileRoute('/app/notizen')()
-const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
-const AppGefahrenLazyImport = createFileRoute('/app/gefahren')()
+const AppSchadenLazyImport = createFileRoute('/app/schaden')();
+const AppNotizenLazyImport = createFileRoute('/app/notizen')();
+const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')();
+const AppGefahrenLazyImport = createFileRoute('/app/gefahren')();
 const AppFahrzeugeLazyImport = createFileRoute('/app/fahrzeuge')();
-const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
-const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
-const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')()
+const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')();
+const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')();
+const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')();
 
 // Create/Update Routes
 
 const SigninLazyRoute = SigninLazyImport.update({
   path: '/signin',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/signin.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/signin.lazy').then((d) => d.Route));
 
 const SetupEinsatzLazyRoute = SetupEinsatzLazyImport.update({
   path: '/setupEinsatz',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/setupEinsatz.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/setupEinsatz.lazy').then((d) => d.Route));
 
 const AppRoute = AppImport.update({
   path: '/app',
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
 
 const AppIndexLazyRoute = AppIndexLazyImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/app/index.lazy').then((d) => d.Route));
 
 const AdminIndexRoute = AdminIndexImport.update({
   path: '/admin/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
   path: '/prestart/settings',
   getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/prestart/settings.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/prestart/settings.lazy').then((d) => d.Route));
 
 const AppUavLazyRoute = AppUavLazyImport.update({
   path: '/uav',
@@ -80,177 +78,171 @@ const AppUavLazyRoute = AppUavLazyImport.update({
 const AppSchadenLazyRoute = AppSchadenLazyImport.update({
   path: '/schaden',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/schaden.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/app/schaden.lazy').then((d) => d.Route));
 
 const AppNotizenLazyRoute = AppNotizenLazyImport.update({
   path: '/notizen',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/notizen.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/app/notizen.lazy').then((d) => d.Route));
 
 const AppLagekarteLazyRoute = AppLagekarteLazyImport.update({
   path: '/lagekarte',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/lagekarte.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/app/lagekarte.lazy').then((d) => d.Route));
 
 const AppGefahrenLazyRoute = AppGefahrenLazyImport.update({
   path: '/gefahren',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/gefahren.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/app/gefahren.lazy').then((d) => d.Route));
 
 const AppFahrzeugeLazyRoute = AppFahrzeugeLazyImport.update({
   path: '/fahrzeuge',
   getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/fahrzeuge.lazy').then((d) => d.Route);)
+} as any).lazy(() => import('./routes/app/fahrzeuge.lazy').then((d) => d.Route));
 
 const AppEinsatztagebuchLazyRoute = AppEinsatztagebuchLazyImport.update({
   path: '/einsatztagebuch',
   getParentRoute: () => AppRoute,
-} as any).lazy(() =>
-  import('./routes/app/einsatztagebuch.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/app/einsatztagebuch.lazy').then((d) => d.Route));
 
 const AppEinsatzdatenLazyRoute = AppEinsatzdatenLazyImport.update({
   path: '/einsatzdaten',
   getParentRoute: () => AppRoute,
-} as any).lazy(() =>
-  import('./routes/app/einsatzdaten.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/app/einsatzdaten.lazy').then((d) => d.Route));
 
 const AppBetroffeneLazyRoute = AppBetroffeneLazyImport.update({
   path: '/betroffene',
   getParentRoute: () => AppRoute,
-} as any).lazy(() =>
-  import('./routes/app/betroffene.lazy').then((d) => d.Route),
-)
+} as any).lazy(() => import('./routes/app/betroffene.lazy').then((d) => d.Route));
 
 const AuthSignoutRoute = AuthSignoutImport.update({
   path: '/auth/signout',
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/app';
+      path: '/app';
+      fullPath: '/app';
+      preLoaderRoute: typeof AppImport;
+      parentRoute: typeof rootRoute;
+    };
     '/setupEinsatz': {
-      id: '/setupEinsatz'
-      path: '/setupEinsatz'
-      fullPath: '/setupEinsatz'
-      preLoaderRoute: typeof SetupEinsatzLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/setupEinsatz';
+      path: '/setupEinsatz';
+      fullPath: '/setupEinsatz';
+      preLoaderRoute: typeof SetupEinsatzLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/signin';
+      path: '/signin';
+      fullPath: '/signin';
+      preLoaderRoute: typeof SigninLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/auth/signout': {
-      id: '/auth/signout'
-      path: '/auth/signout'
-      fullPath: '/auth/signout'
-      preLoaderRoute: typeof AuthSignoutImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/auth/signout';
+      path: '/auth/signout';
+      fullPath: '/auth/signout';
+      preLoaderRoute: typeof AuthSignoutImport;
+      parentRoute: typeof rootRoute;
+    };
     '/app/betroffene': {
-      id: '/app/betroffene'
-      path: '/betroffene'
-      fullPath: '/app/betroffene'
-      preLoaderRoute: typeof AppBetroffeneLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/betroffene';
+      path: '/betroffene';
+      fullPath: '/app/betroffene';
+      preLoaderRoute: typeof AppBetroffeneLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/einsatzdaten': {
-      id: '/app/einsatzdaten'
-      path: '/einsatzdaten'
-      fullPath: '/app/einsatzdaten'
-      preLoaderRoute: typeof AppEinsatzdatenLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/einsatzdaten';
+      path: '/einsatzdaten';
+      fullPath: '/app/einsatzdaten';
+      preLoaderRoute: typeof AppEinsatzdatenLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/einsatztagebuch': {
-      id: '/app/einsatztagebuch'
-      path: '/einsatztagebuch'
-      fullPath: '/app/einsatztagebuch'
-      preLoaderRoute: typeof AppEinsatztagebuchLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/einsatztagebuch';
+      path: '/einsatztagebuch';
+      fullPath: '/app/einsatztagebuch';
+      preLoaderRoute: typeof AppEinsatztagebuchLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/fahrzeuge': {
-      id: '/app/fahrzeuge'
-      path: '/fahrzeuge'
-      fullPath: '/app/fahrzeuge'
-      preLoaderRoute: typeof AppFahrzeugeLazyImport
-      parentRoute: typeof AppImport
+      id: '/app/fahrzeuge';
+      path: '/fahrzeuge';
+      fullPath: '/app/fahrzeuge';
+      preLoaderRoute: typeof AppFahrzeugeLazyImport;
+      parentRoute: typeof AppImport;
     };
     '/app/gefahren': {
-      id: '/app/gefahren'
-      path: '/gefahren'
-      fullPath: '/app/gefahren'
-      preLoaderRoute: typeof AppGefahrenLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/gefahren';
+      path: '/gefahren';
+      fullPath: '/app/gefahren';
+      preLoaderRoute: typeof AppGefahrenLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/lagekarte': {
-      id: '/app/lagekarte'
-      path: '/lagekarte'
-      fullPath: '/app/lagekarte'
-      preLoaderRoute: typeof AppLagekarteLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/lagekarte';
+      path: '/lagekarte';
+      fullPath: '/app/lagekarte';
+      preLoaderRoute: typeof AppLagekarteLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/notizen': {
-      id: '/app/notizen'
-      path: '/notizen'
-      fullPath: '/app/notizen'
-      preLoaderRoute: typeof AppNotizenLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/notizen';
+      path: '/notizen';
+      fullPath: '/app/notizen';
+      preLoaderRoute: typeof AppNotizenLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/schaden': {
-      id: '/app/schaden'
-      path: '/schaden'
-      fullPath: '/app/schaden'
-      preLoaderRoute: typeof AppSchadenLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/schaden';
+      path: '/schaden';
+      fullPath: '/app/schaden';
+      preLoaderRoute: typeof AppSchadenLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/app/uav': {
-      id: '/app/uav'
-      path: '/uav'
-      fullPath: '/app/uav'
-      preLoaderRoute: typeof AppUavLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/uav';
+      path: '/uav';
+      fullPath: '/app/uav';
+      preLoaderRoute: typeof AppUavLazyImport;
+      parentRoute: typeof AppImport;
+    };
     '/prestart/settings': {
-      id: '/prestart/settings'
-      path: '/prestart/settings'
-      fullPath: '/prestart/settings'
-      preLoaderRoute: typeof PrestartSettingsLazyImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/prestart/settings';
+      path: '/prestart/settings';
+      fullPath: '/prestart/settings';
+      preLoaderRoute: typeof PrestartSettingsLazyImport;
+      parentRoute: typeof rootRoute;
+    };
     '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminIndexImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/admin/';
+      path: '/admin';
+      fullPath: '/admin';
+      preLoaderRoute: typeof AdminIndexImport;
+      parentRoute: typeof rootRoute;
+    };
     '/app/': {
-      id: '/app/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppIndexLazyImport
-      parentRoute: typeof AppImport
-    }
+      id: '/app/';
+      path: '/';
+      fullPath: '/app/';
+      preLoaderRoute: typeof AppIndexLazyImport;
+      parentRoute: typeof AppImport;
+    };
   }
 }
 
@@ -280,9 +272,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppSchadenLazyRoute: AppSchadenLazyRoute,
   AppUavLazyRoute: AppUavLazyRoute,
   AppIndexLazyRoute: AppIndexLazyRoute,
-}
+};
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren);
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute;
@@ -305,47 +297,47 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/setupEinsatz': typeof SetupEinsatzLazyRoute
-  '/signin': typeof SigninLazyRoute
-  '/auth/signout': typeof AuthSignoutRoute
-  '/app/betroffene': typeof AppBetroffeneLazyRoute
-  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
-  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/': typeof IndexLazyRoute;
+  '/setupEinsatz': typeof SetupEinsatzLazyRoute;
+  '/signin': typeof SigninLazyRoute;
+  '/auth/signout': typeof AuthSignoutRoute;
+  '/app/betroffene': typeof AppBetroffeneLazyRoute;
+  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute;
+  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute;
   '/app/fahrzeuge': typeof AppFahrzeugeLazyRoute;
-  '/app/gefahren': typeof AppGefahrenLazyRoute
-  '/app/lagekarte': typeof AppLagekarteLazyRoute
-  '/app/notizen': typeof AppNotizenLazyRoute
-  '/app/schaden': typeof AppSchadenLazyRoute
+  '/app/gefahren': typeof AppGefahrenLazyRoute;
+  '/app/lagekarte': typeof AppLagekarteLazyRoute;
+  '/app/notizen': typeof AppNotizenLazyRoute;
+  '/app/schaden': typeof AppSchadenLazyRoute;
   '/app/uav': typeof AppUavLazyRoute;
-  '/prestart/settings': typeof PrestartSettingsLazyRoute
-  '/admin': typeof AdminIndexRoute
-  '/app': typeof AppIndexLazyRoute
+  '/prestart/settings': typeof PrestartSettingsLazyRoute;
+  '/admin': typeof AdminIndexRoute;
+  '/app': typeof AppIndexLazyRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/app': typeof AppRouteWithChildren
-  '/setupEinsatz': typeof SetupEinsatzLazyRoute
-  '/signin': typeof SigninLazyRoute
-  '/auth/signout': typeof AuthSignoutRoute
-  '/app/betroffene': typeof AppBetroffeneLazyRoute
-  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
-  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  __root__: typeof rootRoute;
+  '/': typeof IndexLazyRoute;
+  '/app': typeof AppRouteWithChildren;
+  '/setupEinsatz': typeof SetupEinsatzLazyRoute;
+  '/signin': typeof SigninLazyRoute;
+  '/auth/signout': typeof AuthSignoutRoute;
+  '/app/betroffene': typeof AppBetroffeneLazyRoute;
+  '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute;
+  '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute;
   '/app/fahrzeuge': typeof AppFahrzeugeLazyRoute;
-  '/app/gefahren': typeof AppGefahrenLazyRoute
-  '/app/lagekarte': typeof AppLagekarteLazyRoute
-  '/app/notizen': typeof AppNotizenLazyRoute
-  '/app/schaden': typeof AppSchadenLazyRoute
+  '/app/gefahren': typeof AppGefahrenLazyRoute;
+  '/app/lagekarte': typeof AppLagekarteLazyRoute;
+  '/app/notizen': typeof AppNotizenLazyRoute;
+  '/app/schaden': typeof AppSchadenLazyRoute;
   '/app/uav': typeof AppUavLazyRoute;
-  '/prestart/settings': typeof PrestartSettingsLazyRoute
-  '/admin/': typeof AdminIndexRoute
-  '/app/': typeof AppIndexLazyRoute
+  '/prestart/settings': typeof PrestartSettingsLazyRoute;
+  '/admin/': typeof AdminIndexRoute;
+  '/app/': typeof AppIndexLazyRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/app'
@@ -363,8 +355,8 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app/'
-  fileRoutesByTo: FileRoutesByTo
+    | '/app/';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/setupEinsatz'
@@ -381,7 +373,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app'
+    | '/app';
   id:
     | '__root__'
     | '/'
@@ -400,18 +392,18 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin/'
-    | '/app/'
-  fileRoutesById: FileRoutesById
+    | '/app/';
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  AppRoute: typeof AppRouteWithChildren
-  SetupEinsatzLazyRoute: typeof SetupEinsatzLazyRoute
-  SigninLazyRoute: typeof SigninLazyRoute
-  AuthSignoutRoute: typeof AuthSignoutRoute
-  PrestartSettingsLazyRoute: typeof PrestartSettingsLazyRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+  IndexLazyRoute: typeof IndexLazyRoute;
+  AppRoute: typeof AppRouteWithChildren;
+  SetupEinsatzLazyRoute: typeof SetupEinsatzLazyRoute;
+  SigninLazyRoute: typeof SigninLazyRoute;
+  AuthSignoutRoute: typeof AuthSignoutRoute;
+  PrestartSettingsLazyRoute: typeof PrestartSettingsLazyRoute;
+  AdminIndexRoute: typeof AdminIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -422,11 +414,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignoutRoute: AuthSignoutRoute,
   PrestartSettingsLazyRoute: PrestartSettingsLazyRoute,
   AdminIndexRoute: AdminIndexRoute,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 
