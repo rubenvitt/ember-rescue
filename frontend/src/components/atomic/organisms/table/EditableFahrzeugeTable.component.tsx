@@ -10,15 +10,15 @@ import {
 } from 'react';
 import { Button, Form, Switch as AntSwitch, Table, Tooltip } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
-import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
-import { EinheitDto, EinheitTypDto } from '../../../../types/app/einheit.types.js';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import { FahrzeugDto, FahrzeugTypDto } from '../../../../types/app/fahrzeug.types.js';
 import { create } from 'zustand';
 import { PiCheck, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types.js';
-import { PatchEinheitType } from '../../../../services/backend/einheiten.js';
+import { PatchFahrzeugType } from '../../../../services/backend/fahrzeuge.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
@@ -30,10 +30,10 @@ type EditingStore = {
   resetEditingId: () => void;
 };
 
-const PatchEinheitSchema = Yup.object().shape({
+const PatchFahrzeugSchema = Yup.object().shape({
   kapazitaet: Yup.number().required('Kapazitaet wird benötigt').min(0, 'Eine negative Stärke ist unzulässig.'),
   funkrufname: Yup.string().required('Ein Funkrufname wird benötigt'),
-  einheitTyp: Yup.string().required('Der Typ wird benötigt.'),
+  fahrzeugTyp: Yup.string().required('Der Typ wird benötigt.'),
 });
 
 const useEditingStore = create<EditingStore>((setState, getState) => ({
@@ -52,7 +52,7 @@ type EditableColumnsType<RecordType = AnyObject> = ((ColumnGroupType<RecordType>
 
 function selectInputType(dataIndex?: string) {
   switch (dataIndex) {
-    case 'einheitTyp':
+    case 'fahrzeugTyp':
       return 'select';
     case 'funkrufname':
       return 'text';
@@ -63,79 +63,79 @@ function selectInputType(dataIndex?: string) {
   }
 }
 
-const newEinheitTemplate: EinheitDto = {
+const newFahrzeugTemplate: FahrzeugDto = {
   funkrufname: '',
   istTemporaer: false,
   kapazitaet: 0,
-  id: 'create.einheit',
-  einheitTyp: { id: '', label: '' },
-  _count: { einsatz_einheit: 0 },
+  id: 'create.fahrzeug',
+  fahrzeugTyp: { id: '', label: '' },
+  _count: { einsatz_fahrzeug: 0 },
   status: { id: '', code: 'none', bezeichnung: '' },
 };
 
-type EditableEinheitType = Omit<PatchEinheitType, 'einheitTypId'> & { einheitTyp: string };
+type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'> & { fahrzeugTyp: string };
 
-export function EditableEinheitenTable() {
+export function EditableFahrzeugeTable() {
   const [form] = Form.useForm();
-  const { einheiten, patchEinheiten, einheitenTypen } = useEinheiten();
+  const { fahrzeuge, patchFahrzeuge, fahrzeugeTypen } = useFahrzeuge();
   const { isEditing, setEditingId, id, resetEditingId } = useEditingStore();
-  const formRef = useRef<FormikProps<EditableEinheitType>>(null);
+  const formRef = useRef<FormikProps<EditableFahrzeugType>>(null);
 
   const cancel = useCallback(resetEditingId, [resetEditingId]);
 
-  const editingEinheit = useMemo(() => {
-    if (newEinheitTemplate.id === id) {
-      return newEinheitTemplate;
+  const editingFahrzeug = useMemo(() => {
+    if (newFahrzeugTemplate.id === id) {
+      return newFahrzeugTemplate;
     }
-    return einheiten.data?.find((einheit) => einheit.id === id);
-  }, [einheiten.data, id]);
+    return fahrzeuge.data?.find((fahrzeug) => fahrzeug.id === id);
+  }, [fahrzeuge.data, id]);
 
-  const einheitenTypItems = useMemo(() => {
+  const fahrzeugeTypItems = useMemo(() => {
     return (
-      einheitenTypen.data?.map(
-        (einheitTyp) =>
+      fahrzeugeTypen.data?.map(
+        (fahrzeugTyp) =>
           ({
-            value: einheitTyp.id,
-            search: [einheitTyp.label, einheitTyp.description].join(' '),
+            value: fahrzeugTyp.id,
+            search: [fahrzeugTyp.label, fahrzeugTyp.description].join(' '),
             label: (
               <div className="flex justify-between">
-                <span>{einheitTyp.label}</span>
-                <span>{einheitTyp.description}</span>
+                <span>{fahrzeugTyp.label}</span>
+                <span>{fahrzeugTyp.description}</span>
               </div>
             ),
           }) satisfies DefaultOptionType,
       ) ?? []
     );
-  }, [einheitenTypen.data]);
+  }, [fahrzeugeTypen.data]);
 
   function selectOptions(dataIndex?: string) {
     switch (dataIndex) {
-      case 'einheitTyp':
-        return einheitenTypItems;
+      case 'fahrzeugTyp':
+        return fahrzeugeTypItems;
       default:
         return undefined;
     }
   }
 
   useEffect(() => {
-    console.log('EinheitTyp', { typ: editingEinheit?.einheitTyp });
+    console.log('FahrzeugTyp', { typ: editingFahrzeug?.fahrzeugTyp });
     formRef.current?.setValues({
-      id: editingEinheit?.id ?? '',
-      kapazitaet: editingEinheit?.kapazitaet ?? 0,
-      istTemporaer: editingEinheit?.istTemporaer ?? false,
-      einheitTyp: editingEinheit?.einheitTyp.id ?? '',
-      funkrufname: editingEinheit?.funkrufname ?? 'MHHHH',
+      id: editingFahrzeug?.id ?? '',
+      kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
+      istTemporaer: editingFahrzeug?.istTemporaer ?? false,
+      fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
+      funkrufname: editingFahrzeug?.funkrufname ?? 'MHHHH',
     });
     setTimeout(() => {
-      console.log('using form input', { editingEinheit, formValue: formRef.current?.values });
+      console.log('using form input', { editingFahrzeug, formValue: formRef.current?.values });
     }, 0);
-  }, [editingEinheit]);
+  }, [editingFahrzeug]);
 
   const save = useCallback(() => {
     formRef.current?.submitForm().then(resetEditingId);
   }, [formRef.current, resetEditingId]);
 
-  const columns = useMemo<EditableColumnsType<EinheitDto>>(
+  const columns = useMemo<EditableColumnsType<FahrzeugDto>>(
     () => [
       {
         title: 'Interne ID',
@@ -154,12 +154,12 @@ export function EditableEinheitenTable() {
       },
       { title: 'Funkrufname', dataIndex: 'funkrufname', editable: true },
       {
-        title: 'Typ der Einheit',
-        dataIndex: 'einheitTyp',
+        title: 'Typ des Fahrzeugs',
+        dataIndex: 'fahrzeugTyp',
         editable: true,
-        render: (value: EinheitTypDto) => value.label,
+        render: (value: FahrzeugTypDto) => value.label,
       },
-      { title: 'Standard-Stärke', dataIndex: 'kapazitaet', editable: true },
+      { title: 'Standardanzahl Kräfte', dataIndex: 'kapazitaet', editable: true },
       {
         title: 'Temporär',
         dataIndex: 'istTemporaer',
@@ -169,8 +169,8 @@ export function EditableEinheitenTable() {
       {
         title: (
           <div className="flex justify-center">
-            <Tooltip title="Neue Einheit hinzufügen">
-              <Button icon={<PiPlus />} onClick={() => setEditingId('create.einheit')} />
+            <Tooltip title="Neue Fahrzeug hinzufügen">
+              <Button icon={<PiPlus />} onClick={() => setEditingId('create.fahrzeug')} />
             </Tooltip>
           </div>
         ),
@@ -204,7 +204,7 @@ export function EditableEinheitenTable() {
         },
       },
     ],
-    [einheiten.data],
+    [fahrzeuge.data],
   );
 
   const mergedColumns = useMemo(
@@ -216,7 +216,7 @@ export function EditableEinheitenTable() {
         // noinspection JSUnusedGlobalSymbols, onCell is used.
         return {
           ...col,
-          onCell: (record: EinheitDto) => ({
+          onCell: (record: FahrzeugDto) => ({
             record,
             inputType: selectInputType(col.dataIndex),
             options: selectOptions(col.dataIndex),
@@ -231,25 +231,25 @@ export function EditableEinheitenTable() {
 
   const dataSource = useMemo(
     () =>
-      [id === newEinheitTemplate.id ? [newEinheitTemplate] : undefined, einheiten.data]
+      [id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, fahrzeuge.data]
         .filter((value) => value !== undefined)
         .flat(),
-    [newEinheitTemplate, id, einheiten.data],
+    [newFahrzeugTemplate, id, fahrzeuge.data],
   );
   return (
-    <Formik<EditableEinheitType>
+    <Formik<EditableFahrzeugType>
       validateOnChange={false}
-      validationSchema={PatchEinheitSchema}
+      validationSchema={PatchFahrzeugSchema}
       onSubmit={(data) => {
         console.log('submitting with data', { data });
-        patchEinheiten.mutate([{ ...data, einheitTypId: data.einheitTyp }]);
+        patchFahrzeuge.mutate([{ ...data, fahrzeugTypId: data.fahrzeugTyp }]);
       }}
       initialValues={{
-        id: editingEinheit?.id ?? '',
-        funkrufname: editingEinheit?.funkrufname ?? '',
-        einheitTyp: editingEinheit?.einheitTyp.id ?? '',
-        istTemporaer: editingEinheit?.istTemporaer ?? false,
-        kapazitaet: editingEinheit?.kapazitaet ?? 0,
+        id: editingFahrzeug?.id ?? '',
+        funkrufname: editingFahrzeug?.funkrufname ?? '',
+        fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
+        istTemporaer: editingFahrzeug?.istTemporaer ?? false,
+        kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       }}
       innerRef={formRef}
     >
@@ -262,7 +262,7 @@ export function EditableEinheitenTable() {
           }}
           bordered
           dataSource={dataSource}
-          loading={einheiten.isLoading}
+          loading={fahrzeuge.isLoading}
           // @ts-ignore
           columns={mergedColumns}
           rowClassName="editable-row"

@@ -1,27 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
-import { EinheitenService } from '../../einheiten/einheiten.service';
 import { StatusService } from '../../status/status.service';
+import { FahrzeugeService } from '../../fahrzeuge/fahrzeuge.service';
 
 @Injectable()
-export class EinsatzEinheitenService {
-  private readonly logger = new Logger(EinsatzEinheitenService.name);
+export class EinsatzFahrzeugeService {
+  private readonly logger = new Logger(EinsatzFahrzeugeService.name);
 
   constructor(
     private readonly prismaService: PrismaService,
     private readonly einsatztagebuchService: EinsatztagebuchService,
-    private readonly einheitenService: EinheitenService,
+    private readonly fahrzeugeService: FahrzeugeService,
     private readonly statusService: StatusService,
   ) {}
 
-  async addEinheitToEinsatz(
-    einheitId: string,
+  async addFahrzeugToEinsatz(
+    fahrzeugId: string,
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    const existingEinheit = await this.einheitenService.findEinheit({
-      id: einheitId,
+    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
+      id: fahrzeugId,
     });
 
     const einsatz = await this.prismaService.einsatz.findUnique({
@@ -32,39 +32,39 @@ export class EinsatzEinheitenService {
     });
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-      absender: existingEinheit.funkrufname,
+      absender: existingFahrzeug.funkrufname,
       empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
-      content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wurde dem Einsatz hinzugefügt.`,
+      content: `${existingFahrzeug.funkrufname} (${existingFahrzeug.fahrzeugTyp.label}) wurde dem Einsatz hinzugefügt.`,
     });
 
-    await this.prismaService.einheitOnEinsatz.create({
+    await this.prismaService.fahrzeugOnEinsatz.create({
       data: {
-        einheitId,
+        fahrzeugId,
         einsatzId,
         einsatzbeginn: new Date(),
       },
     });
 
-    await this.changeStatus(einheitId, einsatzId, bearbeiterId, {
+    await this.changeStatus(fahrzeugId, einsatzId, bearbeiterId, {
       statusCode: 3,
     });
   }
 
-  async findEinheitenImEinsatz(param: { einsatzId: string }) {
-    return this.prismaService.einheit.findMany({
+  async findFahrzeugeImEinsatz(param: { einsatzId: string }) {
+    return this.prismaService.fahrzeug.findMany({
       where: {
-        einsatz_einheit: {
+        einsatz_fahrzeug: {
           some: {
             einsatzId: param.einsatzId,
           },
         },
       },
       include: {
-        einsatz_einheit: true,
-        einheitTyp: true,
+        einsatz_fahrzeug: true,
+        fahrzeugTyp: true,
         status: {
           select: {
             id: true,
@@ -78,7 +78,7 @@ export class EinsatzEinheitenService {
   }
 
   async changeStatus(
-    einheitId: string,
+    fahrzeugId: string,
     einsatzId: string,
     bearbeiterId: string,
     {
@@ -100,9 +100,9 @@ export class EinsatzEinheitenService {
     });
 
     await this.prismaService.$transaction(async (transaction) => {
-      await transaction.einheitStatusHistorie.create({
+      await transaction.fahrzeugStatusHistorie.create({
         data: {
-          einheitId,
+          fahrzeugId,
           einsatzId,
           statusId: status.id,
           bearbeiterId,
@@ -110,13 +110,13 @@ export class EinsatzEinheitenService {
         },
       });
 
-      const einheit = await transaction.einheit.update({
-        where: { id: einheitId },
+      const fahrzeug = await transaction.fahrzeug.update({
+        where: { id: fahrzeugId },
         data: {
           aktuellerStatusId: status.id,
         },
         include: {
-          einheitTyp: true,
+          fahrzeugTyp: true,
         },
       });
 
@@ -124,21 +124,21 @@ export class EinsatzEinheitenService {
         einsatzId,
         bearbeiterId,
         type: 'RESSOURCEN',
-        absender: einheit.funkrufname,
+        absender: fahrzeug.funkrufname,
         empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
-        content: `${einheit.funkrufname} (${einheit.einheitTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
+        content: `${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
       });
     });
   }
 
-  async removeEinheitFromEinsatz(
-    einheitId: string,
+  async removeFahrzeugFromEinsatz(
+    fahrzeugId: string,
     einsatzId: string,
     bearbeiterId: string,
   ) {
     return this.prismaService.$transaction(async (transaction) => {
-      const existingEinheit = await this.einheitenService.findEinheit({
-        id: einheitId,
+      const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
+        id: fahrzeugId,
       });
 
       const einsatz = await transaction.einsatz.findUnique({
@@ -148,22 +148,22 @@ export class EinsatzEinheitenService {
         },
       });
 
-      await transaction.einheitOnEinsatz.delete({
+      await transaction.fahrzeugOnEinsatz.delete({
         where: {
-          einsatzId_einheitId: {
-            einheitId,
+          einsatzId_fahrzeugId: {
+            fahrzeugId,
             einsatzId,
           },
         },
       });
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-        absender: existingEinheit.funkrufname,
+        absender: existingFahrzeug.funkrufname,
         empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
         type: 'RESSOURCEN',
         einsatzId,
         bearbeiterId,
-        content: `${existingEinheit.funkrufname} (${existingEinheit.einheitTyp.label}) wurde aus dem Einsatz entfernt.`,
+        content: `${existingFahrzeug.funkrufname} (${existingFahrzeug.fahrzeugTyp.label}) wurde aus dem Einsatz entfernt.`,
       });
     });
   }

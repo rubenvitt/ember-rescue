@@ -18,7 +18,7 @@ export function useSettings() {
     onSuccess: () => {
       return Promise.all([
         services.backend.settings.invalidateQueries(queryClient),
-        services.backend.einheiten.invalidateQueries(queryClient),
+        services.backend.fahrzeuge.invalidateQueries(queryClient),
       ]);
     },
   });

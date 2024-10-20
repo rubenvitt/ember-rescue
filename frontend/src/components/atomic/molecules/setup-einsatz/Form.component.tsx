@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
-import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import * as Yup from 'yup';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
@@ -62,29 +62,29 @@ const SetupEinsatzSchema = Yup.object().shape({
 });
 
 export function NewSetupEinsatzForm() {
-  const { einheiten } = useEinheiten();
+  const { fahrzeuge } = useFahrzeuge();
   const { alarmstichworte } = useAlarmstichworte();
   const { createEinsatz, saveEinsatz } = useEinsatz();
   const navigate = useNavigate();
 
-  const einheitenItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return einheiten.data?.map(
-      (einheit) =>
+  const fahrzeugeItems = useMemo<DefaultOptionType[] | undefined>(() => {
+    return fahrzeuge.data?.map(
+      (fahrzeug) =>
         ({
-          value: einheit.id,
-          searchString: einheit.funkrufname.toLowerCase() + einheit.einheitTyp.label.toLowerCase(),
+          value: fahrzeug.id,
+          searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.fahrzeugTyp.label.toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{einheit.funkrufname}</span>
+              <span className="flex-shrink-0 truncate">{fahrzeug.funkrufname}</span>
               <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {einheit.einheitTyp.label}
+                {fahrzeug.fahrzeugTyp.label}
               </span>
             </div>
           ),
-          item: einheit,
+          item: fahrzeug,
         }) as DefaultOptionType,
     );
-  }, [einheiten.data]);
+  }, [fahrzeuge.data]);
 
   const alarmstichworteItems = useMemo<DefaultOptionType[] | undefined>(() => {
     return alarmstichworte.data?.map(
@@ -142,8 +142,8 @@ export function NewSetupEinsatzForm() {
               // @ts-ignore
               spellCheck={false}
               filterOption={(inputValue, option) => option?.searchString.includes(inputValue.toLowerCase())}
-              options={einheitenItems}
-              loading={einheiten.isLoading}
+              options={fahrzeugeItems}
+              loading={fahrzeuge.isLoading}
             />
           </InputWrapper>
         </FormContentBox>

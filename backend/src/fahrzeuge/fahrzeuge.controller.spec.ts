@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EinheitenController } from './einheiten.controller';
-import { EinheitenService } from './einheiten.service';
+import { FahrzeugeController } from './fahrzeuge.controller';
+import { FahrzeugeService } from './fahrzeuge.service';
 import { Response } from 'express';
-import { EinheitDto, SmallStatusDto } from '../types';
+import { FahrzeugDto, SmallStatusDto } from '../types';
 
 describe('EinheitenController', () => {
-  let controller: EinheitenController;
-  let einheitenService: EinheitenService;
+  let controller: FahrzeugeController;
+  let einheitenService: FahrzeugeService;
 
   beforeEach(async () => {
     const einheitenServiceMock = {
@@ -26,21 +26,21 @@ describe('EinheitenController', () => {
             code: 'code1',
             bezeichnung: 'Bezeichnung 1',
           } as SmallStatusDto,
-        } as EinheitDto,
+        } as FahrzeugDto,
       ]),
       findTypen: jest.fn().mockResolvedValue(['Type A', 'Type B']),
       updateMany: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [EinheitenController],
+      controllers: [FahrzeugeController],
       providers: [
-        { provide: EinheitenService, useValue: einheitenServiceMock },
+        { provide: FahrzeugeService, useValue: einheitenServiceMock },
       ],
     }).compile();
 
-    controller = module.get<EinheitenController>(EinheitenController);
-    einheitenService = module.get<EinheitenService>(EinheitenService);
+    controller = module.get<FahrzeugeController>(FahrzeugeController);
+    einheitenService = module.get<FahrzeugeService>(FahrzeugeService);
   });
 
   it('should be defined', () => {
@@ -82,7 +82,7 @@ describe('EinheitenController', () => {
       send: jest.fn(),
     } as unknown as Response;
 
-    const einheiten: Omit<EinheitDto, 'status'>[] = [
+    const einheiten: Omit<FahrzeugDto, 'status'>[] = [
       {
         id: '1',
         funkrufname: 'Funkrufname 1',

@@ -1,4 +1,4 @@
-import * as einheiten from './einheiten.js';
+import * as fahrzeuge from './fahrzeuge.js';
 import * as bearbeiter from './bearbeiter.js';
 import * as einsatztagebuch from './einsatztagebuch.js';
 import * as einsatze from './einsaetze.js';
@@ -12,7 +12,7 @@ import * as reminders from './reminders.js';
 
 export default {
   reminders,
-  einheiten,
+  fahrzeuge,
   bearbeiter,
   einsatztagebuch,
   einsatze,
