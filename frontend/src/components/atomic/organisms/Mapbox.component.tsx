@@ -9,7 +9,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
@@ -128,20 +128,22 @@ function _MapboxComponent({ mapboxToken }: Props) {
     setMap(map);
   }, [mapDiv, mapboxToken]);
 
-  const { einheitenImEinsatz } = useEinheiten();
+  const { fahrzeugeImEinsatz } = useFahrzeuge();
 
   return (
     <>
       <div className="mb-2 border border-gray-500 px-6 py-2 dark:text-white">
-        Einheiten der Karte hinzufügen (DEBUG)
+        Fahrzeuge der Karte hinzufügen (DEBUG)
         <div className="flex flex-nowrap gap-2 overflow-scroll">
-          {einheitenImEinsatz.data?.map((einheit) => (
+          {fahrzeugeImEinsatz.data?.map((fahrzeug) => (
             <Button
-              key={einheit.id}
+              key={fahrzeug.id}
               type="link"
               className="break-keep"
               onClick={() => {
-                let presentMarker = map?._markers?.find((m) => m.getElement().id === `einheit-${einheit.funkrufname}`);
+                let presentMarker = map?._markers?.find(
+                  (m) => m.getElement().id === `fahrzeug-${fahrzeug.funkrufname}`,
+                );
                 if (presentMarker) {
                   alert('found item');
                   map?.setCenter(presentMarker.getLngLat());
@@ -152,11 +154,11 @@ function _MapboxComponent({ mapboxToken }: Props) {
                     organisation: 'hilfsorganisation',
                     einheit: 'zug',
                     fachaufgabe: 'iuk',
-                    name: einheit.funkrufname,
+                    name: fahrzeug.funkrufname,
                   }).svg;
                   element.innerHTML = svg.render();
                   element.className = 'w-20 h-20';
-                  element.id = `einheit-${einheit.funkrufname}`;
+                  element.id = `fahrzeug-${fahrzeug.funkrufname}`;
                   map &&
                     new mapboxgl.Marker({ element, draggable: true })
                       .setPopup(
@@ -169,7 +171,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
                 }
               }}
             >
-              {einheit.funkrufname}
+              {fahrzeug.funkrufname}
             </Button>
           ))}
         </div>

@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { formatISO } from 'date-fns';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { useEinheitenItems } from '../../../hooks/einheiten/einheiten-items.hook.js';
+import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { DatePicker, Input, Select } from 'formik-antd';
@@ -28,8 +28,8 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
   const { createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const { einsatz } = useEinsatz();
 
-  const { einheitenAsItems, loading } = useEinheitenItems({
-    include: ['einheitenImEinsatz', 'einheitenNichtImEinsatz'],
+  const { fahrzeugeAsItems, loading } = useFahrzeugeItems({
+    include: ['fahrzeugeImEinsatz', 'fahrzeugeNichtImEinsatz'],
   });
 
   const handleSubmit = useCallback(
@@ -38,8 +38,8 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       await createEinsatztagebuchEintrag.mutateAsync({
         content: data.content,
         empfaenger:
-          einheitenAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
-        absender: einheitenAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
+          fahrzeugeAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
+        absender: fahrzeugeAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
         timestamp: data.timestamp,
       });
     },
@@ -73,7 +73,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
             <Select
               name="absender"
               showSearch
-              options={einheitenAsItems}
+              options={fahrzeugeAsItems}
               loading={loading}
               placeholder="Absender auswählen"
             />
@@ -82,7 +82,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
             <Select
               name="empfaenger"
               showSearch
-              options={einheitenAsItems}
+              options={fahrzeugeAsItems}
               loading={loading}
               placeholder="Empfönger auswählen"
             />

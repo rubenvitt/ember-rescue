@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { formatDistanceToNow, formatISO } from 'date-fns';
 import { formatNatoDateTime } from '../../../utils/time.js';
 import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
 import { Einsatz } from '../../../types/app/einsatz.types.js';
@@ -13,7 +13,7 @@ import { PiNetwork } from 'react-icons/pi';
 
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
-  const { einheiten } = useEinheiten();
+  const { fahrzeuge } = useFahrzeuge();
   const { allBearbeiter } = useBearbeiter();
 
   const renderEinsatz = useCallback((einsatz: Einsatz) => {
@@ -41,17 +41,17 @@ export const OffeneEinsaetzeList: React.FC = () => {
 
   const renderExpandedContent = useCallback(
     (einsatz: Einsatz) => {
-      const einheit = einheiten.data?.find((value) => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
+      const fahrzeug = fahrzeuge.data?.find((value) => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
       const bearbeiter = allBearbeiter.data?.find((value) => value.id === einsatz.bearbeiterId)?.name;
 
       return (
         <div className="text-sm text-gray-700 dark:text-gray-300">
           <p>Erstellt von: {bearbeiter ?? 'Unbekannt'}</p>
-          <p>Aufgenommen durch: {einheit ?? 'Unbekannt'}</p>
+          <p>Aufgenommen durch: {fahrzeug ?? 'Unbekannt'}</p>
         </div>
       );
     },
-    [einheiten.data, allBearbeiter.data],
+    [fahrzeuge.data, allBearbeiter.data],
   );
 
   const actionButtons: ActionButton<Einsatz>[] = useMemo(

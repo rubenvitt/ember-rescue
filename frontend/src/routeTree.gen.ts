@@ -28,9 +28,9 @@ const AppSchadenLazyImport = createFileRoute('/app/schaden')()
 const AppNotizenLazyImport = createFileRoute('/app/notizen')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
 const AppGefahrenLazyImport = createFileRoute('/app/gefahren')()
+const AppFahrzeugeLazyImport = createFileRoute('/app/fahrzeuge')();
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
 const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
-const AppEinheitenLazyImport = createFileRoute('/app/einheiten')()
 const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')()
 
 // Create/Update Routes
@@ -97,6 +97,11 @@ const AppGefahrenLazyRoute = AppGefahrenLazyImport.update({
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/gefahren.lazy').then((d) => d.Route))
 
+const AppFahrzeugeLazyRoute = AppFahrzeugeLazyImport.update({
+  path: '/fahrzeuge',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/app/fahrzeuge.lazy').then((d) => d.Route);)
+
 const AppEinsatztagebuchLazyRoute = AppEinsatztagebuchLazyImport.update({
   path: '/einsatztagebuch',
   getParentRoute: () => AppRoute,
@@ -110,11 +115,6 @@ const AppEinsatzdatenLazyRoute = AppEinsatzdatenLazyImport.update({
 } as any).lazy(() =>
   import('./routes/app/einsatzdaten.lazy').then((d) => d.Route),
 )
-
-const AppEinheitenLazyRoute = AppEinheitenLazyImport.update({
-  path: '/einheiten',
-  getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/einheiten.lazy').then((d) => d.Route))
 
 const AppBetroffeneLazyRoute = AppBetroffeneLazyImport.update({
   path: '/betroffene',
@@ -133,124 +133,124 @@ const AuthSignoutRoute = AuthSignoutImport.update({
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexLazyImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/app': {
-      id: '/app';
-      path: '/app';
-      fullPath: '/app';
-      preLoaderRoute: typeof AppImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppImport
+      parentRoute: typeof rootRoute
+    }
     '/setupEinsatz': {
-      id: '/setupEinsatz';
-      path: '/setupEinsatz';
-      fullPath: '/setupEinsatz';
-      preLoaderRoute: typeof SetupEinsatzLazyImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/setupEinsatz'
+      path: '/setupEinsatz'
+      fullPath: '/setupEinsatz'
+      preLoaderRoute: typeof SetupEinsatzLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/signin': {
-      id: '/signin';
-      path: '/signin';
-      fullPath: '/signin';
-      preLoaderRoute: typeof SigninLazyImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/signout': {
-      id: '/auth/signout';
-      path: '/auth/signout';
-      fullPath: '/auth/signout';
-      preLoaderRoute: typeof AuthSignoutImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/auth/signout'
+      path: '/auth/signout'
+      fullPath: '/auth/signout'
+      preLoaderRoute: typeof AuthSignoutImport
+      parentRoute: typeof rootRoute
+    }
     '/app/betroffene': {
-      id: '/app/betroffene';
-      path: '/betroffene';
-      fullPath: '/app/betroffene';
-      preLoaderRoute: typeof AppBetroffeneLazyImport;
-      parentRoute: typeof AppImport;
-    };
-    '/app/einheiten': {
-      id: '/app/einheiten';
-      path: '/einheiten';
-      fullPath: '/app/einheiten';
-      preLoaderRoute: typeof AppEinheitenLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/betroffene'
+      path: '/betroffene'
+      fullPath: '/app/betroffene'
+      preLoaderRoute: typeof AppBetroffeneLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/einsatzdaten': {
-      id: '/app/einsatzdaten';
-      path: '/einsatzdaten';
-      fullPath: '/app/einsatzdaten';
-      preLoaderRoute: typeof AppEinsatzdatenLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/einsatzdaten'
+      path: '/einsatzdaten'
+      fullPath: '/app/einsatzdaten'
+      preLoaderRoute: typeof AppEinsatzdatenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/einsatztagebuch': {
-      id: '/app/einsatztagebuch';
-      path: '/einsatztagebuch';
-      fullPath: '/app/einsatztagebuch';
-      preLoaderRoute: typeof AppEinsatztagebuchLazyImport;
-      parentRoute: typeof AppImport;
+      id: '/app/einsatztagebuch'
+      path: '/einsatztagebuch'
+      fullPath: '/app/einsatztagebuch'
+      preLoaderRoute: typeof AppEinsatztagebuchLazyImport
+      parentRoute: typeof AppImport
+    }
+    '/app/fahrzeuge': {
+      id: '/app/fahrzeuge'
+      path: '/fahrzeuge'
+      fullPath: '/app/fahrzeuge'
+      preLoaderRoute: typeof AppFahrzeugeLazyImport
+      parentRoute: typeof AppImport
     };
     '/app/gefahren': {
-      id: '/app/gefahren';
-      path: '/gefahren';
-      fullPath: '/app/gefahren';
-      preLoaderRoute: typeof AppGefahrenLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/gefahren'
+      path: '/gefahren'
+      fullPath: '/app/gefahren'
+      preLoaderRoute: typeof AppGefahrenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/lagekarte': {
-      id: '/app/lagekarte';
-      path: '/lagekarte';
-      fullPath: '/app/lagekarte';
-      preLoaderRoute: typeof AppLagekarteLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/lagekarte'
+      path: '/lagekarte'
+      fullPath: '/app/lagekarte'
+      preLoaderRoute: typeof AppLagekarteLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/notizen': {
-      id: '/app/notizen';
-      path: '/notizen';
-      fullPath: '/app/notizen';
-      preLoaderRoute: typeof AppNotizenLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/notizen'
+      path: '/notizen'
+      fullPath: '/app/notizen'
+      preLoaderRoute: typeof AppNotizenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/schaden': {
-      id: '/app/schaden';
-      path: '/schaden';
-      fullPath: '/app/schaden';
-      preLoaderRoute: typeof AppSchadenLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/schaden'
+      path: '/schaden'
+      fullPath: '/app/schaden'
+      preLoaderRoute: typeof AppSchadenLazyImport
+      parentRoute: typeof AppImport
+    }
     '/app/uav': {
-      id: '/app/uav';
-      path: '/uav';
-      fullPath: '/app/uav';
-      preLoaderRoute: typeof AppUavLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/uav'
+      path: '/uav'
+      fullPath: '/app/uav'
+      preLoaderRoute: typeof AppUavLazyImport
+      parentRoute: typeof AppImport
+    }
     '/prestart/settings': {
-      id: '/prestart/settings';
-      path: '/prestart/settings';
-      fullPath: '/prestart/settings';
-      preLoaderRoute: typeof PrestartSettingsLazyImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/prestart/settings'
+      path: '/prestart/settings'
+      fullPath: '/prestart/settings'
+      preLoaderRoute: typeof PrestartSettingsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/admin/': {
-      id: '/admin/';
-      path: '/admin';
-      fullPath: '/admin';
-      preLoaderRoute: typeof AdminIndexImport;
-      parentRoute: typeof rootRoute;
-    };
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/app/': {
-      id: '/app/';
-      path: '/';
-      fullPath: '/app/';
-      preLoaderRoute: typeof AppIndexLazyImport;
-      parentRoute: typeof AppImport;
-    };
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexLazyImport
+      parentRoute: typeof AppImport
+    }
   }
 }
 
@@ -258,13 +258,12 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppBetroffeneLazyRoute: typeof AppBetroffeneLazyRoute;
-  AppEinheitenLazyRoute: typeof AppEinheitenLazyRoute;
   AppEinsatzdatenLazyRoute: typeof AppEinsatzdatenLazyRoute;
   AppEinsatztagebuchLazyRoute: typeof AppEinsatztagebuchLazyRoute;
+  AppFahrzeugeLazyRoute: typeof AppFahrzeugeLazyRoute;
   AppGefahrenLazyRoute: typeof AppGefahrenLazyRoute;
   AppLagekarteLazyRoute: typeof AppLagekarteLazyRoute;
-  AppNotizenLazyRoute: typeof AppNotizen;
-  LazyRoute;
+  AppNotizenLazyRoute: typeof AppNotizenLazyRoute;
   AppSchadenLazyRoute: typeof AppSchadenLazyRoute;
   AppUavLazyRoute: typeof AppUavLazyRoute;
   AppIndexLazyRoute: typeof AppIndexLazyRoute;
@@ -272,16 +271,16 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBetroffeneLazyRoute: AppBetroffeneLazyRoute,
-  AppEinheitenLazyRoute: AppEinheitenLazyRoute,
   AppEinsatzdatenLazyRoute: AppEinsatzdatenLazyRoute,
   AppEinsatztagebuchLazyRoute: AppEinsatztagebuchLazyRoute,
+  AppFahrzeugeLazyRoute: AppFahrzeugeLazyRoute,
   AppGefahrenLazyRoute: AppGefahrenLazyRoute,
   AppLagekarteLazyRoute: AppLagekarteLazyRoute,
   AppNotizenLazyRoute: AppNotizenLazyRoute,
   AppSchadenLazyRoute: AppSchadenLazyRoute,
   AppUavLazyRoute: AppUavLazyRoute,
   AppIndexLazyRoute: AppIndexLazyRoute,
-};
+}
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
@@ -292,15 +291,14 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninLazyRoute;
   '/auth/signout': typeof AuthSignoutRoute;
   '/app/betroffene': typeof AppBetroffeneLazyRoute;
-  '/app/einheiten': typeof AppEinheitenLazyRoute;
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute;
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute;
+  '/app/fahrzeuge': typeof AppFahrzeugeLazyRoute;
   '/app/gefahren': typeof AppGefahrenLazyRoute;
   '/app/lagekarte': typeof AppLagekarteLazyRoute;
   '/app/notizen': typeof AppNotizenLazyRoute;
   '/app/schaden': typeof AppSchadenLazyRoute;
-  '/app/uav': typeof AppUavLazyRout;
-  e;
+  '/app/uav': typeof AppUavLazyRoute;
   '/prestart/settings': typeof PrestartSettingsLazyRoute;
   '/admin': typeof AdminIndexRoute;
   '/app/': typeof AppIndexLazyRoute;
@@ -312,14 +310,14 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninLazyRoute
   '/auth/signout': typeof AuthSignoutRoute
   '/app/betroffene': typeof AppBetroffeneLazyRoute
-  '/app/einheiten': typeof AppEinheitenLazyRoute
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/app/fahrzeuge': typeof AppFahrzeugeLazyRoute;
   '/app/gefahren': typeof AppGefahrenLazyRoute
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/uav': ty;peof AppUavLazyRoute
+  '/app/uav': typeof AppUavLazyRoute;
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexLazyRoute
@@ -333,9 +331,9 @@ export interface FileRoutesById {
   '/signin': typeof SigninLazyRoute
   '/auth/signout': typeof AuthSignoutRoute
   '/app/betroffene': typeof AppBetroffeneLazyRoute
-  '/app/einheiten': typeof AppEinheitenLazyRoute
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
+  '/app/fahrzeuge': typeof AppFahrzeugeLazyRoute;
   '/app/gefahren': typeof AppGefahrenLazyRoute
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
@@ -355,9 +353,9 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/signout'
     | '/app/betroffene'
-    | '/app/einheiten'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
+    | '/app/fahrzeuge'
     | '/app/gefahren'
     | '/app/lagekarte'
     | '/app/notizen'
@@ -373,9 +371,9 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/signout'
     | '/app/betroffene'
-    | '/app/einheiten'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
+    | '/app/fahrzeuge'
     | '/app/gefahren'
     | '/app/lagekarte'
     | '/app/notizen'
@@ -392,9 +390,9 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/signout'
     | '/app/betroffene'
-    | '/app/einheiten'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
+    | '/app/fahrzeuge'
     | '/app/gefahren'
     | '/app/lagekarte'
     | '/app/notizen'
@@ -454,9 +452,9 @@ export const routeTree = rootRoute
       "filePath": "app.tsx",
       "children": [
         "/app/betroffene",
-        "/app/einheiten",
         "/app/einsatzdaten",
         "/app/einsatztagebuch",
+        "/app/fahrzeuge",
         "/app/gefahren",
         "/app/lagekarte",
         "/app/notizen",
@@ -478,16 +476,16 @@ export const routeTree = rootRoute
       "filePath": "app/betroffene.lazy.tsx",
       "parent": "/app"
     },
-    "/app/einheiten": {
-      "filePath": "app/einheiten.lazy.tsx",
-      "parent": "/app"
-    },
     "/app/einsatzdaten": {
       "filePath": "app/einsatzdaten.lazy.tsx",
       "parent": "/app"
     },
     "/app/einsatztagebuch": {
       "filePath": "app/einsatztagebuch.lazy.tsx",
+      "parent": "/app"
+    },
+    "/app/fahrzeuge": {
+      "filePath": "app/fahrzeuge.lazy.tsx",
       "parent": "/app"
     },
     "/app/gefahren": {

@@ -26,14 +26,14 @@ export type StatusDto = SmallStatusDto & {
   beschreibung: string;
 };
 
-export type EinheitDto = {
+export type FahrzeugDto = {
   id: string;
   funkrufname: string;
-  einheitTyp: {
+  fahrzeugTyp: {
     id: string;
     label: string;
   };
-  einheitTypId?: string;
+  fahrzeugTypId?: string;
   kapazitaet: number;
   istTemporaer: boolean;
   status: SmallStatusDto;

@@ -39,8 +39,8 @@ deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia a
 
 ---
 
-## Einheiten
+## Fahrzeuge
 
-Die Einheiten können über die Einheitenverwaltung verwaltet werden. Und hier ist ein Ridgeback verkleidet als Pflanze:
+Die Fahrzeuge können über die Fahrzeugeverwaltung verwaltet werden. Und hier ist ein Ridgeback verkleidet als Pflanze:
 
 ![](/image.png)

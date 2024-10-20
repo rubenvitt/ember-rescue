@@ -3,8 +3,8 @@ import { PrismaService } from '../database/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
-import { EinheitenService } from '../einheiten/einheiten.service';
 import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
+import { FahrzeugeService } from '../fahrzeuge/fahrzeuge.service';
 
 @Injectable()
 export class EinsatzService {
@@ -13,7 +13,7 @@ export class EinsatzService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly einsatztagebuchService: EinsatztagebuchService,
-    private readonly einheitenService: EinheitenService,
+    private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortService,
   ) {}
 
@@ -41,6 +41,7 @@ export class EinsatzService {
   }
 
   async createEinsatz(data: Prisma.EinsatzCreateInput) {
+    this.logger.debug('Creating Einsatz with data:', data);
     return this.prismaService.einsatz.create({
       data,
     });
@@ -147,7 +148,7 @@ export class EinsatzService {
         updateEinsatzDto.alarmstichwort,
       );
       const aufnehmendesRettungsmittel =
-        await this.einheitenService.findEinheit({
+        await this.fahrzeugeService.findFahrzeug({
           id: einsatz.aufnehmendes_rettungsmittel['id'],
         });
 

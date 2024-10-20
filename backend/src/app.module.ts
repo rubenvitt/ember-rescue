@@ -6,7 +6,7 @@ import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
 import { ConfigModule } from '@nestjs/config';
 import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
 import { QualifikationenModule } from './qualifikationen/qualifikationen.module';
-import { EinheitenModule } from './einheiten/einheiten.module';
+import { FahrzeugeModule } from './fahrzeuge/fahrzeuge.module';
 import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
 import * as Joi from 'joi';
@@ -42,7 +42,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     }),
     EinsatztagebuchModule,
     QualifikationenModule,
-    EinheitenModule,
+    FahrzeugeModule,
     StatusModule,
     EinsatzModule,
     AlarmstichwortModule,

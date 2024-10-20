@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EinsatzEinheitenController } from './einsatz-einheiten.controller';
-import { EinsatzEinheitenService } from './einsatz-einheiten.service';
+import { EinsatzFahrzeugeController } from './einsatz-fahrzeuge.controller';
+import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
 
 describe('EinsatzEinheitenController', () => {
-  let controller: EinsatzEinheitenController;
-  let service: EinsatzEinheitenService;
+  let controller: EinsatzFahrzeugeController;
+  let service: EinsatzFahrzeugeService;
 
   beforeEach(async () => {
     const serviceMock = {
@@ -15,14 +15,14 @@ describe('EinsatzEinheitenController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [EinsatzEinheitenController],
-      providers: [{ provide: EinsatzEinheitenService, useValue: serviceMock }],
+      controllers: [EinsatzFahrzeugeController],
+      providers: [{ provide: EinsatzFahrzeugeService, useValue: serviceMock }],
     }).compile();
 
-    controller = module.get<EinsatzEinheitenController>(
-      EinsatzEinheitenController,
+    controller = module.get<EinsatzFahrzeugeController>(
+      EinsatzFahrzeugeController,
     );
-    service = module.get<EinsatzEinheitenService>(EinsatzEinheitenService);
+    service = module.get<EinsatzFahrzeugeService>(EinsatzFahrzeugeService);
   });
 
   it('should be defined', () => {
@@ -33,7 +33,7 @@ describe('EinsatzEinheitenController', () => {
     const einsatzId = 'einsatz1';
     const result = await controller.findEinheitenImEinsatz(einsatzId);
     expect(result).toEqual([]);
-    expect(service.findEinheitenImEinsatz).toHaveBeenCalledWith({ einsatzId });
+    expect(service.findFahrzeugeImEinsatz).toHaveBeenCalledWith({ einsatzId });
   });
 
   it('should add einheit to einsatz', async () => {
@@ -41,13 +41,13 @@ describe('EinsatzEinheitenController', () => {
     const bearbeiterHeader = 'Bearbeiter-ID: bearbeiter1';
     const body = { einheitId: 'einheit1' };
 
-    const response = await controller.addEinheitToEinsatz(
+    const response = await controller.addFahrzeugToEinsatz(
       einsatzId,
       bearbeiterHeader,
       body,
     );
     expect(response).toEqual({ status: 'ok' });
-    expect(service.addEinheitToEinsatz).toHaveBeenCalledWith(
+    expect(service.addFahrzeugToEinsatz).toHaveBeenCalledWith(
       body.einheitId,
       einsatzId,
       'bearbeiter1',
@@ -86,7 +86,7 @@ describe('EinsatzEinheitenController', () => {
       bearbeiterHeader,
     );
     expect(response).toEqual({ status: 'ok' });
-    expect(service.removeEinheitFromEinsatz).toHaveBeenCalledWith(
+    expect(service.removeFahrzeugFromEinsatz).toHaveBeenCalledWith(
       einheitId,
       einsatzId,
       'bearbeiter1',
