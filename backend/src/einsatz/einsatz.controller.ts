@@ -60,6 +60,11 @@ export class EinsatzController {
           alarmstichwortId: body.alarmstichwort,
         },
       },
+      einsatz_meta: {
+        create: {
+          ort: '',
+        },
+      },
     });
   }
 

@@ -1,20 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../database/prisma/prisma.service';
-import { EinheitDto } from '../types';
+import { FahrzeugDto } from '../types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class EinheitenService {
-  private readonly logger = new Logger(EinheitenService.name);
+export class FahrzeugeService {
+  private readonly logger = new Logger(FahrzeugeService.name);
 
   constructor(private readonly prismaService: PrismaService) {}
 
   findAll() {
-    return this.prismaService.einheit.findMany({
+    return this.prismaService.fahrzeug.findMany({
       include: {
         _count: {
           select: {
-            einsatz_einheit: true,
+            einsatz_fahrzeug: true,
           },
         },
         status: {
@@ -25,7 +25,7 @@ export class EinheitenService {
             code: true,
           },
         },
-        einheitTyp: {
+        fahrzeugTyp: {
           select: {
             id: true,
             label: true,
@@ -39,34 +39,39 @@ export class EinheitenService {
   }
 
   findTypen() {
-    return this.prismaService.einheitTyp.findMany({});
+    return this.prismaService.fahrzeugTyp.findMany({});
   }
 
-  updateMany(einheiten: Omit<EinheitDto, 'status'>[]) {
+  updateMany(fahrzeuge: Omit<FahrzeugDto, 'status'>[]) {
     return this.prismaService.$transaction(async (transaction) => {
-      for (const { einheitTyp: _, einheitTypId, id, ...einheit } of einheiten) {
-        await transaction.einheit.upsert({
+      for (const {
+        fahrzeugTyp: _,
+        fahrzeugTypId,
+        id,
+        ...fahrzeug
+      } of fahrzeuge) {
+        await transaction.fahrzeug.upsert({
           where: {
             id: id,
           },
           update: {
-            ...einheit,
-            einheitTypId: einheitTypId,
+            ...fahrzeug,
+            fahrzeugTypId: fahrzeugTypId,
           },
           create: {
-            ...einheit,
-            einheitTypId: einheitTypId,
+            ...fahrzeug,
+            fahrzeugTypId: fahrzeugTypId,
           },
         });
       }
     });
   }
 
-  findEinheit(where: Prisma.EinheitWhereUniqueInput) {
-    return this.prismaService.einheit.findUnique({
+  findFahrzeug(where: Prisma.FahrzeugWhereUniqueInput) {
+    return this.prismaService.fahrzeug.findUnique({
       where,
       include: {
-        einheitTyp: {
+        fahrzeugTyp: {
           select: {
             id: true,
             label: true,

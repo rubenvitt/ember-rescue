@@ -7,7 +7,7 @@ import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHead
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import {
   Button,
   Drawer,
@@ -31,7 +31,7 @@ export function EinsatztagebuchComponent() {
   const parentRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [editingEintrag, setEditingEintrag] = useState<EinsatztagebuchEintrag | null>(null);
-  const { einheiten } = useEinheiten();
+  const { fahrzeuge } = useFahrzeuge();
   const onDrawerClose = useCallback(() => {
     setEditingEintrag(null);
     setIsOpen(false);
@@ -85,18 +85,18 @@ export function EinsatztagebuchComponent() {
   }, []);
 
   const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
-    const einheitTypen = einheiten.data?.reduce(
+    const fahrzeugTypen = fahrzeuge.data?.reduce(
       (acc, e) => {
-        if (!acc[e.einheitTyp.label]) {
-          acc[e.einheitTyp.label] = [];
+        if (!acc[e.fahrzeugTyp.label]) {
+          acc[e.fahrzeugTyp.label] = [];
         }
-        acc[e.einheitTyp.label].push({ text: e.funkrufname, value: e.funkrufname });
+        acc[e.fahrzeugTyp.label].push({ text: e.funkrufname, value: e.funkrufname });
         return acc;
       },
       {} as Record<string, { text: string; value: string }[]>,
     );
-    const rufnahmeFilter = einheitTypen
-      ? Object.entries(einheitTypen).map(([key, value]) => ({
+    const rufnahmeFilter = fahrzeugTypen
+      ? Object.entries(fahrzeugTypen).map(([key, value]) => ({
           text: key,
           value: key,
           children: value,
@@ -255,17 +255,17 @@ export function EinsatztagebuchComponent() {
                 initialValues: {
                   ...editingEintrag,
                   absender:
-                    einheiten.data?.find((e) => e.funkrufname === editingEintrag.absender)?.id ??
+                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.absender)?.id ??
                     editingEintrag.absender,
                   empfaenger:
-                    einheiten.data?.find((e) => e.funkrufname === editingEintrag.empfaenger)?.id ??
+                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.empfaenger)?.id ??
                     editingEintrag.empfaenger,
                 },
                 onSubmit: async (data) => {
                   await createEinsatztagebuchEintrag.mutateAsync({
                     ...data,
-                    absender: einheiten.data?.find((e) => e.id === data.absender)?.funkrufname ?? data.absender,
-                    empfaenger: einheiten.data?.find((e) => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
+                    absender: fahrzeuge.data?.find((e) => e.id === data.absender)?.funkrufname ?? data.absender,
+                    empfaenger: fahrzeuge.data?.find((e) => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
                   });
                   await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?.id });
                   setIsOpen(false);
@@ -287,8 +287,8 @@ export function EinsatztagebuchComponent() {
           // <GenericForm<EinsatztagebuchEintrag>
           //   defaultValues={{
           //     ...editingEintrag,
-          //     absender: einheiten.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
-          //     empfaenger: einheiten.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
+          //     absender: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
+          //     empfaenger: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
           //   }}
           //   submitText="Eintrag ändern"
           //   submitIcon={PiGitPullRequest}
@@ -303,7 +303,7 @@ export function EinsatztagebuchComponent() {
           //           validators: {
           //             onChange: z.string({ message: 'Ein Absender wird benötigt' }).min(0),
           //           },
-          //           items: einheitenAsItems,
+          //           items: fahrzeugeAsItems,
           //           width: 'half',
           //         },
           //         {
@@ -314,7 +314,7 @@ export function EinsatztagebuchComponent() {
           //           validators: {
           //             onChange: z.string({ message: 'Ein Empfänger wird benötigt' }).min(0),
           //           },
-          //           items: einheitenAsItems,
+          //           items: fahrzeugeAsItems,
           //           width: 'half',
           //         },
           //         {

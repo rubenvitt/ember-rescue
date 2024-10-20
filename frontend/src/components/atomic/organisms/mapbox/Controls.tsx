@@ -9,34 +9,37 @@ import clsx from 'clsx';
 import { backendFetchJson } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
-import { useEinheiten } from '../../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
-import { EinheitDto } from '../../../../types/app/einheit.types.js';
+import { FahrzeugDto } from '../../../../types/app/fahrzeug.types.js';
 import { MapLayerOptions } from './MapLayerOptions.component.tsx';
 
 export const useMapStore = create<{
   map?: Map;
   setMap: (map: Map) => void;
-  markerPerEinheit: { [einheitId: string]: Marker };
-  addMarkerForEinheit: (einheitId: string, marker: Marker) => void;
-  removeMarkerForEinheit: (einheitId: string) => void;
-  updateMarkerForEinheit: (einheitId: string, marker: Marker) => void;
+  markerPerFahrzeug: { [fahrzeugId: string]: Marker };
+  addMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
+  removeMarkerForFahrzeug: (fahrzeugId: string) => void;
+  updateMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
 }>((set, get) => ({
   setMap: (map) => set({ map: map }),
-  markerPerEinheit: {},
-  addMarkerForEinheit: (einheit, marker) =>
+  markerPerFahrzeug: {},
+  addMarkerForFahrzeug: (fahrzeug, marker) =>
     set({
-      markerPerEinheit: {
-        ...get().markerPerEinheit,
-        [einheit]: marker,
+      markerPerFahrzeug: {
+        ...get().markerPerFahrzeug,
+        [fahrzeug]: marker,
       },
     }),
-  removeMarkerForEinheit: (einheit) =>
+  removeMarkerForFahrzeug: (fahrzeug) =>
     set({
-      markerPerEinheit: Object.fromEntries(Object.entries(get().markerPerEinheit).filter(([key]) => key !== einheit)),
+      markerPerFahrzeug: Object.fromEntries(
+        Object.entries(get().markerPerFahrzeug).filter(([key]) => key !== fahrzeug),
+      ),
     }),
-  updateMarkerForEinheit: (einheit, marker) => set({ markerPerEinheit: get().markerPerEinheit, [einheit]: marker }),
+  updateMarkerForFahrzeug: (fahrzeug, marker) =>
+    set({ markerPerFahrzeug: get().markerPerFahrzeug, [fahrzeug]: marker }),
 }));
 
 // React-Komponente mit Icon
@@ -123,32 +126,32 @@ interface MyControlComponentProps {
   map: Map;
 }
 
-function AddEinheitComponent() {
-  const { einheitenImEinsatz } = useEinheiten();
+function AddFahrzeugComponent() {
+  const { fahrzeugeImEinsatz } = useFahrzeuge();
   const { map } = useMapStore();
-  const randomEinheit = useMemo<EinheitDto | undefined>(() => {
-    return einheitenImEinsatz.data?.find(() => true);
-  }, [einheitenImEinsatz.data]);
-  const [showEinheitenList, toggleShowEinheitenList] = useToggle(false);
+  const randomFahrzeug = useMemo<FahrzeugDto | undefined>(() => {
+    return fahrzeugeImEinsatz.data?.find(() => true);
+  }, [fahrzeugeImEinsatz.data]);
+  const [showFahrzeugeList, toggleShowFahrzeugeList] = useToggle(false);
 
-  const addEinheitToMap = useCallback(
-    (einheit: EinheitDto) => {
+  const addFahrzeugToMap = useCallback(
+    (fahrzeug: FahrzeugDto) => {
       let element = document.createElement('div');
       let svg = erzeugeTaktischesZeichen({
         grundzeichen: 'fahrzeug',
         organisation: 'hilfsorganisation',
         fachaufgabe: 'iuk',
-        name: einheit.funkrufname,
-        farbe: statusRgbColors[einheit.status.code],
+        name: fahrzeug.funkrufname,
+        farbe: statusRgbColors[fahrzeug.status.code],
       }).svg;
       element.innerHTML = svg.render();
       element.className = 'w-20 h-20 text-red-500';
-      element.id = `einheit-${einheit.funkrufname}`;
+      element.id = `fahrzeug-${fahrzeug.funkrufname}`;
       map &&
         new mapboxgl.Marker({ element, draggable: true })
           .setPopup(
             new mapboxgl.Popup().setHTML(
-              `<div>${einheit.einheitTyp.label} ${einheit.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
+              `<div>${fahrzeug.fahrzeugTyp.label} ${fahrzeug.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
             ),
           )
           .setLngLat(map.getCenter())
@@ -157,19 +160,19 @@ function AddEinheitComponent() {
     [map],
   );
 
-  if (!map || !randomEinheit) return null;
+  if (!map || !randomFahrzeug) return null;
 
-  if (showEinheitenList) {
+  if (showFahrzeugeList) {
     return (
       <>
-        <button className="absolute right-0 top-0 m-2" onClick={toggleShowEinheitenList}>
+        <button className="absolute right-0 top-0 m-2" onClick={toggleShowFahrzeugeList}>
           <PiX />
         </button>
         <div className="flex max-h-48 flex-col gap-2 overflow-y-scroll rounded p-2">
-          {einheitenImEinsatz.data?.map((einheit) => {
+          {fahrzeugeImEinsatz.data?.map((fahrzeug) => {
             return (
-              <button onClick={() => addEinheitToMap(einheit)} className="p-2">
-                {einheit.funkrufname}
+              <button onClick={() => addFahrzeugToMap(fahrzeug)} className="p-2">
+                {fahrzeug.funkrufname}
               </button>
             );
           })}
@@ -181,7 +184,7 @@ function AddEinheitComponent() {
   return (
     <button
       onClick={() => {
-        toggleShowEinheitenList();
+        toggleShowFahrzeugeList();
       }}
       className="cursor-pointer rounded p-2"
     >
@@ -193,7 +196,7 @@ function AddEinheitComponent() {
   //         color: 'green',
   //         draggable: true,
   //       }).setLngLat(map.getCenter()).addTo(map);
-  //       addMarkerForEinheit(randomEinheit?.id, marker);
+  //       addMarkerForFahrzeug(randomFahrzeug?.id, marker);
   //       marker.on('dragend', () => {
   //         console.log('marker is', marker.getLngLat());
   //       });
@@ -292,7 +295,7 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
       </div>
 
       <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
-        <AddEinheitComponent />
+        <AddFahrzeugComponent />
       </div>
     </>
   );

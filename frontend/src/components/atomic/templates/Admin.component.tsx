@@ -1,5 +1,5 @@
 import { Settings, useSettings } from '../../../hooks/settings.hook.js';
-import { EditableEinheitenTable } from '../organisms/table/EditableEinheitenTable.component.js';
+import { EditableFahrzeugeTable } from '../organisms/table/EditableFahrzeugeTable.component.js';
 import { Input } from 'formik-antd';
 import * as Yup from 'yup';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
@@ -52,7 +52,7 @@ export function AdminTemplate() {
         </FormSection>
       </FormLayout>
 
-      <EditableEinheitenTable />
+      <EditableFahrzeugeTable />
     </div>
   );
 }

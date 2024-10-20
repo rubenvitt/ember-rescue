@@ -1,21 +1,21 @@
 import React, { useCallback } from 'react';
-import { EinheitListItemComponent } from '../molecules/EinheitListItem.component.js';
-import { EinheitDto } from '../../../types/app/einheit.types.js';
+import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
+import { FahrzeugDto } from '../../../types/app/fahrzeug.types.js';
 import { Button, Card, Dropdown, List, Modal } from 'antd';
 import { PiCaretRight, PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useStatus } from '../../../hooks/status.hook.js';
 import { StatusDto } from '../../../types/app/status.types.js';
 import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
 import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
 
-interface EinheitenlisteComponentProps {
-  einheiten?: EinheitDto[];
+interface FahrzeugelisteComponentProps {
+  fahrzeuge?: FahrzeugDto[];
 }
 
-function EinheitExtra({ einheit }: { einheit: EinheitDto }) {
+function FahrzeugExtra({ fahrzeug }: { fahrzeug: FahrzeugDto }) {
   const { status } = useStatus();
-  const { changeStatus, removeEinheitFromEinsatz } = useEinheiten({ einheitId: einheit.id });
+  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fahrzeugId: fahrzeug.id });
 
   const onStatusButtonClick = useCallback(
     async (item: { statusId: string }) => {
@@ -47,7 +47,7 @@ function EinheitExtra({ einheit }: { einheit: EinheitDto }) {
                 icon: <PiNumpad className="text-primary-500" size={24} />,
                 closable: true,
                 maskClosable: true,
-                title: `Status ändern von ${einheit.funkrufname}`,
+                title: `Status ändern von ${fahrzeug.funkrufname}`,
                 width: '70%',
                 okButtonProps: {
                   className: 'hidden',
@@ -74,7 +74,7 @@ function EinheitExtra({ einheit }: { einheit: EinheitDto }) {
             icon: <PiStop />,
             danger: true,
             onClick: () => {
-              removeEinheitFromEinsatz.mutate({});
+              removeFahrzeugFromEinsatz.mutate({});
             },
           },
         ],
@@ -85,7 +85,7 @@ function EinheitExtra({ einheit }: { einheit: EinheitDto }) {
   );
 }
 
-export const EinheitenlisteComponent: React.FC<EinheitenlisteComponentProps> = ({ einheiten }) => (
+export const FahrzeugelisteComponent: React.FC<FahrzeugelisteComponentProps> = ({ fahrzeuge }) => (
   <List
     grid={{
       gutter: 16,
@@ -96,17 +96,17 @@ export const EinheitenlisteComponent: React.FC<EinheitenlisteComponentProps> = (
       xl: 2,
       xxl: 3,
     }}
-    loading={!einheiten}
-    dataSource={einheiten}
-    renderItem={(einheit) => {
+    loading={!fahrzeuge}
+    dataSource={fahrzeuge}
+    renderItem={(fahrzeug) => {
       return (
         <List.Item>
           <Card
             type="inner"
-            extra={<EinheitExtra einheit={einheit} />}
-            title={`${einheit.funkrufname} (${einheit.einheitTyp.label})`}
+            extra={<FahrzeugExtra fahrzeug={fahrzeug} />}
+            title={`${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label})`}
           >
-            <EinheitListItemComponent key={einheit.id} einheit={einheit} />
+            <FahrzeugListItemComponent key={fahrzeug.id} fahrzeug={fahrzeug} />
           </Card>
         </List.Item>
       );

@@ -2,23 +2,23 @@ import { SmallStatusDto } from './status.types.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 import { Identifiable } from '../utils/common.types.js';
 
-export type EinheitType = Identifiable & {
+export type FahrzeugType = Identifiable & {
   id: string;
   label: string;
 };
 
-export type EinheitDto = Identifiable & {
+export type FahrzeugDto = Identifiable & {
   _count: {
-    einsatz_einheit: number;
+    einsatz_fahrzeug: number;
   };
   funkrufname: string;
-  einheitTyp: EinheitType;
+  fahrzeugTyp: FahrzeugType;
   kapazitaet: number;
   istTemporaer: boolean;
   status: SmallStatusDto;
 };
 
-export type EinheitTypDto = Identifiable & {
+export type FahrzeugTypDto = Identifiable & {
   description: string;
   label: string;
   grundzeichen: GrundzeichenId;

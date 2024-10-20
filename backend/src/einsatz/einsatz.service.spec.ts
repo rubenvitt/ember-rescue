@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EinsatzService } from './einsatz.service';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
-import { EinheitenService } from '../einheiten/einheiten.service';
+import { FahrzeugeService } from '../fahrzeuge/fahrzeuge.service';
 import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
 import { Prisma } from '@prisma/client';
-import { UpdateEinsatzDto } from '../types';
 
 jest.useFakeTimers().setSystemTime(new Date('2024-08-09T12:19:50.671Z'));
 
@@ -13,7 +12,7 @@ describe('EinsatzService', () => {
   let service: EinsatzService;
   let prismaService: PrismaService;
   let einsatztagebuchService: EinsatztagebuchService;
-  let einheitenService: EinheitenService;
+  let einheitenService: FahrzeugeService;
   let alarmstichwortService: AlarmstichwortService;
 
   beforeEach(async () => {
@@ -69,7 +68,7 @@ describe('EinsatzService', () => {
         EinsatzService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: EinsatztagebuchService, useValue: einsatztagebuchMock },
-        { provide: EinheitenService, useValue: einheitenMock },
+        { provide: FahrzeugeService, useValue: einheitenMock },
         { provide: AlarmstichwortService, useValue: alarmstichwortMock },
       ],
     }).compile();
@@ -79,7 +78,7 @@ describe('EinsatzService', () => {
     einsatztagebuchService = module.get<EinsatztagebuchService>(
       EinsatztagebuchService,
     );
-    einheitenService = module.get<EinheitenService>(EinheitenService);
+    einheitenService = module.get<FahrzeugeService>(FahrzeugeService);
     alarmstichwortService = module.get<AlarmstichwortService>(
       AlarmstichwortService,
     );

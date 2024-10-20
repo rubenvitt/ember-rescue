@@ -1,5 +1,5 @@
-import { useRecommendedEinheiten } from '../../../hooks/einheiten/recommended-einheiten.hook.js';
-import { useEinheiten } from '../../../hooks/einheiten/einheiten.hook.js';
+import { useRecommendedFahrzeuge } from '../../../hooks/fahrzeuge/recommended-fahrzeuge.hook.js';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { PiAmbulance, PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
 import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
@@ -8,11 +8,11 @@ import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 
-const RecommendedEinheit: React.FC<{ einheit: any; onAdd: (id: string) => void }> = ({ einheit, onAdd }) => (
+const RecommendedFahrzeug: React.FC<{ fahrzeug: any; onAdd: (id: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
     <button
       type="button"
-      onClick={() => onAdd(einheit.item.id)}
+      onClick={() => onAdd(fahrzeug.item.id)}
       className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
     >
       <span className="flex min-w-0 flex-1 items-center space-x-3">
@@ -20,9 +20,9 @@ const RecommendedEinheit: React.FC<{ einheit: any; onAdd: (id: string) => void }
           <div className="h-10 w-10 rounded-full bg-green-500 dark:bg-green-800"></div>
         </span>
         <span className="block min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-gray-900 dark:text-white">{einheit.label}</span>
+          <span className="block truncate text-sm font-medium text-gray-900 dark:text-white">{fahrzeug.label}</span>
           <span className="block truncate text-sm font-medium text-gray-600 dark:text-gray-400">
-            {einheit.secondary}
+            {fahrzeug.secondary}
           </span>
         </span>
       </span>
@@ -37,35 +37,37 @@ interface Props {
   classNameContainer?: string;
 }
 
-export function AddEinheiten({ classNameContainer }: Props) {
-  const empfohleneEinheiten = useRecommendedEinheiten({ maxResults: 6 });
-  const { addEinheitToEinsatz, einheitenNichtImEinsatz, einheitenImEinsatz, einheiten } = useEinheiten();
-  const form = useForm<{ einheit: string }>({
+export function AddFahrzeuge({ classNameContainer }: Props) {
+  const empfohleneFahrzeuge = useRecommendedFahrzeuge({ maxResults: 6 });
+  const { addFahrzeugToEinsatz, fahrzeugeNichtImEinsatz, fahrzeugeImEinsatz, fahrzeuge } = useFahrzeuge();
+  const form = useForm<{ fahrzeug: string }>({
     onSubmit({ value }) {
-      handleAddEinheit(value.einheit);
+      handleAddFahrzeug(value.fahrzeug);
       form.reset();
     },
   });
 
-  const einheitenNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
-    return einheitenNichtImEinsatz?.map((einheit) => ({
-      value: einheit.id,
-      searchString: einheit.funkrufname.toLowerCase() + einheit.einheitTyp.label.toLowerCase(),
+  const fahrzeugeNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
+    return fahrzeugeNichtImEinsatz?.map((fahrzeug) => ({
+      value: fahrzeug.id,
+      searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.fahrzeugTyp.label.toLowerCase(),
       label: (
         <div className="flex justify-between gap-4">
-          <span className="flex-shrink-0 truncate">{einheit.funkrufname}</span>
-          <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{einheit.einheitTyp.label}</span>
+          <span className="flex-shrink-0 truncate">{fahrzeug.funkrufname}</span>
+          <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
+            {fahrzeug.fahrzeugTyp.label}
+          </span>
         </div>
       ),
-      item: einheit,
+      item: fahrzeug,
     }));
-  }, [einheitenNichtImEinsatz]);
+  }, [fahrzeugeNichtImEinsatz]);
 
-  const handleAddEinheit = useCallback(
-    async (einheitId: string) => {
-      await addEinheitToEinsatz.mutateAsync({ einheitId });
+  const handleAddFahrzeug = useCallback(
+    async (fahrzeugId: string) => {
+      await addFahrzeugToEinsatz.mutateAsync({ fahrzeugId });
     },
-    [addEinheitToEinsatz],
+    [addFahrzeugToEinsatz],
   );
 
   return (
@@ -73,27 +75,27 @@ export function AddEinheiten({ classNameContainer }: Props) {
       className={twMerge('mx-auto max-w-md rounded-lg border border-primary-500 p-6 sm:max-w-3xl', classNameContainer)}
     >
       <div className="mb-6 text-center">
-        {empfohleneEinheiten.length == 0 ? (
+        {empfohleneFahrzeuge.length == 0 ? (
           <PiEmpty className="mx-auto h-12 w-12 text-red-500" aria-hidden="true" />
         ) : (
           <PiShieldPlus className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
         )}
         <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900 dark:text-white">
-          Neue Einheit disponieren
+          Neue Fahrzeug disponieren
         </h2>
-        {einheitenImEinsatz.data?.length === 0 && (
+        {fahrzeugeImEinsatz.data?.length === 0 && (
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Dem Einsatz wurden noch keine Fahrzeuge zugewiesen. Jetzt Fahrzeuge zuweisen.
           </p>
         )}
       </div>
 
-      <FormLayout<{ einheitId: string }>
+      <FormLayout<{ fahrzeugId: string }>
         type="oneLine"
         formik={{
-          initialValues: { einheitId: '' },
+          initialValues: { fahrzeugId: '' },
           async onSubmit(data) {
-            await handleAddEinheit(data.einheitId);
+            await handleAddFahrzeug(data.fahrzeugId);
           },
         }}
         buttons={{
@@ -108,8 +110,8 @@ export function AddEinheiten({ classNameContainer }: Props) {
         resetOnSubmit={true}
       >
         <Select
-          name="einheitId"
-          placeholder="Einheit dem Einsatz hinzufügen"
+          name="fahrzeugId"
+          placeholder="Fahrzeug dem Einsatz hinzufügen"
           className="w-full"
           showSearch
           // @ts-ignore
@@ -119,23 +121,23 @@ export function AddEinheiten({ classNameContainer }: Props) {
             const regex = new RegExp(inputValue.split('').join('.*'), 'i');
             return regex.test(option?.searchString);
           }}
-          options={einheitenNichtImEinsatzItems}
-          loading={einheiten.isLoading}
+          options={fahrzeugeNichtImEinsatzItems}
+          loading={fahrzeuge.isLoading}
         />
       </FormLayout>
       <div className="mt-10">
-        <h3 className="text-sm font-medium text-gray-500">Empfohlene Einheiten</h3>
-        {empfohleneEinheiten.length > 0 ? (
+        <h3 className="text-sm font-medium text-gray-500">Empfohlene Fahrzeuge</h3>
+        {empfohleneFahrzeuge.length > 0 ? (
           <>
             <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {empfohleneEinheiten?.map((einheit) => (
-                <RecommendedEinheit key={einheit.item.id} einheit={einheit} onAdd={handleAddEinheit} />
+              {empfohleneFahrzeuge?.map((fahrzeug) => (
+                <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
               ))}
             </ul>
           </>
         ) : (
           <>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Keine weiteren empfohlenen Einheiten verfügbar.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Keine weiteren empfohlenen Fahrzeuge verfügbar.</p>
           </>
         )}
       </div>

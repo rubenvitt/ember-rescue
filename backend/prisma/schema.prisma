@@ -8,64 +8,64 @@ datasource db {
 }
 
 model Bearbeiter {
-  id                      String                   @id() @default(cuid())
-  name                    String                   @unique
-  active                  Boolean                  @default(true)
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  einheit_status_historie EinheitStatusHistorie[]
-  einsatz                 Einsatz[]
-  einsatztagebuch_eintrag EinsatztagebuchEintrag[]
-  Notizen                 Notiz[]
-  Reminder                Reminder[]
+  id                       String                   @id() @default(cuid())
+  name                     String                   @unique
+  active                   Boolean                  @default(true)
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  fahrzeug_status_historie FahrzeugStatusHistorie[]
+  einsatz                  Einsatz[]
+  einsatztagebuch_eintrag  EinsatztagebuchEintrag[]
+  Notizen                  Notiz[]
+  Reminder                 Reminder[]
 
   @@map("bearbeiter")
 }
 
-model Einheit {
-  id                      String                  @id @default(cuid())
-  funkrufname             String
-  kapazitaet              Int
-  aktuellerStatusId       String?
-  status                  Status?                 @relation(fields: [aktuellerStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einheit_status_historie EinheitStatusHistorie[]
-  einsatz_einheit         EinheitOnEinsatz[]
-  Einsatz                 Einsatz[]
-  organisation            String?
-  fachaufgabe             String?
-  verwaltungsstufe        String?
-  einheitTyp              EinheitTyp              @relation(fields: [einheitTypId], references: [id])
-  einheitTypId            String
-  istTemporaer            Boolean
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
+model Fahrzeug {
+  id                       String                   @id @default(cuid())
+  funkrufname              String
+  kapazitaet               Int
+  aktuellerStatusId        String?
+  status                   Status?                  @relation(fields: [aktuellerStatusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fahrzeug_status_historie FahrzeugStatusHistorie[]
+  einsatz_fahrzeug         FahrzeugOnEinsatz[]
+  Einsatz                  Einsatz[]
+  organisation             String?
+  fachaufgabe              String?
+  verwaltungsstufe         String?
+  fahrzeugTyp              FahrzeugTyp              @relation(fields: [fahrzeugTypId], references: [id])
+  fahrzeugTypId            String
+  istTemporaer             Boolean
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
 
-  @@map("einheiten")
+  @@map("fahrzeuge")
 }
 
-model EinheitTyp {
-  id           String    @id @default(cuid())
+model FahrzeugTyp {
+  id           String     @id @default(cuid())
   label        String
   description  String
   grundzeichen String
-  einheiten    Einheit[]
+  fahrzeuge    Fahrzeug[]
 }
 
-model EinheitStatusHistorie {
+model FahrzeugStatusHistorie {
   id           String      @id() @default(cuid())
   zeitpunkt    DateTime
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  einheitId    String?
+  fahrzeugId   String?
   statusId     String?
   bearbeiterId String?
   einsatzId    String?
   bearbeiter   Bearbeiter? @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   status       Status?     @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   einsatz      Einsatz?    @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  einheit      Einheit?    @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fahrzeug     Fahrzeug?   @relation(fields: [fahrzeugId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@map("einheitenStatusHistorie")
+  @@map("fahrzeugStatusHistorie")
 }
 
 model Einsatz {
@@ -77,15 +77,15 @@ model Einsatz {
   updatedAt                    DateTime                  @updatedAt
   bearbeiterId                 String?
   aufnehmendesRettungsmittelId String
-  einheit_status_historie      EinheitStatusHistorie[]
+  fahrzeug_status_historie     FahrzeugStatusHistorie[]
   bearbeiter                   Bearbeiter?               @relation(fields: [bearbeiterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  aufnehmendes_rettungsmittel  Einheit                   @relation(fields: [aufnehmendesRettungsmittelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
-  einsatz_einheit              EinheitOnEinsatz[]
+  aufnehmendes_rettungsmittel  Fahrzeug                  @relation(fields: [aufnehmendesRettungsmittelId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  einsatz_fahrzeug             FahrzeugOnEinsatz[]
   einsatztagebuch_eintrag      EinsatztagebuchEintrag[]
   einsatz_alarmstichwort       EinsatzOnAlarmstichwort[]
   Notiz                        Notiz[]
   Reminder                     Reminder[]
-  einsatz_meta                 EinsatzMeta               @relation(fields: [id], references: [einsatzId], onDelete: Cascade, onUpdate: NoAction)
+  einsatz_meta                 EinsatzMeta?
 
   @@map("einsaetze")
 }
@@ -95,38 +95,38 @@ model EinsatzMeta {
 
   ort String?
 
-  einsatzId String   @unique
-  einsatz   Einsatz?
+  einsatzId String  @unique
+  einsatz   Einsatz @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([einsatzId])
   @@map("einsatzMeta")
 }
 
-model EinheitOnEinsatz {
-  id                    String                     @id() @default(cuid())
-  einsatzbeginn         DateTime
-  einsatzende           DateTime?
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
-  einsatzId             String?
-  einheitId             String?
-  einheit               Einheit?                   @relation(fields: [einheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz               Einsatz?                   @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
+model FahrzeugOnEinsatz {
+  id                     String                      @id() @default(cuid())
+  einsatzbeginn          DateTime
+  einsatzende            DateTime?
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  einsatzId              String?
+  fahrzeugId             String?
+  fahrzeug               Fahrzeug?                   @relation(fields: [fahrzeugId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz                Einsatz?                    @relation(fields: [einsatzId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  einsatz_fahrzeug_kraft PersonOnFahrzeugOnEinsatz[]
 
-  @@unique([einsatzId, einheitId])
-  @@map("einheitenOnEinsaetze")
+  @@unique([einsatzId, fahrzeugId])
+  @@map("fahrzeugOnEinsaetze")
 }
 
-model PersonOnEinheitOnEinsatz {
-  id               String            @id() @default(cuid())
-  fahrzeugfuehrer  Boolean
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  einsatzEinheitId String?
-  personId         String?
-  person           Person?           @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  einsatz_einheit  EinheitOnEinsatz? @relation(fields: [einsatzEinheitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model PersonOnFahrzeugOnEinsatz {
+  id                String             @id() @default(cuid())
+  fahrzeugfuehrer   Boolean
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  einsatzFahrzeugId String?
+  personId          String?
+  person            Person?            @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  einsatz_fahrzeug  FahrzeugOnEinsatz? @relation(fields: [einsatzFahrzeugId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("personenOnEinsaetze")
 }
@@ -155,15 +155,15 @@ model EinsatztagebuchEintrag {
 }
 
 model Person {
-  id                    String                     @id() @default(cuid())
-  name                  String
-  telefonnummer         String
-  fuehrungskraft        Boolean
-  istTemporaer          Boolean
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
-  einsatz_einheit_kraft PersonOnEinheitOnEinsatz[]
-  person_qualifikation  PersonOnQualifikation[]
+  id                     String                      @id() @default(cuid())
+  name                   String
+  telefonnummer          String
+  fuehrungskraft         Boolean
+  istTemporaer           Boolean
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  einsatz_fahrzeug_kraft PersonOnFahrzeugOnEinsatz[]
+  person_qualifikation   PersonOnQualifikation[]
 
   @@map("personen")
 }
@@ -192,14 +192,14 @@ model Qualifikation {
 }
 
 model Status {
-  id                      String                  @id() @default(cuid())
-  code                    String                  @unique
-  bezeichnung             String
-  beschreibung            String
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
-  einheit                 Einheit[]
-  einheit_status_historie EinheitStatusHistorie[]
+  id                       String                   @id() @default(cuid())
+  code                     String                   @unique
+  bezeichnung              String
+  beschreibung             String
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  fahrzeug                 Fahrzeug[]
+  fahrzeug_status_historie FahrzeugStatusHistorie[]
 
   @@index([code])
   @@map("status")

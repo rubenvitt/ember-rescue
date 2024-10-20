@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EinheitenService } from './einheiten.service';
+import { FahrzeugeService } from './fahrzeuge.service';
 import { PrismaService } from '../database/prisma/prisma.service';
-import { EinheitDto } from '../types';
+import { FahrzeugDto } from '../types';
 
 describe('EinheitenService', () => {
-  let service: EinheitenService;
+  let service: FahrzeugeService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -24,12 +24,12 @@ describe('EinheitenService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EinheitenService,
+        FahrzeugeService,
         { provide: PrismaService, useValue: prismaServiceMock },
       ],
     }).compile();
 
-    service = module.get<EinheitenService>(EinheitenService);
+    service = module.get<FahrzeugeService>(FahrzeugeService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
@@ -50,7 +50,7 @@ describe('EinheitenService', () => {
   });
 
   it('should update many einheiten', async () => {
-    const einheiten: Omit<EinheitDto, 'status'>[] = [
+    const einheiten: Omit<FahrzeugDto, 'status'>[] = [
       {
         id: '1',
         funkrufname: 'Funkrufname 1',
@@ -69,7 +69,7 @@ describe('EinheitenService', () => {
   });
 
   it('should find a specific einheit', async () => {
-    const result = await service.findEinheit({ id: '1' });
+    const result = await service.findFahrzeug({ id: '1' });
     expect(result).toEqual({});
     expect(prismaService.einheit.findUnique).toHaveBeenCalledWith({
       where: { id: '1' },
