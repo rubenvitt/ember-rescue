@@ -32,7 +32,7 @@ export class FahrzeugeController {
     await this.fahrzeugeService.importFahrzeuge(fahrzeuge);
   }
 
-  @Post('/export')
+  @Get('export')
   async exportFahrzeuge() {
     let allFahrzeuge = await this.fahrzeugeService.findAll({
       istTemporaer: false,

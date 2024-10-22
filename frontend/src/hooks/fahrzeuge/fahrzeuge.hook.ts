@@ -12,6 +12,10 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
     queryKey: services.backend.fahrzeuge.fetchAllFahrzeuge.queryKey,
     queryFn: services.backend.fahrzeuge.fetchAllFahrzeuge.queryFn,
   });
+  const fahrzeugeJson = useQuery<string>({
+    queryKey: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryKey,
+    queryFn: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryFn,
+  });
   const fahrzeugeImEinsatz = useQuery<FahrzeugDto[]>({
     queryKey: services.backend.fahrzeuge.fetchAllFahrzeugeImEinsatz.queryKey({ einsatzId }),
     queryFn: services.backend.fahrzeuge.fetchAllFahrzeugeImEinsatz.queryFn({ einsatzId }),
@@ -69,6 +73,7 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
 
   return {
     fahrzeuge,
+    fahrzeugeJson,
     fahrzeugeImEinsatz,
     fahrzeugeTypen,
     patchFahrzeuge,

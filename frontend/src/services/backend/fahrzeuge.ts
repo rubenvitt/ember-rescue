@@ -23,6 +23,13 @@ export const fetchAllFahrzeuge = {
   },
 };
 
+export const fetchAllFahrzeugeJson = {
+  queryKey: [queryKey, 'json'],
+  queryFn: async function () {
+    return JSON.stringify(await backendFetchJson<unknown>('fahrzeuge/export'), undefined, 2);
+  },
+};
+
 export const fetchAllFahrzeugeImEinsatz = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
   queryFn: ({ einsatzId }: { einsatzId: string | null }) =>

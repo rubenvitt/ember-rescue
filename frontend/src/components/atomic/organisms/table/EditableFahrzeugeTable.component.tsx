@@ -8,12 +8,12 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Button, Form, Switch as AntSwitch, Table, Tooltip } from 'antd';
+import { Button, Form, Input as AntInput, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { FahrzeugDto, FahrzeugTypDto } from '../../../../types/app/fahrzeug.types.js';
 import { create } from 'zustand';
-import { PiCheck, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
+import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { Formik } from 'formik';
@@ -22,6 +22,7 @@ import { PatchFahrzeugType } from '../../../../services/backend/fahrzeuge.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { toast } from 'react-toastify';
 
 type EditingStore = {
   id: null | string;
@@ -74,6 +75,23 @@ const newFahrzeugTemplate: FahrzeugDto = {
 };
 
 type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'> & { fahrzeugTyp: string };
+
+function JsonImExport() {
+  const { fahrzeugeJson } = useFahrzeuge();
+  return (
+    <>
+      <Typography.Text>Export-JSON</Typography.Text>
+      <AntInput.TextArea value={fahrzeugeJson.data} readOnly={true} />
+      <Button
+        onClick={() => toast.error("FIXME, that's not implemented yet")} // FIXME[ember-rescue-53](rubeen, 23.10.24): use clipboard
+        icon={<PiCode size={24} />}
+        variant="dashed"
+      >
+        Fahrzeuge kopieren
+      </Button>
+    </>
+  );
+}
 
 export function EditableFahrzeugeTable() {
   const [form] = Form.useForm();
@@ -237,42 +255,45 @@ export function EditableFahrzeugeTable() {
     [newFahrzeugTemplate, id, fahrzeuge.data],
   );
   return (
-    <Formik<EditableFahrzeugType>
-      validateOnChange={false}
-      validationSchema={PatchFahrzeugSchema}
-      onSubmit={(data) => {
-        console.log('submitting with data', { data });
-        patchFahrzeuge.mutate([{ ...data, fahrzeugTypId: data.fahrzeugTyp }]);
-      }}
-      initialValues={{
-        id: editingFahrzeug?.id ?? '',
-        funkrufname: editingFahrzeug?.funkrufname ?? '',
-        fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
-        istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-        kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
-      }}
-      innerRef={formRef}
-    >
-      <Form form={form}>
-        <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
-          bordered
-          dataSource={dataSource}
-          loading={fahrzeuge.isLoading}
-          // @ts-ignore
-          columns={mergedColumns}
-          rowClassName="editable-row"
-          pagination={{
-            pageSize: 10,
-            onChange: cancel,
-          }}
-        />
-      </Form>
-    </Formik>
+    <>
+      <Formik<EditableFahrzeugType>
+        validateOnChange={false}
+        validationSchema={PatchFahrzeugSchema}
+        onSubmit={(data) => {
+          console.log('submitting with data', { data });
+          patchFahrzeuge.mutate([{ ...data, fahrzeugTypId: data.fahrzeugTyp }]);
+        }}
+        initialValues={{
+          id: editingFahrzeug?.id ?? '',
+          funkrufname: editingFahrzeug?.funkrufname ?? '',
+          fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
+          istTemporaer: editingFahrzeug?.istTemporaer ?? false,
+          kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
+        }}
+        innerRef={formRef}
+      >
+        <Form form={form}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            bordered
+            dataSource={dataSource}
+            loading={fahrzeuge.isLoading}
+            // @ts-ignore
+            columns={mergedColumns}
+            rowClassName="editable-row"
+            pagination={{
+              pageSize: 10,
+              onChange: cancel,
+            }}
+          />
+        </Form>
+      </Formik>
+      <JsonImExport />
+    </>
   );
 }
 
