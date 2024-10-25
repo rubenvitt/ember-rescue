@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - release
-  check_run:
-    types: [ rerequested, completed ]
+  pull_requests:
+    branches: [ 'develop' ]
 
 
 jobs:
