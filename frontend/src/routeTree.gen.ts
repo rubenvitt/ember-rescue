@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 // Import Routes
+
 import { Route as rootRoute } from './routes/__root';
 import { Route as AppImport } from './routes/app';
 import { Route as AdminIndexImport } from './routes/admin/index';

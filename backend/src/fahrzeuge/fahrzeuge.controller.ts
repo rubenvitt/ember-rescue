@@ -11,7 +11,7 @@ import {
 import { FahrzeugeService } from './fahrzeuge.service';
 import { FahrzeugDto, FahrzeugImportDto } from '../types';
 import { Response } from 'express';
-import { fahrzeugImportSchema } from './fahrzeuge.json.schema';
+import { createFahrzeugSchema } from './fahrzeuge.json.schema';
 
 @Controller('fahrzeuge')
 export class FahrzeugeController {
@@ -38,10 +38,10 @@ export class FahrzeugeController {
     response.send({ status: 'Fahrzeuge updated successfully' });
   }
 
-  @Get('/import/schema')
+  @Get('/import/schema/v2')
   async getImportSchema() {
-    this.fahrzeugeService.findTypen();
-    return fahrzeugImportSchema;
+    let fahrzeugTypen = await this.fahrzeugeService.findTypen();
+    return createFahrzeugSchema(fahrzeugTypen.map((typ) => typ.label));
   }
 
   @Post('/import')

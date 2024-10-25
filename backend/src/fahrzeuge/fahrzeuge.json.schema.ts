@@ -3,15 +3,18 @@ import { FahrzeugImportDto } from '../types';
 
 const createFahrzeugSchema = (
   fahrzeugTypEnum: string[],
-): JSONSchemaType<FahrzeugImportDto> => ({
-  type: 'object',
-  properties: {
-    funkrufname: { type: 'string' },
-    fahrzeugTyp: { type: 'string', enum: fahrzeugTypEnum },
-    kapazitaet: { type: 'number' },
+): JSONSchemaType<FahrzeugImportDto[]> => ({
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      funkrufname: { type: 'string' },
+      fahrzeugTyp: { type: 'string', enum: fahrzeugTypEnum },
+      kapazitaet: { type: 'number' },
+    },
+    required: ['funkrufname', 'fahrzeugTyp', 'kapazitaet'],
+    additionalProperties: false,
   },
-  required: ['funkrufname', 'fahrzeugTyp', 'kapazitaet'],
-  additionalProperties: false,
 });
 
 export { createFahrzeugSchema };

@@ -39,8 +39,8 @@ importers:
         specifier: ^5.1.5
         version: 5.1.5(@pdfme/common@5.1.5(antd@5.21.5(date-fns@4.1.0)(luxon@3.4.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(form-render@2.5.1(antd@5.21.5(date-fns@4.1.0)(luxon@3.4.4)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)))
       '@prisma/client':
-        specifier: 5.20.0
-        version: 5.20.0(prisma@5.21.1)
+        specifier: 5.21.1
+        version: 5.21.1(prisma@5.21.1)
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -909,8 +909,8 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@prisma/client@5.20.0':
-    resolution: {integrity: sha512-CLv55ZuMuUawMsxoqxGtLT3bEZoa2W8L3Qnp6rDIFWy+ZBrUcOFKdoeGPSnbBqxc3SkdxJrF+D1veN/WNynZYA==}
+  '@prisma/client@5.21.1':
+    resolution: {integrity: sha512-3n+GgbAZYjaS/k0M03yQsQfR1APbr411r74foknnsGpmhNKBG49VuUkxIU6jORgvJPChoD4WC4PqoHImN1FP0w==}
     engines: {node: '>=16.13'}
     peerDependencies:
       prisma: '*'
@@ -5443,7 +5443,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@prisma/client@5.20.0(prisma@5.21.1)':
+  '@prisma/client@5.21.1(prisma@5.21.1)':
     optionalDependencies:
       prisma: 5.21.1
 
