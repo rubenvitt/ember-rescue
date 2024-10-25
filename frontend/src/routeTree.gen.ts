@@ -36,86 +36,103 @@ const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')();
 // Create/Update Routes
 
 const SigninLazyRoute = SigninLazyImport.update({
+  id: '/signin',
   path: '/signin',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/signin.lazy').then((d) => d.Route));
 
 const SetupEinsatzLazyRoute = SetupEinsatzLazyImport.update({
+  id: '/setupEinsatz',
   path: '/setupEinsatz',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/setupEinsatz.lazy').then((d) => d.Route));
 
 const AppRoute = AppImport.update({
+  id: '/app',
   path: '/app',
   getParentRoute: () => rootRoute,
 } as any);
 
 const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
 
 const AppIndexLazyRoute = AppIndexLazyImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/index.lazy').then((d) => d.Route));
 
 const AdminIndexRoute = AdminIndexImport.update({
+  id: '/admin/',
   path: '/admin/',
   getParentRoute: () => rootRoute,
 } as any);
 
 const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
+  id: '/prestart/settings',
   path: '/prestart/settings',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/prestart/settings.lazy').then((d) => d.Route));
 
 const AppUavLazyRoute = AppUavLazyImport.update({
+  id: '/uav',
   path: '/uav',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/uav.lazy').then((d) => d.Route));
 
 const AppSchadenLazyRoute = AppSchadenLazyImport.update({
+  id: '/schaden',
   path: '/schaden',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/schaden.lazy').then((d) => d.Route));
 
 const AppNotizenLazyRoute = AppNotizenLazyImport.update({
+  id: '/notizen',
   path: '/notizen',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/notizen.lazy').then((d) => d.Route));
 
 const AppLagekarteLazyRoute = AppLagekarteLazyImport.update({
+  id: '/lagekarte',
   path: '/lagekarte',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/lagekarte.lazy').then((d) => d.Route));
 
 const AppGefahrenLazyRoute = AppGefahrenLazyImport.update({
+  id: '/gefahren',
   path: '/gefahren',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/gefahren.lazy').then((d) => d.Route));
 
 const AppFahrzeugeLazyRoute = AppFahrzeugeLazyImport.update({
+  id: '/fahrzeuge',
   path: '/fahrzeuge',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/fahrzeuge.lazy').then((d) => d.Route));
 
 const AppEinsatztagebuchLazyRoute = AppEinsatztagebuchLazyImport.update({
+  id: '/einsatztagebuch',
   path: '/einsatztagebuch',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/einsatztagebuch.lazy').then((d) => d.Route));
 
 const AppEinsatzdatenLazyRoute = AppEinsatzdatenLazyImport.update({
+  id: '/einsatzdaten',
   path: '/einsatzdaten',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/einsatzdaten.lazy').then((d) => d.Route));
 
 const AppBetroffeneLazyRoute = AppBetroffeneLazyImport.update({
+  id: '/betroffene',
   path: '/betroffene',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/betroffene.lazy').then((d) => d.Route));
 
 const AuthSignoutRoute = AuthSignoutImport.update({
+  id: '/auth/signout',
   path: '/auth/signout',
   getParentRoute: () => rootRoute,
 } as any);
@@ -274,7 +291,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexLazyRoute: AppIndexLazyRoute,
 };
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren;)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren);
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute;
@@ -355,7 +372,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app/'
+    | '/app/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
@@ -373,7 +390,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app'
+    | '/app';
   id:
     | '__root__'
     | '/'
@@ -392,7 +409,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin/'
-    | '/app/'
+    | '/app/';
   fileRoutesById: FileRoutesById;
 }
 
@@ -414,11 +431,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignoutRoute: AuthSignoutRoute,
   PrestartSettingsLazyRoute: PrestartSettingsLazyRoute,
   AdminIndexRoute: AdminIndexRoute,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 
