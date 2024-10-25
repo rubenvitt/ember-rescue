@@ -93,6 +93,16 @@ export const postStatusForFahrzeug = {
     },
 };
 
+export const postAllFahrzeugeJson = {
+  queryKey: [queryKey, 'json'],
+  mutationFn: async ({ json }: { json: string }) => {
+    return await backendFetchJson('fahrzeuge/import', {
+      body: json,
+      method: 'POST',
+    });
+  },
+};
+
 // helper
 
 export const patchFahrzeuge = {

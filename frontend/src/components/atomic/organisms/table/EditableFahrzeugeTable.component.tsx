@@ -8,7 +8,7 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Button, Form, Input as AntInput, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
+import { Button, Collapse, Form, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { FahrzeugDto, FahrzeugTypDto } from '../../../../types/app/fahrzeug.types.js';
@@ -23,6 +23,8 @@ import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { toast } from 'react-toastify';
+import { FormLayout } from '../form/FormLayout.comonent.js';
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 
 type EditingStore = {
   id: null | string;
@@ -77,19 +79,109 @@ const newFahrzeugTemplate: FahrzeugDto = {
 type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'> & { fahrzeugTyp: string };
 
 function JsonImExport() {
-  const { fahrzeugeJson } = useFahrzeuge();
+  const { fahrzeugeJson, updateFahrzeugeJson } = useFahrzeuge();
+  const exportFormikRef = useRef<FormikProps<{ json: string }>>(null);
+  const importFormikRef = useRef<FormikProps<{ json: string }>>(null);
+
+  useEffect(() => {
+    if (!importFormikRef.current?.dirty) {
+      importFormikRef.current?.setValues({
+        json: fahrzeugeJson.data ?? '',
+      });
+    }
+    exportFormikRef.current?.setValues({
+      json: fahrzeugeJson.data ?? '',
+    });
+  }, [fahrzeugeJson.data]);
+
   return (
-    <>
-      <Typography.Text>Export-JSON</Typography.Text>
-      <AntInput.TextArea value={fahrzeugeJson.data} readOnly={true} />
-      <Button
-        onClick={() => toast.error("FIXME, that's not implemented yet")} // FIXME[ember-rescue-53](rubeen, 23.10.24): use clipboard
-        icon={<PiCode size={24} />}
-        variant="dashed"
+    <Collapse ghost={true} bordered={false} className="w-full">
+      <Collapse.Panel
+        header="Erweiterte Funktionen"
+        key="1"
+        className="w-full text-left"
+        collapsible={fahrzeugeJson.isLoading ? 'disabled' : 'header'}
       >
-        Fahrzeuge kopieren
-      </Button>
-    </>
+        <div className="flex justify-items-stretch gap-4">
+          <FormLayout<{ json: string }>
+            buttons={{
+              submit: {
+                children: <>Fahrzeuge kopieren</>,
+                htmlType: 'submit',
+                icon: <PiCode size={24} />,
+                variant: 'dashed',
+              },
+            }}
+            form={{ className: 'flex flex-1 flex-col justify-between' }}
+            formik={{
+              innerRef: exportFormikRef,
+              initialValues: { json: fahrzeugeJson.data ?? '' },
+              async onSubmit() {
+                await writeText(fahrzeugeJson.data ?? '', { label: 'Fahrzeuge.json' });
+                toast.success('Fahrzeuge.json wurde kopiert');
+              },
+            }}
+          >
+            <Typography.Text>Export-JSON</Typography.Text>
+            <InputWrapper name={'json'}>
+              <Input.TextArea
+                name="json"
+                rows={6}
+                onFocus={(e) =>
+                  setTimeout(async () => {
+                    e.target.select();
+                  })
+                }
+              />
+            </InputWrapper>
+          </FormLayout>
+
+          <FormLayout<{ json: string }>
+            form={{ className: 'flex flex-1 flex-col justify-between' }}
+            buttons={{
+              submit: {
+                children: <>Fahrzeuge speichern</>,
+                htmlType: 'submit',
+                icon: <PiCode size={24} />,
+                variant: 'dashed',
+              },
+            }}
+            formik={{
+              innerRef: importFormikRef,
+              validateOnChange: false,
+              validateOnBlur: true,
+              validate(values) {
+                console.log('validating');
+                try {
+                  JSON.parse(values.json);
+                } catch (e) {
+                  return { json: 'Invalid JSON format' };
+                }
+                return {};
+              },
+              initialValues: {
+                json: fahrzeugeJson.data ?? '',
+              },
+              async onSubmit(values) {
+                await updateFahrzeugeJson.mutateAsync(values, {
+                  onSuccess() {
+                    toast.success('JSON erfolgreich eingespielt');
+                  },
+                  onError() {
+                    toast.warning('Fehler beim Einspielen der Fahrzeuge-JSON');
+                  },
+                });
+              },
+            }}
+          >
+            <Typography.Text>Import-JSON</Typography.Text>
+            <InputWrapper name={'json'}>
+              <Input.TextArea name="json" rows={6} />
+            </InputWrapper>
+          </FormLayout>
+        </div>
+      </Collapse.Panel>
+    </Collapse>
   );
 }
 

@@ -71,6 +71,12 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
+  const updateFahrzeugeJson = useMutation<unknown, unknown, { json: string }>({
+    mutationKey: services.backend.fahrzeuge.postAllFahrzeugeJson.queryKey,
+    mutationFn: services.backend.fahrzeuge.postAllFahrzeugeJson.mutationFn,
+    onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
+  });
+
   return {
     fahrzeuge,
     fahrzeugeJson,
@@ -81,5 +87,6 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
     removeFahrzeugFromEinsatz,
     fahrzeugeNichtImEinsatz,
     changeStatus,
+    updateFahrzeugeJson,
   };
 }
