@@ -6,7 +6,8 @@ on:
       - main
       - release
   pull_requests:
-    branches: [ 'develop' ]
+    branches:
+      - develop
 
 
 jobs:
