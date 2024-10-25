@@ -1,3 +1,3 @@
 export interface SettingsDto {
-  mapboxApi: string;
+  mapboxApi: string | null;
 }

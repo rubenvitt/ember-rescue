@@ -1,16 +1,17 @@
 import { JSONSchemaType } from 'ajv';
+import { FahrzeugImportDto } from '../types';
 
-interface Fahrzeug {
-  funkrufname: string;
-  fahrzeugTyp: string;
-  kapazitaet: number;
-}
-
-const fahrzeugeSchema: JSONSchemaType<Fahrzeug> = {
+const createFahrzeugSchema = (
+  fahrzeugTypEnum: string[],
+): JSONSchemaType<FahrzeugImportDto> => ({
   type: 'object',
   properties: {
     funkrufname: { type: 'string' },
-    fahrzeugTyp: { type: 'string', enum: ['RTW', 'FüKW'] },
+    fahrzeugTyp: { type: 'string', enum: fahrzeugTypEnum },
     kapazitaet: { type: 'number' },
   },
-};
+  required: ['funkrufname', 'fahrzeugTyp', 'kapazitaet'],
+  additionalProperties: false,
+});
+
+export { createFahrzeugSchema };

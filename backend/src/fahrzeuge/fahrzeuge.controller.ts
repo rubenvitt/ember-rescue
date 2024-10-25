@@ -11,6 +11,7 @@ import {
 import { FahrzeugeService } from './fahrzeuge.service';
 import { FahrzeugDto, FahrzeugImportDto } from '../types';
 import { Response } from 'express';
+import { fahrzeugImportSchema } from './fahrzeuge.json.schema';
 
 @Controller('fahrzeuge')
 export class FahrzeugeController {
@@ -18,7 +19,7 @@ export class FahrzeugeController {
   constructor(private readonly fahrzeugeService: FahrzeugeService) {}
 
   @Get()
-  findAll(): Promise<FahrzeugDto[]> {
+  findAll() {
     return this.fahrzeugeService.findAll();
   }
 
@@ -35,6 +36,12 @@ export class FahrzeugeController {
     await this.fahrzeugeService.updateMany(fahrzeuge);
     response.status(HttpStatus.CREATED);
     response.send({ status: 'Fahrzeuge updated successfully' });
+  }
+
+  @Get('/import/schema')
+  async getImportSchema() {
+    this.fahrzeugeService.findTypen();
+    return fahrzeugImportSchema;
   }
 
   @Post('/import')

@@ -61,7 +61,7 @@ export class FahrzeugeService {
           },
           create: {
             ...fahrzeug,
-            fahrzeugTypId: fahrzeugTypId,
+            fahrzeugTypId: fahrzeugTypId!!,
           },
         });
       }

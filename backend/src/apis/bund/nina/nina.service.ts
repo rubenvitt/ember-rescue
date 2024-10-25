@@ -94,10 +94,8 @@ export class NinaService {
    */
   async fetchAllWarningDetails(): Promise<any[]> {
     const allWarnings = await this.fetchAllWarnings();
-    const warningDetailsPromises = allWarnings.map((warning) =>
-      this.fetchWarningDetails(
-        warning.id.split('/').pop()?.replace('.geojson', ''),
-      ),
+    const warningDetailsPromises = allWarnings.map(
+      (warning) => warning.id.split('/').pop()?.replace('.geojson', '') ?? '',
     );
 
     try {

@@ -32,12 +32,12 @@ export class EinsatzFahrzeugeService {
     });
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-      absender: existingFahrzeug.funkrufname,
-      empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+      absender: existingFahrzeug!!.funkrufname,
+      empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
-      content: `${existingFahrzeug.funkrufname} (${existingFahrzeug.fahrzeugTyp.label}) wurde dem Einsatz hinzugefügt.`,
+      content: `${existingFahrzeug!!.funkrufname} (${existingFahrzeug!!.fahrzeugTyp.label}) wurde dem Einsatz hinzugefügt.`,
     });
 
     await this.prismaService.fahrzeugOnEinsatz.create({
@@ -90,7 +90,7 @@ export class EinsatzFahrzeugeService {
   ) {
     const status = statusId
       ? await this.statusService.findStatusById(statusId)
-      : await this.statusService.findStatusByCode(statusCode);
+      : await this.statusService.findStatusByCode(statusCode!!);
 
     const einsatz = await this.prismaService.einsatz.findUnique({
       where: { id: einsatzId },
@@ -104,7 +104,7 @@ export class EinsatzFahrzeugeService {
         data: {
           fahrzeugId,
           einsatzId,
-          statusId: status.id,
+          statusId: status!!.id,
           bearbeiterId,
           zeitpunkt: new Date(),
         },
@@ -113,7 +113,7 @@ export class EinsatzFahrzeugeService {
       const fahrzeug = await transaction.fahrzeug.update({
         where: { id: fahrzeugId },
         data: {
-          aktuellerStatusId: status.id,
+          aktuellerStatusId: status!!.id,
         },
         include: {
           fahrzeugTyp: true,
@@ -125,8 +125,8 @@ export class EinsatzFahrzeugeService {
         bearbeiterId,
         type: 'RESSOURCEN',
         absender: fahrzeug.funkrufname,
-        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
-        content: `${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label}) wechselt in Status ${status.code} (${status.bezeichnung}).`,
+        empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
+        content: `${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label}) wechselt in Status ${status!!.code} (${status!!.bezeichnung}).`,
       });
     });
   }
@@ -158,12 +158,12 @@ export class EinsatzFahrzeugeService {
       });
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-        absender: existingFahrzeug.funkrufname,
-        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+        absender: existingFahrzeug!!.funkrufname,
+        empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
         type: 'RESSOURCEN',
         einsatzId,
         bearbeiterId,
-        content: `${existingFahrzeug.funkrufname} (${existingFahrzeug.fahrzeugTyp.label}) wurde aus dem Einsatz entfernt.`,
+        content: `${existingFahrzeug!!.funkrufname} (${existingFahrzeug!!.fahrzeugTyp.label}) wurde aus dem Einsatz entfernt.`,
       });
     });
   }

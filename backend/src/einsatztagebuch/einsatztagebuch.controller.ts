@@ -22,7 +22,7 @@ export class EinsatztagebuchController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Headers('einsatz') einsatzHeader: string,
   ) {
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.service.getEinsatztagebuch(einsatzId);
   }
 
@@ -32,7 +32,7 @@ export class EinsatztagebuchController {
     @Headers('einsatz') einsatzHeader: string,
     @Body() createEinsatztagebuchDto: CreateEinsatztagebuchDto,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader);
     this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
       bearbeiterId,

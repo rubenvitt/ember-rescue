@@ -3,7 +3,7 @@ import { SecretsService } from './secrets.service';
 
 interface SecretDto {
   key: string;
-  value: string;
+  value: string | null;
 }
 
 @Controller('secrets')
