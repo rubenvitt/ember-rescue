@@ -6,7 +6,7 @@ on:
       - main
       - release
   pull_request:
-    branches:
+
 
 jobs:
   frontend-build:
