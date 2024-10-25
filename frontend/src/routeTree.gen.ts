@@ -291,7 +291,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexLazyRoute: AppIndexLazyRoute,
 };
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren);
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren;)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute;
@@ -372,7 +372,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app/';
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
@@ -390,7 +390,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
-    | '/app';
+    | '/app'
   id:
     | '__root__'
     | '/'
@@ -409,7 +409,7 @@ export interface FileRouteTypes {
     | '/app/uav'
     | '/prestart/settings'
     | '/admin/'
-    | '/app/';
+    | '/app/'
   fileRoutesById: FileRoutesById;
 }
 
@@ -431,9 +431,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignoutRoute: AuthSignoutRoute,
   PrestartSettingsLazyRoute: PrestartSettingsLazyRoute,
   AdminIndexRoute: AdminIndexRoute,
-};
+}
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 
