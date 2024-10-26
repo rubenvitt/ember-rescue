@@ -3,6 +3,7 @@ import { PrismaService } from '../../database/prisma/prisma.service';
 import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
 import { StatusService } from '../../status/status.service';
 import { FahrzeugeService } from '../../fahrzeuge/fahrzeuge.service';
+import { formatFunkrufnameMitTyp } from '../../fahrzeuge/fahrzeuge.helper';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
@@ -37,7 +38,7 @@ export class EinsatzFahrzeugeService {
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
-      content: `${existingFahrzeug!!.funkrufname} (${existingFahrzeug!!.fahrzeugTyp.label}) wurde dem Einsatz hinzugefügt.`,
+      content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde dem Einsatz hinzugefügt.`,
     });
 
     await this.prismaService.fahrzeugOnEinsatz.create({
@@ -64,7 +65,8 @@ export class EinsatzFahrzeugeService {
       },
       include: {
         einsatz_fahrzeug: true,
-        fahrzeugTyp: true,
+        optaFunktion: true,
+        optaOrt: true,
         status: {
           select: {
             id: true,
@@ -116,7 +118,8 @@ export class EinsatzFahrzeugeService {
           aktuellerStatusId: status!!.id,
         },
         include: {
-          fahrzeugTyp: true,
+          optaFunktion: true,
+          optaOrt: true,
         },
       });
 
@@ -126,7 +129,7 @@ export class EinsatzFahrzeugeService {
         type: 'RESSOURCEN',
         absender: fahrzeug.funkrufname,
         empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
-        content: `${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label}) wechselt in Status ${status!!.code} (${status!!.bezeichnung}).`,
+        content: `${formatFunkrufnameMitTyp(fahrzeug)} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
       });
     });
   }
@@ -163,7 +166,7 @@ export class EinsatzFahrzeugeService {
         type: 'RESSOURCEN',
         einsatzId,
         bearbeiterId,
-        content: `${existingFahrzeug!!.funkrufname} (${existingFahrzeug!!.fahrzeugTyp.label}) wurde aus dem Einsatz entfernt.`,
+        content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde aus dem Einsatz entfernt.`,
       });
     });
   }

@@ -67,7 +67,7 @@ export class FahrzeugeController {
     return allFahrzeuge.map((fahrzeug) => {
       return {
         funkrufname: fahrzeug.funkrufname,
-        fahrzeugTyp: fahrzeug.fahrzeugTyp.label,
+        fahrzeugTyp: (fahrzeug.optaFunktion?.label ?? fahrzeug.label)!!,
         kapazitaet: fahrzeug.kapazitaet,
       } satisfies FahrzeugImportDto;
     });

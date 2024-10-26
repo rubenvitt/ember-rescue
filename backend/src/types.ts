@@ -29,9 +29,11 @@ export type StatusDto = SmallStatusDto & {
 export type FahrzeugDto = {
   id: string;
   funkrufname: string;
-  fahrzeugTyp: {
-    id: string;
-    label: string;
+  optaOrt: {
+    code: number;
+  };
+  optaFunktion: {
+    code: number;
   };
   fahrzeugTypId?: string;
   kapazitaet: number;
@@ -39,11 +41,11 @@ export type FahrzeugDto = {
   status: SmallStatusDto;
 };
 
-export type FahrzeugImportDto = {
+export class FahrzeugImportDto {
   funkrufname: string;
   fahrzeugTyp: string;
   kapazitaet: number;
-};
+}
 
 export type CreateEinsatzDto = {
   erstAlarmiert: string;

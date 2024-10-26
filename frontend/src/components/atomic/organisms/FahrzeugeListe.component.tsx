@@ -104,7 +104,7 @@ export const FahrzeugelisteComponent: React.FC<FahrzeugelisteComponentProps> = (
           <Card
             type="inner"
             extra={<FahrzeugExtra fahrzeug={fahrzeug} />}
-            title={`${fahrzeug.funkrufname} (${fahrzeug.fahrzeugTyp.label})`}
+            title={`${fahrzeug.funkrufname} (${fahrzeug.optaFunktion.label})`}
           >
             <FahrzeugListItemComponent key={fahrzeug.id} fahrzeug={fahrzeug} />
           </Card>

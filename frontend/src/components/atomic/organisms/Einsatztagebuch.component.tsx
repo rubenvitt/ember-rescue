@@ -87,10 +87,10 @@ export function EinsatztagebuchComponent() {
   const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
     const fahrzeugTypen = fahrzeuge.data?.reduce(
       (acc, e) => {
-        if (!acc[e.fahrzeugTyp.label]) {
-          acc[e.fahrzeugTyp.label] = [];
+        if (!acc[e.optaFunktion.label]) {
+          acc[e.optaFunktion.label] = [];
         }
-        acc[e.fahrzeugTyp.label].push({ text: e.funkrufname, value: e.funkrufname });
+        acc[e.optaFunktion.label].push({ text: e.funkrufname, value: e.funkrufname });
         return acc;
       },
       {} as Record<string, { text: string; value: string }[]>,

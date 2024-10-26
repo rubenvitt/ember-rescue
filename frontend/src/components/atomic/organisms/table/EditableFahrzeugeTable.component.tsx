@@ -11,7 +11,7 @@ import {
 import { Button, Collapse, Form, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { FahrzeugDto, FahrzeugTypDto } from '../../../../types/app/fahrzeug.types.js';
+import { FahrzeugDto } from '../../../../types/app/fahrzeug.types.js';
 import { create } from 'zustand';
 import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
@@ -36,7 +36,6 @@ type EditingStore = {
 const PatchFahrzeugSchema = Yup.object().shape({
   kapazitaet: Yup.number().required('Kapazitaet wird benötigt').min(0, 'Eine negative Stärke ist unzulässig.'),
   funkrufname: Yup.string().required('Ein Funkrufname wird benötigt'),
-  fahrzeugTyp: Yup.string().required('Der Typ wird benötigt.'),
 });
 
 const useEditingStore = create<EditingStore>((setState, getState) => ({
@@ -71,12 +70,14 @@ const newFahrzeugTemplate: FahrzeugDto = {
   istTemporaer: false,
   kapazitaet: 0,
   id: 'create.fahrzeug',
-  fahrzeugTyp: { id: '', label: '' },
   _count: { einsatz_fahrzeug: 0 },
   status: { id: '', code: 'none', bezeichnung: '' },
+  optaOrt: null,
+  optaFunktion: null,
+  optaOrdnung: null,
 };
 
-type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'> & { fahrzeugTyp: string };
+type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'>;
 
 function JsonImExport() {
   const { fahrzeugeJson, updateFahrzeugeJson } = useFahrzeuge();
@@ -228,12 +229,10 @@ export function EditableFahrzeugeTable() {
   }
 
   useEffect(() => {
-    console.log('FahrzeugTyp', { typ: editingFahrzeug?.fahrzeugTyp });
     formRef.current?.setValues({
       id: editingFahrzeug?.id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-      fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
       funkrufname: editingFahrzeug?.funkrufname ?? 'MHHHH',
     });
     setTimeout(() => {
@@ -266,8 +265,8 @@ export function EditableFahrzeugeTable() {
       {
         title: 'Typ des Fahrzeugs',
         dataIndex: 'fahrzeugTyp',
-        editable: true,
-        render: (value: FahrzeugTypDto) => value.label,
+        editable: false,
+        render: (_, record) => record.optaFunktion?.label,
       },
       { title: 'Standardanzahl Kräfte', dataIndex: 'kapazitaet', editable: true },
       {
@@ -353,12 +352,11 @@ export function EditableFahrzeugeTable() {
         validationSchema={PatchFahrzeugSchema}
         onSubmit={(data) => {
           console.log('submitting with data', { data });
-          patchFahrzeuge.mutate([{ ...data, fahrzeugTypId: data.fahrzeugTyp }]);
+          patchFahrzeuge.mutate([{ ...data }]);
         }}
         initialValues={{
           id: editingFahrzeug?.id ?? '',
           funkrufname: editingFahrzeug?.funkrufname ?? '',
-          fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
           istTemporaer: editingFahrzeug?.istTemporaer ?? false,
           kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
         }}
