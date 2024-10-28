@@ -5,8 +5,13 @@ on:
     branches:
       - main
       - release
-  pull_request:
+  pull_requests:
     branches:
+      - develop
+  merge_group:
+    types:
+      - checks_requested
+
 
 jobs:
   frontend-build:

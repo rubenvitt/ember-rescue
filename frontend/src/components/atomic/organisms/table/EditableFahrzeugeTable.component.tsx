@@ -8,12 +8,12 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Button, Form, Switch as AntSwitch, Table, Tooltip } from 'antd';
+import { Button, Collapse, Form, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { FahrzeugDto, FahrzeugTypDto } from '../../../../types/app/fahrzeug.types.js';
+import { FahrzeugDto } from '../../../../types/app/fahrzeug.types.js';
 import { create } from 'zustand';
-import { PiCheck, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
+import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { Formik } from 'formik';
@@ -22,6 +22,9 @@ import { PatchFahrzeugType } from '../../../../services/backend/fahrzeuge.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { toast } from 'react-toastify';
+import { FormLayout } from '../form/FormLayout.comonent.js';
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 
 type EditingStore = {
   id: null | string;
@@ -33,7 +36,6 @@ type EditingStore = {
 const PatchFahrzeugSchema = Yup.object().shape({
   kapazitaet: Yup.number().required('Kapazitaet wird benötigt').min(0, 'Eine negative Stärke ist unzulässig.'),
   funkrufname: Yup.string().required('Ein Funkrufname wird benötigt'),
-  fahrzeugTyp: Yup.string().required('Der Typ wird benötigt.'),
 });
 
 const useEditingStore = create<EditingStore>((setState, getState) => ({
@@ -68,12 +70,121 @@ const newFahrzeugTemplate: FahrzeugDto = {
   istTemporaer: false,
   kapazitaet: 0,
   id: 'create.fahrzeug',
-  fahrzeugTyp: { id: '', label: '' },
   _count: { einsatz_fahrzeug: 0 },
   status: { id: '', code: 'none', bezeichnung: '' },
+  optaOrt: null,
+  optaFunktion: null,
+  optaOrdnung: null,
 };
 
-type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'> & { fahrzeugTyp: string };
+type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'>;
+
+function JsonImExport() {
+  const { fahrzeugeJson, updateFahrzeugeJson } = useFahrzeuge();
+  const exportFormikRef = useRef<FormikProps<{ json: string }>>(null);
+  const importFormikRef = useRef<FormikProps<{ json: string }>>(null);
+
+  useEffect(() => {
+    if (!importFormikRef.current?.dirty) {
+      importFormikRef.current?.setValues({
+        json: fahrzeugeJson.data ?? '',
+      });
+    }
+    exportFormikRef.current?.setValues({
+      json: fahrzeugeJson.data ?? '',
+    });
+  }, [fahrzeugeJson.data]);
+
+  return (
+    <Collapse ghost={true} bordered={false} className="w-full">
+      <Collapse.Panel
+        header="Erweiterte Funktionen"
+        key="1"
+        className="w-full text-left"
+        collapsible={fahrzeugeJson.isLoading ? 'disabled' : 'header'}
+      >
+        <div className="flex justify-items-stretch gap-4">
+          <FormLayout<{ json: string }>
+            buttons={{
+              submit: {
+                children: <>Fahrzeuge kopieren</>,
+                htmlType: 'submit',
+                icon: <PiCode size={24} />,
+                variant: 'dashed',
+              },
+            }}
+            form={{ className: 'flex flex-1 flex-col justify-between' }}
+            formik={{
+              innerRef: exportFormikRef,
+              initialValues: { json: fahrzeugeJson.data ?? '' },
+              async onSubmit() {
+                await writeText(fahrzeugeJson.data ?? '', { label: 'Fahrzeuge.json' });
+                toast.success('Fahrzeuge.json wurde kopiert');
+              },
+            }}
+          >
+            <Typography.Text>Export-JSON</Typography.Text>
+            <InputWrapper name={'json'}>
+              <Input.TextArea
+                name="json"
+                rows={6}
+                onFocus={(e) =>
+                  setTimeout(async () => {
+                    e.target.select();
+                  })
+                }
+              />
+            </InputWrapper>
+          </FormLayout>
+
+          <FormLayout<{ json: string }>
+            form={{ className: 'flex flex-1 flex-col justify-between' }}
+            buttons={{
+              submit: {
+                children: <>Fahrzeuge speichern</>,
+                htmlType: 'submit',
+                icon: <PiCode size={24} />,
+                variant: 'dashed',
+              },
+            }}
+            formik={{
+              innerRef: importFormikRef,
+              validateOnChange: false,
+              validateOnBlur: true,
+              validate(values) {
+                console.log('validating');
+                try {
+                  JSON.parse(values.json);
+                } catch (e) {
+                  return { json: 'Invalid JSON format' };
+                }
+                return {};
+              },
+              initialValues: {
+                json: fahrzeugeJson.data ?? '',
+              },
+              async onSubmit(values) {
+                await updateFahrzeugeJson.mutateAsync(values, {
+                  onSuccess() {
+                    toast.success('JSON erfolgreich eingespielt');
+                  },
+                  onError() {
+                    toast.warning('Fehler beim Einspielen der Fahrzeuge-JSON');
+                  },
+                });
+              },
+            }}
+          >
+            <Typography.Text>Import-JSON</Typography.Text>
+            <InputWrapper name={'json'}>
+              <Input.TextArea name="json" rows={6} />
+            </InputWrapper>
+          </FormLayout>
+        </div>
+      </Collapse.Panel>
+    </Collapse>
+  );
+}
 
 export function EditableFahrzeugeTable() {
   const [form] = Form.useForm();
@@ -118,12 +229,10 @@ export function EditableFahrzeugeTable() {
   }
 
   useEffect(() => {
-    console.log('FahrzeugTyp', { typ: editingFahrzeug?.fahrzeugTyp });
     formRef.current?.setValues({
       id: editingFahrzeug?.id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-      fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
       funkrufname: editingFahrzeug?.funkrufname ?? 'MHHHH',
     });
     setTimeout(() => {
@@ -156,8 +265,8 @@ export function EditableFahrzeugeTable() {
       {
         title: 'Typ des Fahrzeugs',
         dataIndex: 'fahrzeugTyp',
-        editable: true,
-        render: (value: FahrzeugTypDto) => value.label,
+        editable: false,
+        render: (_, record) => record.optaFunktion?.label,
       },
       { title: 'Standardanzahl Kräfte', dataIndex: 'kapazitaet', editable: true },
       {
@@ -237,42 +346,44 @@ export function EditableFahrzeugeTable() {
     [newFahrzeugTemplate, id, fahrzeuge.data],
   );
   return (
-    <Formik<EditableFahrzeugType>
-      validateOnChange={false}
-      validationSchema={PatchFahrzeugSchema}
-      onSubmit={(data) => {
-        console.log('submitting with data', { data });
-        patchFahrzeuge.mutate([{ ...data, fahrzeugTypId: data.fahrzeugTyp }]);
-      }}
-      initialValues={{
-        id: editingFahrzeug?.id ?? '',
-        funkrufname: editingFahrzeug?.funkrufname ?? '',
-        fahrzeugTyp: editingFahrzeug?.fahrzeugTyp.id ?? '',
-        istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-        kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
-      }}
-      innerRef={formRef}
-    >
-      <Form form={form}>
-        <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
-          bordered
-          dataSource={dataSource}
-          loading={fahrzeuge.isLoading}
-          // @ts-ignore
-          columns={mergedColumns}
-          rowClassName="editable-row"
-          pagination={{
-            pageSize: 10,
-            onChange: cancel,
-          }}
-        />
-      </Form>
-    </Formik>
+    <>
+      <Formik<EditableFahrzeugType>
+        validateOnChange={false}
+        validationSchema={PatchFahrzeugSchema}
+        onSubmit={(data) => {
+          console.log('submitting with data', { data });
+          patchFahrzeuge.mutate([{ ...data }]);
+        }}
+        initialValues={{
+          id: editingFahrzeug?.id ?? '',
+          funkrufname: editingFahrzeug?.funkrufname ?? '',
+          istTemporaer: editingFahrzeug?.istTemporaer ?? false,
+          kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
+        }}
+        innerRef={formRef}
+      >
+        <Form form={form}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            bordered
+            dataSource={dataSource}
+            loading={fahrzeuge.isLoading}
+            // @ts-ignore
+            columns={mergedColumns}
+            rowClassName="editable-row"
+            pagination={{
+              pageSize: 10,
+              onChange: cancel,
+            }}
+          />
+        </Form>
+      </Formik>
+      <JsonImExport />
+    </>
   );
 }
 

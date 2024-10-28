@@ -26,8 +26,8 @@ export class NotizenController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Query('done') done: boolean = false,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.findAllNotizen(einsatzId, bearbeiterId, done);
   }
 
@@ -38,8 +38,8 @@ export class NotizenController {
     @Body() notizDto: CreateNotizDto,
   ) {
     this.logger.log('Creating new notiz', { notizDto });
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.createNotiz({
       einsatzId,
       bearbeiterId,
@@ -55,8 +55,8 @@ export class NotizenController {
     @Body() notizDto: UpdateNotizDto,
   ) {
     this.logger.log('Update notiz', { notizDto, notizId });
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return await this.notizenService.updateNotiz({
       bearbeiterId,
       einsatzId,
@@ -71,8 +71,8 @@ export class NotizenController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiterId);
   }
 
@@ -82,8 +82,8 @@ export class NotizenController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.toggleCompleteNotiz(
       notizId,
       einsatzId,

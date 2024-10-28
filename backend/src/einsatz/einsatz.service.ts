@@ -36,7 +36,7 @@ export class EinsatzService {
       .then((einsatz) => ({
         ...einsatz,
         einsatz_alarmstichwort:
-          einsatz.einsatz_alarmstichwort[0].alarmstichwort,
+          einsatz!!.einsatz_alarmstichwort[0].alarmstichwort,
       }));
   }
 
@@ -155,9 +155,9 @@ export class EinsatzService {
       await this.einsatztagebuchService.createEinsatztagebuchEintrag({
         einsatzId: einsatzId,
         type: EinsatztagebuchEintragEnum.GENERISCH,
-        content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort.bezeichnung}`,
-        absender: aufnehmendesRettungsmittel.funkrufname,
-        empfaenger: aufnehmendesRettungsmittel.funkrufname,
+        content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort!!.bezeichnung}`,
+        absender: aufnehmendesRettungsmittel!!.funkrufname,
+        empfaenger: aufnehmendesRettungsmittel!!.funkrufname,
       });
       return this.prismaService.einsatz.update({
         where: { id: einsatzId },

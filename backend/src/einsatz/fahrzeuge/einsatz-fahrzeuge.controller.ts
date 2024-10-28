@@ -30,7 +30,7 @@ export class EinsatzFahrzeugeController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: { fahrzeugId: string },
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
     this.logger.log('Add Fahrzeug to Einsatz', {
       einsatzId,
       body,
@@ -52,7 +52,7 @@ export class EinsatzFahrzeugeController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: { statusId: string },
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
     this.logger.log(`Change status for ${fahrzeugId} to ${body.statusId}`);
     await this.fahrzeugeService.changeStatus(
       fahrzeugId,
@@ -70,7 +70,7 @@ export class EinsatzFahrzeugeController {
     @Param('fahrzeugId') fahrzeugId: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
     await this.fahrzeugeService.removeFahrzeugFromEinsatz(
       fahrzeugId,
       einsatzId,

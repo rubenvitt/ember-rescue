@@ -12,7 +12,7 @@ export class ExportController {
     @Res() res: Response,
     @Headers('einsatz') einsatzHeader: string,
   ) {
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     try {
       const pdf = await this.exportService.generateExportPdf(einsatzId);
 
@@ -21,7 +21,7 @@ export class ExportController {
         'Content-Disposition': 'attachment; filename=export.pdf',
       });
 
-      res.send(Buffer.from(pdf));
+      res.send(Buffer.from(pdf!!));
     } catch (error) {
       console.error('Error generating PDF:', error);
       res.status(500).send('Error generating PDF');

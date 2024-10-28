@@ -5,10 +5,11 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryKey = 'fahrzeuge';
 
-export type PatchFahrzeugType = Omit<FahrzeugDto, '_count' | 'status' | 'fahrzeugTyp' | 'id'> &
-  Partial<Pick<FahrzeugDto, 'id'>> & {
-    fahrzeugTypId: string;
-  };
+export type PatchFahrzeugType = Omit<
+  FahrzeugDto,
+  '_count' | 'status' | 'fahrzeugTyp' | 'id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'
+> &
+  Partial<Pick<FahrzeugDto, 'id'>>;
 
 export type PatchFahrzeugeType = PatchFahrzeugType[];
 
@@ -20,6 +21,13 @@ export const fetchAllFahrzeuge = {
   queryKey: [queryKey],
   queryFn: function () {
     return backendFetchJson<FahrzeugDto[]>('fahrzeuge');
+  },
+};
+
+export const fetchAllFahrzeugeJson = {
+  queryKey: [queryKey, 'json'],
+  queryFn: async function () {
+    return JSON.stringify(await backendFetchJson<unknown>('fahrzeuge/export'), undefined, 2);
   },
 };
 
@@ -84,6 +92,16 @@ export const postStatusForFahrzeug = {
         method: 'POST',
       });
     },
+};
+
+export const postAllFahrzeugeJson = {
+  queryKey: [queryKey, 'json'],
+  mutationFn: async ({ json }: { json: string }) => {
+    return await backendFetchJson('fahrzeuge/import', {
+      body: json,
+      method: 'POST',
+    });
+  },
 };
 
 // helper
