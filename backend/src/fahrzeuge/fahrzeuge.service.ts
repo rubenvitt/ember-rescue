@@ -180,7 +180,7 @@ export class FahrzeugeService {
     const match = regex.exec(fahrzeug.funkrufname);
     const maybeLabel = funkrufnameParts.some((part) => isNaN(Number(part)))
       ? (match ? match[1] || fahrzeug.funkrufname)
-      : this.extractFunkrufnameLabπel(funkrufnameParts)();
+      : this.extractFunkrufnameLabel(funkrufnameParts)();
     return { optaOrt, optaFunktion, optaOrdnung, maybeLabel };
   }
 
