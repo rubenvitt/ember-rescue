@@ -176,7 +176,9 @@ export class FahrzeugeService {
     }
 
     const maybeLabel = funkrufnameParts.some((part) => isNaN(Number(part)))
-      ? fahrzeug.funkrufname.match(/\(([^)]+)\)/)?.[1] || fahrzeug.funkrufname
+    const regex = /\(([^)]+)\)/;
+    const match = regex.exec(fahrzeug.funkrufname);
+    const maybeLabel = match ? match[1] : fahrzeug.funkrufname;
       : this.extractFunkrufnameLabel(funkrufnameParts)();
     return { optaOrt, optaFunktion, optaOrdnung, maybeLabel };
   }
@@ -195,7 +197,8 @@ export class FahrzeugeService {
     return function () {
       const part = funkrufnameParts[funkrufnameParts.length - 1];
       if (part.includes(' ')) {
-        const labelMatch = part.match(/\(([^)]+)\)/);
+        const regex = /\(([^)]+)\)/;
+        const labelMatch = regex.exec(part);
         if (labelMatch) {
           return labelMatch[1];
         } else if (/\w/.test(part)) {
