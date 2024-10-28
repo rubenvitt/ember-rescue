@@ -23,7 +23,7 @@ export const useRecommendedFahrzeuge = (config: UseRecommendedFahrzeugeConfig = 
     const sortedFahrzeuge = sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz, sortOrder);
     return sortedFahrzeuge.slice(0, maxResults).map((fahrzeug) => ({
       label: fahrzeug.funkrufname,
-      secondary: `${fahrzeug.optaFunktion.label} (${fahrzeug.kapazitaet} Plätze)`,
+      secondary: `${fahrzeug.optaFunktion?.label} (${fahrzeug.kapazitaet} Plätze)`,
       item: fahrzeug,
     }));
   }, [fahrzeugeNichtImEinsatz, maxResults, sortOrder]);
