@@ -2,10 +2,6 @@ services:
   postgres:
     image: postgres:13
     restart: unless-stopped
-    ports:
-      - "9901:5432"
-    networks:
-      internal:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -16,27 +12,17 @@ services:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
     restart: unless-stopped
     ports:
-      - "9900:3000"
+      - "10007:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
       SERVER_NAME: ${SERVER_NAME}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       AUTH_TOKEN: ${AUTH_TOKEN}
-    networks:
-      internal:
-      proxy-net:
-        aliases:
-          - ember-rescue
     env_file:
       - .env
     depends_on:
       postgres:
         condition: service_healthy
-
-networks:
-  internal:
-  proxy-net:
-    external: true
 
 volumes:
   postgres:
