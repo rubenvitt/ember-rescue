@@ -23,8 +23,8 @@ export class RemindersController {
     @Body() data: { noteId: string; reminderTime: string },
   ) {
     this.logger.log(`Creating reminder for ${einsatzHeader}`);
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     const reminderTime = new Date(data.reminderTime);
     return this.reminderService.create(
       data.noteId,
@@ -39,8 +39,8 @@ export class RemindersController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.reminderService.getDueReminders(bearbeiterId, einsatzId);
   }
 
@@ -51,8 +51,8 @@ export class RemindersController {
     @Param('reminderId') reminderId: string,
   ) {
     this.logger.log(`Mark reminder as notified ${reminderId}`);
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     await this.reminderService.markAsNotified(
       reminderId,
       einsatzId,
@@ -66,8 +66,8 @@ export class RemindersController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Param('reminderId') reminderId: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
-    const einsatzId = extractEinsatzId(einsatzHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const einsatzId = extractEinsatzId(einsatzHeader)!!;
     await this.reminderService.markAsRead(reminderId, einsatzId, bearbeiterId);
   }
 }

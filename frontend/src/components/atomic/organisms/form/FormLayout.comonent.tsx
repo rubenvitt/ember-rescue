@@ -47,6 +47,7 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
         {submit && (
           <Button
             {...submit}
+            loading={context.isSubmitting}
             onClick={async (event) => {
               await context.validateForm();
               console.log('Hi hier bin ich', context.errors, context.values);

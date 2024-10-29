@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../database/prisma/prisma.service';
 import * as crypto from 'crypto';
 import { config } from '../config/configuration';
+import { NullableType } from 'joi';
 
 @Injectable()
 export class SecretsService {
@@ -20,7 +21,15 @@ export class SecretsService {
     this.encryptionKey = Buffer.from(key, 'utf8');
   }
 
-  async save(key: string, value: string): Promise<void> {
+  async save(key: string, value: NullableType<string>): Promise<void> {
+    if (!value) {
+      this.logger.warn('Removing secret', key);
+      await this.prismaService.secret.delete({
+        where: { key },
+      });
+      return;
+    }
+
     const encryptedValue = this.encrypt(value);
     await this.prismaService.secret.upsert({
       where: { key },

@@ -41,7 +41,7 @@ export class EinsatzController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: CreateEinsatzDto,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader);
+    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
     console.log('createEinsatz', body);
     return this.einsatzService.createEinsatz({
       bearbeiter: {

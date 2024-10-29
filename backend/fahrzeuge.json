@@ -1,0 +1,52 @@
+[
+  {
+    "funkrufname": "40-10-1",
+    "fahrzeugTyp": "KdoW",
+    "kapazitaet": 1
+  },
+  {
+    "funkrufname": "40-12-1",
+    "fahrzeugTyp": "FüKW",
+    "kapazitaet": 4
+  },
+  {
+    "funkrufname": "40-15-1",
+    "fahrzeugTyp": "AufklSt Luft",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-1",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-2",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-3",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-4",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-5",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-83-6",
+    "fahrzeugTyp": "RTW",
+    "kapazitaet": 2
+  },
+  {
+    "funkrufname": "40-66-1",
+    "fahrzeugTyp": "Wechsellader",
+    "kapazitaet": 0
+  }
+]

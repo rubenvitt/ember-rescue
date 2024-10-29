@@ -123,7 +123,7 @@ export class ExportService {
     const input = [
       {
         stichwort_date: JSON.stringify({
-          stichwort: einsatz.einsatz_alarmstichwort.bezeichnung,
+          stichwort: einsatz!!.einsatz_alarmstichwort?.bezeichnung,
           datetime: formatNatoDateTime(einsatz.beginn),
         }),
         etbTable: JSON.stringify(

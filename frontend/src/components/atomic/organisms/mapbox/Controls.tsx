@@ -151,7 +151,7 @@ function AddFahrzeugComponent() {
         new mapboxgl.Marker({ element, draggable: true })
           .setPopup(
             new mapboxgl.Popup().setHTML(
-              `<div>${fahrzeug.fahrzeugTyp.label} ${fahrzeug.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
+              `<div>${fahrzeug.optaFunktion?.label} ${fahrzeug.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
             ),
           )
           .setLngLat(map.getCenter())
