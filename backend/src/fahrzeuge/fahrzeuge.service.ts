@@ -7,8 +7,7 @@ import { Prisma } from '@prisma/client';
 export class FahrzeugeService {
   private readonly logger = new Logger(FahrzeugeService.name);
 
-  constructor(private readonly prismaService: PrismaService) {
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   findAll(filter?: Prisma.FahrzeugWhereInput) {
     return this.prismaService.fahrzeug.findMany({
@@ -179,7 +178,7 @@ export class FahrzeugeService {
     const regex = /\(([^)]+)\)/;
     const match = regex.exec(fahrzeug.funkrufname);
     const maybeLabel = funkrufnameParts.some((part) => isNaN(Number(part)))
-      ? (match ? match[1] || fahrzeug.funkrufname)
+      ? match?.[1] || fahrzeug.funkrufname
       : this.extractFunkrufnameLabel(funkrufnameParts)();
     return { optaOrt, optaFunktion, optaOrdnung, maybeLabel };
   }
@@ -195,7 +194,7 @@ export class FahrzeugeService {
   }
 
   private extractFunkrufnameLabel(funkrufnameParts: string[]) {
-    return function() {
+    return function () {
       const part = funkrufnameParts[funkrufnameParts.length - 1];
       if (part.includes(' ')) {
         const regex = /\(([^)]+)\)/;
