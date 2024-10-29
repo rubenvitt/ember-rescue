@@ -1,5 +1,3 @@
-name: 'publish'
-
 on:
   push:
     branches:
@@ -41,8 +39,11 @@ jobs:
         run: echo "TAGS=latest,main,main:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
       - name: Set tags for other branches
-        if: github.ref != 'refs/heads/main'
-        run: echo "TAGS=${GITHUB_REF#refs/heads/},${GITHUB_REF#refs/heads/}:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+        if: startsWith(github.ref, 'refs/heads/')
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          TAGS=$BRANCH,$BRANCH:${GITHUB_RUN_NUMBER}
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
