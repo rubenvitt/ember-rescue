@@ -54,6 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
+          sep-tags: ,
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: ${{ env.TAGS }}
 
