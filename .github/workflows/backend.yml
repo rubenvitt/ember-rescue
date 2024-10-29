@@ -38,12 +38,17 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "TAGS=latest,main,main:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
-      - name: Set tags for other branches
-        if: startsWith(github.ref, 'refs/heads/')
-        run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
-          TAGS=$BRANCH,$BRANCH:${GITHUB_RUN_NUMBER}
-          echo "TAGS=$TAGS" >> $GITHUB_ENV
+      - name: Set tags for alpha branch
+        if: github.ref == 'refs/heads/alpha'
+        run: echo "TAGS=alpha,alpha:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Set tags for beta branch
+        if: github.ref == 'refs/heads/beta'
+        run: echo "TAGS=beta,beta:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+      - name: Set tags for develop branch
+        if: github.ref == 'refs/heads/develop'
+        run: echo "TAGS=develop,develop:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
