@@ -15,9 +15,6 @@ services:
   backend:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
     restart: unless-stopped
-    build:
-      context: backend
-      dockerfile: Dockerfile
     ports:
       - "9900:3000"
     environment:
