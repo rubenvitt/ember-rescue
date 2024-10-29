@@ -46,7 +46,7 @@ jobs:
             type=ref,event=branch
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value={{branch}}
-            type=raw,value={{branch}}-{{GITHUB_RUN_NUMBER}}
+            type=raw,value={{branch}}-${GITHUB_RUN_NUMBER}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
