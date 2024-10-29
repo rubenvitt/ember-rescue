@@ -2,6 +2,11 @@ services:
   postgres:
     image: postgres:13
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
