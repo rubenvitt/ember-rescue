@@ -1,4 +1,4 @@
-name: 'publish'
+name: Build and Push Docker Image
 
 on:
   push:
@@ -36,20 +36,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set tags for main branch
-        if: github.ref == 'refs/heads/main'
-        run: echo "TAGS=latest,main,main:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
-
-      - name: Set tags for other branches
-        if: github.ref != 'refs/heads/main'
-        run: echo "TAGS=${GITHUB_REF#refs/heads/},${GITHUB_REF#refs/heads/}:${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
+        if: startsWith(github.ref, 'refs/heads/')
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: ${{ env.TAGS }}
+          tags: |
+            type=ref,event=branch
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value={{branch}}
+            type=raw,value={{branch}}-${{ github.run_number }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
