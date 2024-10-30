@@ -14,6 +14,13 @@ export type FahrzeugDto = Identifiable & {
   optaFunktion: {
     code: number;
     label: string;
+    einheit: string;
+    fachaufgabe: string;
+    funktion: string;
+    grundzeichen: string;
+    organisation: string;
+    verwaltungsstufe: string;
+    symbol: string;
   } | null;
   optaOrdnung: number | null;
   kapazitaet: number;

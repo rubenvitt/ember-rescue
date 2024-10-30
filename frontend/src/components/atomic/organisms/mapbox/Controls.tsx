@@ -10,10 +10,17 @@ import { backendFetchJson } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
+import { erzeugeTaktischesZeichen, FachaufgabeId, FunktionId, SymbolId } from 'taktische-zeichen-core';
 import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
 import { FahrzeugDto } from '../../../../types/app/fahrzeug.types.js';
 import { MapLayerOptions } from './MapLayerOptions.component.tsx';
+import {
+  convertFachaufgabe,
+  convertFunktion,
+  convertGrundzeichen,
+  convertOrganisation,
+  convertSymbol,
+} from '../../../../types/utils/fahrzeuge.helper.js';
 
 export const useMapStore = create<{
   map?: Map;
@@ -137,10 +144,13 @@ function AddFahrzeugComponent() {
   const addFahrzeugToMap = useCallback(
     (fahrzeug: FahrzeugDto) => {
       let element = document.createElement('div');
+      console.log('adding marker for', fahrzeug);
       let svg = erzeugeTaktischesZeichen({
-        grundzeichen: 'fahrzeug',
-        organisation: 'hilfsorganisation',
-        fachaufgabe: 'iuk',
+        grundzeichen: convertGrundzeichen(fahrzeug.optaFunktion?.grundzeichen),
+        organisation: convertOrganisation(fahrzeug.optaFunktion?.organisation),
+        fachaufgabe: convertFachaufgabe(fahrzeug.optaFunktion?.fachaufgabe as FachaufgabeId),
+        funktion: convertFunktion(fahrzeug.optaFunktion?.funktion as FunktionId),
+        symbol: convertSymbol(fahrzeug.optaFunktion?.symbol as SymbolId),
         name: fahrzeug.funkrufname,
         farbe: statusRgbColors[fahrzeug.status.code],
       }).svg;
