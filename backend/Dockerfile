@@ -37,6 +37,9 @@ COPY --from=build /usr/src/app/node_modules node_modules
 RUN rm -rf node_modules/.cache
 RUN pnpm prune
 
+# Set Node.js environment to production
+ENV NODE_ENV=production
+
 # Kompilierte Anwendung aus dem Build-Stage kopieren
 COPY --from=build /usr/src/app/dist ./dist
 
