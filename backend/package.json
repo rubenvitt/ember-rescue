@@ -30,10 +30,10 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/platform-express": "^10.4.6",
     "@nestjs/schedule": "^4.1.1",
-    "@nestjs/swagger": "^7.4.2",
+    "@nestjs/swagger": "^8.0.1",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@pdfme/common": "^5.1.5",
-    "@pdfme/generator": "^5.1.5",
+    "@pdfme/common": "^5.1.6",
+    "@pdfme/generator": "^5.1.6",
     "@prisma/client": "5.21.1",
     "ajv": "^8.17.1",
     "class-validator": "^0.14.1",
@@ -48,14 +48,14 @@
   "devDependencies": {
     "@jest/types": "^29.6.3",
     "@nestjs/cli": "^10.4.5",
-    "@nestjs/schematics": "^10.2.2",
+    "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.7.9",
+    "@types/node": "^22.8.5",
     "@types/supertest": "^6.0.2",
-    "@typescript-eslint/eslint-plugin": "^8.11.0",
-    "@typescript-eslint/parser": "^8.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
     "esbuild": "^0.24.0",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
@@ -92,5 +92,5 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "packageManager": "pnpm@9.12.2"
+  "packageManager": "pnpm@9.12.3"
 }

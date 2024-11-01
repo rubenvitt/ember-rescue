@@ -14,7 +14,7 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
-import { LayersControl, RescueControl } from './mapbox/Controls.js';
+import { LayersControl, RescueControl, WarningsControl } from './mapbox/Controls.js';
 import { Button } from 'antd';
 
 interface Props {
@@ -61,6 +61,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
       collapsed: true,
     });
     const layerControl = new LayersControl();
+    const warningsControl = new WarningsControl();
     const stylesControl = new StylesControl({
       styles: [
         { styleName: 'Outdoor', styleUrl: 'mapbox://styles/mapbox/outdoors-v12', label: 'Outdoor' },
@@ -101,6 +102,8 @@ function _MapboxComponent({ mapboxToken }: Props) {
     // @ts-ignore
     map.addControl(stylesControl, 'bottom-left');
     map.addControl(layerControl, 'bottom-left');
+
+    map.addControl(warningsControl, 'top-right');
 
     map.addControl(new RescueControl());
 
