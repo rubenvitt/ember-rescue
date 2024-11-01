@@ -23,10 +23,14 @@ services:
       timeout: 10s
       retries: 5
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-user}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+      DB_USER: ${MONGO_USER:-user}
+      DB_PASS: ${MONGO_PASSWORD:-pass}
+      MONGO_INITDB_DATABASE: ember-rescue
     volumes:
       - mongo:/data/db
+      - ./backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   backend:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
