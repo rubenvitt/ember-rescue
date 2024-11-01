@@ -21,6 +21,7 @@ import {
   convertOrganisation,
   convertSymbol,
 } from '../../../../types/utils/fahrzeuge.helper.js';
+import { WarningsOptions } from './WeatherOptions.component.js';
 
 export const useMapStore = create<{
   map?: Map;
@@ -336,6 +337,27 @@ export class RescueControl implements IControl {
     }
     this.container = null;
   };
+}
+
+export class WarningsControl implements IControl {
+  getDefaultPosition?: () => 'top-right';
+  private container: HTMLElement | null = null;
+
+  onRemove(map: mapboxgl.Map): void {
+    if (this.container?.parentNode) {
+      this.container.parentNode.removeChild(this.container);
+    }
+    this.container = null;
+  }
+
+  onAdd(map: Map): HTMLElement {
+    this.container = document.createElement('div');
+    const root = createRoot(this.container);
+
+    root.render(<WarningsOptions map={map} />);
+
+    return this.container;
+  }
 }
 
 export class LayersControl implements IControl {
