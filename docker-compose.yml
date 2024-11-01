@@ -13,6 +13,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-project-rescue}
     volumes:
       - postgres:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:8
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-user}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+    volumes:
+      - mongo:/data/db
+
   backend:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
     restart: unless-stopped
@@ -31,3 +46,4 @@ services:
 
 volumes:
   postgres:
+  mongo:
