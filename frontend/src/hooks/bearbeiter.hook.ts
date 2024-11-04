@@ -19,11 +19,11 @@ export function useBearbeiter({ requireBearbeiter }: Props = {}) {
   });
 
   const singleBearbeiter = useQuery<Bearbeiter | null, unknown>({
-    queryKey: services.backend.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.id }),
+    queryKey: services.backend.bearbeiter.fetchSingleBearbeiter.queryKey({ bearbeiterId: bearbeiter?.name }),
     queryFn: async (): Promise<Bearbeiter | null> => {
-      if (!bearbeiter || !bearbeiter.id) return null; // Korrigierte Überprüfung
+      if (!bearbeiter || !bearbeiter.name) return null; // Korrigierte Überprüfung
       const foundBearbeiter = await services.backend.bearbeiter.fetchSingleBearbeiter.queryFn({
-        bearbeiterId: bearbeiter.id,
+        bearbeiterId: bearbeiter.name,
       });
       if (!foundBearbeiter) return Promise.reject(new Error('no bearbeiter found'));
       return foundBearbeiter;

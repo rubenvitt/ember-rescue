@@ -1,39 +1,66 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  Bearbeiter,
+  BearbeiterDto,
+} from '../database/mongo/schemas/Bearbeiter.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class BearbeiterService {
   private logger = new Logger(BearbeiterService.name);
 
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Bearbeiter.name) private bearbeiterModel: Model<Bearbeiter>,
+  ) {}
 
   async findAll() {
-    return this.prismaService.bearbeiter.findMany({
-      where: { active: true },
-      select: { name: true, id: true, active: false },
-    });
+    this.logger.log('BearbeiterController.findAll()');
+    const bearbeiter = await this.bearbeiterModel
+      .find({ active: true })
+      .select('name')
+      .exec();
+
+    return await Promise.all(
+      bearbeiter.map(
+        async (b) => await BearbeiterDto.fromBearbeiter(b.toObject()),
+      ),
+    );
   }
 
   async findByNameOrCreate(name: string) {
-    const bearbeiter = this.prismaService.bearbeiter.upsert({
-      where: { name: name },
-      update: { active: true },
-      select: { name: true, id: true, active: false },
-      create: { name: name, active: true },
-    });
+    this.logger.log('BearbeiterController.findByNameOrCreate()', name);
+    let bearbeiter = await this.bearbeiterModel.findOne({ name }).exec();
 
-    this.logger.log(
-      'BearbeiterService.findByNameOrCreate(), Using Bearbeiter: ',
-      bearbeiter,
-    );
+    if (!bearbeiter) {
+      this.logger.log(`Create new Bearbeiter named: ${name}`);
+      bearbeiter = await this.bearbeiterModel.create({
+        name,
+        active: true,
+      });
+    } else {
+      this.logger.log(`Found Bearbeiter: ${bearbeiter}`);
+      bearbeiter = await this.bearbeiterModel
+        .findOneAndUpdate(
+          { name },
+          {
+            $set: {
+              active: true,
+            },
+          },
+        )
+        .exec();
+    }
 
-    return bearbeiter;
+    return BearbeiterDto.fromBearbeiter(bearbeiter);
   }
 
-  findOne(id: string) {
-    return this.prismaService.bearbeiter.findUnique({
-      where: { id: id, active: true },
-      select: { name: true, id: true, active: false },
-    });
+  async findOne(name: string) {
+    this.logger.log('BearbeiterController.findOne()', name);
+    let bearbeiter = await BearbeiterDto.fromBearbeiter(
+      await this.bearbeiterModel.findOne({ name, active: true }).exec(),
+    );
+    this.logger.log(`Found Bearbeiter: ${bearbeiter}`);
+    return bearbeiter;
   }
 }

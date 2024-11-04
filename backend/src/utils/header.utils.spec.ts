@@ -1,5 +1,5 @@
 import {
-  extractBearbeiterId,
+  extractBearbeiterName,
   extractEinsatzId,
   extractId,
 } from './header.utils';
@@ -33,11 +33,11 @@ describe('extractEinsatzId', () => {
 
 describe('extractBearbeiterId', () => {
   it('should extract Bearbeiter ID correctly when headerValue has correct prefix', () => {
-    expect(extractBearbeiterId('Bearbeiter-ID: 54321')).toBe('54321');
+    expect(extractBearbeiterName('Bearbeiter: 54321')).toBe('54321');
   });
 
   it('should return null when headerValue does not have the correct prefix', () => {
-    expect(extractBearbeiterId('Another-Prefix: 54321')).toBeNull();
-    expect(extractBearbeiterId('')).toBeNull();
+    expect(extractBearbeiterName('Another-Prefix: 54321')).toBeNull();
+    expect(extractBearbeiterName('')).toBeNull();
   });
 });

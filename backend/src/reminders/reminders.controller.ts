@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
-import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
+import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
 
 @Controller('reminders')
 export class RemindersController {
@@ -23,14 +23,14 @@ export class RemindersController {
     @Body() data: { noteId: string; reminderTime: string },
   ) {
     this.logger.log(`Creating reminder for ${einsatzHeader}`);
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     const reminderTime = new Date(data.reminderTime);
     return this.reminderService.create(
       data.noteId,
       reminderTime,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
     );
   }
 
@@ -39,9 +39,9 @@ export class RemindersController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.reminderService.getDueReminders(bearbeiterId, einsatzId);
+    return this.reminderService.getDueReminders(bearbeiterName, einsatzId);
   }
 
   @Post(':reminderId/mark-notified')
@@ -51,12 +51,12 @@ export class RemindersController {
     @Param('reminderId') reminderId: string,
   ) {
     this.logger.log(`Mark reminder as notified ${reminderId}`);
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     await this.reminderService.markAsNotified(
       reminderId,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
     );
   }
 
@@ -66,8 +66,12 @@ export class RemindersController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Param('reminderId') reminderId: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    await this.reminderService.markAsRead(reminderId, einsatzId, bearbeiterId);
+    await this.reminderService.markAsRead(
+      reminderId,
+      einsatzId,
+      bearbeiterName,
+    );
   }
 }

@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { NotizenService } from './notizen.service';
-import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
+import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
 import { CreateNotizDto, UpdateNotizDto } from '../types';
 
 @Controller(`notizen`)
@@ -26,9 +26,9 @@ export class NotizenController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Query('done') done: boolean = false,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.notizenService.findAllNotizen(einsatzId, bearbeiterId, done);
+    return this.notizenService.findAllNotizen(einsatzId, bearbeiterName, done);
   }
 
   @Post()
@@ -38,11 +38,11 @@ export class NotizenController {
     @Body() notizDto: CreateNotizDto,
   ) {
     this.logger.log('Creating new notiz', { notizDto });
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.createNotiz({
       einsatzId,
-      bearbeiterId,
+      bearbeiterId: bearbeiterName,
       notizDto,
     });
   }
@@ -55,10 +55,10 @@ export class NotizenController {
     @Body() notizDto: UpdateNotizDto,
   ) {
     this.logger.log('Update notiz', { notizDto, notizId });
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return await this.notizenService.updateNotiz({
-      bearbeiterId,
+      bearbeiterId: bearbeiterName,
       einsatzId,
       notizDto,
       notizId,
@@ -71,9 +71,9 @@ export class NotizenController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiterId);
+    return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiterName);
   }
 
   @Post(':notizId/toggle-complete')
@@ -82,12 +82,12 @@ export class NotizenController {
     @Headers('einsatz') einsatzHeader: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.toggleCompleteNotiz(
       notizId,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
     );
   }
 }

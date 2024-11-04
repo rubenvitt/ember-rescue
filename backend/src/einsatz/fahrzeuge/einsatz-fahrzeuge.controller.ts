@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
 import { EinsatzController } from '../einsatz.controller';
-import { extractBearbeiterId } from '../../utils/header.utils';
+import { extractBearbeiterName } from '../../utils/header.utils';
 
 @Controller('einsatz/:einsatzId/fahrzeuge')
 export class EinsatzFahrzeugeController {
@@ -30,16 +30,16 @@ export class EinsatzFahrzeugeController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: { fahrzeugId: string },
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     this.logger.log('Add Fahrzeug to Einsatz', {
       einsatzId,
       body,
-      bearbeiterId,
+      bearbeiterId: bearbeiterName,
     });
     await this.fahrzeugeService.addFahrzeugToEinsatz(
       body.fahrzeugId,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
     );
 
     return { status: 'ok' };
@@ -52,12 +52,12 @@ export class EinsatzFahrzeugeController {
     @Headers('bearbeiter') bearbeiterHeader: string,
     @Body() body: { statusId: string },
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     this.logger.log(`Change status for ${fahrzeugId} to ${body.statusId}`);
     await this.fahrzeugeService.changeStatus(
       fahrzeugId,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
       { statusId: body.statusId },
     );
 
@@ -70,11 +70,11 @@ export class EinsatzFahrzeugeController {
     @Param('fahrzeugId') fahrzeugId: string,
     @Headers('bearbeiter') bearbeiterHeader: string,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     await this.fahrzeugeService.removeFahrzeugFromEinsatz(
       fahrzeugId,
       einsatzId,
-      bearbeiterId,
+      bearbeiterName,
     );
 
     return { status: 'ok' };

@@ -28,14 +28,14 @@ export class BearbeiterController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('name') name: string) {
     this.logger.debug(
       'BearbeiterController.findOne(), Environment: ',
       process.env.NODE_ENV,
-      id,
+      name,
     );
 
-    return this.bearbeiterService.findOne(id);
+    return this.bearbeiterService.findOne(name);
   }
 
   @Post()

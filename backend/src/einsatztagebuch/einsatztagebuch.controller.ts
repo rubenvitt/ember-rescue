@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import { extractBearbeiterId, extractEinsatzId } from '../utils/header.utils';
+import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
 import { CreateEinsatztagebuchDto } from '../types';
 
 @Controller('einsatztagebuch')
@@ -32,14 +32,14 @@ export class EinsatztagebuchController {
     @Headers('einsatz') einsatzHeader: string,
     @Body() createEinsatztagebuchDto: CreateEinsatztagebuchDto,
   ) {
-    const bearbeiterId = extractBearbeiterId(bearbeiterHeader)!!;
+    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader);
     this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
-      bearbeiterId,
+      bearbeiterId: bearbeiterName,
       einsatzId,
     });
     return this.service.createEinsatztagebuchEintrag({
-      bearbeiterId,
+      bearbeiterId: bearbeiterName,
       einsatzId,
       ...createEinsatztagebuchDto,
       type: createEinsatztagebuchDto.type ?? 'USER',

@@ -43,7 +43,7 @@ async function makeRequest(
   const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
   const additionalHeaders: { Bearbeiter?: string; Einsatz?: string; Authorization?: string } = {};
 
-  if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter-ID: ${bearbeiter.id}`;
+  if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter: ${bearbeiter.name}`;
   if (einsatzId) additionalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
   if (backendAccessToken) additionalHeaders.Authorization = `AUTH: ${backendAccessToken}`;
 

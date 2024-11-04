@@ -2,9 +2,19 @@ import { Module } from '@nestjs/common';
 import { BearbeiterService } from './bearbeiter.service';
 import { BearbeiterController } from './bearbeiter.controller';
 import { DatabaseModule } from '../database/database.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Bearbeiter,
+  BearbeiterSchema,
+} from '../database/mongo/schemas/Bearbeiter.schema';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    MongooseModule.forFeature([
+      { name: Bearbeiter.name, schema: BearbeiterSchema },
+    ]),
+  ],
   providers: [BearbeiterService],
   controllers: [BearbeiterController],
 })
