@@ -29,7 +29,7 @@ export class BearbeiterService {
   }
 
   async findByNameOrCreate(name: string) {
-    this.logger.log('BearbeiterController.findByNameOrCreate()', name);
+    this.logger.log('BearbeiterController.findByNameOrCreate() name:' + name);
     let bearbeiter = await this.bearbeiterModel.findOne({ name }).exec();
 
     if (!bearbeiter) {
@@ -39,7 +39,7 @@ export class BearbeiterService {
         active: true,
       });
     } else {
-      this.logger.log(`Found Bearbeiter: ${bearbeiter}`);
+      this.logger.log(`Found Bearbeiter`, { bearbeiter });
       bearbeiter = await this.bearbeiterModel
         .findOneAndUpdate(
           { name },
@@ -56,11 +56,11 @@ export class BearbeiterService {
   }
 
   async findOne(name: string) {
-    this.logger.log('BearbeiterController.findOne()', name);
+    this.logger.log(`BearbeiterController.findOne() ${name}`);
     let bearbeiter = await BearbeiterDto.fromBearbeiter(
       await this.bearbeiterModel.findOne({ name, active: true }).exec(),
     );
-    this.logger.log(`Found Bearbeiter: ${bearbeiter}`);
+    this.logger.log(`Found Bearbeiter`, { bearbeiter });
     return bearbeiter;
   }
 }

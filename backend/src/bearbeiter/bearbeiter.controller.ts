@@ -27,13 +27,9 @@ export class BearbeiterController {
     return this.bearbeiterService.findAll();
   }
 
-  @Get(':id')
+  @Get(':name')
   async findOne(@Param('name') name: string) {
-    this.logger.debug(
-      'BearbeiterController.findOne(), Environment: ',
-      process.env.NODE_ENV,
-      name,
-    );
+    this.logger.debug(`BearbeiterController.findOne() '${name}'`);
 
     return this.bearbeiterService.findOne(name);
   }
