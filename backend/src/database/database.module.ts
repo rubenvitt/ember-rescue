@@ -13,6 +13,7 @@ import {
 } from './mongo/schemas/opta/entry.schema';
 import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
 import { Status, StatusSchema } from './mongo/schemas/status.schema';
+import { Secret, SecretSchema } from './mongo/schemas/secret.schema';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Status, StatusSchema } from './mongo/schemas/status.schema';
         schema: OptaSchema,
       },
       { name: Status.name, schema: StatusSchema },
+      { name: Secret.name, schema: SecretSchema },
     ]),
   ],
   providers: [...databaseProviders, PrismaService, SeedService],

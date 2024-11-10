@@ -62,6 +62,9 @@ importers:
       mongoose:
         specifier: ^8.8.0
         version: 8.8.0
+      mongoose-field-encryption:
+        specifier: ^7.0.1
+        version: 7.0.1(mongoose@8.8.0)
       pg:
         specifier: ^8.13.1
         version: 8.13.1
@@ -3114,6 +3117,11 @@ packages:
         optional: true
       socks:
         optional: true
+
+  mongoose-field-encryption@7.0.1:
+    resolution: {integrity: sha512-PWNn1EkmtF8Sjguioe/TpW+6CWmNQwcQpKD3UAUVM1JtPmb4jOA7WqIQVJZCsnQuOqhBfCcpVvOJdOTvB6Q9dQ==}
+    peerDependencies:
+      mongoose: '>=7.4.0'
 
   mongoose@8.8.0:
     resolution: {integrity: sha512-KluvgwnQB1GPOYZZXUHJRjS1TW6xxwTlf/YgjWExuuNanIe3W7VcR7dDXQVCIRk8L7NYge8EnoTcu2grWtN+XQ==}
@@ -8161,6 +8169,10 @@ snapshots:
       '@mongodb-js/saslprep': 1.1.9
       bson: 6.9.0
       mongodb-connection-string-url: 3.0.1
+
+  mongoose-field-encryption@7.0.1(mongoose@8.8.0):
+    dependencies:
+      mongoose: 8.8.0
 
   mongoose@8.8.0:
     dependencies:

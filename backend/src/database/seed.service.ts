@@ -17,6 +17,7 @@ import {
 } from './mongo/schemas/opta/entry.schema';
 import { Opta } from './mongo/schemas/opta.schema';
 import { Status } from './mongo/schemas/status.schema';
+import { Secret } from './mongo/schemas/secret.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -37,6 +38,8 @@ export class SeedService implements OnModuleInit {
     private readonly status: Model<Status>,
     @InjectModel(Opta.name)
     private readonly optaModel: Model<Opta>,
+    @InjectModel(Secret.name)
+    private readonly secretModel: Model<Secret>,
   ) {}
 
   async onModuleInit() {
