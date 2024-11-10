@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export class AlarmstichwortDto {}
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'alarmstichworte' })
 export class Alarmstichwort extends Document {
   @Prop({ required: true, unique: true })
   code: string;

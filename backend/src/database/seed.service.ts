@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as alarmstichworte from './mongo/seeds/alarmstichworte.json';
+import * as statusItems from './mongo/seeds/status.json';
 import * as optaFunktionen from './mongo/seeds/opta/funktionen.json';
 import * as optaBos from './mongo/seeds/opta/bos.json';
 import * as optaDistricts from './mongo/seeds/opta/districts.json';
@@ -15,6 +16,7 @@ import {
   LocalCodeOptaEntry,
 } from './mongo/schemas/opta/entry.schema';
 import { Opta } from './mongo/schemas/opta.schema';
+import { Status } from './mongo/schemas/status.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -31,6 +33,8 @@ export class SeedService implements OnModuleInit {
     private readonly districtEntry: Model<DistrictOptaEntry>,
     @InjectModel(BaseOptaEntry.mongoName)
     private readonly localCodesEntry: Model<LocalCodeOptaEntry>,
+    @InjectModel(Status.name)
+    private readonly status: Model<Status>,
     @InjectModel(Opta.name)
     private readonly optaModel: Model<Opta>,
   ) {}
@@ -65,6 +69,8 @@ export class SeedService implements OnModuleInit {
       this.localCodesEntry,
       'OptaLocalCodes',
     );
+
+    await this.insertSeedData(statusItems, this.status, 'Status');
 
     try {
       await this.optaModel.create({

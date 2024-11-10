@@ -12,6 +12,7 @@ import {
   BaseOptaEntrySchema,
 } from './mongo/schemas/opta/entry.schema';
 import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
+import { Status, StatusSchema } from './mongo/schemas/status.schema';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
         name: Opta.name,
         schema: OptaSchema,
       },
+      { name: Status.name, schema: StatusSchema },
     ]),
   ],
   providers: [...databaseProviders, PrismaService, SeedService],

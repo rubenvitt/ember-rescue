@@ -9,4 +9,9 @@ export class StatusController {
   async status() {
     return this.statusService.findAll();
   }
+
+  @Get('/schema/v3')
+  async schema() {
+    return this.statusService.getSchema();
+  }
 }

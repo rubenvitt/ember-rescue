@@ -12,7 +12,7 @@ import {
 
 export type OptaType = keyof OptaTypes;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'optas' })
 export class Opta extends Document {
   @Prop({
     required: true,
