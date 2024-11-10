@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   Bearbeiter,
   BearbeiterSchema,
-} from '../database/mongo/schemas/Bearbeiter.schema';
+} from '../database/mongo/schemas/bearbeiter.schema';
 
 @Module({
   imports: [

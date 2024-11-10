@@ -1,8 +1,20 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as alarmstichworte from './mongo/seeds/alarmstichworte.json';
-import { Alarmstichwort } from './mongo/schemas/Alarmstichwort.schema';
+import * as optaFunktionen from './mongo/seeds/opta/funktionen.json';
+import * as optaBos from './mongo/seeds/opta/bos.json';
+import * as optaDistricts from './mongo/seeds/opta/districts.json';
+import * as optaLocalCodes from './mongo/seeds/opta/local-codes.json';
+import { Alarmstichwort } from './mongo/schemas/alarmstichwort.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import {
+  BaseOptaEntry,
+  BosOptaEntry,
+  DistrictOptaEntry,
+  FunctionOptaEntry,
+  LocalCodeOptaEntry,
+} from './mongo/schemas/opta/entry.schema';
+import { Opta } from './mongo/schemas/opta.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -11,36 +23,79 @@ export class SeedService implements OnModuleInit {
   constructor(
     @InjectModel(Alarmstichwort.name)
     private alarmstichwortModel: Model<Alarmstichwort>,
-  ) {} //private optaFunktionModel: Model<OptaFunktion>, //@InjectModel(OptaFunktion.name) //private alarmstichwortModel: Model<Alarmstichwort>, //@InjectModel(Alarmstichwort.name)
+    @InjectModel(BaseOptaEntry.mongoName)
+    private readonly functionEntry: Model<FunctionOptaEntry>,
+    @InjectModel(BaseOptaEntry.mongoName)
+    private readonly bosEntry: Model<BosOptaEntry>,
+    @InjectModel(BaseOptaEntry.mongoName)
+    private readonly districtEntry: Model<DistrictOptaEntry>,
+    @InjectModel(BaseOptaEntry.mongoName)
+    private readonly localCodesEntry: Model<LocalCodeOptaEntry>,
+    @InjectModel(Opta.name)
+    private readonly optaModel: Model<Opta>,
+  ) {}
 
   async onModuleInit() {
     this.logger.log('🌱 Start Seeding');
 
-    // Prüfen, ob die Collection leer ist, und nur dann Daten einfügen
-    // if ((await this.alarmstichwortModel.countDocuments()) === 0) {
-    //   await this.alarmstichwortModel.insertMany(alarmstichwoerter);
-    // }
+    // Alarmstichworte
+    await this.insertSeedData(
+      alarmstichworte,
+      this.alarmstichwortModel,
+      'Alarmstichworte',
+    );
 
-    // Seed-Daten für OptaFunktionen
-    const optaFunktionen = [
-      { bezeichnung: 'Notarztwagen', beschreibung: 'Fahrzeug für Notärzte' },
-      { bezeichnung: 'RTW', beschreibung: 'Rettungswagen' },
-    ];
+    // Seed-Daten für Opta
+    await this.insertSeedData(
+      optaFunktionen,
+      this.functionEntry,
+      'OptaFunktionen',
+    );
 
-    if ((await this.alarmstichwortModel.countDocuments()) === 0) {
-      this.logger.debug('💪 Need to insert Alarmstichworte');
-      const alarmstichworteInserted =
-        await this.alarmstichwortModel.insertMany(alarmstichworte);
-      this.logger.log('✳️ Inserted Alarmstichworte', {
-        count: alarmstichworteInserted.length,
+    await this.insertSeedData(optaBos, this.bosEntry, 'OptaBos');
+
+    await this.insertSeedData(
+      optaDistricts,
+      this.districtEntry,
+      'OptaDistricts',
+    );
+
+    await this.insertSeedData(
+      optaLocalCodes,
+      this.localCodesEntry,
+      'OptaLocalCodes',
+    );
+
+    try {
+      await this.optaModel.create({
+        district: await this.districtEntry.findOne({ code: 'NI' }),
+        bosCode: await this.bosEntry.findOne({ code: 'DRK' }),
+        localCode: await this.localCodesEntry.findOne({ code: '40' }),
+        functionCode: await this.functionEntry.findOne({ code: '83' }),
+        orderNumber: '01',
+        ort: 'Uelzen',
       });
-    } else {
-      this.logger.log('💤 Kein Seeding für Alarmstichworte erforderlich');
+    } catch (e) {
+      this.logger.error('Error while seeding opta: ' + e.message);
     }
 
-    this.logger.warn('🚧 TODO: should seed', {
-      optaFunktionen,
-    });
-    this.logger.log('🌱 Seed-Daten erfolgreich geprüft und ggf. eingefügt');
+    this.logger.log('🌱 Finished Seeding');
+  }
+
+  private async insertSeedData<T>(
+    data: unknown[],
+    model: Model<T>,
+    dataType: string,
+  ) {
+    try {
+      this.logger.debug(`🤖 Try to insert ${dataType}`);
+      const insertedData = await model.insertMany(data, { ordered: false });
+      this.logger.log(`✳️ Inserted ${insertedData.length} ${dataType}`);
+    } catch (e) {
+      this.logger.log(`✳️ Inserted ${e.insertedDocs.length} ${dataType}`);
+      this.logger.debug(
+        `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors[0].err.errmsg})`,
+      );
+    }
   }
 }

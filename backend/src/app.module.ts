@@ -24,6 +24,7 @@ import { PdfModule } from './pdf/pdf.module';
 import { NotizenModule } from './notizen/notizen.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OptaModule } from './opta/opta.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     PdfModule,
     NotizenModule,
     RemindersModule,
+    OptaModule,
   ],
   controllers: [AppController],
   providers: [

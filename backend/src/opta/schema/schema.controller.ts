@@ -1,0 +1,29 @@
+import { Controller, Get, Inject } from '@nestjs/common';
+import { SchemaService } from './schema.service';
+
+@Controller('opta/schema')
+export class SchemaController {
+  constructor(
+    @Inject(SchemaService) private readonly schemaService: SchemaService,
+  ) {}
+
+  @Get('/funktionen/v2')
+  async getSchemaFunktionen() {
+    return this.schemaService.generateSchemaFunktionen();
+  }
+
+  @Get('/bos/v2')
+  async getSchemaBos() {
+    return this.schemaService.generateSchemaBos();
+  }
+
+  @Get('/districts/v2')
+  async getSchemaDistricts() {
+    return this.schemaService.generateSchemaDistrict();
+  }
+
+  @Get('/local-code/v5')
+  async getLocalCode() {
+    return this.schemaService.generateSchemaLocalCodes();
+  }
+}

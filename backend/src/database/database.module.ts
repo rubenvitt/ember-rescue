@@ -6,13 +6,26 @@ import { SeedService } from './seed.service';
 import {
   Alarmstichwort,
   AlarmstichwortSchema,
-} from './mongo/schemas/Alarmstichwort.schema';
+} from './mongo/schemas/alarmstichwort.schema';
+import {
+  BaseOptaEntry,
+  BaseOptaEntrySchema,
+} from './mongo/schemas/opta/entry.schema';
+import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
 
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGODB_URL!!),
     MongooseModule.forFeature([
       { name: Alarmstichwort.name, schema: AlarmstichwortSchema },
+      {
+        name: BaseOptaEntry.mongoName,
+        schema: BaseOptaEntrySchema,
+      },
+      {
+        name: Opta.name,
+        schema: OptaSchema,
+      },
     ]),
   ],
   providers: [...databaseProviders, PrismaService, SeedService],

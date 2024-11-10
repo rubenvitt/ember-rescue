@@ -1,0 +1,226 @@
+[
+  {
+    "code": "FW",
+    "label": "Feuerwehr",
+    "description": "Feuerwehren",
+    "rufname": "Florian",
+    "type": "BOS_CODE",
+    "group": "Feuerwehren"
+  },
+  {
+    "code": "ASB",
+    "label": "Arbeiter-Samariter-Bund",
+    "description": "Arbeiter-Samariter-Bund (ASB)",
+    "rufname": "Sama",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "BGW",
+    "label": "Bergwacht",
+    "description": "Bergwacht",
+    "rufname": "Bergwacht",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "DGS",
+    "label": "Deutsche Gesellschaft zur Rettung Schiffbrüchiger",
+    "description": "Deutsche Gesellschaft zur Rettung Schiffbrüchiger",
+    "rufname": "Triton",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "DLR",
+    "label": "Deutsche Lebens-Rettungs-Gesellschaft",
+    "description": "Deutsche Lebens-Rettungs-Gesellschaft (DLRG)",
+    "rufname": "Pelikan",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "DRK",
+    "label": "Deutsches Rotes Kreuz",
+    "description": "Deutsches Rotes Kreuz (DRK)",
+    "rufname": "Rotkreuz",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "JUH",
+    "label": "Johanniter-Unfall-Hilfe",
+    "description": "Johanniter-Unfall-Hilfe (JUH)",
+    "rufname": "Akkon",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "MHD",
+    "label": "Malteser Hilfsdienst",
+    "description": "Malteser Hilfsdienst (MHD)",
+    "rufname": "Johannes",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "CHR",
+    "label": "Rettungshubschrauber",
+    "description": "Rettungshubschrauber",
+    "rufname": "Christoph",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "RD",
+    "label": "Sonstige als BOS anerkannte Rettungsdienste",
+    "description": "Sonstige als BOS anerkannte Rettungsdienste",
+    "rufname": "Rettung",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "WW",
+    "label": "Wasserwacht",
+    "description": "Wasserwacht",
+    "rufname": "Wasserwacht",
+    "type": "BOS_CODE",
+    "group": "Hilfsorganisationen"
+  },
+  {
+    "code": "LEO",
+    "label": "Oberste Katastrophenschutzbehörde",
+    "description": "Oberste Katastrophenschutzbehörde",
+    "rufname": "Leopold",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "KAT",
+    "label": "Weitere Katastrophenschutzeinheiten",
+    "description": "Weitere Katastrophenschutzeinheiten",
+    "rufname": "Kater",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "THW",
+    "label": "Technisches Hilfswerk",
+    "description": "Technisches Hilfswerk",
+    "rufname": "Heros",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "BBK",
+    "label": "Bundesamt für Bevölkerungs- und Katastrophenhilfe",
+    "description": "Bundesamt für Bevölkerungs- und Katastrophenhilfe",
+    "rufname": "BBK",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "SIR",
+    "label": "Sirenensteuerung, Warnung der Bevölkerung",
+    "description": "Sirenensteuerung, Warnung der Bevölkerung",
+    "rufname": "",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "HAV",
+    "label": "Havariekommando",
+    "description": "Havariekommando",
+    "rufname": "HAV",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "SON",
+    "label": "Sonstige Einheiten des Katastrophenschutzes",
+    "description": "Sonstige Einheiten des Katastrophenschutzes",
+    "rufname": "SON",
+    "type": "BOS_CODE",
+    "group": "Katastrophenschutz"
+  },
+  {
+    "code": "POL",
+    "label": "Polizei",
+    "description": "Polizei",
+    "rufname": "POL",
+    "type": "BOS_CODE",
+    "group": "Polizei"
+  },
+  {
+    "code": "BKA",
+    "label": "Bundeskriminalamt",
+    "description": "Bundeskriminalamt",
+    "rufname": "POL",
+    "type": "BOS_CODE",
+    "group": "Polizei"
+  },
+  {
+    "code": "IM",
+    "label": "Innenministerien des Bundes und der Länder",
+    "description": "Innenministerien des Bundes und der Länder",
+    "rufname": "IM",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "BOS",
+    "label": "Bundesanstalt für den Digitalfunk der BOS",
+    "description": "Bundesanstalt für den Digitalfunk der Behörden und Organisationen mit Sicherheitsaufgaben",
+    "rufname": "BOS",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "ORD",
+    "label": "Kommunaler Ordnungsdienst",
+    "description": "Kommunaler Ordnungsdienst",
+    "rufname": "ORD",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "JUS",
+    "label": "Justiz",
+    "description": "Justiz",
+    "rufname": "Justizia",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "BAG",
+    "label": "Bundesamt für Logistik und Mobilität",
+    "description": "Bundesamt für Logistik und Mobilität",
+    "rufname": "BAG",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "V",
+    "label": "Verfassungsschutz",
+    "description": "Verfassungsschutz",
+    "rufname": "V",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "ZOL",
+    "label": "Zoll",
+    "description": "Zoll",
+    "rufname": "ZOL",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  },
+  {
+    "code": "MIL",
+    "label": "Bundeswehr",
+    "description": "Bundeswehr",
+    "rufname": "MIL",
+    "type": "BOS_CODE",
+    "group": "Sonstige BOS"
+  }
+]

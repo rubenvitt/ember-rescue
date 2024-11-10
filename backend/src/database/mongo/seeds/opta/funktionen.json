@@ -1,0 +1,368 @@
+[
+  {
+    "code": "0",
+    "label": "Rettungswache, ortsfeste Funkstelle",
+    "description": "Rettungswache, ortsfeste Funkstelle",
+    "type": "FUNCTION_CODE",
+    "group": "Ortsfeste Funkstellen"
+  },
+  {
+    "code": "1",
+    "label": "Leiter der Organisation",
+    "description": "Leiter der Organisation",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "2",
+    "label": "Stellvertretender Leiter",
+    "description": "Stellvertretender Leiter",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "3",
+    "label": "Kontingentführung/Führung von Einheiten ab Verbandsgröße",
+    "description": "Kontingentführung/Führung von Einheiten ab Verbandsgröße",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "4",
+    "label": "Sonstige Leitungsfunktionen",
+    "description": "Sonstige Leitungsfunktionen",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "5",
+    "label": "Sonstige Leitungsfunktionen",
+    "description": "Sonstige Leitungsfunktionen",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "6",
+    "label": "Sonstige Leitungsfunktionen",
+    "description": "Sonstige Leitungsfunktionen",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "7",
+    "label": "Leitender Notarzt",
+    "description": "Leitender Notarzt",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "8",
+    "label": "Organisatorischer Leiter Rettungsdienst",
+    "description": "Organisatorischer Leiter Rettungsdienst",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "9",
+    "label": "Fachberater, sonstige Funktionen",
+    "description": "Fachberater, sonstige Funktionen",
+    "type": "FUNCTION_CODE",
+    "group": "Funktionskennungen"
+  },
+  {
+    "code": "10",
+    "label": "Kommandowagen",
+    "description": "Kommandowagen",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "11",
+    "label": "Einsatzleitwagen 1",
+    "description": "Einsatzleitwagen 1",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "12",
+    "label": "Einsatzleitwagen 2",
+    "description": "Einsatzleitwagen 2",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "13",
+    "label": "Teilstationäre Führungsmittel",
+    "description": "Teilstationäre Führungsmittel",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "14",
+    "label": "Sonstige Fernmeldefahrzeuge",
+    "description": "Sonstige Fernmeldefahrzeuge",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "15",
+    "label": "Kombinationskraftwagen UAV",
+    "description": "Kombinationskraftwagen UAV",
+    "type": "FUNCTION_CODE",
+    "group": "Einsatzleitfahrzeuge"
+  },
+  {
+    "code": "16",
+    "label": "MTW (Betreuung, PSNV, Verpflegung)",
+    "description": "MTW (Betreuung, PSNV, Verpflegung)",
+    "type": "FUNCTION_CODE",
+    "group": "Mannschaftstransport"
+  },
+  {
+    "code": "17",
+    "label": "Mannschaftstransportwagen",
+    "description": "Mannschaftstransportwagen",
+    "type": "FUNCTION_CODE",
+    "group": "Mannschaftstransport"
+  },
+  {
+    "code": "18",
+    "label": "Kraftomnibus",
+    "description": "Kraftomnibus",
+    "type": "FUNCTION_CODE",
+    "group": "Mannschaftstransport"
+  },
+  {
+    "code": "19",
+    "label": "Sonstige ELW, MTW, PKW",
+    "description": "Sonstige ELW, MTW, PKW",
+    "type": "FUNCTION_CODE",
+    "group": "Mannschaftstransport"
+  },
+  {
+    "code": "59",
+    "label": "Gerätewagen Logistikgruppe",
+    "description": "Gerätewagen Logistikgruppe",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "60",
+    "label": "Kombinationskraftwagen Logistik",
+    "description": "Kombinationskraftwagen Logistik",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "61",
+    "label": "Schlauchwagen 500/1000 oder GW Logistik Schlauch (mind. 1000m B-Schlauch)",
+    "description": "Schlauchwagen 500/1000 oder GW Logistik Schlauch (mind. 1000m B-Schlauch)",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "62",
+    "label": "Schlauchwagen 2000/KatS oder GW Logistik Schlauch (mind. 2000m B-Schlauch)",
+    "description": "Schlauchwagen 2000/KatS oder GW Logistik Schlauch (mind. 2000m B-Schlauch)",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "63",
+    "label": "Kleinlastkraftwagen < 3,5t zGM, Gerätewagen Logistik ≤ 7,49t zGM",
+    "description": "Kleinlastkraftwagen < 3,5t zGM, Gerätewagen Logistik ≤ 7,49t zGM",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "64",
+    "label": "GW Nachschub, GW Logistik 1, GW Logistik klein (KatS), LKW ≤ 12t mit Ladebordwand",
+    "description": "GW Nachschub, GW Logistik 1, GW Logistik klein (KatS), LKW ≤ 12t mit Ladebordwand",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "65",
+    "label": "Wechselladerfahrzeug 5500 (18t)",
+    "description": "Wechselladerfahrzeug 5500 (18t)",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "66",
+    "label": "Wechselladerfahrzeug 6500 (26t)",
+    "description": "Wechselladerfahrzeug 6500 (26t)",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "67",
+    "label": "Wechselladerfahrzeug Kran",
+    "description": "Wechselladerfahrzeug Kran",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "68",
+    "label": "GW Logistik 2, GW Logistik groß (KatS), LKW > 12t mit Ladebordwand",
+    "description": "GW Logistik 2, GW Logistik groß (KatS), LKW > 12t mit Ladebordwand",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "69",
+    "label": "LKW-Kipper, Sattelzugmaschine, sonstige Versorgungs- und Logistikfahrzeuge",
+    "description": "LKW-Kipper, Sattelzugmaschine, sonstige Versorgungs- und Logistikfahrzeuge",
+    "type": "FUNCTION_CODE",
+    "group": "Logistikfahrzeuge"
+  },
+  {
+    "code": "74",
+    "label": "Gerätewagen Betreuung",
+    "description": "Gerätewagen Betreuung",
+    "type": "FUNCTION_CODE",
+    "group": "Betreuungsfahrzeuge"
+  },
+  {
+    "code": "76",
+    "label": "Gerätewagen Verpflegung/Küche",
+    "description": "Gerätewagen Verpflegung/Küche",
+    "type": "FUNCTION_CODE",
+    "group": "Betreuungsfahrzeuge"
+  },
+  {
+    "code": "80",
+    "label": "Arztbesetzte Luftfahrzeuge",
+    "description": "Arztbesetzte Luftfahrzeuge",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "81",
+    "label": "Notarztwagen",
+    "description": "Notarztwagen",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "82",
+    "label": "Notarzteinsatzfahrzeug",
+    "description": "Notarzteinsatzfahrzeug",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "83",
+    "label": "Rettungswagen - RD",
+    "description": "Rettungswagen - RD",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "84",
+    "label": "Rettungswagen - RD temporär",
+    "description": "Rettungswagen - RD temporär",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "85",
+    "label": "Rettungswagen - GSE/erweiterter RD/KatS",
+    "description": "Rettungswagen - GSE/erweiterter RD/KatS",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "86",
+    "label": "Baby-Notarztwagen",
+    "description": "Baby-Notarztwagen",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "87",
+    "label": "Intensivtransportwagen",
+    "description": "Intensivtransportwagen",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "88",
+    "label": "Großraumrettungswagen",
+    "description": "Großraumrettungswagen",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "89",
+    "label": "Sonstige Rettungsmittel",
+    "description": "Sonstige Rettungsmittel",
+    "type": "FUNCTION_CODE",
+    "group": "Notfallrettung"
+  },
+  {
+    "code": "90",
+    "label": "Behandlungsplatz, Betreuungsstelle, Unfallhilfsstelle",
+    "description": "Behandlungsplatz, Betreuungsstelle, Unfallhilfsstelle",
+    "type": "FUNCTION_CODE",
+    "group": "Vorübergehende Einrichtungen"
+  },
+  {
+    "code": "92",
+    "label": "Krankentransportwagen",
+    "description": "Krankentransportwagen",
+    "type": "FUNCTION_CODE",
+    "group": "Krankentransport"
+  },
+  {
+    "code": "93",
+    "label": "Notfallkrankenwagen - RD",
+    "description": "Notfallkrankenwagen - RD",
+    "type": "FUNCTION_CODE",
+    "group": "Krankentransport"
+  },
+  {
+    "code": "94",
+    "label": "KTW 4-Tragen oder 2-Tragen",
+    "description": "KTW 4-Tragen oder 2-Tragen",
+    "type": "FUNCTION_CODE",
+    "group": "Krankentransport"
+  },
+  {
+    "code": "95",
+    "label": "GW Behandlungsplatz/MANV",
+    "description": "GW Behandlungsplatz/MANV",
+    "type": "FUNCTION_CODE",
+    "group": "Sanitätsdienst"
+  },
+  {
+    "code": "96",
+    "label": "GW Sanität, GW Behandlung",
+    "description": "GW Sanität, GW Behandlung",
+    "type": "FUNCTION_CODE",
+    "group": "Sanitätsdienst"
+  },
+  {
+    "code": "97",
+    "label": "Infektions-KTW/RTW",
+    "description": "Infektions-KTW/RTW",
+    "type": "FUNCTION_CODE",
+    "group": "Spezialtransport"
+  },
+  {
+    "code": "98",
+    "label": "KTW/RTW geländegängig",
+    "description": "KTW/RTW geländegängig",
+    "type": "FUNCTION_CODE",
+    "group": "Spezialtransport"
+  },
+  {
+    "code": "99",
+    "label": "MTW-multifunktional, Behindertenfahrzeuge",
+    "description": "MTW-multifunktional, Behindertenfahrzeuge",
+    "type": "FUNCTION_CODE",
+    "group": "Sonstige Transportmittel"
+  }
+]
+
+
