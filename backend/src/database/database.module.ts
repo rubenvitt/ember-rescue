@@ -19,6 +19,7 @@ import { Secret, SecretSchema } from './mongo/schemas/secret.schema';
   imports: [
     MongooseModule.forRoot(process.env.MONGODB_URL!!),
     MongooseModule.forFeature([
+      // TODO: these imports must be moved to the services
       { name: Alarmstichwort.name, schema: AlarmstichwortSchema },
       {
         name: BaseOptaEntry.mongoName,
