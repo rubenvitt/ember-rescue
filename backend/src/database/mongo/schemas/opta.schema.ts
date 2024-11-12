@@ -51,17 +51,19 @@ export class Opta extends Document {
   @Prop()
   supplement?: string;
 
-  @Prop({ unique: true })
+  @Prop()
   fullOpta: string;
 
   @Prop({ default: true })
   isActive: boolean;
 }
 
-export const OptaSchema = SchemaFactory.createForClass(Opta);
+const schema = SchemaFactory.createForClass(Opta);
+
+schema.path('fullOpta').index({ unique: true });
 
 // Automatische Generierung der fullOpta
-OptaSchema.pre('save', function (next) {
+schema.pre('save', function (next) {
   if (
     this.isModified('ort') ||
     this.isModified('bosCode') ||
@@ -75,3 +77,5 @@ OptaSchema.pre('save', function (next) {
   }
   next();
 });
+
+export const OptaSchema = schema;

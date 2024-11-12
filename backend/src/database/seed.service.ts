@@ -18,6 +18,9 @@ import {
 import { Opta } from './mongo/schemas/opta.schema';
 import { Status } from './mongo/schemas/status.schema';
 import { Secret } from './mongo/schemas/secret.schema';
+import { Einsatz } from './mongo/schemas/einsatz.schema';
+import { Bearbeiter } from './mongo/schemas/bearbeiter.schema';
+import { Counter } from './mongo/schemas/counter.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -40,6 +43,12 @@ export class SeedService implements OnModuleInit {
     private readonly optaModel: Model<Opta>,
     @InjectModel(Secret.name)
     private readonly secretModel: Model<Secret>,
+    @InjectModel(Einsatz.name)
+    private readonly einsatzModel: Model<Einsatz>,
+    @InjectModel(Bearbeiter.name)
+    private readonly bearbeiterModel: Model<Bearbeiter>,
+    @InjectModel(Counter.name)
+    private readonly counterModel: Model<Counter>,
   ) {}
 
   async onModuleInit() {
@@ -88,6 +97,37 @@ export class SeedService implements OnModuleInit {
       this.logger.error('Error while seeding opta: ' + e.message);
     }
 
+    try {
+      await this.bearbeiterModel.create({
+        name: 'Hans',
+      });
+    } catch (e) {
+      this.logger.error('Error while seeding bearbeiter: ' + e.message);
+    }
+
+    try {
+      let newVar = await this.einsatzModel.create({
+        bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
+        aufnehmendesRettungsmittel: {
+          name: 'Testfahrzeug',
+        },
+        einsatzMeta: {},
+        einsatzAlarmstichwort: {
+          code: 'B2',
+          description: 'Brand',
+        },
+        einsatznummer: (
+          await this.counterModel.findOneAndUpdate(
+            { name: 'einsatznummer' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true },
+          )
+        ).seq,
+        beginn: new Date(),
+      });
+    } catch (e) {
+      this.logger.error('Error while seeding einsatz: ' + e.message);
+    }
     this.logger.log('🌱 Finished Seeding');
   }
 

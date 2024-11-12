@@ -14,6 +14,12 @@ import {
 import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
 import { Status, StatusSchema } from './mongo/schemas/status.schema';
 import { Secret, SecretSchema } from './mongo/schemas/secret.schema';
+import { Einsatz, EinsatzSchema } from './mongo/schemas/einsatz.schema';
+import {
+  Bearbeiter,
+  BearbeiterSchema,
+} from './mongo/schemas/bearbeiter.schema';
+import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
 
 @Module({
   imports: [
@@ -31,6 +37,9 @@ import { Secret, SecretSchema } from './mongo/schemas/secret.schema';
       },
       { name: Status.name, schema: StatusSchema },
       { name: Secret.name, schema: SecretSchema },
+      { name: Einsatz.name, schema: EinsatzSchema },
+      { name: Counter.name, schema: CounterSchema },
+      { name: Bearbeiter.name, schema: BearbeiterSchema },
     ]),
   ],
   providers: [...databaseProviders, PrismaService, SeedService],
