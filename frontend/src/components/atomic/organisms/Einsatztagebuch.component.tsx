@@ -209,7 +209,7 @@ export function EinsatztagebuchComponent() {
                 </Tooltip>
                 <Tooltip title="Eintrag streichen">
                   <Button
-                    onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: record.id })}
+                    onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: record._id })}
                     type="default"
                     danger
                     shape="circle"
@@ -270,7 +270,7 @@ export function EinsatztagebuchComponent() {
                     absender: fahrzeuge.data?.find((e) => e.id === data.absender)?.funkrufname ?? data.absender,
                     empfaenger: fahrzeuge.data?.find((e) => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
                   });
-                  await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?.id });
+                  await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?._id });
                   setIsOpen(false);
                   setEditingEintrag(null);
                 },

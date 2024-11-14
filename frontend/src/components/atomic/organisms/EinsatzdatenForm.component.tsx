@@ -87,7 +87,7 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
                 setExporting(true);
                 try {
                   const fileContent = await backendFetchBlob('/export/pdf');
-                  const fileName = `${props.einsatz.einsatz_alarmstichwort?.bezeichnung}-${format(props.einsatz.beginn, natoDateTime)}.pdf`;
+                  const fileName = `${props.einsatz.einsatzAlarmstichwort?.code}-${format(props.einsatz.beginn, natoDateTime)}.pdf`;
                   if (isTauri()) {
                     console.log('Größe der heruntergeladenen Datei:', fileContent.size);
                     const arrayBuffer = await fileContent.arrayBuffer();

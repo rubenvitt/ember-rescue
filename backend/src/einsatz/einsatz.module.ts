@@ -6,6 +6,7 @@ import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module
 import { AlarmstichwortModule } from '../alarmstichwort/alarmstichwort.module';
 import { EinsatzFahrzeugeModule } from './fahrzeuge/einsatz-fahrzeuge.module';
 import { FahrzeugeModule } from '../fahrzeuge/fahrzeuge.module';
+import { BearbeiterModule } from '../bearbeiter/bearbeiter.module';
 
 @Module({
   controllers: [EinsatzController],
@@ -13,6 +14,7 @@ import { FahrzeugeModule } from '../fahrzeuge/fahrzeuge.module';
   exports: [EinsatzService],
   imports: [
     AlarmstichwortModule,
+    BearbeiterModule,
     DatabaseModule,
     EinsatzFahrzeugeModule,
     EinsatztagebuchModule,

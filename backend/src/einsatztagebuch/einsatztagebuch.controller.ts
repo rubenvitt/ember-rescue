@@ -38,7 +38,7 @@ export class EinsatztagebuchController {
       bearbeiterId: bearbeiterName,
       einsatzId,
     });
-    return this.service.createEinsatztagebuchEintrag({
+    return this.service.createEinsatztagebuchEintrag(einsatzId!!, {
       bearbeiterId: bearbeiterName,
       einsatzId,
       ...createEinsatztagebuchDto,

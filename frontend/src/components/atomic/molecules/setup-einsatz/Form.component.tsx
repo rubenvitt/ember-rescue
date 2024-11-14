@@ -71,7 +71,7 @@ export function NewSetupEinsatzForm() {
     return fahrzeuge.data?.map(
       (fahrzeug) =>
         ({
-          value: fahrzeug.id,
+          value: fahrzeug.funkrufname,
           searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.optaFunktion?.label.toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
@@ -90,13 +90,13 @@ export function NewSetupEinsatzForm() {
     return alarmstichworte.data?.map(
       (stichwort) =>
         ({
-          value: stichwort.id,
-          searchString: (stichwort.bezeichnung + stichwort.beschreibung).toLowerCase(),
+          value: stichwort._id,
+          searchString: (stichwort.code + stichwort.description).toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{stichwort.bezeichnung}</span>
+              <span className="flex-shrink-0 truncate">{stichwort.code}</span>
               <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {stichwort.beschreibung}
+                {stichwort.description}
               </span>
             </div>
           ),

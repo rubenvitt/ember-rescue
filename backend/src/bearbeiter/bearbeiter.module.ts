@@ -16,6 +16,7 @@ import {
     ]),
   ],
   providers: [BearbeiterService],
+  exports: [BearbeiterService],
   controllers: [BearbeiterController],
 })
 export class BearbeiterModule {}

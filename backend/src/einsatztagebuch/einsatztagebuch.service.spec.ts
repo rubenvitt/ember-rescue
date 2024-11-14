@@ -54,7 +54,7 @@ describe('EinsatztagebuchService', () => {
       bearbeiterId: 'bearbeiter1',
     };
 
-    await service.createEinsatztagebuchEintrag(createData);
+    await service.createEinsatztagebuchEintrag('', createData);
     expect(
       prismaService.einsatztagebuchEintrag.createMany,
     ).toHaveBeenCalledWith({
@@ -91,7 +91,7 @@ describe('EinsatztagebuchService', () => {
       },
     ];
 
-    await service.createEinsatztagebuchEintrag(createDataArray);
+    await service.createEinsatztagebuchEintrag('', createDataArray);
     expect(
       prismaService.einsatztagebuchEintrag.createMany,
     ).toHaveBeenCalledWith({

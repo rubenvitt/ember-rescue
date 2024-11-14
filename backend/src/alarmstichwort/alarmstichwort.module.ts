@@ -1,12 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AlarmstichwortController } from './alarmstichwortController';
 import { AlarmstichwortService } from './alarmstichwort.service';
-import { DatabaseModule } from '../database/database.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Alarmstichwort,
+  AlarmstichwortSchema,
+} from '../database/mongo/schemas/alarmstichwort.schema';
 
 @Module({
   controllers: [AlarmstichwortController],
   providers: [AlarmstichwortService],
-  imports: [DatabaseModule],
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: Alarmstichwort.name,
+        schema: AlarmstichwortSchema,
+      },
+    ]),
+  ],
   exports: [AlarmstichwortService],
 })
 export class AlarmstichwortModule {}

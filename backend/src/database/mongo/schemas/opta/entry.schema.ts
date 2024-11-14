@@ -44,7 +44,7 @@ export class BaseOptaEntry extends Document {
   @Prop({ default: new Date() })
   validFrom?: Date;
   @Prop()
-  validUntil?: Date;
+  validTo?: Date;
 }
 
 @Schema({
@@ -96,7 +96,7 @@ export class LocalCodeOptaEntry extends BaseOptaEntry {
 
 export type BaseOptaEntryDto = Pick<
   BaseOptaEntry,
-  'code' | 'label' | 'validUntil' | 'validFrom'
+  'code' | 'label' | 'validTo' | 'validFrom'
 >;
 
 export type SimpleOptaEntryDto = BaseOptaEntryDto &

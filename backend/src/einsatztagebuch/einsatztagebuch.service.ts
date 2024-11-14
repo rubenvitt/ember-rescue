@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../database/prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Einsatz } from '../database/mongo/schemas/einsatz.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class EinsatztagebuchService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Einsatz.name) private einsatzModel: Model<Einsatz>,
+  ) {}
 
-  getEinsatztagebuch(einsatzId: string) {
-    return this.prismaService.einsatztagebuchEintrag.findMany({
-      where: {
-        einsatzId,
-      },
-      orderBy: [{ timestamp: 'desc' }, { createdAt: 'desc' }],
-    });
+  async getEinsatztagebuch(einsatzId: string) {
+    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
+    if (!einsatz) {
+      throw new Error('Einsatz nicht gefunden');
+    }
+
+    return einsatz.einsatzTagebuch;
   }
 
   createEinsatztagebuchEintrag(
+    einsatzId: string,
     data:
       | Prisma.EinsatztagebuchEintragCreateManyInput
       | Prisma.EinsatztagebuchEintragCreateManyInput[],
@@ -27,7 +32,7 @@ export class EinsatztagebuchService {
       absender: item.absender,
       empfaenger: item.empfaenger,
       archived: item.archived,
-      einsatzId: item.einsatzId,
+      //einsatzId: item.einsatzId,
       bearbeiterId: item.bearbeiterId,
       id: undefined,
       fortlaufende_nummer: undefined,
@@ -37,22 +42,52 @@ export class EinsatztagebuchService {
 
     // if data is an array
     if (Array.isArray(data)) {
-      return this.prismaService.einsatztagebuchEintrag.createMany({
-        data: data.map(mapData),
-      });
+      return this.einsatzModel.findByIdAndUpdate(
+        einsatzId,
+        {
+          $push: {
+            einsatzTagebuch: {
+              items: {
+                $each: data.map(mapData),
+              },
+            },
+          },
+        },
+        {},
+      );
     }
 
-    return this.prismaService.einsatztagebuchEintrag.createMany({
-      data: mapData(data),
-    });
+    return this.einsatzModel.findByIdAndUpdate(
+      einsatzId,
+      {
+        einsatzTagebuch: {
+          $push: {
+            items: {
+              $each: [mapData(data)],
+            },
+          },
+        },
+      },
+      {},
+    );
   }
 
   archiveEinsatztagebuchEintrag(id: string) {
-    return this.prismaService.einsatztagebuchEintrag.update({
-      where: { id },
-      data: {
-        archived: true,
+    this.einsatzModel.updateOne(
+      {
+        einsatzTagebuch: {
+          items: {
+            $elemMatch: {
+              id,
+            },
+          },
+        },
       },
-    });
+      {
+        $set: {
+          'einsatzTagebuch.items.$.archived': true,
+        },
+      },
+    );
   }
 }

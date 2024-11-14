@@ -13,16 +13,21 @@ import {
 import { EinsatzService } from './einsatz.service';
 import { CreateEinsatzDto, UpdateEinsatzDto } from '../types';
 import { extractBearbeiterName } from '../utils/header.utils';
+import { BearbeiterService } from '../bearbeiter/bearbeiter.service';
+import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
 
 @Controller('einsatz')
 export class EinsatzController {
   private readonly logger = new Logger(EinsatzController.name);
 
-  constructor(private readonly einsatzService: EinsatzService) {}
+  constructor(
+    private readonly einsatzService: EinsatzService,
+    private readonly bearbeiterService: BearbeiterService,
+    private readonly alarmstichwortService: AlarmstichwortService,
+  ) {}
 
   @Get(':id')
   async getEinsatz(@Param('id') id: string) {
-    // the
     return this.einsatzService.getEinsatz(id);
   }
 
@@ -31,9 +36,11 @@ export class EinsatzController {
     @Query('abgeschlossen', new ParseBoolPipe({ optional: true }))
     abgeschlossen?: boolean,
   ) {
-    return this.einsatzService.getEinsaetze({
-      abgeschlossen: abgeschlossen ? { not: null } : null,
+    let einsaetze = this.einsatzService.getEinsaetze({
+      abgeschlossen: null,
     });
+    this.logger.debug('getEinsaetze', {});
+    return einsaetze;
   }
 
   @Post()
@@ -44,27 +51,14 @@ export class EinsatzController {
     const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     console.log('createEinsatz', body);
     return this.einsatzService.createEinsatz({
-      bearbeiter: {
-        connect: {
-          id: bearbeiterName,
-        },
-      },
+      bearbeiter:
+        await this.bearbeiterService.findByNameOrCreate(bearbeiterName),
       beginn: new Date(),
-      aufnehmendes_rettungsmittel: {
-        connect: {
-          id: body.aufnehmendesRettungsmittel,
-        },
-      },
-      einsatz_alarmstichwort: {
-        create: {
-          alarmstichwortId: body.alarmstichwort,
-        },
-      },
-      einsatz_meta: {
-        create: {
-          ort: '',
-        },
-      },
+      aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
+      einsatzAlarmstichwort: (await this.alarmstichwortService.find(
+        body.alarmstichwort!!,
+      ))!!,
+      einsatzMeta: {},
     });
   }
 
@@ -84,7 +78,7 @@ export class EinsatzController {
     @Headers('bearbeiter') bearbeiterId: string,
     @Param('id') einsatzId: string,
   ) {
-    this.logger.log('Einsatz geschlossen', { einsatzId });
+    this.logger.log('Close Einsatz', { einsatzId });
     return this.einsatzService.closeEinsatz(einsatzId);
   }
 }

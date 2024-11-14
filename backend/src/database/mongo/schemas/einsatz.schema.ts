@@ -1,14 +1,14 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { BearbeiterDto } from './bearbeiter.schema';
 import { EinsatztagebuchEintragType } from '../../../types';
-import { Alarmstichwort } from './alarmstichwort.schema';
+import { Alarmstichwort, AlarmstichwortDto } from './alarmstichwort.schema';
 import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
 import { Status } from './status.schema';
 import { Qualifikation } from './qualifikation.schema';
-import { Opta } from './opta.schema';
+import { Opta, OptaSchema } from './opta.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -31,7 +31,7 @@ class FahrzeugIconDefinition {
 
 @Schema({ timestamps: true })
 class Fahrzeug {
-  @Prop({ type: Opta })
+  @Prop({ type: Opta, schema: OptaSchema })
   opta: Opta | string;
 
   @Prop()
@@ -103,8 +103,16 @@ class Einsatztagebuch {
     default: [],
     type: [{ type: EinsatztagebuchEintrag }],
   })
-  items: EinsatztagebuchEintrag;
+  items: EinsatztagebuchEintrag[];
 }
+
+export type CreateEinsatzDto = {
+  beginn?: Date;
+  bearbeiter: BearbeiterDto;
+  aufnehmendesRettungsmittel: string;
+  einsatzAlarmstichwort: AlarmstichwortDto;
+  einsatzMeta: EinsatzMetadaten;
+};
 
 @Schema({ timestamps: true, collection: 'einsaetze' })
 export class Einsatz extends Document {
@@ -114,14 +122,14 @@ export class Einsatz extends Document {
   ende: Date;
   @Prop()
   abgeschlossen: Date;
-  @Prop({ type: Number, unique: true, required: true })
+  @Prop({ type: Number, unique: true })
   einsatznummer: number;
 
   @Prop({ required: true })
   bearbeiter: BearbeiterDto;
 
-  @Prop({ required: true, type: Fahrzeug })
-  aufnehmendesRettungsmittel: Fahrzeug; // FIXME with new model
+  @Prop({ required: true })
+  aufnehmendesRettungsmittel: string; // FIXME with new model
 
   @Prop({ required: true, default: { items: [] } })
   einsatzTagebuch: Einsatztagebuch;
@@ -148,9 +156,10 @@ export class Einsatz extends Document {
   einsatzMeta: EinsatzMetadaten;
 }
 
-let schema = SchemaFactory.createForClass(Einsatz);
-schema.index(
-  { einsatznummer: 1, 'einsatzTagebuch.items.nummer': 1 },
-  { unique: true },
-);
-export const EinsatzSchema = schema;
+// let schema = SchemaFactory.createForClass(Einsatz);
+// schema.index(
+//   { einsatznummer: 1, 'einsatzTagebuch.items.nummer': 1 },
+//   { unique: true },
+// );
+//
+// export const EinsatzSchema = schema;

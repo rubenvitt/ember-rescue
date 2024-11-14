@@ -17,7 +17,7 @@ export function LoginForm() {
 
   const onCreateNewBearbeiter = useCallback(async () => {
     setBearbeiter('');
-    await saveBearbeiter({ name: bearbeiter, id: null });
+    await saveBearbeiter({ name: bearbeiter, _id: null });
     openWindow({ closeOnNavigate: true });
   }, [bearbeiter]);
 

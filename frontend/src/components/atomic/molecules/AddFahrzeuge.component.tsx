@@ -131,7 +131,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
           <>
             <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {empfohleneFahrzeuge?.map((fahrzeug) => (
-                <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
+                <RecommendedFahrzeug key={fahrzeug.item._id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
               ))}
             </ul>
           </>

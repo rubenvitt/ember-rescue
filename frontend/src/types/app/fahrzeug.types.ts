@@ -1,32 +1,41 @@
 import { SmallStatusDto } from './status.types.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
-import { Identifiable } from '../utils/common.types.js';
+import { Identifiable, WithCreatedUpdatedAt } from '../utils/common.types.js';
+import { Opta } from './opta.type.js';
+import { IconDefinition } from './icondefinition.types.js';
 
-export type FahrzeugDto = Identifiable & {
-  _count: {
-    einsatz_fahrzeug: number;
+export type FahrzeugDto = Identifiable &
+  WithCreatedUpdatedAt & {
+    opta: Opta;
+    iconDefinition: IconDefinition;
+
+    // TODO deprecated:
+
+    _count: {
+      einsatz_fahrzeug: number;
+    };
+    funkrufname: string;
+
+    optaOrt: {
+      code: number;
+      label: string;
+    } | null;
+    optaFunktion: {
+      code: number;
+      label: string;
+      einheit: string;
+      fachaufgabe: string;
+      funktion: string;
+      grundzeichen: string;
+      organisation: string;
+      verwaltungsstufe: string;
+      symbol: string;
+    } | null;
+    optaOrdnung: number | null;
+    kapazitaet: number;
+    istTemporaer: boolean;
+    status: SmallStatusDto;
   };
-  funkrufname: string;
-  optaOrt: {
-    code: number;
-    label: string;
-  } | null;
-  optaFunktion: {
-    code: number;
-    label: string;
-    einheit: string;
-    fachaufgabe: string;
-    funktion: string;
-    grundzeichen: string;
-    organisation: string;
-    verwaltungsstufe: string;
-    symbol: string;
-  } | null;
-  optaOrdnung: number | null;
-  kapazitaet: number;
-  istTemporaer: boolean;
-  status: SmallStatusDto;
-};
 
 /**
  * @deprecated

@@ -18,5 +18,5 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
 
 export type CreateEinsatztagebuchEintrag = Omit<
   EinsatztagebuchEintrag,
-  'id' | 'bearbeiter' | 'archived' | 'createdAt' | 'updatedAt' | 'fortlaufende_nummer'
+  '_id' | 'bearbeiter' | 'archived' | 'createdAt' | 'updatedAt' | 'fortlaufende_nummer'
 >;

@@ -1,19 +1,28 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Alarmstichwort } from '../database/mongo/schemas/alarmstichwort.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class AlarmstichwortService {
   private readonly logger: Logger = new Logger(AlarmstichwortService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Alarmstichwort.name)
+    private readonly alarmstichwortModel: Model<Alarmstichwort>,
+  ) {}
 
   findAll() {
-    return this.prismaService.alarmstichwort.findMany({});
+    return this.alarmstichwortModel.find({}).exec();
   }
 
   find(alarmstichwortId: string) {
-    return this.prismaService.alarmstichwort.findUnique({
-      where: { id: alarmstichwortId },
-    });
+    const alarmstichwort = this.alarmstichwortModel
+      .findById(alarmstichwortId)
+      .exec();
+    if (!alarmstichwort) {
+      throw new Error(`No Alarmstichwort found for ID ${alarmstichwortId}`);
+    }
+    return alarmstichwort;
   }
 }

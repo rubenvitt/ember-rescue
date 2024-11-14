@@ -1,10 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../database/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
 import { FahrzeugeService } from '../fahrzeuge/fahrzeuge.service';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  CreateEinsatzDto,
+  Einsatz,
+} from '../database/mongo/schemas/einsatz.schema';
+import { FilterQuery, Model } from 'mongoose';
 
 @Injectable()
 export class EinsatzService {
@@ -15,75 +20,42 @@ export class EinsatzService {
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortService,
+    @InjectModel(Einsatz.name) private readonly einsatzModel: Model<Einsatz>,
   ) {}
 
   async getEinsatz(id: string) {
-    return this.prismaService.einsatz
-      .findUnique({
-        where: { id },
-        include: {
-          aufnehmendes_rettungsmittel: {},
-          einsatz_meta: {},
-          einsatz_alarmstichwort: {
-            include: {
-              alarmstichwort: true,
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-          },
-        },
-      })
-      .then((einsatz) => ({
-        ...einsatz,
-        einsatz_alarmstichwort:
-          einsatz!!.einsatz_alarmstichwort[0].alarmstichwort,
-      }));
+    const einsatz = await this.einsatzModel.findById(id).exec();
+    if (!einsatz) {
+      throw new Error('Einsatz not found');
+    }
+    return einsatz;
   }
 
-  async createEinsatz(data: Prisma.EinsatzCreateInput) {
-    this.logger.debug('Creating Einsatz with data:', data);
-    return this.prismaService.einsatz.create({
-      data,
-    });
+  async createEinsatz(data: CreateEinsatzDto) {
+    const einsatz = await this.einsatzModel.create(data);
+
+    this.logger.log(`Einsatz '${einsatz.einsatznummer}' erstellt`);
+
+    return einsatz;
   }
 
-  getEinsaetze(where: Prisma.EinsatzWhereInput) {
-    return this.prismaService.einsatz
-      .findMany({
-        where: where,
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          einsatz_alarmstichwort: {
-            include: {
-              alarmstichwort: {
-                select: {
-                  bezeichnung: true,
-                  beschreibung: true,
-                },
-              },
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 1,
+  getEinsaetze(filter: FilterQuery<Einsatz>) {
+    return this.einsatzModel
+      .find(
+        filter,
+        {},
+        {
+          sort: {
+            createdAt: -1,
           },
         },
-      })
-      .then((list) => {
-        return list.map((einsatz) => ({
-          ...einsatz,
-          einsatz_alarmstichwort:
-            einsatz.einsatz_alarmstichwort[0]?.alarmstichwort,
-        }));
-      });
+      )
+      .exec();
   }
 
   closeEinsatz(einsatzId: string) {
-    return this.prismaService.einsatz.update({
-      where: {
-        id: einsatzId,
-      },
-      data: {
+    return this.einsatzModel.findByIdAndUpdate(einsatzId, {
+      $set: {
         abgeschlossen: new Date(),
       },
     });
@@ -108,19 +80,22 @@ export class EinsatzService {
     if (
       this.einsatzortChanged(einsatz.einsatz_meta['ort'], updateEinsatzDto.ort)
     ) {
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-        einsatzId: einsatzId,
-        type: EinsatztagebuchEintragEnum.GENERISCH,
-        content: `Der Einsatzort wurde von ${einsatz.einsatz_meta['ort']} nach ${updateEinsatzDto.ort} verschoben.`,
-        absender: einsatz.aufnehmendes_rettungsmittel.funkrufname,
-        empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
-      });
-      await this.prismaService.einsatzMeta.update({
-        where: {
-          einsatzId,
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
+        einsatzId,
+        {
+          einsatzId: einsatzId,
+          type: EinsatztagebuchEintragEnum.GENERISCH,
+          content: `Der Einsatzort wurde von ${einsatz.einsatz_meta['ort']} nach ${updateEinsatzDto.ort} verschoben.`,
+          absender: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+          empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
         },
-        data: {
-          ort: updateEinsatzDto.ort,
+      );
+
+      return this.einsatzModel.findByIdAndUpdate(einsatzId, {
+        $set: {
+          einsatzMeta: {
+            ort: updateEinsatzDto.ort,
+          },
         },
       });
     } else {
@@ -152,23 +127,27 @@ export class EinsatzService {
           id: einsatz.aufnehmendes_rettungsmittel['id'],
         });
 
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-        einsatzId: einsatzId,
-        type: EinsatztagebuchEintragEnum.GENERISCH,
-        content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort!!.bezeichnung}`,
-        absender: aufnehmendesRettungsmittel!!.funkrufname,
-        empfaenger: aufnehmendesRettungsmittel!!.funkrufname,
-      });
-      return this.prismaService.einsatz.update({
-        where: { id: einsatzId },
-        data: {
-          einsatz_alarmstichwort: {
-            create: {
-              alarmstichwortId: updateEinsatzDto.alarmstichwort,
-            },
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
+        einsatzId,
+        {
+          einsatzId: einsatzId,
+          type: EinsatztagebuchEintragEnum.GENERISCH,
+          content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort!!.code}`,
+          absender: aufnehmendesRettungsmittel!!.funkrufname,
+          empfaenger: aufnehmendesRettungsmittel!!.funkrufname,
+        },
+      );
+
+      return this.einsatzModel.findOneAndUpdate(
+        {
+          _id: einsatzId,
+        },
+        {
+          $set: {
+            einsatzAlarmstichwort: alarmstichwort,
           },
         },
-      });
+      );
     } else {
       // Kein Update erforderlich, da das alarmstichwort nicht geändert wurde
       this.logger.log('Alarmstichwort hat sich nicht geändert.');

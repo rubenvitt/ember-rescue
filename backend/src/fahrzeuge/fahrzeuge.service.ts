@@ -9,8 +9,8 @@ export class FahrzeugeService {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  findAll(filter?: Prisma.FahrzeugWhereInput) {
-    return this.prismaService.fahrzeug.findMany({
+  async findAll(filter?: Prisma.FahrzeugWhereInput) {
+    let fahrzeuge = await this.prismaService.fahrzeug.findMany({
       where: filter,
       include: {
         _count: {
@@ -45,6 +45,11 @@ export class FahrzeugeService {
         funkrufname: 'asc',
       },
     });
+
+    return fahrzeuge.map((f) => ({
+      ...f,
+      _id: f.id,
+    }));
   }
 
   findTypen() {

@@ -32,7 +32,7 @@ export class EinsatzFahrzeugeService {
       },
     });
 
-    await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+    await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       absender: existingFahrzeug!!.funkrufname,
       empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
       type: 'RESSOURCEN',
@@ -123,14 +123,17 @@ export class EinsatzFahrzeugeService {
         },
       });
 
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
         einsatzId,
-        bearbeiterId,
-        type: 'RESSOURCEN',
-        absender: fahrzeug.funkrufname,
-        empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
-        content: `${formatFunkrufnameMitTyp(fahrzeug)} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
-      });
+        {
+          einsatzId,
+          bearbeiterId,
+          type: 'RESSOURCEN',
+          absender: fahrzeug.funkrufname,
+          empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
+          content: `${formatFunkrufnameMitTyp(fahrzeug)} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
+        },
+      );
     });
   }
 
@@ -160,14 +163,17 @@ export class EinsatzFahrzeugeService {
         },
       });
 
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag({
-        absender: existingFahrzeug!!.funkrufname,
-        empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
-        type: 'RESSOURCEN',
+      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
         einsatzId,
-        bearbeiterId,
-        content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde aus dem Einsatz entfernt.`,
-      });
+        {
+          absender: existingFahrzeug!!.funkrufname,
+          empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
+          type: 'RESSOURCEN',
+          einsatzId,
+          bearbeiterId,
+          content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde aus dem Einsatz entfernt.`,
+        },
+      );
     });
   }
 }

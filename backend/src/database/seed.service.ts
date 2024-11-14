@@ -89,7 +89,7 @@ export class SeedService implements OnModuleInit {
         district: await this.districtEntry.findOne({ code: 'NI' }),
         bosCode: await this.bosEntry.findOne({ code: 'DRK' }),
         localCode: await this.localCodesEntry.findOne({ code: '40' }),
-        functionCode: await this.functionEntry.findOne({ code: '83' }),
+        functionCode: await this.functionEntry.findOne({ code: '12' }),
         orderNumber: '01',
         ort: 'Uelzen',
       });
@@ -105,28 +105,33 @@ export class SeedService implements OnModuleInit {
       this.logger.error('Error while seeding bearbeiter: ' + e.message);
     }
 
-    try {
-      let newVar = await this.einsatzModel.create({
-        bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
-        aufnehmendesRettungsmittel: {
-          name: 'Testfahrzeug',
-        },
-        einsatzMeta: {},
-        einsatzAlarmstichwort: {
-          code: 'B2',
-          description: 'Brand',
-        },
-        einsatznummer: (
-          await this.counterModel.findOneAndUpdate(
-            { name: 'einsatznummer' },
-            { $inc: { seq: 1 } },
-            { new: true, upsert: true },
-          )
-        ).seq,
-        beginn: new Date(),
-      });
-    } catch (e) {
-      this.logger.error('Error while seeding einsatz: ' + e.message);
+    if (
+      (await this.einsatzModel
+        .countDocuments({ abgeschlossen: null })
+        .exec()) === 0
+    ) {
+      try {
+        let newVar = await this.einsatzModel.create({
+          bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
+          aufnehmendesRettungsmittel: (await this.optaModel.findOne().exec())!!
+            .fullOpta,
+          einsatzMeta: {},
+          einsatzAlarmstichwort: {
+            code: 'B2',
+            description: 'Brand',
+          },
+          einsatznummer: (
+            await this.counterModel.findOneAndUpdate(
+              { name: 'einsatznummer' },
+              { $inc: { seq: 1 } },
+              { new: true, upsert: true },
+            )
+          ).seq,
+          beginn: new Date(),
+        });
+      } catch (e) {
+        this.logger.error('Error while seeding einsatz: ' + e.message);
+      }
     }
     this.logger.log('🌱 Finished Seeding');
   }

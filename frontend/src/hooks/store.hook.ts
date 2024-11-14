@@ -33,8 +33,8 @@ export const useStore = create<Store>((set, get) => ({
 
   einsatzId: storage().readLocalStorage<string>('einsatz'),
   setEinsatz: (einsatz: Einsatz) => {
-    storage().writeLocalStorage('einsatz', einsatz.id);
-    set({ einsatzId: einsatz.id });
+    storage().writeLocalStorage('einsatz', einsatz._id);
+    set({ einsatzId: einsatz._id });
   },
   removeEinsatz: () => {
     storage().writeLocalStorage('einsatz', null);

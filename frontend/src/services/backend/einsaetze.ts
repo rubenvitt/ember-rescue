@@ -60,7 +60,7 @@ export const einsatzAbschliessen = {
   mutationKey: ({ einsatzId }: { einsatzId: string | null }) => [queryKey, einsatzId, 'close'],
   mutationFn: async (einsatz: Einsatz) => {
     requireParams(einsatz);
-    return await backendFetchJson(`/einsatz/${einsatz.id}/close`, {
+    return await backendFetchJson(`/einsatz/${einsatz._id}/close`, {
       method: 'PUT',
     });
   },

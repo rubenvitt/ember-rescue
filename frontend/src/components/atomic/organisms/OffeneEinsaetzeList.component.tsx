@@ -23,7 +23,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
       <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
           <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            Stichwort: {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
+            Stichwort: {einsatz.einsatzAlarmstichwort?.code ?? 'Unbekanntes Alarmstichwort'}
           </p>
           <Tag icon={<PiNetwork className="mr-1 inline" />} color="blue">
             Remote-Einsatz
@@ -41,8 +41,8 @@ export const OffeneEinsaetzeList: React.FC = () => {
 
   const renderExpandedContent = useCallback(
     (einsatz: Einsatz) => {
-      const fahrzeug = fahrzeuge.data?.find((value) => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
-      const bearbeiter = allBearbeiter.data?.find((value) => value.id === einsatz.bearbeiterId)?.name;
+      const fahrzeug = einsatz.aufnehmendesRettungsmittel;
+      const bearbeiter = einsatz.bearbeiter.name;
 
       return (
         <div className="text-sm text-gray-700 dark:text-gray-300">

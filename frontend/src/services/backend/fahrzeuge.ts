@@ -7,9 +7,9 @@ export const queryKey = 'fahrzeuge';
 
 export type PatchFahrzeugType = Omit<
   FahrzeugDto,
-  '_count' | 'status' | 'fahrzeugTyp' | 'id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'
+  '_count' | 'status' | 'fahrzeugTyp' | '_id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'
 > &
-  Partial<Pick<FahrzeugDto, 'id'>>;
+  Partial<Pick<FahrzeugDto, '_id'>>;
 
 export type PatchFahrzeugeType = PatchFahrzeugType[];
 

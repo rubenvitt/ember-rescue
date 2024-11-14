@@ -14,13 +14,13 @@ export class BearbeiterDto {
     }
   }
 
-  static fromBearbeiter(
+  static async fromBearbeiter(
     bearbeiter: Bearbeiter | Promise<Bearbeiter> | null | undefined,
-  ): Promise<BearbeiterDto | null> {
+  ): Promise<BearbeiterDto> {
     if (!bearbeiter) {
-      return Promise.resolve(null);
+      throw new Error('Bearbeiter not found');
     }
-    return Promise.resolve(bearbeiter).then(
+    return await Promise.resolve(bearbeiter).then(
       (bearbeiter) =>
         new BearbeiterDto({
           id: bearbeiter._id as string,
