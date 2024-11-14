@@ -106,7 +106,7 @@ export const FahrzeugelisteComponent: React.FC<FahrzeugelisteComponentProps> = (
             extra={<FahrzeugExtra fahrzeug={fahrzeug} />}
             title={`${fahrzeug.funkrufname} (${fahrzeug.optaFunktion?.label})`}
           >
-            <FahrzeugListItemComponent key={fahrzeug.id} fahrzeug={fahrzeug} />
+            <FahrzeugListItemComponent key={fahrzeug._id} fahrzeug={fahrzeug} />
           </Card>
         </List.Item>
       );

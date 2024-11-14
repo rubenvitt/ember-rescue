@@ -9,9 +9,8 @@ import {
   Res,
 } from '@nestjs/common';
 import { FahrzeugeService } from './fahrzeuge.service';
-import { FahrzeugDto, FahrzeugImportDto } from '../types';
+import { UpdateCreateFahrzeugeDto } from '../types';
 import { Response } from 'express';
-import { createFahrzeugSchema } from './fahrzeuge.json.schema';
 
 @Controller('fahrzeuge')
 export class FahrzeugeController {
@@ -25,12 +24,13 @@ export class FahrzeugeController {
 
   @Get('/typen')
   findAllTypen() {
-    return this.fahrzeugeService.findTypen();
+    // FIXME[ember-rescue-68](rubeen, 14.11.24): Typen
+    return [];
   }
 
   @Patch()
   async updateMany(
-    @Body() fahrzeuge: Omit<FahrzeugDto, 'status'>[],
+    @Body() fahrzeuge: UpdateCreateFahrzeugeDto,
     @Res() response: Response,
   ) {
     await this.fahrzeugeService.updateMany(fahrzeuge);
@@ -40,13 +40,15 @@ export class FahrzeugeController {
 
   @Get('/import/schema/v2')
   async getImportSchema() {
-    let fahrzeugTypen = await this.fahrzeugeService.findTypen();
-    return createFahrzeugSchema(fahrzeugTypen.map((typ) => typ.label));
+    // FIXME[ember-rescue-68](rubeen, 14.11.24): Typen
+    let fahrzeugTypen = [];
+    return fahrzeugTypen;
+    //return createFahrzeugSchema(fahrzeugTypen.map((typ) => typ.label));
   }
 
   @Post('/import')
   async importFahrzeuge(
-    @Body() fahrzeuge: FahrzeugImportDto[],
+    @Body() fahrzeuge: UpdateCreateFahrzeugeDto,
     @Res() response: Response,
   ) {
     this.logger.debug(
@@ -62,14 +64,6 @@ export class FahrzeugeController {
   async exportFahrzeuge() {
     let allFahrzeuge = await this.fahrzeugeService.findAll({
       istTemporaer: false,
-    });
-
-    return allFahrzeuge.map((fahrzeug) => {
-      return {
-        funkrufname: fahrzeug.funkrufname,
-        fahrzeugTyp: (fahrzeug.optaFunktion?.label ?? fahrzeug.label)!!,
-        kapazitaet: fahrzeug.kapazitaet,
-      } satisfies FahrzeugImportDto;
     });
   }
 }

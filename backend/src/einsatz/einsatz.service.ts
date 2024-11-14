@@ -122,7 +122,7 @@ export class EinsatzService {
       );
       const aufnehmendesRettungsmittel =
         await this.fahrzeugeService.findFahrzeug({
-          id: einsatz.aufnehmendes_rettungsmittel['id'],
+          _id: einsatz.aufnehmendes_rettungsmittel['id'],
         });
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag(
@@ -131,8 +131,8 @@ export class EinsatzService {
           einsatzId: einsatzId,
           type: EinsatztagebuchEintragEnum.GENERISCH,
           content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort!!.code}`,
-          absender: aufnehmendesRettungsmittel!!.funkrufname,
-          empfaenger: aufnehmendesRettungsmittel!!.funkrufname,
+          absender: aufnehmendesRettungsmittel!!.fullOpta,
+          empfaenger: aufnehmendesRettungsmittel!!.fullOpta,
         },
       );
 

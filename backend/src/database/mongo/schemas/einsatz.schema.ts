@@ -8,7 +8,7 @@ import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
 import { Status } from './status.schema';
 import { Qualifikation } from './qualifikation.schema';
-import { Opta, OptaSchema } from './opta.schema';
+import { Fahrzeug } from './fahrzeug.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -17,25 +17,6 @@ class StatusHistoryEntry {
 
   @Prop({ required: true })
   status: Status;
-}
-
-@Schema()
-class FahrzeugIconDefinition {
-  @Prop()
-  organisation: string;
-  @Prop()
-  fachaufgabe: string;
-  @Prop()
-  verwaltungsstufe: string;
-}
-
-@Schema({ timestamps: true })
-class Fahrzeug {
-  @Prop({ type: Opta, schema: OptaSchema })
-  opta: Opta | string;
-
-  @Prop()
-  iconDefinition: FahrzeugIconDefinition;
 }
 
 @Schema({ timestamps: true })
@@ -54,7 +35,7 @@ class Personal {
 }
 
 @Schema({ timestamps: true })
-class FahrzeugOnEinsatz extends Fahrzeug {
+export class FahrzeugOnEinsatz extends Fahrzeug {
   @Prop({ required: true })
   einsatzbeginn: Date;
 
@@ -67,9 +48,25 @@ class FahrzeugOnEinsatz extends Fahrzeug {
   @Prop({ required: true })
   kapazitaet: number;
 
-  @Prop()
+  @Prop({ required: true, default: [] })
   status_history: StatusHistoryEntry[];
 }
+
+export type FahrzeugOnEinsatzDto = {
+  einsatzbeginn: Date;
+  einsatzende?: Date; // Optional field
+  personal: {
+    name: string;
+    qualifikation: Qualifikation;
+    telefonnummer: string;
+    isFuehrungskraft: boolean;
+  }[];
+  kapazitaet: number;
+  status_history: {
+    timestamp: Date;
+    status: Status;
+  }[];
+};
 
 @Schema()
 class EinsatzMetadaten {

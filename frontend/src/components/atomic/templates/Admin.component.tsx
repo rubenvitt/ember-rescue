@@ -6,6 +6,7 @@ import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
+import { OptaInput } from '../molecules/OptaInput.component.js';
 
 const ApiCredentialsSchema = Yup.object().shape({
   mapboxApi: Yup.string()
@@ -51,6 +52,15 @@ export function AdminTemplate() {
           </FormContentBox>
         </FormSection>
       </FormLayout>
+
+      <div className="rounded-xl bg-amber-100 p-4">
+        <h2>Input Test</h2>
+        <OptaInput
+          onChange={(opta) => {
+            console.log(`neue Opta: ${JSON.stringify(opta)}`);
+          }}
+        />
+      </div>
 
       <EditableFahrzeugeTable />
     </div>

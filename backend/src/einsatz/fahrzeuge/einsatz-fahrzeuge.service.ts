@@ -1,19 +1,23 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma/prisma.service';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
 import { StatusService } from '../../status/status.service';
 import { FahrzeugeService } from '../../fahrzeuge/fahrzeuge.service';
-import { formatFunkrufnameMitTyp } from '../../fahrzeuge/fahrzeuge.helper';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  Einsatz,
+  FahrzeugOnEinsatzDto,
+} from '../../database/mongo/schemas/einsatz.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
   private readonly logger = new Logger(EinsatzFahrzeugeService.name);
 
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly statusService: StatusService,
+    @InjectModel(Einsatz.name) private readonly einsatzModel: Model<Einsatz>,
   ) {}
 
   async addFahrzeugToEinsatz(
@@ -22,30 +26,28 @@ export class EinsatzFahrzeugeService {
     bearbeiterId: string,
   ) {
     const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
-      id: fahrzeugId,
+      _id: fahrzeugId,
     });
 
-    const einsatz = await this.prismaService.einsatz.findUnique({
-      where: { id: einsatzId },
-      select: {
-        aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
-      },
-    });
+    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
+    if (!einsatz) throw new NotFoundException('Einsatz not found');
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
-      absender: existingFahrzeug!!.funkrufname,
-      empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
+      absender: existingFahrzeug!!.fullOpta,
+      empfaenger: einsatz.aufnehmendesRettungsmittel,
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
-      content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde dem Einsatz hinzugefügt.`,
+      content: `${existingFahrzeug?.fullOpta} wurde dem Einsatz hinzugefügt.`,
     });
 
-    await this.prismaService.fahrzeugOnEinsatz.create({
-      data: {
-        fahrzeugId,
-        einsatzId,
-        einsatzbeginn: new Date(),
+    await this.einsatzModel.findByIdAndUpdate(einsatzId, {
+      $push: {
+        fahrzeuge: {
+          opta: existingFahrzeug!!.fullOpta,
+          einsatzbeginn: new Date(),
+          kapazitaet: existingFahrzeug!!.kapazitaet,
+        },
       },
     });
 
@@ -54,29 +56,25 @@ export class EinsatzFahrzeugeService {
     });
   }
 
-  async findFahrzeugeImEinsatz(param: { einsatzId: string }) {
-    return this.prismaService.fahrzeug.findMany({
-      where: {
-        einsatz_fahrzeug: {
-          some: {
-            einsatzId: param.einsatzId,
-          },
-        },
-      },
-      include: {
-        einsatz_fahrzeug: true,
-        optaFunktion: true,
-        optaOrt: true,
-        status: {
-          select: {
-            id: true,
-            bezeichnung: true,
-            beschreibung: false,
-            code: true,
-          },
-        },
-      },
-    });
+  async findFahrzeugeImEinsatz(param: {
+    einsatzId: string;
+  }): Promise<FahrzeugOnEinsatzDto[]> {
+    const fahrzeugeImEinsatz = await this.einsatzModel
+      .findOne({
+        _id: param.einsatzId,
+        'fahrzeuge.ende': { $exists: false },
+      })
+      .lean()
+      .exec();
+
+    this.logger.debug(
+      'fahrzeugeImEinsatz: ' + JSON.stringify(fahrzeugeImEinsatz, null, ''),
+    );
+
+    if (fahrzeugeImEinsatz) {
+      return fahrzeugeImEinsatz.fahrzeuge as FahrzeugOnEinsatzDto[];
+    }
+    return [];
   }
 
   async changeStatus(
@@ -90,50 +88,53 @@ export class EinsatzFahrzeugeService {
       | { statusCode?: never; statusId: string }
       | { statusCode: number; statusId?: never },
   ) {
+    this.logger.debug('chaning status');
     const status = statusId
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode!!);
 
-    const einsatz = await this.prismaService.einsatz.findUnique({
-      where: { id: einsatzId },
-      select: {
-        aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
-      },
-    });
-
-    await this.prismaService.$transaction(async (transaction) => {
-      await transaction.fahrzeugStatusHistorie.create({
-        data: {
-          fahrzeugId,
-          einsatzId,
-          statusId: status!!.id,
-          bearbeiterId,
-          zeitpunkt: new Date(),
-        },
-      });
-
-      const fahrzeug = await transaction.fahrzeug.update({
-        where: { id: fahrzeugId },
-        data: {
-          aktuellerStatusId: status!!.id,
-        },
-        include: {
-          optaFunktion: true,
-          optaOrt: true,
-        },
-      });
-
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
+    const updateResult = await this.einsatzModel
+      .findByIdAndUpdate(
         einsatzId,
         {
-          einsatzId,
-          bearbeiterId,
-          type: 'RESSOURCEN',
-          absender: fahrzeug.funkrufname,
-          empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
-          content: `${formatFunkrufnameMitTyp(fahrzeug)} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
+          $push: {
+            'fahrzeuge.$[elem].status_history': {
+              statusId: status!!.id,
+              zeitpunkt: new Date(),
+              bearbeiterId: bearbeiterId,
+            },
+          },
         },
-      );
+        {
+          arrayFilters: [{ 'elem._id': fahrzeugId }],
+        },
+      )
+      .findById(einsatzId, {
+        'fahrzeuge.$[elem]': 1,
+      })
+      .exec();
+    this.logger.debug(
+      'updateResult: ' + JSON.stringify(updateResult, null, ''),
+    );
+
+    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
+
+    this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
+      einsatzId,
+      bearbeiterId,
+      type: 'RESSOURCEN',
+      absender: einsatz!!.aufnehmendesRettungsmittel,
+      empfaenger: fahrzeugId,
+      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
+    });
+
+    await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
+      einsatzId,
+      bearbeiterId,
+      type: 'RESSOURCEN',
+      absender: 'TODO', //fahrzeug.funkrufname,
+      empfaenger: einsatz!!.aufnehmendesRettungsmittel,
+      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
     });
   }
 
@@ -142,38 +143,37 @@ export class EinsatzFahrzeugeService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    return this.prismaService.$transaction(async (transaction) => {
-      const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
-        id: fahrzeugId,
-      });
+    this.logger.debug('chaning status');
 
-      const einsatz = await transaction.einsatz.findUnique({
-        where: { id: einsatzId },
-        select: {
-          aufnehmendes_rettungsmittel: { select: { funkrufname: true } },
-        },
-      });
+    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
+      _id: fahrzeugId,
+    });
 
-      await transaction.fahrzeugOnEinsatz.delete({
-        where: {
-          einsatzId_fahrzeugId: {
-            fahrzeugId,
-            einsatzId,
-          },
-        },
-      });
-
-      await this.einsatztagebuchService.createEinsatztagebuchEintrag(
+    const einsatz = await this.einsatzModel
+      .findByIdAndUpdate(
         einsatzId,
         {
-          absender: existingFahrzeug!!.funkrufname,
-          empfaenger: einsatz!!.aufnehmendes_rettungsmittel.funkrufname,
-          type: 'RESSOURCEN',
-          einsatzId,
-          bearbeiterId,
-          content: `${formatFunkrufnameMitTyp(existingFahrzeug!!)} wurde aus dem Einsatz entfernt.`,
+          $set: {
+            'fahrzeuge.$[elem].einsatzende': new Date(),
+          },
         },
-      );
+        {
+          arrayFilters: [{ 'elem._id': fahrzeugId }],
+        },
+      )
+      .exec();
+
+    if (!einsatz) {
+      throw Error('Einsatz not found');
+    }
+
+    this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
+      absender: existingFahrzeug!!.fullOpta,
+      empfaenger: einsatz?.aufnehmendesRettungsmittel,
+      type: 'RESSOURCEN',
+      einsatzId,
+      bearbeiterId,
+      content: `${existingFahrzeug!!.fullOpta} wurde aus dem Einsatz entfernt.`,
     });
   }
 }

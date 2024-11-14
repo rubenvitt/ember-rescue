@@ -35,7 +35,7 @@ type EditingStore = {
 
 const PatchFahrzeugSchema = Yup.object().shape({
   kapazitaet: Yup.number().required('Kapazitaet wird benötigt').min(0, 'Eine negative Stärke ist unzulässig.'),
-  funkrufname: Yup.string().required('Ein Funkrufname wird benötigt'),
+  fullOpta: Yup.string().required('Ein Opta wird benötigt'),
 });
 
 const useEditingStore = create<EditingStore>((setState, getState) => ({
@@ -56,7 +56,7 @@ function selectInputType(dataIndex?: string) {
   switch (dataIndex) {
     case 'fahrzeugTyp':
       return 'select';
-    case 'funkrufname':
+    case 'fullOpta':
       return 'text';
     case 'kapazitaet':
       return 'number';
@@ -66,12 +66,12 @@ function selectInputType(dataIndex?: string) {
 }
 
 const newFahrzeugTemplate: FahrzeugDto = {
-  funkrufname: '',
+  fullOpta: '',
   istTemporaer: false,
   kapazitaet: 0,
   _id: 'create.fahrzeug',
   _count: { einsatz_fahrzeug: 0 },
-  status: { id: '', code: 'none', bezeichnung: '' },
+  status: { _id: '', code: 'none', bezeichnung: '' },
   optaOrt: null,
   optaFunktion: null,
   optaOrdnung: null,
@@ -198,7 +198,7 @@ export function EditableFahrzeugeTable() {
     if (newFahrzeugTemplate._id === id) {
       return newFahrzeugTemplate;
     }
-    return fahrzeuge.data?.find((fahrzeug) => fahrzeug.id === id);
+    return fahrzeuge.data?.find((fahrzeug) => fahrzeug._id === id);
   }, [fahrzeuge.data, id]);
 
   const fahrzeugeTypItems = useMemo(() => {
@@ -206,7 +206,7 @@ export function EditableFahrzeugeTable() {
       fahrzeugeTypen.data?.map(
         (fahrzeugTyp) =>
           ({
-            value: fahrzeugTyp.id,
+            value: fahrzeugTyp._id,
             search: [fahrzeugTyp.label, fahrzeugTyp.description].join(' '),
             label: (
               <div className="flex justify-between">
@@ -230,10 +230,10 @@ export function EditableFahrzeugeTable() {
 
   useEffect(() => {
     formRef.current?.setValues({
-      _id: editingFahrzeug?.id ?? '',
+      _id: editingFahrzeug?._id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-      funkrufname: editingFahrzeug?.funkrufname ?? 'MHHHH',
+      fullOpta: editingFahrzeug?.fullOpta ?? '',
     });
     setTimeout(() => {
       console.log('using form input', { editingFahrzeug, formValue: formRef.current?.values });
@@ -261,7 +261,7 @@ export function EditableFahrzeugeTable() {
           );
         },
       },
-      { title: 'Funkrufname', dataIndex: 'funkrufname', editable: true },
+      { title: 'Opta', dataIndex: 'fullOpta', editable: true },
       {
         title: 'Typ des Fahrzeugs',
         dataIndex: 'fahrzeugTyp',
@@ -356,7 +356,7 @@ export function EditableFahrzeugeTable() {
         }}
         initialValues={{
           _id: editingFahrzeug?.id ?? '',
-          funkrufname: editingFahrzeug?.funkrufname ?? '',
+          fullOpta: editingFahrzeug?.fullOpta ?? '',
           istTemporaer: editingFahrzeug?.istTemporaer ?? false,
           kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
         }}

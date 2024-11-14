@@ -20,6 +20,7 @@ import {
 import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
 import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
+import { Fahrzeug, FahrzeugSchema } from './mongo/schemas/fahrzeug.schema';
 
 @Module({
   imports: [
@@ -30,6 +31,10 @@ import { Model } from 'mongoose';
       {
         name: BaseOptaEntry.mongoName,
         schema: BaseOptaEntrySchema,
+      },
+      {
+        name: Fahrzeug.name,
+        schema: FahrzeugSchema,
       },
       {
         name: Opta.name,

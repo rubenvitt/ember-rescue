@@ -2,6 +2,9 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
+/**
+ * @deprecated
+ */
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
     super({

@@ -1,12 +1,11 @@
 import { SmallStatusDto } from './status.types.js';
 import { GrundzeichenId } from 'taktische-zeichen-core';
 import { Identifiable, WithCreatedUpdatedAt } from '../utils/common.types.js';
-import { Opta } from './opta.type.js';
 import { IconDefinition } from './icondefinition.types.js';
 
 export type FahrzeugDto = Identifiable &
   WithCreatedUpdatedAt & {
-    opta: Opta;
+    fullOpta: string;
     iconDefinition: IconDefinition;
 
     // TODO deprecated:

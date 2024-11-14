@@ -3,14 +3,37 @@ import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import {
   BosOptaEntry,
+  BosOptaEntryDto,
+  DistrictEntryDto,
   DistrictOptaEntry,
   FunctionOptaEntry,
+  FunctionOptaEntryDto,
+  LocalCodeEntryDto,
   LocalCodeOptaEntry,
   OptaTpyesObj,
   OptaTypes,
 } from './opta/entry.schema';
 
 export type OptaType = keyof OptaTypes;
+
+export type EmbeddedOptaCodesDto = OptaDto & {
+  district: string;
+  bosCode: string;
+  localCode: string;
+  functionCode: string;
+};
+
+export type OptaDto = {
+  district: DistrictEntryDto;
+  bosCode: BosOptaEntryDto;
+  localCode: LocalCodeEntryDto;
+  functionCode: FunctionOptaEntryDto;
+  orderNumber: string;
+  ort: string;
+  supplement?: string;
+  fullOpta: string;
+  isActive: boolean;
+};
 
 @Schema({ timestamps: true, collection: 'optas' })
 export class Opta extends Document {

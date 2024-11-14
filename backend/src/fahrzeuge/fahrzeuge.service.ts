@@ -1,158 +1,112 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
-import { FahrzeugDto, FahrzeugImportDto } from '../types';
+import {
+  FahrzeugDto,
+  FahrzeugImportDto,
+  UpdateCreateFahrzeugeDto,
+} from '../types';
 import { Prisma } from '@prisma/client';
+import { InjectModel } from '@nestjs/mongoose';
+import { Fahrzeug } from 'src/database/mongo/schemas/fahrzeug.schema';
+import * as mongoose from 'mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class FahrzeugeService {
   private readonly logger = new Logger(FahrzeugeService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Fahrzeug.name) private readonly fahrzeugModel: Model<Fahrzeug>,
+  ) {}
 
   async findAll(filter?: Prisma.FahrzeugWhereInput) {
-    let fahrzeuge = await this.prismaService.fahrzeug.findMany({
-      where: filter,
-      include: {
-        _count: {
-          select: {
-            einsatz_fahrzeug: true,
-          },
-        },
-        status: {
-          select: {
-            id: true,
-            bezeichnung: true,
-            beschreibung: false,
-            code: true,
-          },
-        },
-        optaFunktion: {
-          select: {
-            id: true,
-            label: true,
-            optaCode: true,
-          },
-        },
-        optaOrt: {
-          select: {
-            id: true,
-            label: true,
-            optaCode: true,
-          },
-        },
-      },
-      orderBy: {
-        funkrufname: 'asc',
-      },
-    });
-
-    return fahrzeuge.map((f) => ({
-      ...f,
-      _id: f.id,
-    }));
+    // TODO[ember-rescue-68](rubeen, 14.11.24): fahrzeuge im Einsatz
+    return this.fahrzeugModel.find();
   }
 
-  findTypen() {
-    return this.prismaService.optaFunktion.findMany({
-      select: {
-        optaCode: true,
-        label: true,
-      },
-    });
-  }
-
-  updateMany(fahrzeuge: Omit<FahrzeugDto, 'status'>[]) {
+  updateMany(fahrzeuge: UpdateCreateFahrzeugeDto) {
     this.logger.debug('updateMany', fahrzeuge);
-    return this.prismaService.$transaction(async (transaction) => {
-      for (const {
-        id,
-        optaFunktion,
-        optaOrt,
-        funkrufname,
-        ...fahrzeug
-      } of fahrzeuge) {
-        const { maybeLabel, optaFunktion, optaOrdnung, optaOrt } =
-          this.parseFunkrufnameParts({ funkrufname, ...fahrzeug });
 
-        this.logger.debug('update one fahrzeugDto', fahrzeug);
-
-        await transaction.fahrzeug.upsert({
-          where: {
-            id,
-          },
-          update: {
+    return Promise.all(
+      fahrzeuge.map(async ({ _id, opta, ...fahrzeug }) => {
+        return this.fahrzeugModel.findByIdAndUpdate(
+          _id,
+          {
+            fullOpta: `${opta.district} ${opta.bosCode} ${opta.ort} ${opta.localCode}-${opta.functionCode}-${opta.orderNumber}`,
             ...fahrzeug,
-            optaFunktionId: optaFunktion,
-            optaOrtId: optaOrt,
-            optaOrdnung: optaOrdnung,
-            label: maybeLabel,
           },
-          create: {
-            ...fahrzeug,
-            optaFunktionId: optaFunktion,
-            optaOrtId: optaOrt,
-            optaOrdnung: optaOrdnung,
-            label: maybeLabel,
+          {
+            upsert: true,
+            new: true,
           },
-        });
-      }
-    });
-  }
-
-  findFahrzeug(where: Prisma.FahrzeugWhereUniqueInput) {
-    return this.prismaService.fahrzeug.findUnique({
-      where,
-      include: {
-        optaOrt: true,
-        optaFunktion: true,
-      },
-    });
-  }
-
-  async importFahrzeuge(fahrzeuge: FahrzeugImportDto[]) {
-    return this.prismaService.$transaction(async (transaction) => {
-      for (const fahrzeug of fahrzeuge) {
-        const { maybeLabel, optaFunktion, optaOrdnung, optaOrt } =
-          this.parseFunkrufnameParts(fahrzeug);
-
-        this.logger.debug(
-          `optaFunktion: ${optaFunktion}, optaOrt: ${optaOrt}, optaOrdnung: ${optaOrdnung}, maybeLabel: ${maybeLabel}`,
         );
+      }),
+    );
+  }
 
-        const existingFahrzeug = await transaction.fahrzeug.findFirst({
-          where: {
-            OR: [
-              { label: fahrzeug.funkrufname },
-              {
-                optaFunktionId: optaFunktion,
-                optaOrtId: optaOrt,
-                optaOrdnung: optaOrdnung,
-              },
-            ],
-            istTemporaer: false,
-          },
-        });
+  findFahrzeug({ _id }: { _id: string }) {
+    return this.fahrzeugModel.findById(_id).exec();
+  }
 
-        await transaction.fahrzeug.upsert({
-          where: {
-            id: existingFahrzeug?.id ?? '',
+  async importFahrzeuge(fahrzeuge: UpdateCreateFahrzeugeDto) {
+    return Promise.all(
+      fahrzeuge.map(async ({ _id, opta, ...fahrzeug }) => {
+        return this.fahrzeugModel.findByIdAndUpdate(
+          _id ?? new mongoose.Types.ObjectId(),
+          {
+            fullOpta: `${opta.district} ${opta.bosCode} ${opta.ort} ${opta.localCode}-${opta.functionCode}-${opta.orderNumber}`,
+            ...fahrzeug,
           },
-          create: {
-            kapazitaet: fahrzeug.kapazitaet,
-            istTemporaer: false,
-            optaFunktionId: optaFunktion,
-            optaOrtId: optaOrt,
-            optaOrdnung: optaOrdnung,
-            label: maybeLabel,
+          {
+            upsert: true,
+            new: true,
           },
-          update: {
-            kapazitaet: fahrzeug.kapazitaet,
-            istTemporaer: false,
-            label: maybeLabel,
-          },
-        });
-      }
-    });
+        );
+      }),
+    );
+
+    // return this.prismaService.$transaction(async (transaction) => {
+    //   for (const fahrzeug of fahrzeuge) {
+    //     const { maybeLabel, optaFunktion, optaOrdnung, optaOrt } =
+    //       this.parseFunkrufnameParts(fahrzeug);
+    //
+    //     this.logger.debug(
+    //       `optaFunktion: ${optaFunktion}, optaOrt: ${optaOrt}, optaOrdnung: ${optaOrdnung}, maybeLabel: ${maybeLabel}`,
+    //     );
+    //
+    //     const existingFahrzeug = await transaction.fahrzeug.findFirst({
+    //       where: {
+    //         OR: [
+    //           { label: fahrzeug.funkrufname },
+    //           {
+    //             optaFunktionId: optaFunktion,
+    //             optaOrtId: optaOrt,
+    //             optaOrdnung: optaOrdnung,
+    //           },
+    //         ],
+    //         istTemporaer: false,
+    //       },
+    //     });
+    //
+    //     await transaction.fahrzeug.upsert({
+    //       where: {
+    //         id: existingFahrzeug?.id ?? '',
+    //       },
+    //       create: {
+    //         kapazitaet: fahrzeug.kapazitaet,
+    //         istTemporaer: false,
+    //         optaFunktionId: optaFunktion,
+    //         optaOrtId: optaOrt,
+    //         optaOrdnung: optaOrdnung,
+    //         label: maybeLabel,
+    //       },
+    //       update: {
+    //         kapazitaet: fahrzeug.kapazitaet,
+    //         istTemporaer: false,
+    //         label: maybeLabel,
+    //       },
+    //     });
+    //   }
+    // });
   }
 
   private parseFunkrufnameParts(
