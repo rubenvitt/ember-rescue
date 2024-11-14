@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
@@ -16,7 +15,6 @@ export class EinsatzService {
   private readonly logger = new Logger(EinsatzService.name);
 
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortService,
