@@ -1,30 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
 import { JSONSchemaType } from 'ajv';
-import { StatusDto } from '../database/mongo/schemas/status.schema';
+import { Status, StatusDto } from '../database/mongo/schemas/status.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class StatusService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Status.name) private readonly statusModel: Model<Status>,
+  ) {}
 
   findAll() {
-    return this.prismaService.status.findMany();
+    return this.statusModel.find().exec();
   }
 
   findStatusByCode(code: number) {
-    return this.prismaService.status.findUnique({
-      where: {
-        code: String(code),
-      },
-    });
+    return this.statusModel.findOne({ code }).exec();
   }
 
   findStatusById(id: string) {
-    return this.prismaService.status.findUnique({
-      where: {
-        id,
-      },
-    });
+    return this.statusModel.findById(id).exec();
   }
 
   getSchema(): JSONSchemaType<StatusDto[]> {

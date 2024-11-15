@@ -13,7 +13,7 @@ export class CreateBearbeiterDto {
   name: string;
 }
 export type QualifikationDto = {
-  id: string;
+  _id: string;
   bezeichnung: string;
   abkuerzung: string;
 };

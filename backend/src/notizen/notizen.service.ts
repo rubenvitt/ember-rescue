@@ -1,30 +1,35 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
 import { CreateNotizDto, UpdateNotizDto } from '../types';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Notiz } from '../database/mongo/schemas/einsatz/notiz.schema';
 
 @Injectable()
 export class NotizenService {
   private readonly logger = new Logger(NotizenService.name);
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Notiz.name) private readonly notizModel: Model<Notiz>,
+  ) {}
 
-  findAllNotizen(einsatzId: string, bearbeiterId: string, done: boolean) {
-    return this.prismaService.notiz.findMany({
-      where: {
-        einsatzId,
-        bearbeiterId,
-        doneAt: done ? { not: null } : null,
-        deletedAt: null,
-      },
-      include: {
-        bearbeiter: {
-          select: {
-            name: true,
+  async findAllNotizen(einsatzId: string, bearbeiterId: string, done: boolean) {
+    await this.notizModel
+      .find(
+        {
+          einsatz: einsatzId,
+          bearbeiter: bearbeiterId,
+          done: done ? { $ne: null } : null,
+          deleted: null,
+        },
+        {},
+        {
+          sort: {
+            done: -1,
+            createdAt: -1,
           },
         },
-      },
-      orderBy: [{ doneAt: 'desc' }, { createdAt: 'desc' }],
-    });
+      )
+      .exec();
   }
 
   createNotiz({
@@ -36,13 +41,10 @@ export class NotizenService {
     bearbeiterId: string;
     notizDto: CreateNotizDto;
   }) {
-    return this.prismaService.notiz.create({
-      data: {
-        ...notizDto,
-        id: undefined,
-        bearbeiterId,
-        einsatzId,
-      },
+    return this.notizModel.create({
+      ...notizDto,
+      einsatz: einsatzId,
+      bearbeiter: bearbeiterId,
     });
   }
 
@@ -57,14 +59,20 @@ export class NotizenService {
     notizDto: UpdateNotizDto;
     notizId: string;
   }) {
-    const prismaNotizClient = await this.prismaService.notiz.update({
-      where: { id: notizId, einsatzId },
-      data: {
-        content: notizDto.content.trim(),
-      },
-    });
-    this.logger.log('Updated notiz', prismaNotizClient);
-    return prismaNotizClient;
+    return this.notizModel
+      .updateOne(
+        {
+          _id: notizId,
+          einsatz: einsatzId,
+          bearbeiter: bearbeiterId,
+        },
+        {
+          $set: {
+            content: notizDto.content.trim(),
+          },
+        },
+      )
+      .exec();
   }
 
   async toggleCompleteNotiz(
@@ -72,36 +80,28 @@ export class NotizenService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    const notiz = await this.prismaService.notiz.findUnique({
-      where: {
-        id,
-        einsatzId,
-        bearbeiterId,
-      },
+    const notiz = await this.notizModel.findOne({
+      _id: id,
+      einsatz: einsatzId,
+      bearbeiter: bearbeiterId,
     });
 
-    return this.prismaService.notiz.update({
-      where: {
-        id,
-        einsatzId,
-        bearbeiterId,
-      },
-      data: {
-        doneAt: notiz?.doneAt ? null : new Date(),
-      },
-    });
+    return this.notizModel
+      .updateOne(
+        { _id: id, einsatz: einsatzId, bearbeiter: bearbeiterId },
+        { $set: { doneAt: notiz?.doneAt ? null : new Date() } },
+      )
+      .exec();
   }
 
   deleteNotiz(id: string, einsatzId: string, bearbeiterId: string) {
-    return this.prismaService.notiz.update({
-      where: {
-        id,
-        einsatzId,
-        bearbeiterId,
+    return this.notizModel.updateOne(
+      {
+        _id: id,
+        einsatz: einsatzId,
+        bearbeiter: bearbeiterId,
       },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+      { $set: { deletedAt: new Date() } },
+    );
   }
 }

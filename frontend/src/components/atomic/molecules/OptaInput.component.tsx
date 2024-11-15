@@ -1,7 +1,9 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, Space } from 'antd';
 import { PiPen } from 'react-icons/pi';
 import { useToggle } from '@reactuses/core';
+import { FormikFieldProps } from 'formik-antd/src/FieldProps.js';
+import { Field } from 'formik-antd';
 
 type FullOptaInput = {
   district: string;
@@ -13,7 +15,7 @@ type FullOptaInput = {
   supplement?: string;
 };
 
-type OptaInput = {
+export type OptaInput = {
   freetext: string;
   full: FullOptaInput;
 };
@@ -100,7 +102,47 @@ const SmartInput = ({
   );
 };
 
-export const OptaInput = ({ onChange }: { onChange: (value: OptaInput) => void }) => {
+export const OptaInputField = ({
+  name,
+  validate,
+  fast,
+  onChange,
+}: FormikFieldProps & { onChange: (value: OptaInput) => void }) => {
+  return (
+    <Field name={name} validate={validate} fast={fast}>
+      {({ field: { value }, form: { setFieldValue, setFieldTouched } }) => (
+        <OptaInput
+          value={value}
+          onBlur={(value) => {
+            setFieldTouched(name);
+            onChange && onChange(value);
+          }}
+          onChange={useCallback(
+            (value: OptaInput) => {
+              console.log(`updating ${name} = ${value}`);
+              setFieldValue(name, value);
+
+              if (onChange) {
+                onChange(value);
+              }
+            },
+            [setFieldValue, name],
+          )}
+        />
+      )}
+    </Field>
+  );
+};
+
+export const OptaInput = ({
+  onBlur,
+  onChange,
+  value,
+}: {
+  onChange: (value: OptaInput) => void;
+  onBlur: (value: OptaInput) => void;
+  value?: OptaInput;
+}) => {
   const [formData, setFormData] = useState<OptaInput>({
     full: {
       bosCode: '',
@@ -154,40 +196,40 @@ export const OptaInput = ({ onChange }: { onChange: (value: OptaInput) => void }
   };
 
   useEffect(() => {
+    if (value?.freetext) {
+      setFormData((prevState) => ({
+        full: prevState.full,
+        freetext: value.freetext,
+      }));
+      setFreetext(value.freetext);
+      toggleFreetext(true);
+    }
+  }, [value?.freetext]);
+
+  useEffect(() => {
     onChange(formData);
   }, [formData, isFreetext, freetext, onChange]);
 
   return (
-    <Space size={4} className="rounded border">
-      {isFreetext ? (
-        <Input
-          value={freetext}
-          onChange={(e) => {
-            setFreetext(e.target.value);
-            setFormData((prevData) => ({
-              ...prevData,
-              freetext: e.target.value,
-            }));
-          }}
-          placeholder="NI DRK Uelzen 40-12-1"
-          style={{ width: 240 }}
-          size="small"
-        />
-      ) : (
-        <>
-          {FIELD_CONFIGS.slice(0, 3).map((config) => (
-            <SmartInput
-              key={config.name}
-              options={optaOptions}
-              formData={formData}
-              handleInputChange={handleInputChange}
-              {...config}
-            />
-          ))}
-          <Space size={1} />
-          {FIELD_CONFIGS.slice(3).map((config, idx) => (
-            <Fragment key={config.name}>
-              {idx > 0 && <span>-</span>}
+    <Space size="small" direction="vertical">
+      <Space size="small" className="rounded border">
+        {isFreetext ? (
+          <Input
+            value={freetext}
+            onChange={(e) => {
+              setFreetext(e.target.value);
+              setFormData((prevData) => ({
+                ...prevData,
+                freetext: e.target.value,
+              }));
+            }}
+            placeholder="NI DRK Uelzen 40-12-1"
+            style={{ width: 240 }}
+            size="small"
+          />
+        ) : (
+          <>
+            {FIELD_CONFIGS.slice(0, 3).map((config) => (
               <SmartInput
                 key={config.name}
                 options={optaOptions}
@@ -195,16 +237,33 @@ export const OptaInput = ({ onChange }: { onChange: (value: OptaInput) => void }
                 handleInputChange={handleInputChange}
                 {...config}
               />
-            </Fragment>
-          ))}
-        </>
-      )}
-      <Button
-        className="text-gray-700"
-        type="text"
-        icon={<PiPen className="h-3.5 w-3.5" size="small" onClick={() => toggleFreetext()} />}
-      />
-      {/*  TODO: Anzeige der berechneten Opta */}
+            ))}
+            <Space size={1} />
+            {FIELD_CONFIGS.slice(3).map((config, idx) => (
+              <Fragment key={config.name}>
+                {idx > 0 && <span>-</span>}
+                <SmartInput
+                  key={config.name}
+                  options={optaOptions}
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                  {...config}
+                />
+              </Fragment>
+            ))}
+          </>
+        )}
+        <Button
+          className="text-gray-700"
+          type="text"
+          icon={<PiPen className="h-3.5 w-3.5" size="small" onClick={() => toggleFreetext()} />}
+        />
+      </Space>
+      <pre>
+        {isFreetext
+          ? freetext
+          : `${formData.full.district} ${formData.full.bosCode} ${formData.full.ort} ${formData.full.localCode}-${formData.full.functionCode}-${formData.full.orderNumber}`}
+      </pre>
     </Space>
   );
 };

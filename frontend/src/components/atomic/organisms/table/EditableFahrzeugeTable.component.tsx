@@ -25,6 +25,7 @@ import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { toast } from 'react-toastify';
 import { FormLayout } from '../form/FormLayout.comonent.js';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
+import { OptaInputField } from '../../molecules/OptaInput.component.js';
 
 type EditingStore = {
   id: null | string;
@@ -56,8 +57,8 @@ function selectInputType(dataIndex?: string) {
   switch (dataIndex) {
     case 'fahrzeugTyp':
       return 'select';
-    case 'fullOpta':
-      return 'text';
+    case 'opta':
+      return 'opta';
     case 'kapazitaet':
       return 'number';
     case 'istTemporaer':
@@ -66,6 +67,9 @@ function selectInputType(dataIndex?: string) {
 }
 
 const newFahrzeugTemplate: FahrzeugDto = {
+  opta: {
+    freetext: 'Florian Uelzen 40-12-1',
+  },
   fullOpta: '',
   istTemporaer: false,
   kapazitaet: 0,
@@ -233,7 +237,9 @@ export function EditableFahrzeugeTable() {
       _id: editingFahrzeug?._id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-      fullOpta: editingFahrzeug?.fullOpta ?? '',
+      opta: {
+        freetext: editingFahrzeug?.fullOpta ?? 'Test',
+      },
     });
     setTimeout(() => {
       console.log('using form input', { editingFahrzeug, formValue: formRef.current?.values });
@@ -261,7 +267,7 @@ export function EditableFahrzeugeTable() {
           );
         },
       },
-      { title: 'Opta', dataIndex: 'fullOpta', editable: true },
+      { title: 'Opta', dataIndex: 'opta', editable: true },
       {
         title: 'Typ des Fahrzeugs',
         dataIndex: 'fahrzeugTyp',
@@ -356,7 +362,7 @@ export function EditableFahrzeugeTable() {
         }}
         initialValues={{
           _id: editingFahrzeug?.id ?? '',
-          fullOpta: editingFahrzeug?.fullOpta ?? '',
+          fullOpta: '',
           istTemporaer: editingFahrzeug?.istTemporaer ?? false,
           kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
         }}
@@ -391,7 +397,7 @@ interface EditableCellProps<Item> extends HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: 'number' | 'text' | 'checkbox' | 'select';
+  inputType: 'number' | 'text' | 'checkbox' | 'select' | 'opta';
   options?: DefaultOptionType[];
   record: Item;
   index: number;
@@ -435,6 +441,16 @@ function EditableCell<Item>({
             // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
             const regex = new RegExp(inputValue.split('').join('.*'), 'i');
             return regex.test(option?.search);
+          }}
+        />
+      );
+      break;
+    case 'opta':
+      inputNode = (
+        <OptaInputField
+          name={dataIndex}
+          onChange={(opta) => {
+            console.log(`neue Opta: ${JSON.stringify(opta)}`);
           }}
         />
       );

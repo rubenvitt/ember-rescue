@@ -5,7 +5,7 @@ export class Qualifikation {
   @Prop({ required: true })
   bezeichnung: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   abkuerzung: string;
 }
 

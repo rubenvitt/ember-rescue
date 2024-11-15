@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { StatusService } from './status.service';
 
 @Controller('status')
@@ -6,7 +6,10 @@ export class StatusController {
   constructor(private readonly statusService: StatusService) {}
 
   @Get()
-  async status() {
+  async status(@Query('code') code: number) {
+    if (code) {
+      return this.statusService.findStatusByCode(code);
+    }
     return this.statusService.findAll();
   }
 

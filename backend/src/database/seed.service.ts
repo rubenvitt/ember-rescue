@@ -1,6 +1,8 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as alarmstichworte from './mongo/seeds/alarmstichworte.json';
 import * as statusItems from './mongo/seeds/status.json';
+import * as qualifikationItems from './mongo/seeds/qualifikationen.json';
+import { Qualifikation } from './mongo/schemas/qualifikation.schema';
 import * as optaFunktionen from './mongo/seeds/opta/funktionen.json';
 import * as optaBos from './mongo/seeds/opta/bos.json';
 import * as optaDistricts from './mongo/seeds/opta/districts.json';
@@ -49,6 +51,8 @@ export class SeedService implements OnModuleInit {
     private readonly bearbeiterModel: Model<Bearbeiter>,
     @InjectModel(Counter.name)
     private readonly counterModel: Model<Counter>,
+    @InjectModel(Qualifikation.name)
+    private readonly qualifikationModel: Model<Qualifikation>,
   ) {}
 
   async onModuleInit() {
@@ -83,6 +87,12 @@ export class SeedService implements OnModuleInit {
     );
 
     await this.insertSeedData(statusItems, this.status, 'Status');
+
+    await this.insertSeedData(
+      qualifikationItems,
+      this.qualifikationModel,
+      'Qualifikationen',
+    );
 
     try {
       await this.optaModel.create({

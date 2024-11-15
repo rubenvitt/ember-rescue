@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Bearbeiter } from '../bearbeiter.schema';
+import { Einsatz } from '../einsatz.schema';
 
 @Schema({ timestamps: true, collection: 'notizen' })
 export class Notiz extends Document {
@@ -24,7 +25,12 @@ export class Notiz extends Document {
   })
   bearbeiter: Bearbeiter;
 
-  // TODO einsatz
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: Einsatz.name,
+  })
+  einsatz: Einsatz;
 
   // TODO reminder
 }

@@ -125,7 +125,7 @@ export class EinsatzFahrzeugeService {
       type: 'RESSOURCEN',
       absender: einsatz!!.aufnehmendesRettungsmittel,
       empfaenger: fahrzeugId,
-      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
+      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.description}).`,
     });
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
@@ -134,7 +134,7 @@ export class EinsatzFahrzeugeService {
       type: 'RESSOURCEN',
       absender: 'TODO', //fahrzeug.funkrufname,
       empfaenger: einsatz!!.aufnehmendesRettungsmittel,
-      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.bezeichnung}).`,
+      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.description}).`,
     });
   }
 

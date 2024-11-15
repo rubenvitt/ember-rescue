@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Qualifikation } from '../database/mongo/schemas/qualifikation.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class QualifikationenService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    @InjectModel(Qualifikation.name)
+    private readonly qualifikationModel: Model<Qualifikation>,
+  ) {}
 
   findAll() {
-    return this.prismaService.qualifikation.findMany({
-      select: {
-        id: true,
-        abkuerzung: true,
-        bezeichnung: true,
-      },
-    });
+    return this.qualifikationModel.find().exec();
   }
 }

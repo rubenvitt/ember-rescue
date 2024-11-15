@@ -1,12 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../database/prisma/prisma.service';
 import { Cron } from '@nestjs/schedule';
 import { subDays, subMinutes } from 'date-fns';
+import { InjectModel } from '@nestjs/mongoose';
+import { Reminder } from '../database/mongo/schemas/einsatz/reminder.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class RemindersService {
   private readonly logger = new Logger(RemindersService.name);
-  constructor(private readonly prismaService: PrismaService) {}
+
+  constructor(
+    @InjectModel(Reminder.name) private readonly reminderModel: Model<Reminder>,
+  ) {}
 
   async create(
     note: string,
@@ -14,73 +19,89 @@ export class RemindersService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    return this.prismaService.reminder.create({
-      data: {
-        noteId: note,
-        reminderTimestamp: reminderTime,
-        bearbeiterId,
-        einsatzId,
-      },
+    return this.reminderModel.create({
+      timestamp: reminderTime,
+      title: note,
     });
   }
 
   async getDueReminders(bearbeiterId: string, einsatzId: string) {
     const now = new Date();
-    return this.prismaService.reminder.findMany({
-      where: {
-        reminderTimestamp: {
-          lt: now,
+
+    return this.reminderModel
+      .find(
+        {
+          reminderTimestamp: {
+            lt: now,
+          },
+          notified: null,
+          bearbeiterId,
+          einsatzId,
         },
-        notified: null,
-        bearbeiterId,
-        einsatzId,
-      },
-    });
+        {},
+      )
+      .exec();
   }
 
   async markAsNotified(id: string, einsatzId?: string, bearbeiterId?: string) {
-    return this.prismaService.reminder.update({
-      where: { id, bearbeiterId, einsatzId },
-      data: {
-        notified: new Date(),
+    return this.reminderModel.updateOne(
+      {
+        _id: id,
+        einsatzId,
+        bearbeiterId,
       },
-    });
+      {
+        $set: {
+          notified: new Date(),
+        },
+      },
+    );
   }
 
   async markAsRead(id: string, einsatzId: string, bearbeiterId: string) {
-    return this.prismaService.reminder.update({
-      where: { id, einsatzId, bearbeiterId },
-      data: {
-        read: new Date(),
+    return this.reminderModel.updateOne(
+      {
+        _id: id,
+        einsatzId,
+        bearbeiterId,
       },
-    });
+      {
+        $set: {
+          read: new Date(),
+        },
+      },
+    );
   }
 
   @Cron('0 10 * * * *')
   async cleanup() {
     this.logger.log('Reminders cleanup');
-    await this.prismaService.reminder.deleteMany({
-      where: {
-        OR: [
+
+    await this.reminderModel.updateMany(
+      {
+        $or: [
           {
             read: {
-              lt: subMinutes(new Date(), 30),
+              $lt: subMinutes(new Date(), 30),
             },
           },
           {
             notified: {
-              lt: subDays(new Date(), 1),
+              $lt: subDays(new Date(), 1),
             },
           },
           {
-            einsatz: {
-              abgeschlossen: {
-                not: null,
-              },
+            'einsatz.abgeschlossen': {
+              $exists: false,
             },
           },
         ],
       },
-    });
+      {
+        $set: {
+          read: new Date(),
+        },
+      },
+    );
   }
 }

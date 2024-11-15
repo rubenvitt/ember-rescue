@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { SettingsDto } from './settings.dto';
+import { Response } from 'express';
 
 @Controller('settings')
 export class SettingsController {
@@ -12,7 +13,10 @@ export class SettingsController {
   }
 
   @Post()
-  async saveSettings(@Body() settings: SettingsDto) {
+  async saveSettings(@Body() settings: SettingsDto, @Res() response: Response) {
     await this.settingsService.saveSettings(settings);
+    response.status(200).send({
+      message: 'Settings saved',
+    });
   }
 }
