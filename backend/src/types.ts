@@ -12,11 +12,6 @@ export class CreateBearbeiterDto {
   @IsNotEmpty()
   name: string;
 }
-export type QualifikationDto = {
-  _id: string;
-  bezeichnung: string;
-  abkuerzung: string;
-};
 
 export type SmallStatusDto = {
   id: string;

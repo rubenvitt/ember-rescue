@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { QualifikationenService } from './qualifikationen.service';
-import { QualifikationDto } from '../types';
 import { JSONSchemaType } from 'ajv';
+import { QualifikationDto } from '@ember-rescue/shared';
 
 @Controller('qualifikationen')
 export class QualifikationenController {
