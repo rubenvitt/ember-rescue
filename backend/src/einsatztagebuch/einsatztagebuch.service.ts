@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { InjectModel } from '@nestjs/mongoose';
 import { Einsatz } from '../database/mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
@@ -19,13 +18,9 @@ export class EinsatztagebuchService {
     return einsatz.einsatzTagebuch;
   }
 
-  createEinsatztagebuchEintrag(
-    einsatzId: string,
-    data:
-      | Prisma.EinsatztagebuchEintragCreateManyInput
-      | Prisma.EinsatztagebuchEintragCreateManyInput[],
-  ) {
-    const mapData = (item: Prisma.EinsatztagebuchEintragCreateManyInput) => ({
+  // FIXME[ember-rescue-68](rubeen, 15.11.24): TYPES
+  createEinsatztagebuchEintrag(einsatzId: string, data: any | any[]) {
+    const mapData = (item: any) => ({
       timestamp: item.timestamp,
       type: item.type,
       content: item.content,

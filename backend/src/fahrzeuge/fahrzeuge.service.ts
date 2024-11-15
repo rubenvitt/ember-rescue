@@ -4,7 +4,6 @@ import {
   FahrzeugImportDto,
   UpdateCreateFahrzeugeDto,
 } from '../types';
-import { Prisma } from '@prisma/client';
 import { InjectModel } from '@nestjs/mongoose';
 import { Fahrzeug } from 'src/database/mongo/schemas/fahrzeug.schema';
 import * as mongoose from 'mongoose';
@@ -18,7 +17,7 @@ export class FahrzeugeService {
     @InjectModel(Fahrzeug.name) private readonly fahrzeugModel: Model<Fahrzeug>,
   ) {}
 
-  async findAll(filter?: Prisma.FahrzeugWhereInput) {
+  async findAll(filter?: unknown) {
     // TODO[ember-rescue-68](rubeen, 14.11.24): fahrzeuge im Einsatz
     return this.fahrzeugModel.find();
   }

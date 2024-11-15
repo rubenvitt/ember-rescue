@@ -15,7 +15,6 @@ RUN pnpm install
 COPY . .
 
 # Anwendung bauen
-RUN pnpm run prisma:generate
 RUN pnpm run build
 
 # Production-Image
@@ -31,8 +30,6 @@ WORKDIR /usr/src/app
 COPY package.json ./
 RUN pnpm install --prod
 
-# Prisma-Treiber und -Dateien kopieren
-COPY prisma ./prisma/
 COPY --from=build /usr/src/app/node_modules node_modules
 RUN rm -rf node_modules/.cache
 RUN pnpm prune
