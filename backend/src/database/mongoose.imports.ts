@@ -29,9 +29,8 @@ import {
 import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as mongooseFieldEncryption from 'mongoose-field-encryption';
-import crypto from 'crypto';
 import { config } from '../config/configuration';
+import { createEncryptedSchema } from '../utils/crypt.utils';
 
 export const mongooseImports: DynamicModule[] = [
   MongooseModule.forRootAsync({
@@ -69,11 +68,12 @@ export const mongooseImports: DynamicModule[] = [
       useFactory: (configService: ConfigService) => {
         const SecretSchema = SchemaFactory.createForClass(Secret);
 
-        SecretSchema.plugin(mongooseFieldEncryption.fieldEncryption, {
-          fields: ['value'],
-          secret: configService.get(config.encryptionKey),
-          saltGenerator: () => crypto.randomBytes(8).toString('hex'),
-        });
+        // Der Aufruf bleibt identisch
+        createEncryptedSchema(
+          SecretSchema,
+          ['value'],
+          configService.getOrThrow<string>(config.encryptionKey),
+        );
 
         return SecretSchema;
       },
