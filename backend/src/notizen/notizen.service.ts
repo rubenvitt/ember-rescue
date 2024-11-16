@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateNotizDto, UpdateNotizDto } from '../types';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Notiz } from '../database/mongo/schemas/einsatz/notiz.schema';
+import { Notiz } from '../core/database/mongo/schemas/einsatz/notiz.schema';
 
 @Injectable()
 export class NotizenService {

@@ -5,7 +5,7 @@ import {
   UpdateCreateFahrzeugeDto,
 } from '../types';
 import { InjectModel } from '@nestjs/mongoose';
-import { Fahrzeug } from 'src/database/mongo/schemas/fahrzeug.schema';
+import { Fahrzeug } from 'src/core/database/mongo/schemas/fahrzeug.schema';
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 

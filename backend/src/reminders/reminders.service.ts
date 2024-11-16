@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { subDays, subMinutes } from 'date-fns';
 import { InjectModel } from '@nestjs/mongoose';
-import { Reminder } from '../database/mongo/schemas/einsatz/reminder.schema';
+import { Reminder } from '../core/database/mongo/schemas/einsatz/reminder.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

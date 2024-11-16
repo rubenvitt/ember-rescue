@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createId } from '@paralleldrive/cuid2';
-import { config } from '../config/configuration';
+import { config } from '../core/config/configuration';
 
 @Injectable()
 export class MetaService {

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { NullableType } from 'joi';
 import { InjectModel } from '@nestjs/mongoose';
-import { Secret } from '../database/mongo/schemas/secret.schema';
+import { Secret } from '../core/database/mongo/schemas/secret.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

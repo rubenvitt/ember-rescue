@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Bearbeiter,
   BearbeiterDto,
-} from '../database/mongo/schemas/bearbeiter.schema';
+} from '../core/database/mongo/schemas/bearbeiter.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

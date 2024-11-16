@@ -1,7 +1,7 @@
 import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { EmbeddedOptaCodesDto } from './database/mongo/schemas/opta.schema';
-import { FahrzeugIconDefinitionDto } from './database/mongo/schemas/fahrzeug.schema';
+import { EmbeddedOptaCodesDto } from './core/database/mongo/schemas/opta.schema';
+import { FahrzeugIconDefinitionDto } from './core/database/mongo/schemas/fahrzeug.schema';
 
 export type BearbeiterDto = {
   id: string;

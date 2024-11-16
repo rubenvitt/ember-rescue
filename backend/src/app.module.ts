@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './core/database/database.module';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
 import { ConfigModule } from '@nestjs/config';
 import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
@@ -17,14 +17,15 @@ import { MetaModule } from './meta/meta.module';
 import { NinaModule } from './apis/bund/nina/nina.module';
 import { MapModule } from './map/map.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/auth.guard';
-import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthGuard } from './core/auth/auth.guard';
+import { AuthMiddleware } from './core/auth/auth.middleware';
 import { ExportModule } from './export/export.module';
 import { PdfModule } from './pdf/pdf.module';
 import { NotizenModule } from './notizen/notizen.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OptaModule } from './opta/opta.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { OptaModule } from './opta/opta.module';
     NotizenModule,
     RemindersModule,
     OptaModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [

@@ -30,7 +30,7 @@ import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from '../config/configuration';
-import { createEncryptedSchema } from '../utils/crypt.utils';
+import { createEncryptedSchema } from '../../utils/crypt.utils';
 
 export const mongooseImports: DynamicModule[] = [
   MongooseModule.forRootAsync({

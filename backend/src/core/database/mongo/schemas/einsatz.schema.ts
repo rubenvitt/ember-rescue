@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema } from '@nestjs/mongoose';
 import { BearbeiterDto } from './bearbeiter.schema';
-import { EinsatztagebuchEintragType } from '../../../types';
+import { EinsatztagebuchEintragType } from '../../../../types';
 import { Alarmstichwort, AlarmstichwortDto } from './alarmstichwort.schema';
 import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';

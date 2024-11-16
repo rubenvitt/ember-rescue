@@ -5,7 +5,7 @@ import {
   DistrictEntryDto,
   FunctionOptaEntryDto,
   LocalCodeEntryDto,
-} from '../../database/mongo/schemas/opta/entry.schema';
+} from '../../core/database/mongo/schemas/opta/entry.schema';
 
 @Injectable()
 export class SchemaService {

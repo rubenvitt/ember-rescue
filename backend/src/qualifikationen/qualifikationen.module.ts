@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { QualifikationenController } from './qualifikationen.controller';
 import { QualifikationenService } from './qualifikationen.service';
-import { DatabaseModule } from '../database/database.module';
+import { DatabaseModule } from '../core/database/database.module';
 
 @Module({
   controllers: [QualifikationenController],

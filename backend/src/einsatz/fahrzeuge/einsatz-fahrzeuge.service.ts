@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Einsatz,
   FahrzeugOnEinsatzDto,
-} from '../../database/mongo/schemas/einsatz.schema';
+} from '../../core/database/mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

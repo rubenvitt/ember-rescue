@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { EinsatzController } from './einsatz.controller';
 import { EinsatzService } from './einsatz.service';
-import { DatabaseModule } from '../database/database.module';
+import { DatabaseModule } from '../core/database/database.module';
 import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module';
 import { AlarmstichwortModule } from '../alarmstichwort/alarmstichwort.module';
 import { EinsatzFahrzeugeModule } from './fahrzeuge/einsatz-fahrzeuge.module';

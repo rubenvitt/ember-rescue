@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Qualifikation } from '../database/mongo/schemas/qualifikation.schema';
+import { Qualifikation } from '../core/database/mongo/schemas/qualifikation.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

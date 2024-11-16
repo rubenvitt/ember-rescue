@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Alarmstichwort } from '../database/mongo/schemas/alarmstichwort.schema';
+import { Alarmstichwort } from '../core/database/mongo/schemas/alarmstichwort.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

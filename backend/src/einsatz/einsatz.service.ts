@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   CreateEinsatzDto,
   Einsatz,
-} from '../database/mongo/schemas/einsatz.schema';
+} from '../core/database/mongo/schemas/einsatz.schema';
 import { FilterQuery, Model } from 'mongoose';
 
 @Injectable()

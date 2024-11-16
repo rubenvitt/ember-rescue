@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Einsatz } from '../database/mongo/schemas/einsatz.schema';
+import { Einsatz } from '../core/database/mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

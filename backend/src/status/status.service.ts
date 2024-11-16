@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JSONSchemaType } from 'ajv';
-import { Status, StatusDto } from '../database/mongo/schemas/status.schema';
+import {
+  Status,
+  StatusDto,
+} from '../core/database/mongo/schemas/status.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
