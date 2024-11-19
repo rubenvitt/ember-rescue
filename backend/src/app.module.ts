@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
 import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
 import { FahrzeugeModule } from './fahrzeuge/fahrzeuge.module';
-import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
@@ -28,7 +27,6 @@ import { BaseTemplateModule } from '@templates/base-template.module';
     ScheduleModule.forRoot(),
     EinsatztagebuchModule,
     FahrzeugeModule,
-    StatusModule,
     EinsatzModule,
     SecretsModule,
     SettingsModule,

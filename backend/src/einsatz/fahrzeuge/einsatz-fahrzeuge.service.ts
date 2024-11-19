@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
-import { StatusService } from '../../status/status.service';
+import { StatusService } from '@templates/status/status.service';
 import { FahrzeugeService } from '../../fahrzeuge/fahrzeuge.service';
 import { InjectModel } from '@nestjs/mongoose';
 import {

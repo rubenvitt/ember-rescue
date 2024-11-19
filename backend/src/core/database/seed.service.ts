@@ -8,7 +8,7 @@ import * as optaDistricts from './seeds/opta/districts.json';
 import * as optaLocalCodes from './seeds/opta/local-codes.json';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Status } from './mongo/schemas/status.schema';
+import { Status } from '@templates/status/status.schema';
 import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Bearbeiter } from './mongo/schemas/bearbeiter.schema';
 import { Counter } from './mongo/schemas/counter.schema';
@@ -26,14 +26,13 @@ import { LocalCodeOptaTemplate } from '@templates/opta/schemas/local-code-opta.s
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { TemplateDocument } from '@core/database/base-documents';
 import { QualifikationenRepository } from '@templates/qualifikationen/qualifikationen.repository';
+import { StatusRepository } from '@templates/status/status.repository';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
   private readonly logger = new Logger(SeedService.name);
 
   constructor(
-    @InjectModel(Status.name)
-    private readonly status: Model<Status>,
     @InjectModel(Einsatz.name)
     private readonly einsatzModel: Model<Einsatz>,
     @InjectModel(Bearbeiter.name)
@@ -47,6 +46,7 @@ export class SeedService implements OnModuleInit {
     private readonly localCodeOptaRepository: LocalCodeOptaRepository,
     private readonly alarmstichwortRepository: AlarmstichwortRepository,
     private readonly qualifikationenRepository: QualifikationenRepository,
+    private readonly statusRepository: StatusRepository,
   ) {}
 
   async onModuleInit() {
@@ -95,7 +95,11 @@ export class SeedService implements OnModuleInit {
       'OptaLocalCodes',
     );
 
-    await this.insertSeedData(statusItems, this.status, 'Status');
+    await this.insertSeedServiceData(
+      statusItems,
+      this.statusRepository,
+      'Status',
+    );
 
     await this.insertSeedServiceData(
       qualifikationItems,
@@ -167,24 +171,6 @@ export class SeedService implements OnModuleInit {
       this.logger.log(`✳️ Inserted ${e.insertedDocs.length} ${dataType}`);
       this.logger.debug(
         `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors[0].err.errmsg})`,
-      );
-    }
-  }
-
-  //private async insertSeedData<T extends ITemplate>(
-  private async insertSeedData<T>(
-    data: unknown[],
-    model: Model<T>,
-    dataType: string,
-  ) {
-    try {
-      this.logger.debug(`🤖 Try to insert ${dataType}`);
-      const insertedData = await model.insertMany(data, { ordered: false });
-      this.logger.log(`✳️ Inserted ${insertedData.length} ${dataType}`);
-    } catch (e) {
-      this.logger.log(`✳️ Inserted ${e.insertedDocs.length} ${dataType}`);
-      this.logger.debug(
-        `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors.map((error) => error.err.errmsg).join(', ')})`,
       );
     }
   }

@@ -1,7 +1,6 @@
 import { DynamicModule } from '@nestjs/common';
 import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
 import { Fahrzeug, FahrzeugSchema } from './mongo/schemas/fahrzeug.schema';
-import { Status, StatusSchema } from './mongo/schemas/status.schema';
 import { Secret } from './mongo/schemas/secret.schema';
 import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
 import {
@@ -32,7 +31,6 @@ export const mongooseImports: DynamicModule[] = [
       name: Fahrzeug.name,
       schema: FahrzeugSchema,
     },
-    { name: Status.name, schema: StatusSchema },
     { name: Counter.name, schema: CounterSchema },
     { name: Bearbeiter.name, schema: BearbeiterSchema },
     { name: Notiz.name, schema: NotizSchema },

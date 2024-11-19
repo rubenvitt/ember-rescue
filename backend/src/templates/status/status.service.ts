@@ -1,28 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { JSONSchemaType } from 'ajv';
-import {
-  Status,
-  StatusDto,
-} from '../core/database/mongo/schemas/status.schema';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { StatusDto } from '@templates/status/status.schema';
+import { StatusRepository } from '@templates/status/status.repository';
 
 @Injectable()
 export class StatusService {
-  constructor(
-    @InjectModel(Status.name) private readonly statusModel: Model<Status>,
-  ) {}
+  constructor(private readonly repository: StatusRepository) {}
 
   findAll() {
-    return this.statusModel.find().exec();
+    return this.repository.findActive();
   }
 
   findStatusByCode(code: number) {
-    return this.statusModel.findOne({ code }).exec();
+    return this.repository.findActiveByCode(code);
   }
 
   findStatusById(id: string) {
-    return this.statusModel.findById(id).exec();
+    return this.repository.findActiveById(id);
   }
 
   getSchema(): JSONSchemaType<StatusDto[]> {

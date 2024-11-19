@@ -1,8 +1,8 @@
-import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { TemplateDocument } from '@core/database';
 
 @Schema({ collection: 'status' })
-export class Status extends Document {
+export class Status extends TemplateDocument {
   @Prop({ required: true, unique: true })
   code: string;
 

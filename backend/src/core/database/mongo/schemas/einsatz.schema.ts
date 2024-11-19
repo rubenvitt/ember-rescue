@@ -9,7 +9,7 @@ import {
 } from '@templates/alarmstichworte/alarmstichwort.schema';
 import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
-import { Status } from './status.schema';
+import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifikationen/qualifikation.schema';
 import { Fahrzeug } from './fahrzeug.schema';
 
