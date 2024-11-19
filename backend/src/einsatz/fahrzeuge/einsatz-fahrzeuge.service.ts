@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
 import { StatusService } from '@templates/status/status.service';
-import { FahrzeugeService } from '../../fahrzeuge/fahrzeuge.service';
+import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   Einsatz,
@@ -25,9 +25,8 @@ export class EinsatzFahrzeugeService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
-      _id: fahrzeugId,
-    });
+    const existingFahrzeug =
+      await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
     const einsatz = await this.einsatzModel.findById(einsatzId).exec();
     if (!einsatz) throw new NotFoundException('Einsatz not found');
@@ -145,9 +144,8 @@ export class EinsatzFahrzeugeService {
   ) {
     this.logger.debug('chaning status');
 
-    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug({
-      _id: fahrzeugId,
-    });
+    const existingFahrzeug =
+      await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
     const einsatz = await this.einsatzModel
       .findByIdAndUpdate(

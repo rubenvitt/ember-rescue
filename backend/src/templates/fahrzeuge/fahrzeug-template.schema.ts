@@ -4,13 +4,16 @@ import {
   OrganisationId,
   VerwaltungsstufeId,
 } from 'taktische-zeichen-core';
+import { BaseOptaTemplate } from '@templates/opta/schemas/base-opta.schema';
 
+// TODO: remove this:
 export type FahrzeugIconDefinitionDto = {
   organisation: OrganisationId;
   fachaufgabe: FachaufgabeId;
   verwaltungsstufe: VerwaltungsstufeId;
 };
 
+// TODO: noch richtig so?
 @Schema()
 class FahrzeugIconDefinition {
   @Prop()
@@ -21,8 +24,8 @@ class FahrzeugIconDefinition {
   verwaltungsstufe: string;
 }
 
-@Schema({ timestamps: true, collection: 'fahrzeuge' })
-export class Fahrzeug {
+@Schema({ timestamps: true, collection: 'fahrzeug-templates' })
+export class FahrzeugTemplate extends BaseOptaTemplate {
   @Prop({ required: true })
   fullOpta: string;
 
@@ -33,4 +36,5 @@ export class Fahrzeug {
   kapazitaet?: number;
 }
 
-export const FahrzeugSchema = SchemaFactory.createForClass(Fahrzeug);
+export const FahrzeugTemplateSchema =
+  SchemaFactory.createForClass(FahrzeugTemplate);

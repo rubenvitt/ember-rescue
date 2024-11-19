@@ -11,7 +11,7 @@ import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
 import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifikationen/qualifikation.schema';
-import { Fahrzeug } from './fahrzeug.schema';
+import { FahrzeugTemplate } from '@templates/fahrzeuge/fahrzeug-template.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -38,7 +38,7 @@ class Personal {
 }
 
 @Schema({ timestamps: true })
-export class FahrzeugOnEinsatz extends Fahrzeug {
+export class FahrzeugOnEinsatz extends FahrzeugTemplate {
   @Prop({ required: true })
   einsatzbeginn: Date;
 

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
-import { FahrzeugeService } from '../fahrzeuge/fahrzeuge.service';
+import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   CreateEinsatzDto,
@@ -120,10 +120,7 @@ export class EinsatzService {
       const alarmstichwort = await this.alarmstichwortService.findActiveById(
         updateEinsatzDto.alarmstichwort,
       );
-      const aufnehmendesRettungsmittel =
-        await this.fahrzeugeService.findFahrzeug({
-          _id: einsatz.aufnehmendes_rettungsmittel['id'],
-        });
+      //const aufnehmendesRettungsmittel = await this.fahrzeugeService.findFahrzeugeinsatz.aufnehmendes_rettungsmittel['id']        });
 
       await this.einsatztagebuchService.createEinsatztagebuchEintrag(
         einsatzId,
@@ -131,8 +128,8 @@ export class EinsatzService {
           einsatzId: einsatzId,
           type: EinsatztagebuchEintragEnum.GENERISCH,
           content: `Das Alarmstichwort wurde angepasst zu: ${alarmstichwort!!.code}`,
-          absender: aufnehmendesRettungsmittel!!.fullOpta,
-          empfaenger: aufnehmendesRettungsmittel!!.fullOpta,
+          absender: einsatz.aufnehmendesRettungsmittel,
+          empfaenger: einsatz.aufnehmendesRettungsmittel,
         },
       );
 

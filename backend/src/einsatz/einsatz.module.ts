@@ -4,7 +4,7 @@ import { EinsatzService } from './einsatz.service';
 import { DatabaseModule } from '@core/database/database.module';
 import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module';
 import { EinsatzFahrzeugeModule } from './fahrzeuge/einsatz-fahrzeuge.module';
-import { FahrzeugeModule } from '../fahrzeuge/fahrzeuge.module';
+import { FahrzeugeModule } from '@templates/fahrzeuge/fahrzeuge.module';
 import { BearbeiterModule } from '../bearbeiter/bearbeiter.module';
 import { BaseTemplateModule } from '@templates/base-template.module';
 

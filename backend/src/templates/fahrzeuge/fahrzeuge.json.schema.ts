@@ -1,5 +1,5 @@
 import { JSONSchemaType } from 'ajv';
-import { FahrzeugImportDto } from '../types';
+import { FahrzeugImportDto } from '../../types';
 
 const createFahrzeugSchema = (
   fahrzeugTypEnum: string[],

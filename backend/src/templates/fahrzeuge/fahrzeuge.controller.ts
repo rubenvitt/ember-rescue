@@ -9,7 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { FahrzeugeService } from './fahrzeuge.service';
-import { UpdateCreateFahrzeugeDto } from '../types';
+import { UpdateCreateFahrzeugeDto } from '../../types';
 import { Response } from 'express';
 
 @Controller('fahrzeuge')

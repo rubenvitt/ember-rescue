@@ -6,12 +6,6 @@ import { FunctionGroup } from '@templates/opta/constants';
 export class FunctionOptaTemplate extends BaseOptaTemplate {
   @Prop({ required: true, type: String, enum: FunctionGroup })
   group: FunctionGroup;
-
-  @Prop({ required: false })
-  minPersonnel: number;
-
-  @Prop({ required: false })
-  maxPersonnel: number;
 }
 
 export const FunctionOptaSchema =
