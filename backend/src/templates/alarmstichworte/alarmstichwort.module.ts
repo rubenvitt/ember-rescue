@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AlarmstichwortController } from './alarmstichwortController';
-import { AlarmstichwortService } from './alarmstichwort.service';
+import { AlarmstichwortRepository } from './alarmstichwort.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Alarmstichwort,
   AlarmstichwortSchema,
-} from '@templates/alarms/alarmstichwort.schema';
+} from '@templates/alarmstichworte/alarmstichwort.schema';
 
 @Module({
   controllers: [AlarmstichwortController],
-  providers: [AlarmstichwortService],
+  providers: [AlarmstichwortRepository],
   imports: [
     MongooseModule.forFeature([
       {
@@ -18,6 +18,6 @@ import {
       },
     ]),
   ],
-  exports: [AlarmstichwortService],
+  exports: [AlarmstichwortRepository],
 })
 export class AlarmstichwortModule {}

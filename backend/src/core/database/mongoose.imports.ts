@@ -1,9 +1,5 @@
 import { DynamicModule } from '@nestjs/common';
 import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
-import {
-  Alarmstichwort,
-  AlarmstichwortSchema,
-} from '@templates/alarms/alarmstichwort.schema';
 import { Fahrzeug, FahrzeugSchema } from './mongo/schemas/fahrzeug.schema';
 import { Status, StatusSchema } from './mongo/schemas/status.schema';
 import { Secret } from './mongo/schemas/secret.schema';
@@ -12,10 +8,6 @@ import {
   Bearbeiter,
   BearbeiterSchema,
 } from './mongo/schemas/bearbeiter.schema';
-import {
-  Qualifikation,
-  QualifikationSchema,
-} from './mongo/schemas/qualifikation.schema';
 import { Notiz, NotizSchema } from './mongo/schemas/einsatz/notiz.schema';
 import {
   Reminder,
@@ -36,7 +28,6 @@ export const mongooseImports: DynamicModule[] = [
   }),
   MongooseModule.forFeature([
     // TODO: these imports must be moved to the services
-    { name: Alarmstichwort.name, schema: AlarmstichwortSchema },
     {
       name: Fahrzeug.name,
       schema: FahrzeugSchema,
@@ -44,7 +35,6 @@ export const mongooseImports: DynamicModule[] = [
     { name: Status.name, schema: StatusSchema },
     { name: Counter.name, schema: CounterSchema },
     { name: Bearbeiter.name, schema: BearbeiterSchema },
-    { name: Qualifikation.name, schema: QualifikationSchema },
     { name: Notiz.name, schema: NotizSchema },
     { name: Reminder.name, schema: ReminderSchema },
   ]),

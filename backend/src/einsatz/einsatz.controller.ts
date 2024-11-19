@@ -14,7 +14,7 @@ import { EinsatzService } from './einsatz.service';
 import { CreateEinsatzDto, UpdateEinsatzDto } from '../types';
 import { extractBearbeiterName } from '../utils/header.utils';
 import { BearbeiterService } from '../bearbeiter/bearbeiter.service';
-import { AlarmstichwortService } from '@templates/alarms/alarmstichwort.service';
+import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 
 @Controller('einsatz')
 export class EinsatzController {
@@ -23,7 +23,7 @@ export class EinsatzController {
   constructor(
     private readonly einsatzService: EinsatzService,
     private readonly bearbeiterService: BearbeiterService,
-    private readonly alarmstichwortService: AlarmstichwortService,
+    private readonly alarmstichwortService: AlarmstichwortRepository,
   ) {}
 
   @Get(':id')

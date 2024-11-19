@@ -8,7 +8,7 @@ import {
   Einsatz,
 } from '@core/database/mongo/schemas/einsatz.schema';
 import { FilterQuery, Model } from 'mongoose';
-import { AlarmstichwortService } from '@templates/alarms/alarmstichwort.service';
+import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 
 @Injectable()
 export class EinsatzService {
@@ -17,7 +17,7 @@ export class EinsatzService {
   constructor(
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
-    private readonly alarmstichwortService: AlarmstichwortService,
+    private readonly alarmstichwortService: AlarmstichwortRepository,
     @InjectModel(Einsatz.name) private readonly einsatzModel: Model<Einsatz>,
   ) {}
 

@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
 import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
-import { QualifikationenModule } from './qualifikationen/qualifikationen.module';
 import { FahrzeugeModule } from './fahrzeuge/fahrzeuge.module';
 import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
@@ -21,14 +20,13 @@ import { NotizenModule } from './notizen/notizen.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CoreModule } from '@core/core.module';
-import { TemplateBaseModule } from '@templates/template-base.module';
+import { BaseTemplateModule } from '@templates/base-template.module';
 
 @Module({
   imports: [
     BearbeiterModule,
     ScheduleModule.forRoot(),
     EinsatztagebuchModule,
-    QualifikationenModule,
     FahrzeugeModule,
     StatusModule,
     EinsatzModule,
@@ -42,7 +40,7 @@ import { TemplateBaseModule } from '@templates/template-base.module';
     NotizenModule,
     RemindersModule,
     CoreModule,
-    TemplateBaseModule,
+    BaseTemplateModule,
   ],
   controllers: [AppController],
   providers: [

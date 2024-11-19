@@ -1,11 +1,13 @@
 import { Controller, Get, Logger } from '@nestjs/common';
-import { AlarmstichwortService } from './alarmstichwort.service';
+import { AlarmstichwortRepository } from './alarmstichwort.repository';
 
 @Controller('alarmstichwort')
 export class AlarmstichwortController {
   private readonly logger: Logger = new Logger(AlarmstichwortController.name);
 
-  constructor(private readonly alarmstichwortService: AlarmstichwortService) {}
+  constructor(
+    private readonly alarmstichwortService: AlarmstichwortRepository,
+  ) {}
 
   @Get()
   getAlarmstichworte() {

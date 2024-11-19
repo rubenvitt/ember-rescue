@@ -6,11 +6,11 @@ import { EinsatztagebuchEintragType } from '../../../../types';
 import {
   Alarmstichwort,
   AlarmstichwortDto,
-} from '@templates/alarms/alarmstichwort.schema';
+} from '@templates/alarmstichworte/alarmstichwort.schema';
 import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
 import { Status } from './status.schema';
-import { Qualifikation } from './qualifikation.schema';
+import { QualifikationTemplate } from '@templates/qualifikationen/qualifikation.schema';
 import { Fahrzeug } from './fahrzeug.schema';
 
 @Schema({ timestamps: true })
@@ -28,7 +28,7 @@ class Personal {
   name: string;
 
   @Prop()
-  qualifikation: Qualifikation;
+  qualifikation: QualifikationTemplate;
 
   @Prop()
   telefonnummer: string;
@@ -60,7 +60,7 @@ export type FahrzeugOnEinsatzDto = {
   einsatzende?: Date; // Optional field
   personal: {
     name: string;
-    qualifikation: Qualifikation;
+    qualifikation: QualifikationTemplate;
     telefonnummer: string;
     isFuehrungskraft: boolean;
   }[];

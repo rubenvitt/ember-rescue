@@ -6,7 +6,7 @@ import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module
 import { EinsatzFahrzeugeModule } from './fahrzeuge/einsatz-fahrzeuge.module';
 import { FahrzeugeModule } from '../fahrzeuge/fahrzeuge.module';
 import { BearbeiterModule } from '../bearbeiter/bearbeiter.module';
-import { TemplateBaseModule } from '@templates/template-base.module';
+import { BaseTemplateModule } from '@templates/base-template.module';
 
 @Module({
   controllers: [EinsatzController],
@@ -18,7 +18,7 @@ import { TemplateBaseModule } from '@templates/template-base.module';
     EinsatzFahrzeugeModule,
     EinsatztagebuchModule,
     FahrzeugeModule,
-    TemplateBaseModule,
+    BaseTemplateModule,
   ],
 })
 export class EinsatzModule {}
