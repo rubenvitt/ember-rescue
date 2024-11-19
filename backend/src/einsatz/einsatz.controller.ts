@@ -14,7 +14,7 @@ import { EinsatzService } from './einsatz.service';
 import { CreateEinsatzDto, UpdateEinsatzDto } from '../types';
 import { extractBearbeiterName } from '../utils/header.utils';
 import { BearbeiterService } from '../bearbeiter/bearbeiter.service';
-import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
+import { AlarmstichwortService } from '@templates/alarms/alarmstichwort.service';
 
 @Controller('einsatz')
 export class EinsatzController {
@@ -55,7 +55,7 @@ export class EinsatzController {
         await this.bearbeiterService.findByNameOrCreate(bearbeiterName),
       beginn: new Date(),
       aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
-      einsatzAlarmstichwort: (await this.alarmstichwortService.find(
+      einsatzAlarmstichwort: (await this.alarmstichwortService.findActiveById(
         body.alarmstichwort!!,
       ))!!,
       einsatzMeta: {},

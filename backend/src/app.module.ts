@@ -1,53 +1,37 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './core/database/database.module';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
-import { ConfigModule } from '@nestjs/config';
 import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
 import { QualifikationenModule } from './qualifikationen/qualifikationen.module';
 import { FahrzeugeModule } from './fahrzeuge/fahrzeuge.module';
 import { StatusModule } from './status/status.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
-import * as Joi from 'joi';
-import { AlarmstichwortModule } from './alarmstichwort/alarmstichwort.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
 import { MetaModule } from './meta/meta.module';
 import { NinaModule } from './apis/bund/nina/nina.module';
 import { MapModule } from './map/map.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './core/auth/auth.guard';
-import { AuthMiddleware } from './core/auth/auth.middleware';
+import { AuthGuard } from '@core/auth/auth.guard';
+import { AuthMiddleware } from '@core/auth/auth.middleware';
 import { ExportModule } from './export/export.module';
 import { PdfModule } from './pdf/pdf.module';
 import { NotizenModule } from './notizen/notizen.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { OptaModule } from './opta/opta.module';
-import { CoreModule } from './core/core.module';
+import { CoreModule } from '@core/core.module';
+import { TemplateBaseModule } from '@templates/template-base.module';
 
 @Module({
   imports: [
-    DatabaseModule,
     BearbeiterModule,
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string()
-          .valid('development', 'production', 'test')
-          .default('development'),
-        PORT: Joi.number().default(3000),
-      }),
-      envFilePath: ['.env.development.local', '.dev.env', '.env'],
-      isGlobal: true,
-    }),
     EinsatztagebuchModule,
     QualifikationenModule,
     FahrzeugeModule,
     StatusModule,
     EinsatzModule,
-    AlarmstichwortModule,
     SecretsModule,
     SettingsModule,
     MetaModule,
@@ -57,8 +41,8 @@ import { CoreModule } from './core/core.module';
     PdfModule,
     NotizenModule,
     RemindersModule,
-    OptaModule,
     CoreModule,
+    TemplateBaseModule,
   ],
   controllers: [AppController],
   providers: [

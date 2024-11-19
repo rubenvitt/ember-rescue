@@ -1,7 +1,6 @@
 import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { EmbeddedOptaCodesDto } from './core/database/mongo/schemas/opta.schema';
-import { FahrzeugIconDefinitionDto } from './core/database/mongo/schemas/fahrzeug.schema';
+import { FahrzeugIconDefinitionDto } from '@core/database/mongo/schemas/fahrzeug.schema';
 
 export type BearbeiterDto = {
   id: string;
@@ -25,7 +24,7 @@ export type StatusDto = SmallStatusDto & {
 
 export type UpdateCreateFahrzeugeDto = {
   _id: string | undefined;
-  opta: EmbeddedOptaCodesDto;
+  opta: any; // TODO
   iconDefinition: FahrzeugIconDefinitionDto;
 }[];
 

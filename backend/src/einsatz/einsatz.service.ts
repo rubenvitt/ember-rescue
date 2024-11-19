@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
-import { AlarmstichwortService } from '../alarmstichwort/alarmstichwort.service';
 import { FahrzeugeService } from '../fahrzeuge/fahrzeuge.service';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   CreateEinsatzDto,
   Einsatz,
-} from '../core/database/mongo/schemas/einsatz.schema';
+} from '@core/database/mongo/schemas/einsatz.schema';
 import { FilterQuery, Model } from 'mongoose';
+import { AlarmstichwortService } from '@templates/alarms/alarmstichwort.service';
 
 @Injectable()
 export class EinsatzService {
@@ -117,7 +117,7 @@ export class EinsatzService {
         updateEinsatzDto.alarmstichwort,
       )
     ) {
-      const alarmstichwort = await this.alarmstichwortService.find(
+      const alarmstichwort = await this.alarmstichwortService.findActiveById(
         updateEinsatzDto.alarmstichwort,
       );
       const aufnehmendesRettungsmittel =

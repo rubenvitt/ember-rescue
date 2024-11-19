@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   Alarmstichwort,
   AlarmstichwortSchema,
-} from '../core/database/mongo/schemas/alarmstichwort.schema';
+} from '@templates/alarms/alarmstichwort.schema';
 
 @Module({
   controllers: [AlarmstichwortController],

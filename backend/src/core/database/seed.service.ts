@@ -1,28 +1,33 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import * as alarmstichworte from './mongo/seeds/alarmstichworte.json';
-import * as statusItems from './mongo/seeds/status.json';
-import * as qualifikationItems from './mongo/seeds/qualifikationen.json';
+import * as alarmstichworte from '@core/database/seeds/alarmstichworte.json';
+import * as statusItems from '@core/database/seeds/status.json';
+import * as qualifikationItems from '@core/database/seeds/qualifikationen.json';
+import * as optaFunktionen from './seeds/opta/funktionen.json';
+import * as optaBos from './seeds/opta/bos.json';
+import * as optaDistricts from './seeds/opta/districts.json';
+import * as optaLocalCodes from './seeds/opta/local-codes.json';
 import { Qualifikation } from './mongo/schemas/qualifikation.schema';
-import * as optaFunktionen from './mongo/seeds/opta/funktionen.json';
-import * as optaBos from './mongo/seeds/opta/bos.json';
-import * as optaDistricts from './mongo/seeds/opta/districts.json';
-import * as optaLocalCodes from './mongo/seeds/opta/local-codes.json';
-import { Alarmstichwort } from './mongo/schemas/alarmstichwort.schema';
+import { Alarmstichwort } from '@templates/alarms/alarmstichwort.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  BaseOptaEntry,
-  BosOptaEntry,
-  DistrictOptaEntry,
-  FunctionOptaEntry,
-  LocalCodeOptaEntry,
-} from './mongo/schemas/opta/entry.schema';
-import { Opta } from './mongo/schemas/opta.schema';
 import { Status } from './mongo/schemas/status.schema';
 import { Secret } from './mongo/schemas/secret.schema';
 import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Bearbeiter } from './mongo/schemas/bearbeiter.schema';
 import { Counter } from './mongo/schemas/counter.schema';
+import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.repository';
+import { BosGroup } from '@templates/opta/constants';
+import { OptaRepository } from '@templates/opta/repositories/opta.repository';
+import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
+import { LocalCodeOptaRepository } from '@templates/opta/repositories/local-code-opta.repository';
+import { DistrictOptaRepository } from '@templates/opta/repositories/district-opta.repository';
+import { FunctionOptaTemplate } from '@templates/opta/schemas/function-opta.schema';
+import { BaseTemplateRepository } from '@templates/base-template.repository';
+import { BosOptaTemplate } from '@templates/opta/schemas/bos-opta.schema';
+import { DistrictOptaTemplate } from '@templates/opta/schemas/district-opta.schema';
+import { LocalCodeOptaTemplate } from '@templates/opta/schemas/local-code-opta.schema';
+import { AlarmstichwortService } from '@templates/alarms/alarmstichwort.service';
+import { TemplateDocument } from '@core/database/base-documents';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -31,18 +36,8 @@ export class SeedService implements OnModuleInit {
   constructor(
     @InjectModel(Alarmstichwort.name)
     private alarmstichwortModel: Model<Alarmstichwort>,
-    @InjectModel(BaseOptaEntry.mongoName)
-    private readonly functionEntry: Model<FunctionOptaEntry>,
-    @InjectModel(BaseOptaEntry.mongoName)
-    private readonly bosEntry: Model<BosOptaEntry>,
-    @InjectModel(BaseOptaEntry.mongoName)
-    private readonly districtEntry: Model<DistrictOptaEntry>,
-    @InjectModel(BaseOptaEntry.mongoName)
-    private readonly localCodesEntry: Model<LocalCodeOptaEntry>,
     @InjectModel(Status.name)
     private readonly status: Model<Status>,
-    @InjectModel(Opta.name)
-    private readonly optaModel: Model<Opta>,
     @InjectModel(Secret.name)
     private readonly secretModel: Model<Secret>,
     @InjectModel(Einsatz.name)
@@ -53,36 +48,57 @@ export class SeedService implements OnModuleInit {
     private readonly counterModel: Model<Counter>,
     @InjectModel(Qualifikation.name)
     private readonly qualifikationModel: Model<Qualifikation>,
+    private readonly optaRepository: OptaRepository,
+    private readonly bosOptaRepository: BosOptaRepository,
+    private readonly districtOptaRepository: DistrictOptaRepository,
+    private readonly functionOptaRepository: FunctionOptaRepository,
+    private readonly localCodeOptaRepository: LocalCodeOptaRepository,
+    private readonly alarmstichwortService: AlarmstichwortService,
   ) {}
 
   async onModuleInit() {
     this.logger.log('🌱 Start Seeding');
 
+    try {
+      await this.bosOptaRepository.create({
+        code: 'DRK',
+        description: 'Dresden',
+        label: 'Dresden',
+        group: BosGroup.Feuerwehren,
+        rufname: "Flotte 'Dresden'",
+      });
+    } catch (e) {
+      this.logger.error('Error while seeding bos opta: ' + e.message);
+    }
+
     // Alarmstichworte
-    await this.insertSeedData(
+    await this.insertSeedServiceData(
       alarmstichworte,
-      this.alarmstichwortModel,
+      this.alarmstichwortService,
       'Alarmstichworte',
     );
 
-    // Seed-Daten für Opta
-    await this.insertSeedData(
-      optaFunktionen,
-      this.functionEntry,
+    await this.insertSeedServiceData(
+      optaFunktionen as FunctionOptaTemplate[],
+      this.functionOptaRepository,
       'OptaFunktionen',
     );
 
-    await this.insertSeedData(optaBos, this.bosEntry, 'OptaBos');
+    await this.insertSeedServiceData(
+      optaBos as BosOptaTemplate[],
+      this.bosOptaRepository,
+      'OptaBos',
+    );
 
-    await this.insertSeedData(
-      optaDistricts,
-      this.districtEntry,
+    await this.insertSeedServiceData(
+      optaDistricts as DistrictOptaTemplate[],
+      this.districtOptaRepository,
       'OptaDistricts',
     );
 
-    await this.insertSeedData(
-      optaLocalCodes,
-      this.localCodesEntry,
+    await this.insertSeedServiceData(
+      optaLocalCodes as LocalCodeOptaTemplate[],
+      this.localCodeOptaRepository,
       'OptaLocalCodes',
     );
 
@@ -95,11 +111,11 @@ export class SeedService implements OnModuleInit {
     );
 
     try {
-      await this.optaModel.create({
-        district: await this.districtEntry.findOne({ code: 'NI' }),
-        bosCode: await this.bosEntry.findOne({ code: 'DRK' }),
-        localCode: await this.localCodesEntry.findOne({ code: '40' }),
-        functionCode: await this.functionEntry.findOne({ code: '12' }),
+      await this.optaRepository.create({
+        district: 'NI',
+        bosCode: 'DRK',
+        localCode: '40',
+        functionCode: '12',
         orderNumber: '01',
         ort: 'Uelzen',
       });
@@ -123,8 +139,7 @@ export class SeedService implements OnModuleInit {
       try {
         let newVar = await this.einsatzModel.create({
           bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
-          aufnehmendesRettungsmittel: (await this.optaModel.findOne().exec())!!
-            .fullOpta,
+          aufnehmendesRettungsmittel: 'Testfahrzeug',
           einsatzMeta: {},
           einsatzAlarmstichwort: {
             code: 'B2',
@@ -146,6 +161,24 @@ export class SeedService implements OnModuleInit {
     this.logger.log('🌱 Finished Seeding');
   }
 
+  private async insertSeedServiceData<T extends TemplateDocument>(
+    data: Partial<T>[],
+    repository: BaseTemplateRepository<T>,
+    dataType: string,
+  ) {
+    try {
+      this.logger.debug(`🤖 Try to insert ${dataType}`);
+      await repository.createMany(data, { ordered: false });
+      this.logger.log(`✳️ Inserted ${data.length} ${dataType}`);
+    } catch (e) {
+      this.logger.log(`✳️ Inserted ${e.insertedDocs.length} ${dataType}`);
+      this.logger.debug(
+        `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors[0].err.errmsg})`,
+      );
+    }
+  }
+
+  //private async insertSeedData<T extends ITemplate>(
   private async insertSeedData<T>(
     data: unknown[],
     model: Model<T>,
@@ -158,7 +191,7 @@ export class SeedService implements OnModuleInit {
     } catch (e) {
       this.logger.log(`✳️ Inserted ${e.insertedDocs.length} ${dataType}`);
       this.logger.debug(
-        `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors[0].err.errmsg})`,
+        `🦘 Skipped ${e.writeErrors.length} ${dataType} (${e.writeErrors.map((error) => error.err.errmsg).join(', ')})`,
       );
     }
   }

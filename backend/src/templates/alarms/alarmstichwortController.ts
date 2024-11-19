@@ -9,6 +9,6 @@ export class AlarmstichwortController {
 
   @Get()
   getAlarmstichworte() {
-    return this.alarmstichwortService.findAll();
+    return this.alarmstichwortService.findActive();
   }
 }

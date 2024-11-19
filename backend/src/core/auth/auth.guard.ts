@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { config } from '../config/configuration';
+import { config } from '@core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

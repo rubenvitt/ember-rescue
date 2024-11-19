@@ -17,6 +17,20 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@core": [
+        "./src/core"
+      ],
+      "@core/*": [
+        "./src/core/*"
+      ],
+      "@templates": [
+        "./src/templates"
+      ],
+      "@templates/*": [
+        "./src/templates/*"
+      ]
+    }
   }
 }

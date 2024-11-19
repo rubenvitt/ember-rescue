@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { TemplateDocument } from '@core/database/base-documents';
 
 export class AlarmstichwortDto {
   code: string;
@@ -7,7 +7,7 @@ export class AlarmstichwortDto {
 }
 
 @Schema({ timestamps: true, collection: 'alarmstichworte' })
-export class Alarmstichwort extends Document {
+export class Alarmstichwort extends TemplateDocument {
   @Prop({ required: true })
   code: string;
 

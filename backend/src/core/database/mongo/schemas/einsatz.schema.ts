@@ -3,7 +3,10 @@ import { Document } from 'mongoose';
 import { Prop, Schema } from '@nestjs/mongoose';
 import { BearbeiterDto } from './bearbeiter.schema';
 import { EinsatztagebuchEintragType } from '../../../../types';
-import { Alarmstichwort, AlarmstichwortDto } from './alarmstichwort.schema';
+import {
+  Alarmstichwort,
+  AlarmstichwortDto,
+} from '@templates/alarms/alarmstichwort.schema';
 import { Notiz } from './einsatz/notiz.schema';
 import { Reminder } from './einsatz/reminder.schema';
 import { Status } from './status.schema';

@@ -3,13 +3,8 @@ import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
 import {
   Alarmstichwort,
   AlarmstichwortSchema,
-} from './mongo/schemas/alarmstichwort.schema';
-import {
-  BaseOptaEntry,
-  BaseOptaEntrySchema,
-} from './mongo/schemas/opta/entry.schema';
+} from '@templates/alarms/alarmstichwort.schema';
 import { Fahrzeug, FahrzeugSchema } from './mongo/schemas/fahrzeug.schema';
-import { Opta, OptaSchema } from './mongo/schemas/opta.schema';
 import { Status, StatusSchema } from './mongo/schemas/status.schema';
 import { Secret } from './mongo/schemas/secret.schema';
 import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
@@ -29,7 +24,7 @@ import {
 import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Model } from 'mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { config } from '../config/configuration';
+import { config } from '@core';
 import { createEncryptedSchema } from '../../utils/crypt.utils';
 
 export const mongooseImports: DynamicModule[] = [
@@ -43,16 +38,8 @@ export const mongooseImports: DynamicModule[] = [
     // TODO: these imports must be moved to the services
     { name: Alarmstichwort.name, schema: AlarmstichwortSchema },
     {
-      name: BaseOptaEntry.mongoName,
-      schema: BaseOptaEntrySchema,
-    },
-    {
       name: Fahrzeug.name,
       schema: FahrzeugSchema,
-    },
-    {
-      name: Opta.name,
-      schema: OptaSchema,
     },
     { name: Status.name, schema: StatusSchema },
     { name: Counter.name, schema: CounterSchema },
