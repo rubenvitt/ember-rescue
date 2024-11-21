@@ -1,9 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { QualifikationenRepository } from './qualifikationen.repository';
 import { JSONSchemaType } from 'ajv';
 import { QualifikationDto } from '@ember-rescue/shared';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('qualifikationen')
+@UseGuards(BearbeiterGuard)
 export class QualifikationenController {
   constructor(
     private readonly qualifikationenService: QualifikationenRepository,

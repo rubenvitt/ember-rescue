@@ -2,10 +2,12 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
-import { CreateEinsatzDto, Einsatz } from '../schema/einsatz.schema';
+import { Einsatz } from '../schema/einsatz.schema';
 import { FilterQuery } from 'mongoose';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { EinsatzRepository } from '../schema/einsatz.repository';
+import { CreateEinsatzParams, EinsatzDto } from './dto/einsatz.dto';
+import { EinsatzMapper } from './einsatz.mapper';
 
 @Injectable()
 export class EinsatzCoreService {
@@ -16,6 +18,7 @@ export class EinsatzCoreService {
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortRepository,
     private readonly repository: EinsatzRepository,
+    private readonly einsatzMapper: EinsatzMapper,
   ) {}
 
   async getEinsatz(id: string) {
@@ -28,12 +31,27 @@ export class EinsatzCoreService {
     return einsatz;
   }
 
-  async createEinsatz(data: CreateEinsatzDto) {
-    const einsatz = await this.repository.create(data);
+  async createEinsatz({
+    bearbeiter,
+    createEinsatzDto,
+  }: CreateEinsatzParams): Promise<EinsatzDto> {
+    const alarmstichwort = await this.alarmstichwortService.findActive({
+      code: createEinsatzDto.einsatzAlarmstichwort.code,
+    });
 
-    this.logger.log(`Einsatz '${einsatz.einsatznummer}' erstellt`);
+    const einsatz = await this.repository.create({
+      bearbeiter: bearbeiter,
+      beginn: new Date(),
+      aufnehmendesRettungsmittel: createEinsatzDto.aufnehmendesRettungsmittel,
+      einsatzAlarmstichwort: alarmstichwort,
+    });
 
-    return einsatz;
+    this.logger.log('Created new Einsatz', { id: einsatz.id });
+
+    // TODO[ember-rescue-68](rubeen, 21.11.24): maybe add eventHandling:
+    //await this.eventEmitter.emit('einsatz.created', einsatz);
+
+    return this.einsatzMapper.toDto(einsatz);
   }
 
   getEinsaetze(filter: FilterQuery<Einsatz>) {

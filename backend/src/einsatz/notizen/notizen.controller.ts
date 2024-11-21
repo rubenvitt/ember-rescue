@@ -9,15 +9,16 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { NotizenService } from './notizen.service';
-import {
-  extractBearbeiterName,
-  extractEinsatzId,
-} from '../../utils/header.utils';
-import { CreateNotizDto, UpdateNotizDto } from '../../types';
+import { extractEinsatzId } from '../../utils/header.utils';
+import { BearbeiterDto, CreateNotizDto, UpdateNotizDto } from '../../types';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller(`notizen`)
+@UseGuards(BearbeiterGuard)
 export class NotizenController {
   private readonly logger = new Logger(NotizenController.name);
 
@@ -26,26 +27,24 @@ export class NotizenController {
   @Get()
   getNotizen(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Query('done') done: boolean = false,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.notizenService.findAllNotizen(einsatzId, bearbeiterName, done);
+    return this.notizenService.findAllNotizen(einsatzId, bearbeiter.name, done);
   }
 
   @Post()
   createNotiz(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() notizDto: CreateNotizDto,
   ) {
     this.logger.log('Creating new notiz', { notizDto });
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.createNotiz({
       einsatzId,
-      bearbeiterId: bearbeiterName,
+      bearbeiterId: bearbeiter.name,
       notizDto,
     });
   }
@@ -54,14 +53,13 @@ export class NotizenController {
   async updateNotiz(
     @Param('notizId') notizId: string,
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() notizDto: UpdateNotizDto,
   ) {
     this.logger.log('Update notiz', { notizDto, notizId });
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return await this.notizenService.updateNotiz({
-      bearbeiterId: bearbeiterName,
+      bearbeiterId: bearbeiter.name,
       einsatzId,
       notizDto,
       notizId,
@@ -72,25 +70,23 @@ export class NotizenController {
   deleteNotiz(
     @Param('notizId') notizId: string,
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiterName);
+    return this.notizenService.deleteNotiz(notizId, einsatzId, bearbeiter.name);
   }
 
   @Post(':notizId/toggle-complete')
   completeNotiz(
     @Param('notizId') notizId: string,
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     return this.notizenService.toggleCompleteNotiz(
       notizId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
   }
 }

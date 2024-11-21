@@ -30,6 +30,7 @@ export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
     if (exception instanceof HttpException) {
       this.logger.debug('HTTPException: will do nothing');
       response.status(exception.getStatus()).json(exception.getResponse());
+      return;
     }
 
     let errorResponse: ErrorResponse;

@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FahrzeugIconDefinitionDto } from '@templates/fahrzeuge/fahrzeug-template.schema';
 
 export type BearbeiterDto = {
-  id: string;
   name: string;
 };
 

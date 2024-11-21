@@ -1,9 +1,11 @@
-import { Controller, Get, Headers, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { ExportService } from './export.service';
 import { extractEinsatzId } from '../../utils/header.utils';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('export')
+@UseGuards(BearbeiterGuard)
 export class ExportController {
   constructor(private readonly exportService: ExportService) {}
 

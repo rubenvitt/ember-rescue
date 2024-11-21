@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SecretsService } from './secrets.service';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 interface SecretDto {
   key: string;
@@ -7,6 +16,7 @@ interface SecretDto {
 }
 
 @Controller('secrets')
+@UseGuards(BearbeiterGuard)
 export class SecretsController {
   private readonly logger = new Logger(SecretsController.name);
 

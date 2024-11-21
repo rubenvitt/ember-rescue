@@ -21,6 +21,11 @@ export class EinsatzFahrzeugeService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
+    this.logger.log('Adding Fahrzeug to Einsatz', {
+      fahrzeugId,
+      einsatzId,
+      bearbeiterId,
+    });
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
@@ -83,7 +88,7 @@ export class EinsatzFahrzeugeService {
       | { statusCode?: never; statusId: string }
       | { statusCode: number; statusId?: never },
   ) {
-    this.logger.debug('chaning status');
+    this.logger.log(`Change status for ${fahrzeugId} to ${statusId}`);
     const status = statusId
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode!!);
@@ -113,7 +118,7 @@ export class EinsatzFahrzeugeService {
 
     const einsatz = await this.repository.findById(einsatzId);
 
-    this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
+    await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       einsatzId,
       bearbeiterId,
       type: 'RESSOURCEN',

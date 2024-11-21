@@ -1,7 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { NinaService } from './nina.service';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('/apis/bund/nina')
+@UseGuards(BearbeiterGuard)
 export class NinaController {
   constructor(private readonly ninaService: NinaService) {}
 

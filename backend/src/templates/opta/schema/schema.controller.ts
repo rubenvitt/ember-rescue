@@ -1,7 +1,9 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { SchemaService } from './schema.service';
+import { BearbeiterGuard } from '../../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('opta/schema')
+@UseGuards(BearbeiterGuard)
 export class SchemaController {
   constructor(
     @Inject(SchemaService) private readonly schemaService: SchemaService,

@@ -7,12 +7,15 @@ import {
   Patch,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FahrzeugeService } from './fahrzeuge.service';
 import { UpdateCreateFahrzeugeDto } from '../../types';
 import { Response } from 'express';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('fahrzeuge')
+@UseGuards(BearbeiterGuard)
 export class FahrzeugeController {
   private readonly logger = new Logger(FahrzeugeController.name);
   constructor(private readonly fahrzeugeService: FahrzeugeService) {}

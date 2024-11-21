@@ -3,16 +3,19 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   Logger,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
 import { EinsatzCoreController } from '../core/einsatz-core.controller';
-import { extractBearbeiterName } from '../../utils/header.utils';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterDto } from '../../types';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('einsatz/:einsatzId/fahrzeuge')
+@UseGuards(BearbeiterGuard)
 export class EinsatzFahrzeugeController {
   private readonly logger = new Logger(EinsatzCoreController.name);
 
@@ -27,19 +30,13 @@ export class EinsatzFahrzeugeController {
   @Post('/add')
   async addFahrzeugToEinsatz(
     @Param('einsatzId') einsatzId: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: { fahrzeugId: string },
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
-    this.logger.log('Add Fahrzeug to Einsatz', {
-      einsatzId,
-      body,
-      bearbeiterId: bearbeiterName,
-    });
     await this.fahrzeugeService.addFahrzeugToEinsatz(
       body.fahrzeugId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
 
     return { status: 'ok' };
@@ -49,15 +46,13 @@ export class EinsatzFahrzeugeController {
   async changeStatus(
     @Param('einsatzId') einsatzId: string,
     @Param('fahrzeugId') fahrzeugId: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: { statusId: string },
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
-    this.logger.log(`Change status for ${fahrzeugId} to ${body.statusId}`);
     await this.fahrzeugeService.changeStatus(
       fahrzeugId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
       { statusId: body.statusId },
     );
 
@@ -68,13 +63,12 @@ export class EinsatzFahrzeugeController {
   async removeFromEinsatz(
     @Param('einsatzId') einsatzId: string,
     @Param('fahrzeugId') fahrzeugId: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     await this.fahrzeugeService.removeFahrzeugFromEinsatz(
       fahrzeugId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
 
     return { status: 'ok' };

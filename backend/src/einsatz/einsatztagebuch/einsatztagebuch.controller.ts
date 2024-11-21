@@ -6,15 +6,16 @@ import {
   Logger,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import {
-  extractBearbeiterName,
-  extractEinsatzId,
-} from '../../utils/header.utils';
-import { CreateEinsatztagebuchDto } from '../../types';
+import { extractEinsatzId } from '../../utils/header.utils';
+import { BearbeiterDto, CreateEinsatztagebuchDto } from '../../types';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('einsatztagebuch')
+@UseGuards(BearbeiterGuard)
 export class EinsatztagebuchController {
   private readonly logger = new Logger(EinsatztagebuchController.name);
 
@@ -31,18 +32,17 @@ export class EinsatztagebuchController {
 
   @Post()
   async createEinsatztagebuchEintrag(
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Headers('einsatz') einsatzHeader: string,
     @Body() createEinsatztagebuchDto: CreateEinsatztagebuchDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader);
     this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
-      bearbeiterId: bearbeiterName,
+      bearbeiterId: bearbeiter.name,
       einsatzId,
     });
     return this.service.createEinsatztagebuchEintrag(einsatzId!!, {
-      bearbeiterId: bearbeiterName,
+      bearbeiterId: bearbeiter.name,
       einsatzId,
       ...createEinsatztagebuchDto,
       type: createEinsatztagebuchDto.type ?? 'USER',

@@ -9,14 +9,17 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EinsatzCoreService } from './einsatz-core.service';
-import { CreateEinsatzDto, UpdateEinsatzDto } from '../../types';
-import { extractBearbeiterName } from '../../utils/header.utils';
+import { BearbeiterDto, CreateEinsatzDto, UpdateEinsatzDto } from '../../types';
 import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('einsatz')
+@UseGuards(BearbeiterGuard)
 export class EinsatzCoreController {
   private readonly logger = new Logger(EinsatzCoreController.name);
 
@@ -45,14 +48,14 @@ export class EinsatzCoreController {
 
   @Post()
   async createEinsatz(
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: CreateEinsatzDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     console.log('createEinsatz', body);
     return this.einsatzService.createEinsatz({
-      bearbeiter:
-        await this.bearbeiterService.findByNameOrCreate(bearbeiterName),
+      bearbeiter: await this.bearbeiterService.findByNameOrCreate(
+        bearbeiter.name,
+      ),
       beginn: new Date(),
       aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
       einsatzAlarmstichwort: (await this.alarmstichwortService.findActiveById(

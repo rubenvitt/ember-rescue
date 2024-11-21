@@ -6,10 +6,11 @@ import { TemplateModule } from '@templates/template.module';
 import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
 import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module';
 import { UserModule } from '../../user/user.module';
+import { EinsatzMapper } from './einsatz.mapper';
 
 @Module({
   controllers: [EinsatzCoreController],
-  providers: [EinsatzCoreService],
+  providers: [EinsatzCoreService, EinsatzMapper],
   exports: [EinsatzCoreService],
   imports: [
     UserModule,

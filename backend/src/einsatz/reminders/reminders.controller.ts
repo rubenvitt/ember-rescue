@@ -6,14 +6,16 @@ import {
   Logger,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
-import {
-  extractBearbeiterName,
-  extractEinsatzId,
-} from '../../utils/header.utils';
+import { extractEinsatzId } from '../../utils/header.utils';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterDto } from '../../types';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
 @Controller('reminders')
+@UseGuards(BearbeiterGuard)
 export class RemindersController {
   private readonly logger = new Logger(RemindersController.name);
 
@@ -22,59 +24,55 @@ export class RemindersController {
   @Post()
   async createReminder(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() data: { noteId: string; reminderTime: string },
   ) {
     this.logger.log(`Creating reminder for ${einsatzHeader}`);
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     const reminderTime = new Date(data.reminderTime);
     return this.reminderService.create(
       data.noteId,
       reminderTime,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
   }
 
   @Get('due')
   async getDueReminders(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
-    return this.reminderService.getDueReminders(bearbeiterName, einsatzId);
+    return this.reminderService.getDueReminders(bearbeiter.name, einsatzId);
   }
 
   @Post(':reminderId/mark-notified')
   async markAsNotified(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Param('reminderId') reminderId: string,
   ) {
     this.logger.log(`Mark reminder as notified ${reminderId}`);
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     await this.reminderService.markAsNotified(
       reminderId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
   }
 
   @Post(':remindersId/mark-read')
   async markAsRead(
     @Headers('einsatz') einsatzHeader: string,
-    @Headers('bearbeiter') bearbeiterHeader: string,
+    @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Param('reminderId') reminderId: string,
   ) {
-    const bearbeiterName = extractBearbeiterName(bearbeiterHeader)!!;
     const einsatzId = extractEinsatzId(einsatzHeader)!!;
     await this.reminderService.markAsRead(
       reminderId,
       einsatzId,
-      bearbeiterName,
+      bearbeiter.name,
     );
   }
 }
