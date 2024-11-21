@@ -31,9 +31,9 @@ export abstract class TemplateRepository<
         ...isCurrentlyActiveFilter,
       }))!!;
     } catch (e) {
-      throw new NotFoundException(
-        `${this.model.name} with id '` + id + "' not found",
-      );
+      throw new NotFoundException(`${this.model.name} not found`, {
+        description: `${this.model.name} with id '` + id + "' not found",
+      });
     }
   }
 

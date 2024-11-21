@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   FahrzeugDto,
   FahrzeugImportDto,
   UpdateCreateFahrzeugeDto,
 } from '../../types';
 import { FahrzeugeRepository } from '@templates/fahrzeuge/fahrzeuge.repository';
+import { ValidationException } from '@core/exceptions/validation.exception';
 
 @Injectable()
 export class FahrzeugeService {
@@ -83,8 +84,17 @@ export class FahrzeugeService {
         if (labelMatch) {
           return labelMatch[1];
         } else if (/\w/.test(part)) {
-          throw new BadRequestException(
-            'Funkrufnamen müssen dem Format entsprechen: d+-d+(-d+)( eigener Name) -- (d = Zahl, () = optional) oder eigener Name ohne Opta',
+          throw new ValidationException(
+            {
+              property: 'funkrufname',
+              constraints: {
+                isFunkrufname: 'funkrufname must be a valid funkrufname',
+              },
+            },
+            {
+              property: 'funkrufname',
+              value: part,
+            },
           );
         }
       }

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
@@ -21,7 +21,9 @@ export class EinsatzCoreService {
   async getEinsatz(id: string) {
     const einsatz = await this.repository.findById(id);
     if (!einsatz) {
-      throw new Error('Einsatz not found');
+      throw new NotFoundException('Einsatz not found', {
+        description: `Einsatz mit der ID ${id} nicht gefunden.`,
+      });
     }
     return einsatz;
   }

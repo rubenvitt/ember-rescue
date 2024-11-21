@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import {
   GeoJSONResponse,
   GeojsonService,
@@ -69,13 +74,17 @@ export class NinaService {
     // Validate the warningId to ensure it matches the expected format
     const validIdPattern = /^[a-zA-Z0-9_-]+$/;
     if (!validIdPattern.test(warningId)) {
-      throw new Error('Invalid warning ID format');
+      throw new BadRequestException('Invalid warning id', {
+        description: `Warning ID ${warningId} is not valid. Please provide a valid warning ID.`,
+      });
     }
     const url = `${this.ninaWarningApi}/${warningId}.json`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new BadGatewayException('Failed Request: NinaAPI', {
+          description: `Error fetching warning details for ID ${warningId}: ${response.status}`,
+        });
       }
       return await response.json();
     } catch (error) {
@@ -125,7 +134,9 @@ export class NinaService {
       const url = `${apiUrl}/mapData.json`;
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new BadGatewayException('Failed Request: NinaAPI', {
+          description: `Error fetching ${type} warnings: ${response.status}`,
+        });
       }
       const warnings = (await response.json()) as { id: string }[];
 

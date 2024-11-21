@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { NotFoundException } from '@nestjs/common';
 
 export class BearbeiterDto {
   readonly id: string;
@@ -18,7 +19,9 @@ export class BearbeiterDto {
     bearbeiter: Bearbeiter | Promise<Bearbeiter> | null | undefined,
   ): Promise<BearbeiterDto> {
     if (!bearbeiter) {
-      throw new Error('Bearbeiter not found');
+      throw new NotFoundException('Bearbeiter not found', {
+        description: 'Bearbeiter not found',
+      });
     }
     return await Promise.resolve(bearbeiter).then(
       (bearbeiter) =>

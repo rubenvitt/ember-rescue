@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { WarningSystem } from '../../nina/nina.service';
 
 export interface GeoJSONFeature<T> {
@@ -29,7 +29,9 @@ export class GeojsonService {
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new BadGatewayException('Failed Request: GeoJSON', {
+          description: `Fehler beim Abrufen der GeoJSON-Daten: ${response.status}`,
+        });
       }
       return (await response.json()) as GeoJSONResponse<unknown>;
     } catch (error) {

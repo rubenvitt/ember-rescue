@@ -25,7 +25,10 @@ export class EinsatzFahrzeugeService {
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
     const einsatz = await this.repository.findById(einsatzId);
-    if (!einsatz) throw new NotFoundException('Einsatz not found');
+    if (!einsatz)
+      throw new NotFoundException('Einsatz not found', {
+        description: `Einsatz mit der ID ${einsatzId} nicht gefunden.`,
+      });
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       absender: existingFahrzeug!!.fullOpta,

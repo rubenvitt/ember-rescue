@@ -8,7 +8,9 @@ export class EinsatztagebuchService {
   async getEinsatztagebuch(einsatzId: string) {
     const einsatz = await this.einsatzRepository.findById(einsatzId);
     if (!einsatz) {
-      throw new NotFoundException(`Einsatz ${einsatzId} wurde nicht gefunden`);
+      throw new NotFoundException('Einsatz not found', {
+        description: `Einsatz mit der ID ${einsatzId} nicht gefunden.`,
+      });
     }
     return einsatz.einsatzTagebuch;
   }
