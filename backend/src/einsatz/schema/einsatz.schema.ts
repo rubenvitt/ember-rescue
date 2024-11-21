@@ -1,14 +1,14 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema } from '@nestjs/mongoose';
-import { BearbeiterDto } from './bearbeiter.schema';
-import { EinsatztagebuchEintragType } from '../../../../types';
+import { BearbeiterDto } from '@core/database/mongo/schemas/bearbeiter.schema';
+import { EinsatztagebuchEintragType } from '../../types';
 import {
   Alarmstichwort,
   AlarmstichwortDto,
 } from '@templates/alarmstichworte/alarmstichwort.schema';
-import { Notiz } from './einsatz/notiz.schema';
-import { Reminder } from './einsatz/reminder.schema';
+import { Notiz } from '@core/database/mongo/schemas/einsatz/notiz.schema';
+import { Reminder } from '@core/database/mongo/schemas/einsatz/reminder.schema';
 import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifikationen/qualifikation.schema';
 import { FahrzeugTemplate } from '@templates/fahrzeuge/fahrzeug-template.schema';

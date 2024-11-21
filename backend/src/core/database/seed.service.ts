@@ -9,7 +9,6 @@ import * as optaLocalCodes from './seeds/opta/local-codes.json';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Status } from '@templates/status/status.schema';
-import { Einsatz } from './mongo/schemas/einsatz.schema';
 import { Bearbeiter } from './mongo/schemas/bearbeiter.schema';
 import { Counter } from './mongo/schemas/counter.schema';
 import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.repository';
@@ -27,14 +26,13 @@ import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichw
 import { TemplateDocument } from '@core/database/base-documents';
 import { QualifikationenRepository } from '@templates/qualifikationen/qualifikationen.repository';
 import { StatusRepository } from '@templates/status/status.repository';
+import { EinsatzRepository } from '../../einsatz/schema/einsatz.repository';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
   private readonly logger = new Logger(SeedService.name);
 
   constructor(
-    @InjectModel(Einsatz.name)
-    private readonly einsatzModel: Model<Einsatz>,
     @InjectModel(Bearbeiter.name)
     private readonly bearbeiterModel: Model<Bearbeiter>,
     @InjectModel(Counter.name)
@@ -47,6 +45,7 @@ export class SeedService implements OnModuleInit {
     private readonly alarmstichwortRepository: AlarmstichwortRepository,
     private readonly qualifikationenRepository: QualifikationenRepository,
     private readonly statusRepository: StatusRepository,
+    private readonly einsatzRepository: EinsatzRepository,
   ) {}
 
   async onModuleInit() {
@@ -128,13 +127,9 @@ export class SeedService implements OnModuleInit {
       this.logger.error('Error while seeding bearbeiter: ' + e.message);
     }
 
-    if (
-      (await this.einsatzModel
-        .countDocuments({ abgeschlossen: null })
-        .exec()) === 0
-    ) {
+    if (!(await this.einsatzRepository.anyActive())) {
       try {
-        let newVar = await this.einsatzModel.create({
+        let newVar = await this.einsatzRepository.create({
           bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
           aufnehmendesRettungsmittel: 'Testfahrzeug',
           einsatzMeta: {},

@@ -8,7 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
-import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
+import {
+  extractBearbeiterName,
+  extractEinsatzId,
+} from '../../utils/header.utils';
 
 @Controller('reminders')
 export class RemindersController {

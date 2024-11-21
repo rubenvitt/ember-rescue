@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Template } from '@pdfme/common';
 import { PdfService } from '../pdf/pdf.service';
-import { EinsatzService } from '../einsatz/einsatz.service';
-import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
+import { EinsatzCoreService } from '../einsatz/core/einsatz-core.service';
+import { EinsatztagebuchService } from '../einsatz/einsatztagebuch/einsatztagebuch.service';
 import { formatNatoDateTime } from '../utils/time';
 
 @Injectable()
@@ -111,7 +111,7 @@ export class ExportService {
 
   constructor(
     private readonly pdfService: PdfService,
-    private readonly einsatzService: EinsatzService,
+    private readonly einsatzService: EinsatzCoreService,
     private readonly einsatzTagebuchService: EinsatztagebuchService,
   ) {}
 

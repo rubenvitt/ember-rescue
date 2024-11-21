@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { BearbeiterService } from './bearbeiter.service';
 import { BearbeiterController } from './bearbeiter.controller';
-import { DatabaseModule } from '../core/database/database.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Bearbeiter,
   BearbeiterSchema,
-} from '../core/database/mongo/schemas/bearbeiter.schema';
+} from '@core/database/mongo/schemas/bearbeiter.schema';
 
 @Module({
   imports: [
-    DatabaseModule,
     MongooseModule.forFeature([
       { name: Bearbeiter.name, schema: BearbeiterSchema },
     ]),

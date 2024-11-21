@@ -1,28 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../types';
+import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  CreateEinsatzDto,
-  Einsatz,
-} from '@core/database/mongo/schemas/einsatz.schema';
-import { FilterQuery, Model } from 'mongoose';
+import { CreateEinsatzDto, Einsatz } from '../schema/einsatz.schema';
+import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
+import { EinsatzRepository } from '../schema/einsatz.repository';
 
 @Injectable()
-export class EinsatzService {
-  private readonly logger = new Logger(EinsatzService.name);
+export class EinsatzCoreService {
+  private readonly logger = new Logger(EinsatzCoreService.name);
 
   constructor(
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortRepository,
-    @InjectModel(Einsatz.name) private readonly einsatzModel: Model<Einsatz>,
+    private readonly repository: EinsatzRepository,
   ) {}
 
   async getEinsatz(id: string) {
-    const einsatz = await this.einsatzModel.findById(id).exec();
+    const einsatz = await this.repository.findEinsatzById(id);
     if (!einsatz) {
       throw new Error('Einsatz not found');
     }
@@ -30,7 +27,7 @@ export class EinsatzService {
   }
 
   async createEinsatz(data: CreateEinsatzDto) {
-    const einsatz = await this.einsatzModel.create(data);
+    const einsatz = await this.repository.create(data);
 
     this.logger.log(`Einsatz '${einsatz.einsatznummer}' erstellt`);
 
@@ -38,27 +35,40 @@ export class EinsatzService {
   }
 
   getEinsaetze(filter: FilterQuery<Einsatz>) {
-    return this.einsatzModel
-      .find(
-        filter,
-        {},
-        {
-          sort: {
-            createdAt: -1,
-          },
+    return this.repository.find(
+      filter,
+      {},
+      {
+        sort: {
+          createdAt: -1,
         },
-      )
-      .exec();
+      },
+    );
   }
 
   closeEinsatz(einsatzId: string) {
-    return this.einsatzModel.findByIdAndUpdate(einsatzId, {
+    return this.repository.updateEinsatz(einsatzId, {
       $set: {
         abgeschlossen: new Date(),
       },
     });
   }
 
+  // TODO: This one does not call exec(). Refactor this?
+  updateEinsatz(
+    id: string,
+    data: UpdateQuery<Einsatz>,
+    options?: QueryOptions,
+  ) {
+    this.logger.log(`updateEinsatz '${id}'`);
+    return this.repository.updateEinsatz(id, data, options);
+  }
+
+  /**
+   * @deprecated ? - maybe this one or updateEinsatz
+   * @param einsatzId
+   * @param updateEinsatzDto
+   */
   async changeEinsatz(einsatzId: string, updateEinsatzDto: UpdateEinsatzDto) {
     this.logger.log('changeEinsatz', { einsatzId, updateEinsatzDto });
 
@@ -89,7 +99,7 @@ export class EinsatzService {
         },
       );
 
-      return this.einsatzModel.findByIdAndUpdate(einsatzId, {
+      return this.repository.updateEinsatz(einsatzId, {
         $set: {
           einsatzMeta: {
             ort: updateEinsatzDto.ort,
@@ -133,16 +143,11 @@ export class EinsatzService {
         },
       );
 
-      return this.einsatzModel.findOneAndUpdate(
-        {
-          _id: einsatzId,
+      return this.repository.updateEinsatz(einsatzId, {
+        $set: {
+          einsatzAlarmstichwort: alarmstichwort,
         },
-        {
-          $set: {
-            einsatzAlarmstichwort: alarmstichwort,
-          },
-        },
-      );
+      });
     } else {
       // Kein Update erforderlich, da das alarmstichwort nicht geändert wurde
       this.logger.log('Alarmstichwort hat sich nicht geändert.');

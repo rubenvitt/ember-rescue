@@ -1,25 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { subDays, subMinutes } from 'date-fns';
-import { InjectModel } from '@nestjs/mongoose';
-import { Reminder } from '../core/database/mongo/schemas/einsatz/reminder.schema';
-import { Model } from 'mongoose';
+import { RemindersRepository } from './reminders.repository';
 
 @Injectable()
 export class RemindersService {
   private readonly logger = new Logger(RemindersService.name);
 
-  constructor(
-    @InjectModel(Reminder.name) private readonly reminderModel: Model<Reminder>,
-  ) {}
+  constructor(private readonly repository: RemindersRepository) {}
 
+  // FIXME
   async create(
     note: string,
     reminderTime: Date,
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    return this.reminderModel.create({
+    return this.repository.create({
       timestamp: reminderTime,
       title: note,
     });
@@ -28,23 +25,21 @@ export class RemindersService {
   async getDueReminders(bearbeiterId: string, einsatzId: string) {
     const now = new Date();
 
-    return this.reminderModel
-      .find(
-        {
-          reminderTimestamp: {
-            lt: now,
-          },
-          notified: null,
-          bearbeiterId,
-          einsatzId,
+    return this.repository.find(
+      {
+        reminderTimestamp: {
+          lt: now,
         },
-        {},
-      )
-      .exec();
+        notified: null,
+        bearbeiterId,
+        einsatzId,
+      },
+      {},
+    );
   }
 
   async markAsNotified(id: string, einsatzId?: string, bearbeiterId?: string) {
-    return this.reminderModel.updateOne(
+    return this.repository.updateOne(
       {
         _id: id,
         einsatzId,
@@ -59,7 +54,7 @@ export class RemindersService {
   }
 
   async markAsRead(id: string, einsatzId: string, bearbeiterId: string) {
-    return this.reminderModel.updateOne(
+    return this.repository.updateOne(
       {
         _id: id,
         einsatzId,
@@ -77,7 +72,7 @@ export class RemindersService {
   async cleanup() {
     this.logger.log('Reminders cleanup');
 
-    await this.reminderModel.updateMany(
+    await this.repository.updateMany(
       {
         $or: [
           {

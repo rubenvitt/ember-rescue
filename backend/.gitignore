@@ -56,5 +56,5 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 *.db
-repopack-output.txt
-!/repopack-output.txt
+repomix-output.txt
+!/repomix-output.txt

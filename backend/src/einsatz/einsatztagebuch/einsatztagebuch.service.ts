@@ -1,20 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Einsatz } from '../core/database/mongo/schemas/einsatz.schema';
-import { Model } from 'mongoose';
+import { EinsatzRepository } from '../schema/einsatz.repository';
 
 @Injectable()
 export class EinsatztagebuchService {
-  constructor(
-    @InjectModel(Einsatz.name) private einsatzModel: Model<Einsatz>,
-  ) {}
+  constructor(private readonly einsatzRepository: EinsatzRepository) {}
 
   async getEinsatztagebuch(einsatzId: string) {
-    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
-    if (!einsatz) {
-      throw new Error('Einsatz nicht gefunden');
-    }
-
+    const einsatz = await this.einsatzRepository.findEinsatzById(einsatzId);
     return einsatz.einsatzTagebuch;
   }
 
@@ -35,40 +27,19 @@ export class EinsatztagebuchService {
       updatedAt: undefined,
     });
 
-    // if data is an array
-    if (Array.isArray(data)) {
-      return this.einsatzModel.findByIdAndUpdate(
-        einsatzId,
-        {
-          $push: {
-            einsatzTagebuch: {
-              items: {
-                $each: data.map(mapData),
-              },
-            },
-          },
-        },
-        {},
-      );
-    }
-
-    return this.einsatzModel.findByIdAndUpdate(
-      einsatzId,
-      {
+    return this.einsatzRepository.updateEinsatz(einsatzId, {
+      $push: {
         einsatzTagebuch: {
-          $push: {
-            items: {
-              $each: [mapData(data)],
-            },
+          items: {
+            $each: Array.isArray(data) ? data.map(mapData) : [mapData(data)],
           },
         },
       },
-      {},
-    );
+    });
   }
 
   archiveEinsatztagebuchEintrag(id: string) {
-    this.einsatzModel.updateOne(
+    this.einsatzRepository.updateByQuery(
       {
         einsatzTagebuch: {
           items: {

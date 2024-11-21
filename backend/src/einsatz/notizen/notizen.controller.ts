@@ -11,8 +11,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { NotizenService } from './notizen.service';
-import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
-import { CreateNotizDto, UpdateNotizDto } from '../types';
+import {
+  extractBearbeiterName,
+  extractEinsatzId,
+} from '../../utils/header.utils';
+import { CreateNotizDto, UpdateNotizDto } from '../../types';
 
 @Controller(`notizen`)
 export class NotizenController {

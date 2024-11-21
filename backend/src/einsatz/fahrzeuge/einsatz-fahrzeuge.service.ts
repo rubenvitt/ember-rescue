@@ -1,13 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { EinsatztagebuchService } from '../../einsatztagebuch/einsatztagebuch.service';
+import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { StatusService } from '@templates/status/status.service';
 import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  Einsatz,
-  FahrzeugOnEinsatzDto,
-} from '../../core/database/mongo/schemas/einsatz.schema';
-import { Model } from 'mongoose';
+import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
+import { EinsatzRepository } from '../schema/einsatz.repository';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
@@ -17,7 +13,7 @@ export class EinsatzFahrzeugeService {
     private readonly einsatztagebuchService: EinsatztagebuchService,
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly statusService: StatusService,
-    @InjectModel(Einsatz.name) private readonly einsatzModel: Model<Einsatz>,
+    private readonly repository: EinsatzRepository,
   ) {}
 
   async addFahrzeugToEinsatz(
@@ -28,7 +24,7 @@ export class EinsatzFahrzeugeService {
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
-    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
+    const einsatz = await this.repository.findEinsatzById(einsatzId);
     if (!einsatz) throw new NotFoundException('Einsatz not found');
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
@@ -40,7 +36,7 @@ export class EinsatzFahrzeugeService {
       content: `${existingFahrzeug?.fullOpta} wurde dem Einsatz hinzugefügt.`,
     });
 
-    await this.einsatzModel.findByIdAndUpdate(einsatzId, {
+    await this.repository.updateEinsatz(einsatzId, {
       $push: {
         fahrzeuge: {
           opta: existingFahrzeug!!.fullOpta,
@@ -58,13 +54,9 @@ export class EinsatzFahrzeugeService {
   async findFahrzeugeImEinsatz(param: {
     einsatzId: string;
   }): Promise<FahrzeugOnEinsatzDto[]> {
-    const fahrzeugeImEinsatz = await this.einsatzModel
-      .findOne({
-        _id: param.einsatzId,
-        'fahrzeuge.ende': { $exists: false },
-      })
-      .lean()
-      .exec();
+    const fahrzeugeImEinsatz = await this.repository.findBy(param.einsatzId, {
+      'fahrzeuge.ende': { $exists: false },
+    });
 
     this.logger.debug(
       'fahrzeugeImEinsatz: ' + JSON.stringify(fahrzeugeImEinsatz, null, ''),
@@ -92,8 +84,8 @@ export class EinsatzFahrzeugeService {
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode!!);
 
-    const updateResult = await this.einsatzModel
-      .findByIdAndUpdate(
+    const updateResult = await this.repository
+      .updateEinsatz(
         einsatzId,
         {
           $push: {
@@ -116,7 +108,7 @@ export class EinsatzFahrzeugeService {
       'updateResult: ' + JSON.stringify(updateResult, null, ''),
     );
 
-    const einsatz = await this.einsatzModel.findById(einsatzId).exec();
+    const einsatz = await this.repository.findEinsatzById(einsatzId);
 
     this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       einsatzId,
@@ -147,8 +139,8 @@ export class EinsatzFahrzeugeService {
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
-    const einsatz = await this.einsatzModel
-      .findByIdAndUpdate(
+    const einsatz = await this.repository
+      .updateEinsatz(
         einsatzId,
         {
           $set: {

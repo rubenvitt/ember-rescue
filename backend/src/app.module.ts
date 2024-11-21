@@ -2,8 +2,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
-import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
-import { EinsatzModule } from './einsatz/einsatz.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { SettingsModule } from './settings/settings.module';
 import { MetaModule } from './meta/meta.module';
@@ -14,17 +12,15 @@ import { AuthGuard } from '@core/auth/auth.guard';
 import { AuthMiddleware } from '@core/auth/auth.middleware';
 import { ExportModule } from './export/export.module';
 import { PdfModule } from './pdf/pdf.module';
-import { NotizenModule } from './notizen/notizen.module';
-import { RemindersModule } from './reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CoreModule } from '@core/core.module';
 import { BaseTemplateModule } from '@templates/base-template.module';
+import { EinsatzModule } from './einsatz/einsatz.module';
 
 @Module({
   imports: [
     BearbeiterModule,
     ScheduleModule.forRoot(),
-    EinsatztagebuchModule,
     EinsatzModule,
     SecretsModule,
     SettingsModule,
@@ -33,8 +29,6 @@ import { BaseTemplateModule } from '@templates/base-template.module';
     MapModule,
     ExportModule,
     PdfModule,
-    NotizenModule,
-    RemindersModule,
     CoreModule,
     BaseTemplateModule,
   ],

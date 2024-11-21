@@ -10,18 +10,18 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { EinsatzService } from './einsatz.service';
-import { CreateEinsatzDto, UpdateEinsatzDto } from '../types';
-import { extractBearbeiterName } from '../utils/header.utils';
-import { BearbeiterService } from '../bearbeiter/bearbeiter.service';
+import { EinsatzCoreService } from './einsatz-core.service';
+import { CreateEinsatzDto, UpdateEinsatzDto } from '../../types';
+import { extractBearbeiterName } from '../../utils/header.utils';
+import { BearbeiterService } from '../../bearbeiter/bearbeiter.service';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 
 @Controller('einsatz')
-export class EinsatzController {
-  private readonly logger = new Logger(EinsatzController.name);
+export class EinsatzCoreController {
+  private readonly logger = new Logger(EinsatzCoreController.name);
 
   constructor(
-    private readonly einsatzService: EinsatzService,
+    private readonly einsatzService: EinsatzCoreService,
     private readonly bearbeiterService: BearbeiterService,
     private readonly alarmstichwortService: AlarmstichwortRepository,
   ) {}

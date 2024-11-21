@@ -8,8 +8,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import { extractBearbeiterName, extractEinsatzId } from '../utils/header.utils';
-import { CreateEinsatztagebuchDto } from '../types';
+import {
+  extractBearbeiterName,
+  extractEinsatzId,
+} from '../../utils/header.utils';
+import { CreateEinsatztagebuchDto } from '../../types';
 
 @Controller('einsatztagebuch')
 export class EinsatztagebuchController {

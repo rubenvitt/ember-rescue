@@ -9,12 +9,12 @@ import {
   Post,
 } from '@nestjs/common';
 import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
-import { EinsatzController } from '../einsatz.controller';
+import { EinsatzCoreController } from '../core/einsatz-core.controller';
 import { extractBearbeiterName } from '../../utils/header.utils';
 
 @Controller('einsatz/:einsatzId/fahrzeuge')
 export class EinsatzFahrzeugeController {
-  private readonly logger = new Logger(EinsatzController.name);
+  private readonly logger = new Logger(EinsatzCoreController.name);
 
   constructor(private readonly fahrzeugeService: EinsatzFahrzeugeService) {}
 

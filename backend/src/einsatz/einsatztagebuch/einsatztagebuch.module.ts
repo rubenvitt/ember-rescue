@@ -1,18 +1,10 @@
 import { Module } from '@nestjs/common';
 import { EinsatztagebuchController } from './einsatztagebuch.controller';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import { DatabaseModule } from '../core/database/database.module';
+import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    // MongooseModule.forFeature([
-    //   {
-    //     name: Einsatz.name,
-    //     schema: EinsatzSchema,
-    //   },
-    // ]),
-  ],
+  imports: [EinsatzSchemaModule],
   controllers: [EinsatztagebuchController],
   providers: [EinsatztagebuchService],
   exports: [EinsatztagebuchService],

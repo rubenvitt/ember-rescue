@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ExportService } from './export.service';
 import { ExportController } from './export.controller';
 import { PdfModule } from '../pdf/pdf.module';
+import { EinsatztagebuchModule } from '../einsatz/einsatztagebuch/einsatztagebuch.module';
 import { EinsatzModule } from '../einsatz/einsatz.module';
-import { EinsatztagebuchModule } from '../einsatztagebuch/einsatztagebuch.module';
 
 @Module({
   providers: [ExportService],
