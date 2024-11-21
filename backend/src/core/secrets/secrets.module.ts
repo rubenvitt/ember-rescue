@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SecretsController } from './secrets.controller';
 import { SecretsService } from './secrets.service';
-import { DatabaseModule } from '../core/database/database.module';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
   controllers: [SecretsController],

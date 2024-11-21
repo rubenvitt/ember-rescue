@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { WarningSystem } from '../../apis/bund/nina/nina.service';
+import { WarningSystem } from '../../nina/nina.service';
 
 export interface GeoJSONFeature<T> {
   type: 'Feature';

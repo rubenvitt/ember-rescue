@@ -13,7 +13,7 @@ import {
 import { EinsatzCoreService } from './einsatz-core.service';
 import { CreateEinsatzDto, UpdateEinsatzDto } from '../../types';
 import { extractBearbeiterName } from '../../utils/header.utils';
-import { BearbeiterService } from '../../bearbeiter/bearbeiter.service';
+import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 
 @Controller('einsatz')
@@ -22,7 +22,7 @@ export class EinsatzCoreController {
 
   constructor(
     private readonly einsatzService: EinsatzCoreService,
-    private readonly bearbeiterService: BearbeiterService,
+    private readonly bearbeiterService: BearbeiterCoreService,
     private readonly alarmstichwortService: AlarmstichwortRepository,
   ) {}
 

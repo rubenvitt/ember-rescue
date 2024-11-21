@@ -1,14 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  Bearbeiter,
-  BearbeiterDto,
-} from '../core/database/mongo/schemas/bearbeiter.schema';
+import { Bearbeiter, BearbeiterDto } from './bearbeiter.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
-export class BearbeiterService {
-  private logger = new Logger(BearbeiterService.name);
+export class BearbeiterCoreService {
+  private logger = new Logger(BearbeiterCoreService.name);
 
   constructor(
     @InjectModel(Bearbeiter.name) private bearbeiterModel: Model<Bearbeiter>,

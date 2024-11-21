@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NinaController } from './nina.controller';
 import { NinaService } from './nina.service';
-import { MapModule } from '../../../map/map.module';
+import { MapModule } from '../map/map.module';
 
 @Module({
   controllers: [NinaController],

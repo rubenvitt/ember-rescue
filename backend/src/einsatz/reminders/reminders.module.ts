@@ -2,10 +2,7 @@ import { Module } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { RemindersController } from './reminders.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Reminder,
-  ReminderSchema,
-} from '@core/database/mongo/schemas/einsatz/reminder.schema';
+import { Reminder, ReminderSchema } from './reminder.schema';
 import { RemindersRepository } from './reminders.repository';
 
 @Module({

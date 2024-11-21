@@ -7,15 +7,15 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { BearbeiterService } from './bearbeiter.service';
-import { CreateBearbeiterDto } from '../types';
+import { BearbeiterCoreService } from './bearbeiter-core.service';
+import { CreateBearbeiterDto } from '../../../types';
 
 @Controller('bearbeiter')
-export class BearbeiterController {
-  private readonly logger = new Logger(BearbeiterController.name);
+export class BearbeiterCoreController {
+  private readonly logger = new Logger(BearbeiterCoreController.name);
 
   constructor(
-    @Inject() private readonly bearbeiterService: BearbeiterService,
+    @Inject() private readonly bearbeiterService: BearbeiterCoreService,
   ) {}
 
   @Get()

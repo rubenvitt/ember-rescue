@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Notiz } from '@core/database/mongo/schemas/einsatz/notiz.schema';
+import { Notiz } from './notiz.schema';
 import {
   AnyKeys,
   Model,

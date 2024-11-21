@@ -5,7 +5,7 @@ import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
 import {
   Bearbeiter,
   BearbeiterSchema,
-} from './mongo/schemas/bearbeiter.schema';
+} from '../../user/bearbeiter/core/bearbeiter.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from '@core';
 import { createEncryptedSchema } from '../../utils/crypt.utils';

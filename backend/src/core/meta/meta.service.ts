@@ -5,7 +5,7 @@ import { config } from '@core';
 
 @Injectable()
 export class MetaService {
-  private serverId: string;
+  private readonly serverId: string;
 
   constructor(private readonly configService: ConfigService) {
     this.serverId = createId();

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SecretsService } from '../secrets/secrets.service';
+import { SecretsService } from '@core/secrets/secrets.service';
 import { SettingsDto } from './settings.dto';
 
 @Injectable()

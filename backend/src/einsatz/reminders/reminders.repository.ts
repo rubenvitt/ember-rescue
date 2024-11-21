@@ -1,4 +1,4 @@
-import { Reminder } from '@core/database/mongo/schemas/einsatz/reminder.schema';
+import { Reminder } from './reminder.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   AnyKeys,

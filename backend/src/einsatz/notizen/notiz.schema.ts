@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Bearbeiter } from '../bearbeiter.schema';
-import { Einsatz } from '../../../../../einsatz/schema/einsatz.schema';
+import { Bearbeiter } from '../../user/bearbeiter/core/bearbeiter.schema';
+import { Einsatz } from '../schema/einsatz.schema';
 
 @Schema({ timestamps: true, collection: 'notizen' })
 export class Notiz extends Document {

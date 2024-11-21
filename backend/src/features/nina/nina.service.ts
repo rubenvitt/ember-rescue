@@ -3,7 +3,7 @@ import {
   GeoJSONResponse,
   GeojsonService,
   WarningInfo,
-} from '../../../map/geojson/geojson.service';
+} from '../map/geojson/geojson.service';
 
 /**
  * Represents a warning system.
