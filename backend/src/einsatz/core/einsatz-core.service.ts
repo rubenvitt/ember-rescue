@@ -32,7 +32,6 @@ export class EinsatzCoreService {
   }
 
   async createEinsatz({
-    bearbeiter,
     createEinsatzDto,
   }: CreateEinsatzParams): Promise<EinsatzDto> {
     const alarmstichwort = await this.alarmstichwortService.findActive({
@@ -40,7 +39,7 @@ export class EinsatzCoreService {
     });
 
     const einsatz = await this.repository.create({
-      bearbeiter: bearbeiter,
+      bearbeiter: createEinsatzDto.bearbeiter,
       beginn: new Date(),
       aufnehmendesRettungsmittel: createEinsatzDto.aufnehmendesRettungsmittel,
       einsatzAlarmstichwort: alarmstichwort,

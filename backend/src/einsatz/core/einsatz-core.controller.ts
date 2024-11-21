@@ -53,15 +53,17 @@ export class EinsatzCoreController {
   ) {
     console.log('createEinsatz', body);
     return this.einsatzService.createEinsatz({
-      bearbeiter: await this.bearbeiterService.findByNameOrCreate(
-        bearbeiter.name,
-      ),
-      beginn: new Date(),
-      aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
-      einsatzAlarmstichwort: (await this.alarmstichwortService.findActiveById(
-        body.alarmstichwort!!,
-      ))!!,
-      einsatzMeta: {},
+      createEinsatzDto: {
+        bearbeiter: await this.bearbeiterService.findByNameOrCreate(
+          bearbeiter.name,
+        ),
+        beginn: new Date(),
+        aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
+        einsatzAlarmstichwort: (await this.alarmstichwortService.findActiveById(
+          body.alarmstichwort!!,
+        ))!!,
+        einsatzMeta: {},
+      },
     });
   }
 

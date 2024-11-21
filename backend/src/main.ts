@@ -27,6 +27,14 @@ async function bootstrap() {
       .setVersion('0.0.1-alpha')
       .build(),
   };
+
+  // TODO:
+  // app.enableVersioning({
+  //   key: 'api-version=',
+  //   type: VersioningType.MEDIA_TYPE,
+  //   defaultVersion: '1',
+  // });
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {});
   if (process.env.AUTH_TOKEN) {

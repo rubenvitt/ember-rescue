@@ -28,7 +28,7 @@ export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
     const request = context.getRequest<Request>();
 
     if (exception instanceof HttpException) {
-      this.logger.debug('HTTPException: will do nothing');
+      this.logger.debug('HTTPException: will do nothing', { exception });
       response.status(exception.getStatus()).json(exception.getResponse());
       return;
     }

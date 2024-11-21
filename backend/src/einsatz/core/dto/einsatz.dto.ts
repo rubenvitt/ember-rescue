@@ -3,7 +3,6 @@ import { CreateEinsatzDto } from '../../schema/einsatz.schema';
 import { AlarmstichwortDto } from '@templates/alarmstichworte/alarmstichwort.schema';
 
 export class CreateEinsatzParams {
-  bearbeiter: BearbeiterDto;
   createEinsatzDto: CreateEinsatzDto;
 }
 
