@@ -1,4 +1,4 @@
-import { BaseTemplateRepository } from '@templates/base-template.repository';
+import { TemplateRepository } from '@templates/template.repository';
 import { BosOptaTemplate } from '@templates/opta/schemas/bos-opta.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -7,7 +7,7 @@ import { BosGroup, OptaType } from '@templates/opta/constants';
 import { isCurrentlyActiveFilter } from '@templates/core/interfaces/template.interface';
 
 @Injectable()
-export class BosOptaRepository extends BaseTemplateRepository<BosOptaTemplate> {
+export class BosOptaRepository extends TemplateRepository<BosOptaTemplate> {
   constructor(@InjectModel(OptaType.BOS_CODE) model: Model<BosOptaTemplate>) {
     super(model, BosOptaRepository.name);
   }

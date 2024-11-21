@@ -3,7 +3,7 @@ import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
 import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
 import { CreateEinsatzDto, Einsatz } from '../schema/einsatz.schema';
-import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { EinsatzRepository } from '../schema/einsatz.repository';
 
@@ -19,7 +19,7 @@ export class EinsatzCoreService {
   ) {}
 
   async getEinsatz(id: string) {
-    const einsatz = await this.repository.findEinsatzById(id);
+    const einsatz = await this.repository.findById(id);
     if (!einsatz) {
       throw new Error('Einsatz not found');
     }
@@ -35,33 +35,19 @@ export class EinsatzCoreService {
   }
 
   getEinsaetze(filter: FilterQuery<Einsatz>) {
-    return this.repository.find(
-      filter,
-      {},
-      {
-        sort: {
-          createdAt: -1,
-        },
-      },
-    );
-  }
-
-  closeEinsatz(einsatzId: string) {
-    return this.repository.updateEinsatz(einsatzId, {
-      $set: {
-        abgeschlossen: new Date(),
+    return this.repository.find(filter, {
+      sort: {
+        createdAt: -1,
       },
     });
   }
 
-  // TODO: This one does not call exec(). Refactor this?
-  updateEinsatz(
-    id: string,
-    data: UpdateQuery<Einsatz>,
-    options?: QueryOptions,
-  ) {
-    this.logger.log(`updateEinsatz '${id}'`);
-    return this.repository.updateEinsatz(id, data, options);
+  closeEinsatz(einsatzId: string) {
+    return this.repository.findOneByIdAndUpdate(einsatzId, {
+      $set: {
+        abgeschlossen: new Date(),
+      },
+    });
   }
 
   /**
@@ -99,7 +85,7 @@ export class EinsatzCoreService {
         },
       );
 
-      return this.repository.updateEinsatz(einsatzId, {
+      return this.repository.findOneByIdAndUpdate(einsatzId, {
         $set: {
           einsatzMeta: {
             ort: updateEinsatzDto.ort,
@@ -143,7 +129,7 @@ export class EinsatzCoreService {
         },
       );
 
-      return this.repository.updateEinsatz(einsatzId, {
+      return this.repository.findOneByIdAndUpdate(einsatzId, {
         $set: {
           einsatzAlarmstichwort: alarmstichwort,
         },

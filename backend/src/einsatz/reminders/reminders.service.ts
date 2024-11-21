@@ -39,7 +39,7 @@ export class RemindersService {
   }
 
   async markAsNotified(id: string, einsatzId?: string, bearbeiterId?: string) {
-    return this.repository.updateOne(
+    return this.repository.findOneAndUpdate(
       {
         _id: id,
         einsatzId,
@@ -54,7 +54,7 @@ export class RemindersService {
   }
 
   async markAsRead(id: string, einsatzId: string, bearbeiterId: string) {
-    return this.repository.updateOne(
+    return this.repository.findOneAndUpdate(
       {
         _id: id,
         einsatzId,

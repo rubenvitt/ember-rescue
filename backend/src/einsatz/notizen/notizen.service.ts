@@ -16,7 +16,6 @@ export class NotizenService {
         done: done ? { $ne: null } : null,
         deleted: null,
       },
-      {},
       {
         sort: {
           done: -1,
@@ -53,7 +52,7 @@ export class NotizenService {
     notizDto: UpdateNotizDto;
     notizId: string;
   }) {
-    return this.repository.updateOne(
+    return this.repository.findOneAndUpdate(
       {
         _id: notizId,
         einsatz: einsatzId,
@@ -80,14 +79,14 @@ export class NotizenService {
       bearbeiter,
     });
 
-    return this.repository.updateOne(
+    return this.repository.findOneAndUpdate(
       { _id, einsatz, bearbeiter },
       { $set: { doneAt: notiz?.doneAt ? null : new Date() } },
     );
   }
 
   deleteNotiz(_id: string, einsatz: string, bearbeiter: string) {
-    return this.repository.updateOne(
+    return this.repository.findOneAndUpdate(
       {
         _id,
         einsatz,

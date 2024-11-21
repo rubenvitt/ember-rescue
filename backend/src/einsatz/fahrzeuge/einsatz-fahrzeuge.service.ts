@@ -24,7 +24,7 @@ export class EinsatzFahrzeugeService {
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
-    const einsatz = await this.repository.findEinsatzById(einsatzId);
+    const einsatz = await this.repository.findById(einsatzId);
     if (!einsatz) throw new NotFoundException('Einsatz not found');
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
@@ -36,7 +36,7 @@ export class EinsatzFahrzeugeService {
       content: `${existingFahrzeug?.fullOpta} wurde dem Einsatz hinzugefügt.`,
     });
 
-    await this.repository.updateEinsatz(einsatzId, {
+    await this.repository.findOneByIdAndUpdate(einsatzId, {
       $push: {
         fahrzeuge: {
           opta: existingFahrzeug!!.fullOpta,
@@ -54,7 +54,8 @@ export class EinsatzFahrzeugeService {
   async findFahrzeugeImEinsatz(param: {
     einsatzId: string;
   }): Promise<FahrzeugOnEinsatzDto[]> {
-    const fahrzeugeImEinsatz = await this.repository.findBy(param.einsatzId, {
+    const fahrzeugeImEinsatz = await this.repository.findOne({
+      _id: param.einsatzId,
       'fahrzeuge.ende': { $exists: false },
     });
 
@@ -84,31 +85,30 @@ export class EinsatzFahrzeugeService {
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode!!);
 
-    const updateResult = await this.repository
-      .updateEinsatz(
-        einsatzId,
-        {
-          $push: {
-            'fahrzeuge.$[elem].status_history': {
-              statusId: status!!.id,
-              zeitpunkt: new Date(),
-              bearbeiterId: bearbeiterId,
-            },
+    const updateResult = await this.repository.findOneByIdAndUpdate(
+      einsatzId,
+      {
+        $push: {
+          'fahrzeuge.$[elem].status_history': {
+            statusId: status!!.id,
+            zeitpunkt: new Date(),
+            bearbeiterId: bearbeiterId,
           },
         },
-        {
-          arrayFilters: [{ 'elem._id': fahrzeugId }],
-        },
-      )
-      .findById(einsatzId, {
-        'fahrzeuge.$[elem]': 1,
-      })
-      .exec();
+      },
+      {
+        arrayFilters: [{ 'elem._id': fahrzeugId }],
+      },
+    );
+    await this.repository.findOne({
+      _id: einsatzId,
+      'fahrzeuge.$[elem]': 1,
+    });
     this.logger.debug(
       'updateResult: ' + JSON.stringify(updateResult, null, ''),
     );
 
-    const einsatz = await this.repository.findEinsatzById(einsatzId);
+    const einsatz = await this.repository.findById(einsatzId);
 
     this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       einsatzId,
@@ -139,19 +139,17 @@ export class EinsatzFahrzeugeService {
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
 
-    const einsatz = await this.repository
-      .updateEinsatz(
-        einsatzId,
-        {
-          $set: {
-            'fahrzeuge.$[elem].einsatzende': new Date(),
-          },
+    const einsatz = await this.repository.findOneByIdAndUpdate(
+      einsatzId,
+      {
+        $set: {
+          'fahrzeuge.$[elem].einsatzende': new Date(),
         },
-        {
-          arrayFilters: [{ 'elem._id': fahrzeugId }],
-        },
-      )
-      .exec();
+      },
+      {
+        arrayFilters: [{ 'elem._id': fahrzeugId }],
+      },
+    );
 
     if (!einsatz) {
       throw Error('Einsatz not found');

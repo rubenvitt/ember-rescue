@@ -1,6 +1,6 @@
 import { DynamicModule } from '@nestjs/common';
 import { MongooseModule, SchemaFactory } from '@nestjs/mongoose';
-import { Secret } from './mongo/schemas/secret.schema';
+import { Secret } from '../secrets/secret.schema';
 import { Counter, CounterSchema } from './mongo/schemas/counter.schema';
 import {
   Bearbeiter,

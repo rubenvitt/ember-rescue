@@ -18,7 +18,7 @@ import { FunctionOptaRepository } from '@templates/opta/repositories/function-op
 import { LocalCodeOptaRepository } from '@templates/opta/repositories/local-code-opta.repository';
 import { DistrictOptaRepository } from '@templates/opta/repositories/district-opta.repository';
 import { FunctionOptaTemplate } from '@templates/opta/schemas/function-opta.schema';
-import { BaseTemplateRepository } from '@templates/base-template.repository';
+import { TemplateRepository } from '@templates/template.repository';
 import { BosOptaTemplate } from '@templates/opta/schemas/bos-opta.schema';
 import { DistrictOptaTemplate } from '@templates/opta/schemas/district-opta.schema';
 import { LocalCodeOptaTemplate } from '@templates/opta/schemas/local-code-opta.schema';
@@ -155,7 +155,7 @@ export class SeedService implements OnModuleInit {
 
   private async insertSeedServiceData<T extends TemplateDocument>(
     data: Partial<T>[],
-    repository: BaseTemplateRepository<T>,
+    repository: TemplateRepository<T>,
     dataType: string,
   ) {
     try {

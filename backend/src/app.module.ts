@@ -7,7 +7,7 @@ import { AuthGuard } from '@core/auth/auth.guard';
 import { AuthMiddleware } from '@core/auth/auth.middleware';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CoreModule } from '@core/core.module';
-import { BaseTemplateModule } from '@templates/base-template.module';
+import { TemplateModule } from '@templates/template.module';
 import { EinsatzModule } from './einsatz/einsatz.module';
 import { FeaturesModule } from './features/features.module';
 import { UserModule } from './user/user.module';
@@ -18,7 +18,7 @@ import { UserModule } from './user/user.module';
     EinsatzModule,
     SettingsModule,
     CoreModule,
-    BaseTemplateModule,
+    TemplateModule,
     FeaturesModule,
     UserModule,
   ],

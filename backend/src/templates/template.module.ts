@@ -21,4 +21,4 @@ import { FahrzeugeModule } from '@templates/fahrzeuge/fahrzeuge.module';
     StatusModule,
   ],
 })
-export class BaseTemplateModule {}
+export class TemplateModule {}

@@ -4,6 +4,7 @@ import { DatabaseModule } from './database/database.module';
 import * as Joi from 'joi';
 import { SettingsModule } from '@core/settings/settings.module';
 import { MetaModule } from '@core/meta/meta.module';
+import { ExceptionsModule } from './exceptions/exceptions.module';
 
 let configModule = ConfigModule.forRoot({
   validationSchema: Joi.object({
@@ -33,7 +34,13 @@ let configModule = ConfigModule.forRoot({
 });
 
 @Module({
-  imports: [configModule, DatabaseModule, SettingsModule, MetaModule],
+  imports: [
+    configModule,
+    DatabaseModule,
+    SettingsModule,
+    MetaModule,
+    ExceptionsModule,
+  ],
   exports: [ConfigModule, DatabaseModule],
 })
 export class CoreModule {}

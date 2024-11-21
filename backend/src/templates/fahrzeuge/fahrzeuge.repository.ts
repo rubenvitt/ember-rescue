@@ -1,4 +1,4 @@
-import { BaseTemplateRepository } from '@templates/base-template.repository';
+import { TemplateRepository } from '@templates/template.repository';
 import { FahrzeugTemplate } from '@templates/fahrzeuge/fahrzeug-template.schema';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdateCreateFahrzeugeDto } from '../../types';
 
 @Injectable()
-export class FahrzeugeRepository extends BaseTemplateRepository<FahrzeugTemplate> {
+export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
   constructor(
     @InjectModel(FahrzeugTemplate.name) model: Model<FahrzeugTemplate>,
   ) {

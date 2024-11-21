@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Reminder {
+export class Reminder extends Document {
   @Prop({ required: true })
   timestamp: Date;
   @Prop({})

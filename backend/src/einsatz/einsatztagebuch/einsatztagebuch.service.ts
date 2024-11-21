@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EinsatzRepository } from '../schema/einsatz.repository';
 
 @Injectable()
@@ -6,7 +6,10 @@ export class EinsatztagebuchService {
   constructor(private readonly einsatzRepository: EinsatzRepository) {}
 
   async getEinsatztagebuch(einsatzId: string) {
-    const einsatz = await this.einsatzRepository.findEinsatzById(einsatzId);
+    const einsatz = await this.einsatzRepository.findById(einsatzId);
+    if (!einsatz) {
+      throw new NotFoundException(`Einsatz ${einsatzId} wurde nicht gefunden`);
+    }
     return einsatz.einsatzTagebuch;
   }
 
@@ -27,7 +30,7 @@ export class EinsatztagebuchService {
       updatedAt: undefined,
     });
 
-    return this.einsatzRepository.updateEinsatz(einsatzId, {
+    return this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
       $push: {
         einsatzTagebuch: {
           items: {
@@ -39,7 +42,7 @@ export class EinsatztagebuchService {
   }
 
   archiveEinsatztagebuchEintrag(id: string) {
-    this.einsatzRepository.updateByQuery(
+    return this.einsatzRepository.updateMany(
       {
         einsatzTagebuch: {
           items: {
