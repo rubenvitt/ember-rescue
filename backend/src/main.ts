@@ -1,9 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as process from 'node:process';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import {
+  HttpStatus,
+  Logger,
+  UnprocessableEntityException,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { TransformInterceptor } from './transform.interceptor';
+import { TransformInterceptor } from '@core/interceptors/core/interceptors/transform.interceptor';
 
 const logger = new Logger('main.ts');
 
@@ -20,6 +26,18 @@ async function bootstrap() {
       transform: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      exceptionFactory: (errors) => {
+        const formattedErrors = errors.reduce((acc, err) => {
+          acc[err.property] = Object.values(err.constraints || {});
+          return acc;
+        }, {});
+
+        return new UnprocessableEntityException(
+          'Validation failed',
+          formattedErrors,
+        );
+      },
     }),
   );
 
@@ -41,12 +59,11 @@ async function bootstrap() {
       .build(),
   };
 
-  // TODO:
-  // app.enableVersioning({
-  //   key: 'api-version=',
-  //   type: VersioningType.MEDIA_TYPE,
-  //   defaultVersion: '1',
-  // });
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+    prefix: 'v',
+  });
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {});

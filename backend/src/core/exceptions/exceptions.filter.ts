@@ -13,59 +13,48 @@ interface ErrorResponse {
   statusCode: number;
   timestamp: string;
   path: string;
-  code: string;
+  method: string;
   message: string;
   details?: Record<string, any>;
+  stack?: string;
 }
 
 @Catch()
 export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
   private readonly logger = new Logger(ExceptionsFilter.name);
 
-  catch(exception: T, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
 
-    if (exception instanceof HttpException) {
-      this.logger.debug('HTTPException: will do nothing', { exception });
-      response.status(exception.getStatus()).json(exception.getResponse());
-      return;
-    }
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    let errorResponse: ErrorResponse;
-    const f = false;
-    if (f) {
-      errorResponse = {
-        statusCode: HttpStatus.I_AM_A_TEAPOT,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        code: 'INTERNAL_SERVER_ERROR',
-        message: exception.message,
-      };
-    }
-    if (exception instanceof Error.CastError) {
-      errorResponse = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        code: 'BAD_REQUEST',
-        message: exception.message, // TODO: is this safe? - maybe I should add 'detailed exception massages' ENV for development
-      };
-    } else {
-      errorResponse = {
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        code: 'INTERNAL_SERVER_ERROR',
-        message:
-          '🚨 Oops! Something went wrong. Server is broken here. Call 🚑',
-      };
-    }
+    const message =
+      exception instanceof HttpException
+        ? exception.message
+        : 'Internal server error';
 
-    this.logError(exception, errorResponse);
+    const errorResponse: ErrorResponse = {
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      method: request.method,
+      message: message,
+      ...(process.env.NODE_ENV === 'development' && {
+        stack: exception instanceof Error ? exception.stack : undefined,
+      }),
+    };
 
-    response.status(errorResponse.statusCode).json(errorResponse);
+    this.logger.error('Error occurred:', {
+      ...errorResponse,
+      stack: exception instanceof Error ? exception.stack : undefined,
+    });
+
+    response.status(status).json(errorResponse);
   }
 
   private logError(error: Error, errorResponse: ErrorResponse) {
