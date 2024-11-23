@@ -17,6 +17,7 @@ import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-cor
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { CacheKey } from '@nestjs/cache-manager';
 
 @Controller('missions')
 @UseGuards(BearbeiterGuard)
@@ -35,6 +36,7 @@ export class EinsatzCoreController {
   }
 
   @Get()
+  @CacheKey('einsaetze')
   async getEinsaetze(
     @Query('abgeschlossen', new ParseBoolPipe({ optional: true }))
     abgeschlossen?: boolean,

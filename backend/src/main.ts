@@ -9,7 +9,6 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { TransformInterceptor } from '@core/interceptors/core/interceptors/transform.interceptor';
 
 const logger = new Logger('main.ts');
 
@@ -40,8 +39,6 @@ async function bootstrap() {
       },
     }),
   );
-
-  app.useGlobalInterceptors(new TransformInterceptor());
 
   const config = {
     ...new DocumentBuilder()
