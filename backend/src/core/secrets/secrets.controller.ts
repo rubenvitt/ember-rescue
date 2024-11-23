@@ -9,13 +9,14 @@ import {
 } from '@nestjs/common';
 import { SecretsService } from './secrets.service';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 interface SecretDto {
   key: string;
   value: string | null;
 }
 
-@Controller('secrets')
+@Controller('core/secrets')
 @UseGuards(BearbeiterGuard)
 export class SecretsController {
   private readonly logger = new Logger(SecretsController.name);
@@ -23,6 +24,9 @@ export class SecretsController {
   constructor(private readonly secretsService: SecretsService) {}
 
   @Get(':secret')
+  @ApiTags('Secrets')
+  @ApiOperation({ summary: 'Read a secrets value' })
+  @ApiBearerAuth('Bearbeiter')
   async readSecret(@Param('secret') key: string): Promise<SecretDto> {
     return { value: await this.secretsService.read(key), key };
   }

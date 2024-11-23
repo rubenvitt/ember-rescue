@@ -1,6 +1,6 @@
 import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { FahrzeugIconDefinitionDto } from '@templates/fahrzeuge/fahrzeug-template.schema';
+import { FahrzeugIconDefinitionDto } from '@templates/vehicles/fahrzeug-template.schema';
 
 export type BearbeiterDto = {
   name: string;

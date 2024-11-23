@@ -13,5 +13,5 @@ export function extractEinsatzId(
 }
 
 export function extractBearbeiterName(headerValue: string): string | null {
-  return extractId(headerValue, 'Bearbeiter:');
+  return headerValue;
 }

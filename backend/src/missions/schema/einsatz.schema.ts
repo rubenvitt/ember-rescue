@@ -7,11 +7,11 @@ import {
   Alarmstichwort,
   AlarmstichwortDto,
 } from '@templates/alarmstichworte/alarmstichwort.schema';
-import { Notiz } from '../notizen/notiz.schema';
+import { Notiz } from '../notes/notiz.schema';
 import { Reminder } from '../reminders/reminder.schema';
 import { Status } from '@templates/status/status.schema';
-import { QualifikationTemplate } from '@templates/qualifikationen/qualifikation.schema';
-import { FahrzeugTemplate } from '@templates/fahrzeuge/fahrzeug-template.schema';
+import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
+import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {

@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as process from 'node:process';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TransformInterceptor } from './transform.interceptor';
 
 const logger = new Logger('main.ts');
 
@@ -21,10 +22,22 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   const config = {
     ...new DocumentBuilder()
       .setTitle('Project Rescue Backend API')
-      .setVersion('0.0.1-alpha')
+      .setVersion(process.env.VERSION || 'unknown')
+      .addApiKey(
+        {
+          type: 'apiKey',
+          in: 'header',
+          name: 'bearbeiter',
+          description: 'Aktuell eingeloggter Bearbeiter (einfacher Name)',
+        },
+        'Bearbeiter',
+      )
       .build(),
   };
 

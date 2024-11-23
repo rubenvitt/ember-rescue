@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
-import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
-import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
+import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
+import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
 import { Einsatz } from '../schema/einsatz.schema';
 import { FilterQuery } from 'mongoose';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';

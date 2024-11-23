@@ -2,7 +2,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { StatusService } from './status.service';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('status')
+@Controller('templates/status')
 @UseGuards(BearbeiterGuard)
 export class StatusController {
   constructor(private readonly statusService: StatusService) {}

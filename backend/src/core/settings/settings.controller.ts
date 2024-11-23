@@ -4,7 +4,7 @@ import { SettingsDto } from './settings.dto';
 import { Response } from 'express';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('settings')
+@Controller('core/settings')
 @UseGuards(BearbeiterGuard)
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}

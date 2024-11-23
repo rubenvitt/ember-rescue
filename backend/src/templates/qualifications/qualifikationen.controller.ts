@@ -4,7 +4,7 @@ import { JSONSchemaType } from 'ajv';
 import { QualifikationDto } from '@ember-rescue/shared';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('qualifikationen')
+@Controller('templates/qualifications')
 @UseGuards(BearbeiterGuard)
 export class QualifikationenController {
   constructor(

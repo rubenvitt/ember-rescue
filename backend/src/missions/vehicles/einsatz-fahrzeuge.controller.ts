@@ -14,7 +14,7 @@ import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorat
 import { BearbeiterDto } from '../../types';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('einsatz/:einsatzId/fahrzeuge')
+@Controller('missions/:einsatzId/vehicles')
 @UseGuards(BearbeiterGuard)
 export class EinsatzFahrzeugeController {
   private readonly logger = new Logger(EinsatzCoreController.name);

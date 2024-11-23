@@ -10,7 +10,7 @@ import {
 import { BearbeiterCoreService } from './bearbeiter-core.service';
 import { CreateBearbeiterDto } from '../../../types';
 
-@Controller('bearbeiter')
+@Controller('users')
 export class BearbeiterCoreController {
   private readonly logger = new Logger(BearbeiterCoreController.name);
 

@@ -4,7 +4,7 @@ import { ExportService } from './export.service';
 import { extractEinsatzId } from '../../utils/header.utils';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('export')
+@Controller('features/export')
 @UseGuards(BearbeiterGuard)
 export class ExportController {
   constructor(private readonly exportService: ExportService) {}

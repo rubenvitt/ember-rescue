@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   QualifikationSchema,
   QualifikationTemplate,
-} from '@templates/qualifikationen/qualifikation.schema';
+} from '@templates/qualifications/qualifikation.schema';
 
 @Module({
   controllers: [QualifikationenController],

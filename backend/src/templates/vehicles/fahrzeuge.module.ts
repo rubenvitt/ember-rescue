@@ -5,8 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   FahrzeugTemplate,
   FahrzeugTemplateSchema,
-} from '@templates/fahrzeuge/fahrzeug-template.schema';
-import { FahrzeugeRepository } from '@templates/fahrzeuge/fahrzeuge.repository';
+} from '@templates/vehicles/fahrzeug-template.schema';
+import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
 
 @Module({
   controllers: [FahrzeugeController],

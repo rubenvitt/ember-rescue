@@ -24,9 +24,9 @@ import { DistrictOptaTemplate } from '@templates/opta/schemas/district-opta.sche
 import { LocalCodeOptaTemplate } from '@templates/opta/schemas/local-code-opta.schema';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { TemplateDocument } from '@core/database/base-documents';
-import { QualifikationenRepository } from '@templates/qualifikationen/qualifikationen.repository';
+import { QualifikationenRepository } from '@templates/qualifications/qualifikationen.repository';
 import { StatusRepository } from '@templates/status/status.repository';
-import { EinsatzRepository } from '../../einsatz/schema/einsatz.repository';
+import { EinsatzRepository } from '../../missions/schema/einsatz.repository';
 
 @Injectable()
 export class SeedService implements OnModuleInit {

@@ -4,7 +4,7 @@ import {
   FahrzeugImportDto,
   UpdateCreateFahrzeugeDto,
 } from '../../types';
-import { FahrzeugeRepository } from '@templates/fahrzeuge/fahrzeuge.repository';
+import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
 import { ValidationException } from '@core/exceptions/validation.exception';
 
 @Injectable()

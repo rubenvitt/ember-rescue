@@ -18,7 +18,7 @@ import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichw
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('einsatz')
+@Controller('missions')
 @UseGuards(BearbeiterGuard)
 export class EinsatzCoreController {
   private readonly logger = new Logger(EinsatzCoreController.name);
@@ -39,11 +39,21 @@ export class EinsatzCoreController {
     @Query('abgeschlossen', new ParseBoolPipe({ optional: true }))
     abgeschlossen?: boolean,
   ) {
-    let einsaetze = this.einsatzService.getEinsaetze({
+    let einsaetze = await this.einsatzService.getEinsaetze({
       abgeschlossen: null,
     });
     this.logger.debug('getEinsaetze', {});
-    return einsaetze;
+    return {
+      data: einsaetze,
+      meta: {
+        pagination: {
+          page: 0,
+          limit: 100,
+          total: einsaetze.length,
+          totalPages: 1,
+        },
+      },
+    };
   }
 
   @Post()

@@ -1,5 +1,5 @@
 import { TemplateRepository } from '@templates/template.repository';
-import { FahrzeugTemplate } from '@templates/fahrzeuge/fahrzeug-template.schema';
+import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';

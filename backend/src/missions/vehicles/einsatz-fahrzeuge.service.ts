@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { EinsatztagebuchService } from '../einsatztagebuch/einsatztagebuch.service';
+import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
 import { StatusService } from '@templates/status/status.service';
-import { FahrzeugeService } from '@templates/fahrzeuge/fahrzeuge.service';
+import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
 import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
 import { EinsatzRepository } from '../schema/einsatz.repository';
 

@@ -43,9 +43,10 @@ export class EinsatztagebuchService {
     });
   }
 
-  archiveEinsatztagebuchEintrag(id: string) {
-    return this.einsatzRepository.updateMany(
+  archiveEinsatztagebuchEintrag(id: string, missionId: string) {
+    return this.einsatzRepository.findOneAndUpdate(
       {
+        _id: missionId,
         einsatzTagebuch: {
           items: {
             $elemMatch: {

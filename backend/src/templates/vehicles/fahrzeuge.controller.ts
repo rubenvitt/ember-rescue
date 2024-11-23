@@ -14,7 +14,7 @@ import { UpdateCreateFahrzeugeDto } from '../../types';
 import { Response } from 'express';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 
-@Controller('fahrzeuge')
+@Controller('templates/vehicles')
 @UseGuards(BearbeiterGuard)
 export class FahrzeugeController {
   private readonly logger = new Logger(FahrzeugeController.name);

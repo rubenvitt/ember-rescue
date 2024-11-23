@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Template } from '@pdfme/common';
 import { PdfService } from '../pdf/pdf.service';
-import { EinsatzCoreService } from '../../einsatz/core/einsatz-core.service';
-import { EinsatztagebuchService } from '../../einsatz/einsatztagebuch/einsatztagebuch.service';
 import { formatNatoDateTime } from '../../utils/time';
+import { EinsatzCoreService } from '../../missions/core/einsatz-core.service';
+import { EinsatztagebuchService } from '../../missions/journal/einsatztagebuch.service';
 
 @Injectable()
 export class ExportService {
