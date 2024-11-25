@@ -59,7 +59,7 @@ export class RemindersController {
   async markAsRead(
     @Param('missionId') einsatzId: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
-    @Param('reminderId') reminderId: string,
+    @Param('remindersId') reminderId: string,
   ) {
     await this.reminderService.markAsRead(
       reminderId,

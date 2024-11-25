@@ -1,1 +1,1 @@
-export * from "./qualifikation.dto";
+export * from './qualifikation.dto';

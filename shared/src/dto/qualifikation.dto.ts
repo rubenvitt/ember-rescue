@@ -1,4 +1,4 @@
-import { Identifiable } from "./common";
+import { Identifiable } from './common';
 
 export type QualifikationDto = Identifiable & {
   label: string;

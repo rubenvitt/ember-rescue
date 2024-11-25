@@ -1,0 +1,18 @@
+/* tslint:disable */
+/* eslint-disable */
+export * from './AlarmstichwortApi';
+export * from './BearbeiterCoreApi';
+export * from './EinsatzCoreApi';
+export * from './EinsatzFahrzeugeApi';
+export * from './EinsatztagebuchApi';
+export * from './ExportApi';
+export * from './FahrzeugeApi';
+export * from './MetaApi';
+export * from './NinaApi';
+export * from './NotizenApi';
+export * from './OptaSchemaApi';
+export * from './QualifikationenApi';
+export * from './RemindersApi';
+export * from './SecretsApi';
+export * from './SettingsApi';
+export * from './StatusApi';

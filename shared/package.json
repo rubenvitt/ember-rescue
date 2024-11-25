@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "prettier --write \"src/**/*.ts\"",
+    "generate-client": "openapi-generator-cli generate -i 'http://localhost:3000/api-json' -g typescript-fetch -o ./src/client && pnpm format"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "@openapitools/openapi-generator-cli": "^2.15.3",
+    "prettier": "^3.3.3",
+    "typescript": "^5.7.2"
   }
 }
