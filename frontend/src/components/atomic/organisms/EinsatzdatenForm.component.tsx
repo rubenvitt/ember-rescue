@@ -1,7 +1,6 @@
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { useMemo, useReducer, useState } from 'react';
 import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
-import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
 import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
@@ -20,12 +19,13 @@ import { Dayjs } from 'dayjs';
 import { RangeValue } from '../../../types/ui/inputs.types.js';
 import { Secret } from '../../../hooks/secrets.hook.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
+import { MissionDto } from '@ember-rescue/shared/client/index.js';
 
 interface Einsatzdaten {
   alarmstichwort: string;
   einsatzleiter: { id?: string; name: string };
   ort: string;
-  timeframe: [string, string | null];
+  timeframe: [string, string];
 }
 
 const EinsatzdatenValidationSchema = Yup.object().shape({
@@ -38,7 +38,7 @@ const EinsatzdatenValidationSchema = Yup.object().shape({
   timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld'),
 });
 
-function FinishEinsatz(props: { einsatz: Einsatz }) {
+function FinishEinsatz(props: { einsatz: MissionDto }) {
   const [etbExported, setEtbExported] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -150,9 +150,9 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
             item,
             label: (
               <div className="flex justify-between gap-4">
-                <span>{item.bezeichnung}</span>
-                <Tooltip title={item.beschreibung}>
-                  <span className="truncate">{item.beschreibung}</span>
+                <span>{item.code}</span>
+                <Tooltip title={item.description}>
+                  <span className="truncate">{item.description}</span>
                 </Tooltip>
               </div>
             ),
@@ -163,7 +163,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
   }, [alarmstichworte.data]);
 
   const defaultStichwort = useMemo<string | undefined>(() => {
-    return alarmstichworte.data?.find((a) => a.bezeichnung === einsatz.data?.einsatz_alarmstichwort?.bezeichnung)?.id;
+    return alarmstichworte.data?.find((a) => a.code === einsatz.data?.einsatzAlarmstichwort.code)?.id;
   }, [alarmstichworte.data, einsatz.data]);
 
   const searchBoxCore = useSearchBoxCore({
@@ -238,8 +238,8 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
             // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
             // ort: einsatz.data.ort,
             einsatzleiter: { name: 'Peter Müller' },
-            ort: einsatz.data.einsatz_meta.ort,
-            timeframe: [einsatz.data.beginn, einsatz.data.ende],
+            ort: einsatz.data.einsatzMeta.ort,
+            timeframe: [einsatz.data.beginn, einsatz.data.ende].filter((time) => time) as [string, string],
           },
           onSubmit: (data) => {
             console.log('submitting einsatzdaten', { data });

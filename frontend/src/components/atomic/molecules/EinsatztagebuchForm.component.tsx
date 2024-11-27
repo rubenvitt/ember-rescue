@@ -47,8 +47,8 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
   );
 
   const aufnehmendesRettungsmittelId = useMemo(() => {
-    return einsatz?.data?.aufnehmendesRettungsmittelId ?? '';
-  }, [einsatz?.data?.aufnehmendesRettungsmittelId]);
+    return einsatz?.data?.aufnehmendesRettungsmittel ?? '';
+  }, [einsatz?.data?.aufnehmendesRettungsmittel]);
 
   return (
     <FormLayout<CreateEinsatztagebuchEintrag>

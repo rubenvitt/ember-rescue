@@ -16,6 +16,7 @@ export class NotizenService {
         done: done ? { $ne: null } : null,
         deleted: null,
       },
+      null,
       {
         sort: {
           done: -1,

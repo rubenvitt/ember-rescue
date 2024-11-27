@@ -26,17 +26,14 @@ export class RemindersService {
   async getDueReminders(bearbeiterId: string, einsatzId: string) {
     const now = new Date();
 
-    return this.repository.find(
-      {
-        reminderTimestamp: {
-          lt: now,
-        },
-        notified: null,
-        bearbeiterId,
-        einsatzId,
+    return this.repository.find({
+      reminderTimestamp: {
+        lt: now,
       },
-      {},
-    );
+      notified: null,
+      bearbeiterId,
+      einsatzId,
+    });
   }
 
   async markAsNotified(id: string, einsatzId?: string, bearbeiterId?: string) {

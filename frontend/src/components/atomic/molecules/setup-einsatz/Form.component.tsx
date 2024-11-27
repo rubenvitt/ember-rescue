@@ -12,6 +12,7 @@ import { FormSection } from '../../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { DatePicker, Select } from 'formik-antd';
+import { CreateMissionDto } from '@ember-rescue/shared/client/index.js';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -55,10 +56,11 @@ import { DatePicker, Select } from 'formik-antd';
 //   );
 // };
 
-const SetupEinsatzSchema = Yup.object().shape({
+const SetupEinsatzSchema = Yup.object<CreateMissionDto>().shape({
   erstAlarmiert: Yup.string().required('Zeitpunkt der Erstalarmierung wird benötigt'),
   aufnehmendesRettungsmittel: Yup.string().required('Das Aufnehmende Rettungsmittel wird benötigt'),
   alarmstichwort: Yup.string().required('Geben Sie ein Einsatzstichwort an'),
+  ort: Yup.string().required('Geben Sie einen Ort an'),
 });
 
 export function NewSetupEinsatzForm() {
@@ -90,7 +92,7 @@ export function NewSetupEinsatzForm() {
     return alarmstichworte.data?.map(
       (stichwort) =>
         ({
-          value: stichwort._id,
+          value: stichwort.id,
           searchString: (stichwort.code + stichwort.description).toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
@@ -111,7 +113,12 @@ export function NewSetupEinsatzForm() {
       type="sectioned"
       formik={{
         validationSchema: SetupEinsatzSchema,
-        initialValues: { erstAlarmiert: dayjs().toISOString(), aufnehmendesRettungsmittel: '', alarmstichwort: '' },
+        initialValues: {
+          erstAlarmiert: dayjs().toISOString(),
+          aufnehmendesRettungsmittel: '',
+          alarmstichwort: '',
+          ort: '',
+        },
         onSubmit: async (data) => {
           console.log('my data', { data });
           await createEinsatz.mutateAsync({ ...data }).then((einsatz) => {

@@ -14,7 +14,7 @@ export const EinsatzInfoComponent: React.FC = () => {
       <FireAlarmIcon className="mt-1 h-8 w-auto text-white" />
       <div>
         <h3 className="text-base font-bold leading-6 text-white">
-          Laufend: {einsatz.data?.einsatz_alarmstichwort?.bezeichnung}
+          Laufend: {einsatz.data?.einsatzAlarmstichwort?.code}
         </h3>
         <p className="-mt-0.5 text-sm text-gray-200">
           Beginn: {einsatz.data?.beginn && format(einsatz.data?.beginn, natoDateTime)}

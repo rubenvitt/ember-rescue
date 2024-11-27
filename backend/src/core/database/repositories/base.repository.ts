@@ -41,10 +41,11 @@ export abstract class BaseRepository<T extends Document>
 
   async find(
     filterQuery: FilterQuery<T>,
+    projection?: AnyKeys<T> | null,
     options?: QueryOptions,
   ): Promise<T[]> {
     try {
-      return await this.model.find(filterQuery, null, options).exec();
+      return await this.model.find(filterQuery, projection, options).exec();
     } catch (error) {
       this.logger.error(`Error finding documents: ${error.message}`);
       throw error;

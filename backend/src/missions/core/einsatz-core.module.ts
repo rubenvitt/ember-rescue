@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { EinsatzCoreController } from './einsatz-core.controller';
+import { MissionCoreController } from './mission-core.controller';
 import { EinsatzCoreService } from './einsatz-core.service';
 import { FahrzeugeModule } from '@templates/vehicles/fahrzeuge.module';
 import { TemplateModule } from '@templates/template.module';
@@ -9,7 +9,7 @@ import { UserModule } from '../../user/user.module';
 import { EinsatzMapper } from './einsatz.mapper';
 
 @Module({
-  controllers: [EinsatzCoreController],
+  controllers: [MissionCoreController],
   providers: [EinsatzCoreService, EinsatzMapper],
   exports: [EinsatzCoreService],
   imports: [

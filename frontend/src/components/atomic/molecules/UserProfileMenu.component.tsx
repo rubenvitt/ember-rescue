@@ -14,7 +14,7 @@ export function UserProfileMenu({ dropdownItems }: UserProfileDropdownProps) {
   const menuItems = useMemo<MenuItem[]>(() => {
     return [
       {
-        label: bearbeiter.data?.name,
+        label: bearbeiter.data?.data.name,
         key: 'user',
         icon: <PiUser />,
         children: dropdownItems,
@@ -22,12 +22,5 @@ export function UserProfileMenu({ dropdownItems }: UserProfileDropdownProps) {
     ];
   }, [bearbeiter.data]);
 
-  return (
-    <Menu
-      disabledOverflow={true}
-      mode={'horizontal'}
-      selectedKeys={['']}
-      items={menuItems}
-    />
-  );
+  return <Menu disabledOverflow={true} mode={'horizontal'} selectedKeys={['']} items={menuItems} />;
 }

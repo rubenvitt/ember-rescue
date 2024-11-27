@@ -1,6 +1,9 @@
 import { Identifiable, WithCreatedUpdatedAt } from '../utils/common.types.js';
 import { Bearbeiter } from './bearbeiter.types.js';
 
+/**
+ * @deprecated
+ */
 export type Einsatz = Identifiable &
   WithCreatedUpdatedAt & {
     beginn: string;
@@ -16,10 +19,16 @@ export type Einsatz = Identifiable &
     einsatz_meta: EinsatzMeta;
   };
 
+/**
+ * @deprecated
+ */
 export type EinsatzMeta = Identifiable & {
   ort: string;
 };
 
+/**
+ * @deprecated
+ */
 export interface CreateEinsatz {
   erstAlarmiert: string;
   alarmstichwort?: string;
@@ -28,6 +37,9 @@ export interface CreateEinsatz {
   adresse?: string;
 }
 
+/**
+ * @deprecated
+ */
 export interface UpdateEinsatz {
   alarmstichwort: string;
 }

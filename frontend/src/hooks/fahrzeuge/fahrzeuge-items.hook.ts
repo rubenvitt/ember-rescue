@@ -15,7 +15,7 @@ function convertToItems(fahrzeuge?: FahrzeugDto[]) {
     return fahrzeuge.map((item) => {
       return {
         label: item.funkrufname,
-        value: item._id,
+        value: item.id,
         title: item.funkrufname,
         item,
         // item,

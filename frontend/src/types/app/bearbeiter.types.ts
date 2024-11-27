@@ -5,7 +5,3 @@ export type Bearbeiter = Identifiable &
     name: string;
     active: boolean;
   };
-
-export type CreateBearbeiter = {
-  name: string;
-};

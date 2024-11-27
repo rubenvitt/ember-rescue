@@ -35,7 +35,7 @@ export class BearbeiterDto {
 }
 
 @Schema({ timestamps: true })
-export class Bearbeiter extends Document {
+export class Bearbeiter extends Document<string> {
   @Prop({ required: true, unique: true })
   name: string;
 

@@ -5,25 +5,25 @@ import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
-import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { List, Tag } from 'antd';
 import { ExpandableListItem } from '../molecules/ExpandableListItem.component.js';
 import { listStyles } from '../../../styles/expandableList.styles.js';
 import { PiNetwork } from 'react-icons/pi';
+import { SmallMissionDto } from '@ember-rescue/shared/client/index.js';
 
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
   const { fahrzeuge } = useFahrzeuge();
   const { allBearbeiter } = useBearbeiter();
 
-  const renderEinsatz = useCallback((einsatz: Einsatz) => {
+  const renderEinsatz = useCallback((einsatz: SmallMissionDto) => {
     const beginnToNow = formatDistanceToNow(einsatz.beginn);
 
     return (
       <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
           <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            Stichwort: {einsatz.einsatzAlarmstichwort?.code ?? 'Unbekanntes Alarmstichwort'}
+            Stichwort: {einsatz.einsatzAlarmstichwort.code}
           </p>
           <Tag icon={<PiNetwork className="mr-1 inline" />} color="blue">
             Remote-Einsatz
@@ -40,7 +40,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
   }, []);
 
   const renderExpandedContent = useCallback(
-    (einsatz: Einsatz) => {
+    (einsatz: SmallMissionDto) => {
       const fahrzeug = einsatz.aufnehmendesRettungsmittel;
       const bearbeiter = einsatz.bearbeiter.name;
 
@@ -54,7 +54,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
     [fahrzeuge.data, allBearbeiter.data],
   );
 
-  const actionButtons: ActionButton<Einsatz>[] = useMemo(
+  const actionButtons: ActionButton<SmallMissionDto>[] = useMemo(
     () => [
       {
         label: 'Archivieren',
@@ -82,7 +82,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
       <List
         className={listStyles()}
         itemLayout="horizontal"
-        dataSource={offeneEinsaetze.data}
+        dataSource={offeneEinsaetze.data?.data}
         renderItem={(item) => (
           <ExpandableListItem
             item={item}

@@ -1,7 +1,12 @@
-import { backendFetchJson } from '../../utils/http.js';
-import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
-import { CreateEinsatz, Einsatz, UpdateEinsatz } from '../../types/app/einsatz.types.js';
+import { getAPIConfig } from '../../utils/http.js';
+import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
+import {
+  CreateMissionDto,
+  MissionCoreApi,
+  SmallMissionDto,
+  UpdateMissionDto,
+} from '@ember-rescue/shared/client/index.js';
 
 // Export des queryKey
 export const queryKey = 'einsatz';
@@ -10,12 +15,17 @@ export const queryKey = 'einsatz';
 export const invalidateQueries = (queryClient: QueryClient) =>
   createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
 
+const api = new MissionCoreApi(getAPIConfig());
+
 // GET Single Einsatz
 export const fetchSingleEinsatz = {
   queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
   queryFn: function ({ einsatzId }: { einsatzId: string | null }) {
-    requireParams(einsatzId);
-    return backendFetchJson<Einsatz>(`/einsatz/${einsatzId}`);
+    if (!einsatzId) return Promise.reject();
+
+    return api.missionCoreControllerGetMissionV1({
+      id: einsatzId,
+    });
   },
 };
 
@@ -23,20 +33,18 @@ export const fetchSingleEinsatz = {
 export const fetchOffeneEinsaetze = {
   queryKey: [queryKey, 'offeneEinsaetze'],
   queryFn: function () {
-    return backendFetchJson<Einsatz[]>('/einsatz?abgeschlossen=false');
+    return api.missionCoreControllerGetMissionsV1({
+      abgeschlossen: false,
+    });
   },
 };
 
 // POST New Einsatz
 export const createEinsatz = {
   mutationKey: [queryKey, 'add'],
-  mutationFn: async (data: CreateEinsatz) => {
-    return await backendFetchJson<Einsatz>('/einsatz', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  mutationFn: async (data: CreateMissionDto) => {
+    return api.missionCoreControllerCreateEinsatzV1({
+      createMissionDto: data,
     });
   },
 };
@@ -44,13 +52,10 @@ export const createEinsatz = {
 // PUT Existing Einsatz
 export const updateEinsatz = {
   mutationKey: [queryKey, 'update'],
-  mutationFn: async ({ id, data }: { id: string; data: UpdateEinsatz }) => {
-    return await backendFetchJson<Einsatz>(`/einsatz/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  mutationFn: async ({ id, data }: { id: string; data: UpdateMissionDto }) => {
+    return api.missionCoreControllerChangeEinsatzV1({
+      id,
+      updateMissionDto: data,
     });
   },
 };
@@ -58,10 +63,9 @@ export const updateEinsatz = {
 // PUT Abschluss eines Einsatzes
 export const einsatzAbschliessen = {
   mutationKey: ({ einsatzId }: { einsatzId: string | null }) => [queryKey, einsatzId, 'close'],
-  mutationFn: async (einsatz: Einsatz) => {
-    requireParams(einsatz);
-    return await backendFetchJson(`/einsatz/${einsatz._id}/close`, {
-      method: 'PUT',
+  mutationFn: async (einsatz: SmallMissionDto) => {
+    return api.missionCoreControllerCloseEinsatzV1({
+      id: einsatz.id,
     });
   },
 };

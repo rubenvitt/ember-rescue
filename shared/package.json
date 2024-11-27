@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "format": "prettier --write \"src/**/*.ts\"",
-    "generate-client": "openapi-generator-cli generate -i 'http://localhost:3000/api-json' -g typescript-fetch -o ./src/client && pnpm format"
+    "format": "prettier --write \"client/**/*.ts\" \"dto/**/*.ts\"",
+    "generate-client": "openapi-generator-cli generate -i 'http://localhost:3000/api-json' -g typescript-fetch -o ./client && pnpm format"
   },
   "keywords": [],
   "author": "",

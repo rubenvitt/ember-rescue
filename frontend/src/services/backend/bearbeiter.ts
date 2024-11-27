@@ -1,17 +1,24 @@
-import { backendFetchJson } from '../../utils/http.js';
-import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
-import { Bearbeiter, CreateBearbeiter } from '../../types/app/bearbeiter.types.js';
+import { getAPIConfig } from '../../utils/http.js';
+import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
+import { BearbeiterCoreApi, CreateBearbeiterDto, ResponseError } from '@ember-rescue/shared/client/index.js';
 
 // Export des queryKey
 export const queryKey = 'bearbeiter';
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
+function api() {
+  return new BearbeiterCoreApi(getAPIConfig());
+}
+
 // GET All Bearbeiter
 export const fetchAllBearbeiter = {
   queryKey: [queryKey],
-  queryFn: function () {
-    return backendFetchJson<Bearbeiter[]>('bearbeiter');
+  queryFn: async function () {
+    const result = await api().bearbeiterCoreControllerFindAllV1();
+    console.log('result of finding all bearbeiter', result);
+
+    return result;
   },
 };
 
@@ -19,21 +26,29 @@ export const fetchAllBearbeiter = {
 export const fetchSingleBearbeiter = {
   queryKey: ({ bearbeiterId }: { bearbeiterId?: string }) => [queryKey, bearbeiterId],
   queryFn: function ({ bearbeiterId }: { bearbeiterId: string }) {
-    requireParams(bearbeiterId);
-    return backendFetchJson<Bearbeiter | null>(`/bearbeiter/${bearbeiterId}`);
+    if (!bearbeiterId) {
+      console.warn('Try to fetch bearbeiterId null');
+    }
+
+    return api().bearbeiterCoreControllerFindOneV1({
+      name: bearbeiterId,
+    });
   },
 };
 
 // POST New Bearbeiter
 export const postNewBearbeiter = {
   mutationKey: [queryKey, 'add'],
-  mutationFn: async (bearbeiter: Bearbeiter | CreateBearbeiter) => {
-    return await backendFetchJson<Bearbeiter>('/bearbeiter', {
-      method: 'POST',
-      body: JSON.stringify(bearbeiter),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  mutationFn: async (bearbeiter: CreateBearbeiterDto) => {
+    let oneBearbeiterResponse = await api()
+      .bearbeiterCoreControllerLoginV1({
+        createBearbeiterDto: bearbeiter,
+      })
+      .catch((e: ResponseError) => {
+        console.error('Error while creating new bearbeiter', { e: e });
+        throw e;
+      });
+    console.log('oneBearbeiterResponse', oneBearbeiterResponse);
+    return oneBearbeiterResponse;
   },
 };

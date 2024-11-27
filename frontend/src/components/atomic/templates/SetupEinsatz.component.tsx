@@ -6,12 +6,15 @@ import { NewSetupEinsatzForm } from '../molecules/setup-einsatz/Form.component.j
 
 export const SetupEinsatzTemplate: React.FC = () => {
   const { offeneEinsaetze } = useEinsatz();
-  const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.length > 0, [offeneEinsaetze.data]);
+  const einsatzOffen = useMemo(
+    () => offeneEinsaetze.data && offeneEinsaetze.data.data.length > 0,
+    [offeneEinsaetze.data],
+  );
 
   return (
-    <div className="mb-12 flex min-h-screen flex-col items-center gap-4 px-4">
+    <div className="mb-12 flex min-h-screen flex-col items-center gap-4">
+      <SetupEinsatzHeader einsatzOffen={einsatzOffen ?? false} />
       <div className="flex w-full max-w-6xl flex-col gap-16 space-y-6">
-        <SetupEinsatzHeader einsatzOffen={einsatzOffen ?? false} />
         {einsatzOffen && <SetupEinsatzOffeneEinsaetze />}
         <NewSetupEinsatzForm />
       </div>

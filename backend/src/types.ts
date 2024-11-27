@@ -6,11 +6,6 @@ export type BearbeiterDto = {
   name: string;
 };
 
-export class CreateBearbeiterDto {
-  @IsNotEmpty()
-  name: string;
-}
-
 export type SmallStatusDto = {
   id: string;
   code: string;
@@ -48,12 +43,9 @@ export class FahrzeugImportDto {
   kapazitaet: number;
 }
 
-export type CreateEinsatzDto = {
-  erstAlarmiert: string;
-  aufnehmendesRettungsmittel: string;
-  alarmstichwort?: string;
-};
-
+/**
+ * @deprecated
+ */
 export type UpdateEinsatzDto = {
   alarmstichwort: string;
   ort: string;
@@ -108,6 +100,31 @@ export class UpdateNotizDto {
   id?: never;
 
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({})
   content: string;
+}
+
+class ApiPagination {
+  @ApiProperty({})
+  page: number;
+  @ApiProperty({})
+  limit: number;
+  @ApiProperty({})
+  total: number;
+  @ApiProperty({})
+  totalPages: number;
+}
+
+class ApiMeta {
+  @ApiProperty({})
+  pagination?: ApiPagination;
+  @ApiProperty({})
+  timestamp: string;
+}
+
+export abstract class ApiResponse<T> {
+  data: T;
+  @ApiProperty({})
+  meta?: ApiMeta;
+  message?: string;
 }

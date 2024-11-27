@@ -18,7 +18,7 @@ interface _NotesListItemProps {
 
 export function NotizenListItem({ notiz }: Props) {
   const [isEdit, setIsEdit] = useState(false);
-  const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz._id });
+  const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
   const { actualCreateReminder } = useReminders();
 
   function _NotesListItem({ props }: _NotesListItemProps) {
@@ -50,7 +50,7 @@ export function NotizenListItem({ notiz }: Props) {
           <Tooltip title="Erinnerung anlegen">
             <Button
               onClick={() => {
-                actualCreateReminder(notiz._id);
+                actualCreateReminder(notiz.id);
               }}
               key="list-loadmore-more"
               icon={<PiClock />}

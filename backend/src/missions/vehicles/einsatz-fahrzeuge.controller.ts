@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
-import { EinsatzCoreController } from '../core/einsatz-core.controller';
+import { MissionCoreController } from '../core/mission-core.controller';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterDto } from '../../types';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
@@ -17,7 +17,7 @@ import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 @Controller('missions/:einsatzId/vehicles')
 @UseGuards(BearbeiterGuard)
 export class EinsatzFahrzeugeController {
-  private readonly logger = new Logger(EinsatzCoreController.name);
+  private readonly logger = new Logger(MissionCoreController.name);
 
   constructor(private readonly fahrzeugeService: EinsatzFahrzeugeService) {}
 

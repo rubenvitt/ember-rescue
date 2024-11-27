@@ -28,6 +28,12 @@ export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
     const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
 
+    this.logger.debug('Exception caught:', { exception });
+    this.logger.debug('Request:', {
+      request: request.body,
+      header: request.headers,
+    });
+
     const status =
       exception instanceof HttpException
         ? exception.getStatus()

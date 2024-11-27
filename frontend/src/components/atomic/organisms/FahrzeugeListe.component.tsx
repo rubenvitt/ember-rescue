@@ -15,7 +15,7 @@ interface FahrzeugelisteComponentProps {
 
 function FahrzeugExtra({ fahrzeug }: { fahrzeug: FahrzeugDto }) {
   const { status } = useStatus();
-  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fahrzeugId: fahrzeug._id });
+  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fahrzeugId: fahrzeug.id });
 
   const onStatusButtonClick = useCallback(
     async (item: { statusId: string }) => {

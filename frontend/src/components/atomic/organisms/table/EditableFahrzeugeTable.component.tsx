@@ -73,7 +73,7 @@ const newFahrzeugTemplate: FahrzeugDto = {
   fullOpta: '',
   istTemporaer: false,
   kapazitaet: 0,
-  _id: 'create.fahrzeug',
+  id: 'create.fahrzeug',
   _count: { einsatz_fahrzeug: 0 },
   status: { _id: '', code: 'none', bezeichnung: '' },
   optaOrt: null,
@@ -199,7 +199,7 @@ export function EditableFahrzeugeTable() {
   const cancel = useCallback(resetEditingId, [resetEditingId]);
 
   const editingFahrzeug = useMemo(() => {
-    if (newFahrzeugTemplate._id === id) {
+    if (newFahrzeugTemplate.id === id) {
       return newFahrzeugTemplate;
     }
     return fahrzeuge.data?.find((fahrzeug) => fahrzeug._id === id);
@@ -234,7 +234,7 @@ export function EditableFahrzeugeTable() {
 
   useEffect(() => {
     formRef.current?.setValues({
-      _id: editingFahrzeug?._id ?? '',
+      id: editingFahrzeug?._id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
       istTemporaer: editingFahrzeug?.istTemporaer ?? false,
       opta: {
@@ -291,7 +291,7 @@ export function EditableFahrzeugeTable() {
         ),
         dataIndex: 'actions',
         render: (_, record) => {
-          const editing = isEditing(record._id);
+          const editing = isEditing(record.id);
           if (editing) {
             return (
               <div className="flex justify-around">
@@ -311,7 +311,7 @@ export function EditableFahrzeugeTable() {
                 icon={<PiPencil />}
                 onClick={() => {
                   form.setFieldsValue(record);
-                  setEditingId(record._id);
+                  setEditingId(record.id);
                 }}
               />
             </div>
@@ -337,7 +337,7 @@ export function EditableFahrzeugeTable() {
             options: selectOptions(col.dataIndex),
             dataIndex: col.dataIndex,
             title: col.title,
-            editing: isEditing(record._id),
+            editing: isEditing(record.id),
           }),
         };
       }),
@@ -346,7 +346,7 @@ export function EditableFahrzeugeTable() {
 
   const dataSource = useMemo(
     () =>
-      [id === newFahrzeugTemplate._id ? [newFahrzeugTemplate] : undefined, fahrzeuge.data]
+      [id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, fahrzeuge.data]
         .filter((value) => value !== undefined)
         .flat(),
     [newFahrzeugTemplate, id, fahrzeuge.data],
@@ -361,7 +361,7 @@ export function EditableFahrzeugeTable() {
           patchFahrzeuge.mutate([{ ...data }]);
         }}
         initialValues={{
-          _id: editingFahrzeug?.id ?? '',
+          id: editingFahrzeug?.id ?? '',
           fullOpta: '',
           istTemporaer: editingFahrzeug?.istTemporaer ?? false,
           kapazitaet: editingFahrzeug?.kapazitaet ?? 0,

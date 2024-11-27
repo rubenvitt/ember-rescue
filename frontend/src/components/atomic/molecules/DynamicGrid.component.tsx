@@ -20,7 +20,7 @@ export function DynamicGrid<T extends Identifiable>({
 
       const className = gridItemStyles({ span });
 
-      return <Fragment key={item._id}>{render(item, className)}</Fragment>;
+      return <Fragment key={item.id}>{render(item, className)}</Fragment>;
     });
   }, [items, render, columns]);
 

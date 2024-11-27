@@ -17,7 +17,7 @@ export function LoginForm() {
 
   const onCreateNewBearbeiter = useCallback(async () => {
     setBearbeiter('');
-    await saveBearbeiter({ name: bearbeiter, _id: null });
+    await saveBearbeiter({ name: bearbeiter });
     openWindow({ closeOnNavigate: true });
   }, [bearbeiter]);
 
@@ -30,7 +30,7 @@ export function LoginForm() {
 
   const allBearbeiterItems = useMemo<BaseOptionType[]>(() => {
     return (
-      allBearbeiter.data?.map(
+      allBearbeiter.data?.data.map(
         (b) =>
           ({
             title: b.name,

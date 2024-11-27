@@ -54,11 +54,23 @@ export class EinsatzCoreService {
   }
 
   getEinsaetze(filter: FilterQuery<Einsatz>) {
-    return this.repository.find(filter, {
-      sort: {
-        createdAt: -1,
+    return this.repository.find(
+      filter,
+      {
+        id: true,
+        aufnehmendesRettungsmittel: true,
+        bearbeiter: true,
+        beginn: true,
+        ende: true,
+        einsatzAlarmstichwort: true,
+        einsatzMeta: true,
       },
-    });
+      {
+        sort: {
+          createdAt: -1,
+        },
+      },
+    );
   }
 
   closeEinsatz(einsatzId: string) {

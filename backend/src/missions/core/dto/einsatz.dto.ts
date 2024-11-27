@@ -1,11 +1,18 @@
-import { BearbeiterDto } from '../../../user/bearbeiter/core/bearbeiter.schema';
 import { CreateEinsatzDto } from '../../schema/einsatz.schema';
 import { AlarmstichwortDto } from '@templates/alarmstichworte/alarmstichwort.schema';
 
+import { BearbeiterDto } from '../../../user/bearbeiter/core/bearbeiter.dto';
+
+/**
+ * @deprecated
+ */
 export class CreateEinsatzParams {
   createEinsatzDto: CreateEinsatzDto;
 }
 
+/**
+ * @deprecated
+ */
 export class EinsatzDto {
   id: string;
   nummer: number;
@@ -16,6 +23,9 @@ export class EinsatzDto {
   einsatzMeta: EinsatzMetaDto;
 }
 
+/**
+ * @deprecated
+ */
 export class EinsatzMetaDto {
   ort?: string;
   bemerkung?: string;

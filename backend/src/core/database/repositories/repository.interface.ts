@@ -1,6 +1,7 @@
 // src/core/database/repositories/repository.interface.ts
 
 import {
+  AnyKeys,
   Document,
   FilterQuery,
   MergeType,
@@ -13,7 +14,11 @@ import {
 export interface IRepository<T extends Document> {
   findOne(filterQuery: FilterQuery<T>): Promise<T | null>;
 
-  find(filterQuery: FilterQuery<T>, options?: QueryOptions): Promise<T[]>;
+  find(
+    filterQuery: FilterQuery<T>,
+    projection: AnyKeys<T> | null,
+    options?: QueryOptions,
+  ): Promise<T[]>;
 
   create(document: Partial<T>): Promise<T>;
 

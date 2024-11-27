@@ -1,15 +1,14 @@
 import { create } from 'zustand';
 import storage from '../utils/storage.js';
-import { Einsatz } from '../types/app/einsatz.types.js';
-import { Bearbeiter } from '../types/app/bearbeiter.types.js';
+import { BearbeiterDto, SmallMissionDto } from '@ember-rescue/shared/client/index.js';
 
 type Store = {
-  bearbeiter: Bearbeiter | null;
-  setBearbeiter: (bearbeiter: Bearbeiter) => void;
+  bearbeiter: BearbeiterDto | null;
+  setBearbeiter: (bearbeiter: BearbeiterDto) => void;
   removeBearbeiter: () => void;
 
   einsatzId: string | null;
-  setEinsatz: (einsatz: Einsatz) => void;
+  setEinsatz: (einsatz: SmallMissionDto) => void;
   removeEinsatz: () => void;
 
   theme: {
@@ -20,24 +19,24 @@ type Store = {
 };
 
 export const useStore = create<Store>((set, get) => ({
-  bearbeiter: storage().readLocalStorage<Bearbeiter>('bearbeiter'),
-  setBearbeiter: (bearbeiter: Bearbeiter) => {
+  bearbeiter: storage().readLocalStorage<BearbeiterDto>('bearbeiter'),
+  setBearbeiter: (bearbeiter: BearbeiterDto) => {
     storage().writeLocalStorage('bearbeiter', bearbeiter);
     set({ bearbeiter });
   },
   removeBearbeiter: () => {
     storage().writeLocalStorage('bearbeiter', null);
-    storage().writeLocalStorage('einsatz', null);
+    storage().writeLocalStorage('mission', null);
     set({ bearbeiter: null, einsatzId: null });
   },
 
-  einsatzId: storage().readLocalStorage<string>('einsatz'),
-  setEinsatz: (einsatz: Einsatz) => {
-    storage().writeLocalStorage('einsatz', einsatz._id);
-    set({ einsatzId: einsatz._id });
+  einsatzId: storage().readLocalStorage<string>('mission'),
+  setEinsatz: (einsatz: SmallMissionDto) => {
+    storage().writeLocalStorage('mission', einsatz.id);
+    set({ einsatzId: einsatz.id });
   },
   removeEinsatz: () => {
-    storage().writeLocalStorage('einsatz', null);
+    storage().writeLocalStorage('mission', null);
     set({ einsatzId: null });
   },
 

@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Bearbeiter, BearbeiterDto } from './bearbeiter.schema';
+import { Bearbeiter } from './bearbeiter.schema';
 import { Model } from 'mongoose';
+
+import { BearbeiterDto } from './bearbeiter.dto';
 
 @Injectable()
 export class BearbeiterCoreService {
@@ -11,18 +13,12 @@ export class BearbeiterCoreService {
     @InjectModel(Bearbeiter.name) private bearbeiterModel: Model<Bearbeiter>,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<BearbeiterDto[]> {
     this.logger.log('BearbeiterController.findAll()');
-    const bearbeiter = await this.bearbeiterModel
+    return await this.bearbeiterModel
       .find({ active: true })
       .select('name')
       .exec();
-
-    return await Promise.all(
-      bearbeiter.map(
-        async (b) => await BearbeiterDto.fromBearbeiter(b.toObject()),
-      ),
-    );
   }
 
   async findByNameOrCreate(name: string) {
@@ -49,14 +45,14 @@ export class BearbeiterCoreService {
         .exec();
     }
 
-    return BearbeiterDto.fromBearbeiter(bearbeiter);
+    return bearbeiter;
   }
 
   async findOne(name: string) {
     this.logger.log(`BearbeiterController.findOne() ${name}`);
-    let bearbeiter = await BearbeiterDto.fromBearbeiter(
-      await this.bearbeiterModel.findOne({ name, active: true }).exec(),
-    );
+    let bearbeiter = await this.bearbeiterModel
+      .findOne({ name, active: true })
+      .exec();
     this.logger.log(`Found Bearbeiter`, { bearbeiter });
     return bearbeiter;
   }

@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema } from '@nestjs/mongoose';
-import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.schema';
 import { EinsatztagebuchEintragType } from '../../types';
 import {
   Alarmstichwort,
@@ -12,6 +11,7 @@ import { Reminder } from '../reminders/reminder.schema';
 import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
 import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
+import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -73,7 +73,8 @@ export type FahrzeugOnEinsatzDto = {
 
 @Schema()
 class EinsatzMetadaten {
-  //
+  @Prop({ required: true })
+  ort: string;
 }
 
 @Schema()
@@ -129,7 +130,7 @@ export class Einsatz extends Document {
   bearbeiter: BearbeiterDto;
 
   @Prop({ required: true })
-  aufnehmendesRettungsmittel: string; // FIXME with new model
+  aufnehmendesRettungsmittel: string;
 
   @Prop({ required: true, default: { items: [] } })
   einsatzTagebuch: Einsatztagebuch;

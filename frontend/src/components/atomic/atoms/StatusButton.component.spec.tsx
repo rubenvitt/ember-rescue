@@ -46,7 +46,7 @@ describe('StatusButtonComponent', () => {
     );
 
     fireEvent.click(getByText(`${status.code}`));
-    expect(mockOnClick).toHaveBeenCalledWith({ statusId: status._id });
+    expect(mockOnClick).toHaveBeenCalledWith({ statusId: status.id });
   });
 
   it('applies the correct class for status code 3', () => {

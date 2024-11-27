@@ -11,7 +11,7 @@ interface StatusButtonProps {
 }
 
 export const StatusButtonComponent: React.FC<StatusButtonProps> = ({ onClick, item, className }) => {
-  const onClickHandler = useCallback(() => onClick({ statusId: item._id }), [onClick, item._id]);
+  const onClickHandler = useCallback(() => onClick({ statusId: item.id }), [onClick, item.id]);
 
   return (
     <Button

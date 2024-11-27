@@ -1,4 +1,3 @@
-import { ApiResponse } from '@ember-rescue/shared/src/dto/common';
 import {
   CallHandler,
   ExecutionContext,
@@ -7,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ApiResponse } from '../../types';
 
 @Injectable()
 export class TransformInterceptor<T>
