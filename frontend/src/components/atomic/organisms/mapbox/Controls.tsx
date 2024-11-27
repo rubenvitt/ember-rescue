@@ -6,7 +6,7 @@ import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
 import { useToggle } from '@reactuses/core';
 import { create } from 'zustand';
 import clsx from 'clsx';
-import { backendFetchJson } from '../../../../utils/http.js';
+import { getAPIConfig } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../../../routes/__root.js';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
@@ -22,6 +22,7 @@ import {
   convertSymbol,
 } from '../../../../types/utils/fahrzeuge.helper.js';
 import { WarningsOptions } from './WeatherOptions.component.js';
+import { NinaApi } from '@ember-rescue/shared/client/index.js';
 
 export const useMapStore = create<{
   map?: Map;
@@ -70,10 +71,13 @@ const katwarnLayer: LayerSpecification = {
 const IconComponent: React.FC = () => {
   const [katwarnungenSichtbar, toggleKatwarnungen] = useToggle(false);
   const { map } = useMapStore();
+  const ninaApi = useMemo(() => {
+    return new NinaApi(getAPIConfig());
+  }, []);
   const warnDetails = useQuery<any[]>({
     queryKey: ['warnings', 'details'],
-    queryFn: () => {
-      return backendFetchJson<any[]>('/apis/bund/nina/warnings');
+    queryFn: async () => {
+      return (await ninaApi.ninaControllerGetAllWarningDetailsV1()).data;
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,
@@ -217,10 +221,13 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   const [mouseLngLat, setMouseLngLat] = useState(map.getCenter());
   const [mapCenterLngLat, setMapCenterLngLat] = useState(map.getCenter());
   const { setMap } = useMapStore();
+  const ninaApi = useMemo(() => {
+    return new NinaApi(getAPIConfig());
+  }, []);
   const geoJson = useQuery<GeoJSON.GeoJSON>({
     queryKey: ['warnings', 'geojson'],
     queryFn: async () => {
-      const d = await backendFetchJson<GeoJSON.GeoJSON>('/apis/bund/nina/warnings.geojson');
+      const d = (await ninaApi.ninaControllerGetGeoJsonV1()).data as GeoJSON.GeoJSON;
       await queryClient.invalidateQueries({
         queryKey: ['warnings', 'details'],
       });
@@ -234,8 +241,8 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   });
   useQuery<unknown[]>({
     queryKey: ['warnings', 'details'],
-    queryFn: () => {
-      return backendFetchJson<unknown[]>('/apis/bund/nina/warnings');
+    queryFn: async () => {
+      return (await ninaApi.ninaControllerGetAllWarningDetailsV1()).data;
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,

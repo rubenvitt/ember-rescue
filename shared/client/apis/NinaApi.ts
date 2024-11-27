@@ -13,6 +13,13 @@
  */
 
 import * as runtime from '../runtime';
+import type { MyApiResponse, MyMultiApiResponse } from '../models/index';
+import {
+  MyApiResponseFromJSON,
+  MyApiResponseToJSON,
+  MyMultiApiResponseFromJSON,
+  MyMultiApiResponseToJSON,
+} from '../models/index';
 
 export interface NinaControllerGetWarningDetailsV1Request {
   id: string;
@@ -26,7 +33,7 @@ export class NinaApi extends runtime.BaseAPI {
    */
   async ninaControllerGetAllWarningDetailsV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<MyMultiApiResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -41,22 +48,23 @@ export class NinaApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => MyMultiApiResponseFromJSON(jsonValue));
   }
 
   /**
    */
   async ninaControllerGetAllWarningDetailsV1(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.ninaControllerGetAllWarningDetailsV1Raw(initOverrides);
+  ): Promise<MyMultiApiResponse> {
+    const response = await this.ninaControllerGetAllWarningDetailsV1Raw(initOverrides);
+    return await response.value();
   }
 
   /**
    */
   async ninaControllerGetGeoJsonV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<MyApiResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -71,13 +79,14 @@ export class NinaApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => MyApiResponseFromJSON(jsonValue));
   }
 
   /**
    */
-  async ninaControllerGetGeoJsonV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.ninaControllerGetGeoJsonV1Raw(initOverrides);
+  async ninaControllerGetGeoJsonV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MyApiResponse> {
+    const response = await this.ninaControllerGetGeoJsonV1Raw(initOverrides);
+    return await response.value();
   }
 
   /**
@@ -85,7 +94,7 @@ export class NinaApi extends runtime.BaseAPI {
   async ninaControllerGetWarningDetailsV1Raw(
     requestParameters: NinaControllerGetWarningDetailsV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<MyMultiApiResponse>> {
     if (requestParameters['id'] == null) {
       throw new runtime.RequiredError(
         'id',
@@ -110,7 +119,7 @@ export class NinaApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => MyMultiApiResponseFromJSON(jsonValue));
   }
 
   /**
@@ -118,7 +127,8 @@ export class NinaApi extends runtime.BaseAPI {
   async ninaControllerGetWarningDetailsV1(
     requestParameters: NinaControllerGetWarningDetailsV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.ninaControllerGetWarningDetailsV1Raw(requestParameters, initOverrides);
+  ): Promise<MyMultiApiResponse> {
+    const response = await this.ninaControllerGetWarningDetailsV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 }

@@ -16,6 +16,8 @@ export * from './ManyMissionsResponse';
 export * from './ManyQualificationsResponse';
 export * from './MissionDto';
 export * from './MissionMetaDto';
+export * from './MyApiResponse';
+export * from './MyMultiApiResponse';
 export * from './OneBearbeiterResponse';
 export * from './OneMissionResponse';
 export * from './QualificationDto';

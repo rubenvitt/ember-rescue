@@ -32,6 +32,8 @@ models/ManyMissionsResponse.ts
 models/ManyQualificationsResponse.ts
 models/MissionDto.ts
 models/MissionMetaDto.ts
+models/MyApiResponse.ts
+models/MyMultiApiResponse.ts
 models/OneBearbeiterResponse.ts
 models/OneMissionResponse.ts
 models/QualificationDto.ts
