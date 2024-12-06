@@ -24,8 +24,8 @@ importers:
         specifier: ^14.0.1
         version: 14.0.1(semantic-release@24.2.0(typescript@5.7.2))
       pnpm:
-        specifier: ^9.12.3
-        version: 9.12.3
+        specifier: ^9.14.4
+        version: 9.14.4
       semantic-release:
         specifier: ^24.2.0
         version: 24.2.0(typescript@5.7.2)
@@ -431,8 +431,8 @@ importers:
         specifier: ^2.15.3
         version: 2.15.3(@nestjs/platform-express@10.4.9)(class-transformer@0.5.1)(class-validator@0.14.1)
       prettier:
-        specifier: ^3.3.3
-        version: 3.4.1
+        specifier: ^3.4.2
+        version: 3.4.2
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -6344,8 +6344,8 @@ packages:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
 
-  pnpm@9.12.3:
-    resolution: {integrity: sha512-zOD53pxafJW++UQWnMXf6HQav7FFB4wNUIuGgFaEiofIHmJiRstglny9f9KabAYu9z/4QNlrPIbECsks9KgT7g==}
+  pnpm@9.14.4:
+    resolution: {integrity: sha512-yBgLP75OS8oCyUI0cXiWtVKXQKbLrfGfp4JUJwQD6i8n1OHUagig9WyJtj3I6/0+5TMm2nICc3lOYgD88NGEqw==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -6480,6 +6480,11 @@ packages:
 
   prettier@3.4.1:
     resolution: {integrity: sha512-G+YdqtITVZmOJje6QkXQWzl3fSfMxFwm1tjTyo9exhkmWSqC4Yhd1+lug++IlR2mvRVAxEDDWYkQdeSztajqgg==}
+    engines: {node: '>=14'}
+    hasBin: true
+
+  prettier@3.4.2:
+    resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -10250,7 +10255,7 @@ snapshots:
   '@tanstack/router-generator@1.83.0':
     dependencies:
       '@tanstack/virtual-file-routes': 1.81.9
-      prettier: 3.4.1
+      prettier: 3.4.2
       tsx: 4.19.2
       zod: 3.23.8
 
@@ -15807,7 +15812,7 @@ snapshots:
 
   pluralize@8.0.0: {}
 
-  pnpm@9.12.3: {}
+  pnpm@9.14.4: {}
 
   point-in-polygon-hao@1.1.0: {}
 
@@ -15888,6 +15893,8 @@ snapshots:
       prettier: 3.4.1
 
   prettier@3.4.1: {}
+
+  prettier@3.4.2: {}
 
   pretty-format@27.5.1:
     dependencies:
