@@ -1,11 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  FahrzeugDto,
-  FahrzeugImportDto,
-  UpdateCreateFahrzeugeDto,
-} from '../../types';
+import { FahrzeugDto, FahrzeugImportDto } from '../../types';
 import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
 import { ValidationException } from '@core/exceptions/validation.exception';
+import { ImportManyFahrzeugeDto } from '@templates/vehicles/fahrzeuge.dto';
 
 @Injectable()
 export class FahrzeugeService {
@@ -14,21 +11,20 @@ export class FahrzeugeService {
   constructor(private readonly repository: FahrzeugeRepository) {}
 
   async findAll(filter?: unknown) {
-    // TODO[ember-rescue-68](rubeen, 14.11.24): fahrzeuge im Einsatz
     return this.repository.findActive();
   }
 
-  updateMany(fahrzeuge: UpdateCreateFahrzeugeDto) {
+  updateMany(fahrzeuge: ImportManyFahrzeugeDto) {
     this.logger.debug('updateMany', fahrzeuge);
-    return this.repository.upsertMany(fahrzeuge);
+    return this.repository.upsertMany(fahrzeuge.items);
   }
 
   findFahrzeug(id: string) {
     return this.repository.findActiveById(id);
   }
 
-  async importFahrzeuge(fahrzeuge: UpdateCreateFahrzeugeDto) {
-    return this.repository.upsertMany(fahrzeuge);
+  async importFahrzeuge(fahrzeuge: ImportManyFahrzeugeDto) {
+    return this.repository.upsertMany(fahrzeuge.items);
   }
 
   // TODO move this method to OPTA

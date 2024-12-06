@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ApiResponse } from '../../types';
 
 export class EinsatzAlarmstichwortDto {
   @ApiProperty()
   _id: string;
-
   @ApiProperty({})
   code: string;
 
@@ -21,4 +21,15 @@ export class EinsatzAlarmstichwortDto {
 
   @ApiProperty({})
   validFrom: string;
+}
+
+export class ManyEinsatzAlarmstichwortDto extends ApiResponse<
+  EinsatzAlarmstichwortDto[]
+> {
+  @ApiProperty({
+    type: EinsatzAlarmstichwortDto,
+    required: true,
+    isArray: true,
+  })
+  data: EinsatzAlarmstichwortDto[];
 }

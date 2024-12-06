@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { statusLabel } from './StatusLabel.component.js';
-import { StatusDto } from '../../../types/app/status.types.js';
 import { Button } from 'antd';
+import { StatusDto } from '@ember-rescue/shared/client/index.js';
 
 interface StatusButtonProps {
   onClick: (props: { statusId: string }) => unknown;
@@ -14,17 +14,9 @@ export const StatusButtonComponent: React.FC<StatusButtonProps> = ({ onClick, it
   const onClickHandler = useCallback(() => onClick({ statusId: item.id }), [onClick, item.id]);
 
   return (
-    <Button
-      onClick={onClickHandler}
-      type="text"
-      className={twMerge(
-        'h-full w-full flex-col border border-gray-500',
-        statusLabel({ status: item.code }),
-        className,
-      )}
-    >
+    <Button onClick={onClickHandler} type="text" className={twMerge('h-full w-full flex-col border border-gray-500', statusLabel({ status: item.code }), className)}>
       <p className="text-xl font-bold">{item.code}</p>
-      <p className="text-wrap text-xs font-light">{item.bezeichnung}</p>
+      <p className="text-wrap text-xs font-light">{item.label}</p>
     </Button>
   );
 };

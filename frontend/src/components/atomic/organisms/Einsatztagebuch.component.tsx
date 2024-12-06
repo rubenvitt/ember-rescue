@@ -5,32 +5,21 @@ import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { natoDateTime } from '../../../utils/time.js';
 import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
-import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import {
-  Button,
-  Drawer,
-  Empty,
-  Input as AntInput,
-  InputRef,
-  Space,
-  Table,
-  TableColumnsType,
-  TableColumnType,
-  Tooltip,
-} from 'antd';
+import { Button, Drawer, Empty, Input as AntInput, InputRef, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { Input, Select } from 'formik-antd';
 import dayjs from 'dayjs';
+import { JournalEntryDto } from '@ember-rescue/shared/client/index.js';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const [inputVisible, setInputVisible] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingEintrag, setEditingEintrag] = useState<EinsatztagebuchEintrag | null>(null);
+  const [editingEintrag, setEditingEintrag] = useState<JournalEntryDto | null>(null);
   const { fahrzeuge } = useFahrzeuge();
   const onDrawerClose = useCallback(() => {
     setEditingEintrag(null);
@@ -39,7 +28,7 @@ export function EinsatztagebuchComponent() {
 
   const searchInput = useRef<InputRef>(null);
 
-  const getColumnSearchProps = (dataIndex: keyof EinsatztagebuchEintrag): TableColumnType<EinsatztagebuchEintrag> => ({
+  const getColumnSearchProps = (dataIndex: keyof JournalEntryDto): TableColumnType<JournalEntryDto> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <AntInput
@@ -51,13 +40,7 @@ export function EinsatztagebuchComponent() {
           style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<PiMagnifyingGlass />}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button type="primary" onClick={() => confirm()} icon={<PiMagnifyingGlass />} size="small" style={{ width: 90 }}>
             Filtern
           </Button>
           <Button type="link" size="small" onClick={close}>
@@ -79,21 +62,21 @@ export function EinsatztagebuchComponent() {
     },
   });
 
-  const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {
+  const modifyEntry = useCallback((entry: JournalEntryDto) => {
     setIsOpen(true);
     setEditingEintrag(entry);
   }, []);
 
-  const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
-    const fahrzeugTypen = fahrzeuge.data?.reduce(
+  const columns = useMemo<TableColumnsType<JournalEntryDto>>(() => {
+    const fahrzeugTypen = (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).reduce(
       (acc, e) => {
-        if (!e.optaFunktion?.label) {
+        if (!e.optaFunktion) {
           return acc;
         }
-        if (!acc[e.optaFunktion!!.label]) {
-          acc[e.optaFunktion!!.label] = [];
+        if (!acc[e.optaFunktion]) {
+          acc[e.optaFunktion] = [];
         }
-        acc[e.optaFunktion?.label].push({ text: e.funkrufname, value: e.funkrufname });
+        acc[e.optaFunktion].push({ text: e.fullOpta, value: e.fullOpta });
         return acc;
       },
       {} as Record<string, { text: string; value: string }[]>,
@@ -109,11 +92,11 @@ export function EinsatztagebuchComponent() {
     return [
       {
         title: '#',
-        dataIndex: 'fortlaufende_nummer',
-        key: 'fortlaufende_nummer',
+        dataIndex: 'nummer',
+        key: 'nummer',
         fixed: true,
         width: 80,
-        sorter: (a, b) => a.fortlaufende_nummer - b.fortlaufende_nummer,
+        sorter: (a, b) => a.nummer - b.nummer,
       },
       {
         title: 'Zeitpunkt',
@@ -143,22 +126,22 @@ export function EinsatztagebuchComponent() {
       },
       {
         title: 'Absender',
-        dataIndex: 'absender',
-        key: 'absender',
+        dataIndex: 'sender',
+        key: 'sender',
         width: 100,
         filters: rufnahmeFilter,
-        onFilter: (value, record) => record.absender === value,
+        onFilter: (value, record) => record.sender === value,
         filterMultiple: true,
         filterSearch: true,
         filterMode: 'tree',
       },
       {
         title: 'Empfänger',
-        dataIndex: 'empfaenger',
-        key: 'empfaenger',
+        dataIndex: 'receiver',
+        key: 'receiver',
         width: 120,
         filters: rufnahmeFilter,
-        onFilter: (value, record) => record.empfaenger === value,
+        onFilter: (value, record) => record.receiver === value,
         filterMultiple: true,
         filterSearch: true,
         filterMode: 'tree',
@@ -169,12 +152,7 @@ export function EinsatztagebuchComponent() {
         key: 'content',
         width: 500,
         render: (value, record) => (
-          <span
-            className={twMerge(
-              record.type !== 'USER' && 'text-gray-400 dark:text-gray-200/65',
-              record.archived && 'text-gray-400 line-through decoration-red-500/75 dark:text-gray-200/65',
-            )}
-          >
+          <span className={twMerge(record.type !== 'USER' && 'text-gray-400 dark:text-gray-200/65', record.archived && 'text-gray-400 line-through decoration-red-500/75 dark:text-gray-200/65')}>
             {value}
           </span>
         ),
@@ -200,21 +178,10 @@ export function EinsatztagebuchComponent() {
             {!record.archived && (
               <>
                 <Tooltip title="Eintrag überschreiben">
-                  <Button
-                    onClick={() => !isOpen && modifyEntry(record)}
-                    type="dashed"
-                    shape="circle"
-                    icon={<PiSwap />}
-                  />
+                  <Button onClick={() => !isOpen && modifyEntry(record)} type="dashed" shape="circle" icon={<PiSwap />} />
                 </Tooltip>
                 <Tooltip title="Eintrag streichen">
-                  <Button
-                    onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: record.id })}
-                    type="default"
-                    danger
-                    shape="circle"
-                    icon={<PiTextStrikethrough />}
-                  />
+                  <Button onClick={() => archiveEinsatztagebuchEintrag.mutate({ entryId: record.id })} type="default" danger shape="circle" icon={<PiTextStrikethrough />} />
                 </Tooltip>
               </>
             )}
@@ -234,7 +201,8 @@ export function EinsatztagebuchComponent() {
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="w-full py-2 align-middle sm:px-6 lg:px-8">
             <Table
-              dataSource={einsatztagebuch}
+              dataSource={einsatztagebuch?.data.items}
+              loading={!einsatztagebuch}
               columns={columns}
               virtual
               scroll={{ x: true }}
@@ -246,31 +214,28 @@ export function EinsatztagebuchComponent() {
           </div>
         </div>
       </div>
-      <Drawer
-        open={isOpen}
-        onClose={onDrawerClose}
-        title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}
-      >
+      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
         {
           editingEintrag && (
-            <FormLayout<EinsatztagebuchEintrag>
+            <FormLayout<JournalEntryDto>
               formik={{
                 initialValues: {
                   ...editingEintrag,
-                  absender:
-                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.absender)?.id ??
-                    editingEintrag.absender,
-                  empfaenger:
-                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.empfaenger)?.id ??
-                    editingEintrag.empfaenger,
+                  sender:
+                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.id ??
+                    editingEintrag.sender,
+                  receiver:
+                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.id ??
+                    editingEintrag.receiver,
                 },
                 onSubmit: async (data) => {
                   await createEinsatztagebuchEintrag.mutateAsync({
                     ...data,
-                    absender: fahrzeuge.data?.find((e) => e.id === data.absender)?.funkrufname ?? data.absender,
-                    empfaenger: fahrzeuge.data?.find((e) => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
+                    // FIXME[ember-rescue-68](rubeen, 30.11.24): this may be simplyfied
+                    absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.id === data.sender)?.fullOpta ?? data.sender,
+                    empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.id === data.receiver)?.fullOpta ?? data.receiver,
                   });
-                  await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?.id });
+                  await archiveEinsatztagebuchEintrag.mutateAsync({ entryId: editingEintrag?.id });
                   setIsOpen(false);
                   setEditingEintrag(null);
                 },

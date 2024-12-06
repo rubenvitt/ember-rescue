@@ -24,6 +24,12 @@ export interface JournalEntryDto {
    * @type {string}
    * @memberof JournalEntryDto
    */
+  id: string;
+  /**
+   *
+   * @type {string}
+   * @memberof JournalEntryDto
+   */
   timestamp: string;
   /**
    *
@@ -67,6 +73,18 @@ export interface JournalEntryDto {
    * @memberof JournalEntryDto
    */
   bearbeiter: string;
+  /**
+   *
+   * @type {string}
+   * @memberof JournalEntryDto
+   */
+  createdAt: string;
+  /**
+   *
+   * @type {string}
+   * @memberof JournalEntryDto
+   */
+  updatedAt: string;
 }
 
 /**
@@ -86,6 +104,7 @@ export type JournalEntryDtoTypeEnum = (typeof JournalEntryDtoTypeEnum)[keyof typ
  * Check if a given object implements the JournalEntryDto interface.
  */
 export function instanceOfJournalEntryDto(value: object): value is JournalEntryDto {
+  if (!('id' in value) || value['id'] === undefined) return false;
   if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
   if (!('content' in value) || value['content'] === undefined) return false;
   if (!('sender' in value) || value['sender'] === undefined) return false;
@@ -94,6 +113,8 @@ export function instanceOfJournalEntryDto(value: object): value is JournalEntryD
   if (!('nummer' in value) || value['nummer'] === undefined) return false;
   if (!('type' in value) || value['type'] === undefined) return false;
   if (!('bearbeiter' in value) || value['bearbeiter'] === undefined) return false;
+  if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+  if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
   return true;
 }
 
@@ -106,6 +127,7 @@ export function JournalEntryDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     return json;
   }
   return {
+    id: json['id'],
     timestamp: json['timestamp'],
     content: json['content'],
     sender: json['sender'],
@@ -114,6 +136,8 @@ export function JournalEntryDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     nummer: json['nummer'],
     type: json['type'],
     bearbeiter: json['bearbeiter'],
+    createdAt: json['createdAt'],
+    updatedAt: json['updatedAt'],
   };
 }
 
@@ -127,6 +151,7 @@ export function JournalEntryDtoToJSONTyped(value?: JournalEntryDto | null, ignor
   }
 
   return {
+    id: value['id'],
     timestamp: value['timestamp'],
     content: value['content'],
     sender: value['sender'],
@@ -135,5 +160,7 @@ export function JournalEntryDtoToJSONTyped(value?: JournalEntryDto | null, ignor
     nummer: value['nummer'],
     type: value['type'],
     bearbeiter: value['bearbeiter'],
+    createdAt: value['createdAt'],
+    updatedAt: value['updatedAt'],
   };
 }

@@ -13,6 +13,16 @@
  */
 
 import * as runtime from '../runtime';
+import type { SecretsDto, SecretsResponse } from '../models/index';
+import { SecretsDtoFromJSON, SecretsDtoToJSON, SecretsResponseFromJSON, SecretsResponseToJSON } from '../models/index';
+
+export interface SecretsControllerCreateSecretV1Request {
+  secretsDto: SecretsDto;
+}
+
+export interface SecretsControllerCreateSecretV10Request {
+  secretsDto: SecretsDto;
+}
 
 export interface SecretsControllerReadSecretV1Request {
   secret: string;
@@ -27,13 +37,28 @@ export interface SecretsControllerReadSecretV10Request {
  */
 export class SecretsApi extends runtime.BaseAPI {
   /**
+   * Create a new secrets
    */
   async secretsControllerCreateSecretV1Raw(
+    requestParameters: SecretsControllerCreateSecretV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<SecretsResponse>> {
+    if (requestParameters['secretsDto'] == null) {
+      throw new runtime.RequiredError(
+        'secretsDto',
+        'Required parameter "secretsDto" was null or undefined when calling secretsControllerCreateSecretV1().',
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters['bearbeiter'] = await this.configuration.apiKey('bearbeiter'); // Bearbeiter authentication
+    }
 
     const response = await this.request(
       {
@@ -41,17 +66,72 @@ export class SecretsApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
+        body: SecretsDtoToJSON(requestParameters['secretsDto']),
       },
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => SecretsResponseFromJSON(jsonValue));
   }
 
   /**
+   * Create a new secrets
    */
-  async secretsControllerCreateSecretV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.secretsControllerCreateSecretV1Raw(initOverrides);
+  async secretsControllerCreateSecretV1(
+    requestParameters: SecretsControllerCreateSecretV1Request,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<SecretsResponse> {
+    const response = await this.secretsControllerCreateSecretV1Raw(requestParameters, initOverrides);
+    return await response.value();
+  }
+
+  /**
+   * Create a new secrets
+   */
+  async secretsControllerCreateSecretV1_1Raw(
+    requestParameters: SecretsControllerCreateSecretV10Request,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<SecretsResponse>> {
+    if (requestParameters['secretsDto'] == null) {
+      throw new runtime.RequiredError(
+        'secretsDto',
+        'Required parameter "secretsDto" was null or undefined when calling secretsControllerCreateSecretV1_1().',
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters['bearbeiter'] = await this.configuration.apiKey('bearbeiter'); // Bearbeiter authentication
+    }
+
+    const response = await this.request(
+      {
+        path: `/v1/core/secrets`,
+        method: 'POST',
+        headers: headerParameters,
+        query: queryParameters,
+        body: SecretsDtoToJSON(requestParameters['secretsDto']),
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) => SecretsResponseFromJSON(jsonValue));
+  }
+
+  /**
+   * Create a new secrets
+   */
+  async secretsControllerCreateSecretV1_1(
+    requestParameters: SecretsControllerCreateSecretV10Request,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<SecretsResponse> {
+    const response = await this.secretsControllerCreateSecretV1_1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**
@@ -60,7 +140,7 @@ export class SecretsApi extends runtime.BaseAPI {
   async secretsControllerReadSecretV1Raw(
     requestParameters: SecretsControllerReadSecretV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<SecretsResponse>> {
     if (requestParameters['secret'] == null) {
       throw new runtime.RequiredError(
         'secret',
@@ -89,7 +169,7 @@ export class SecretsApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => SecretsResponseFromJSON(jsonValue));
   }
 
   /**
@@ -98,21 +178,22 @@ export class SecretsApi extends runtime.BaseAPI {
   async secretsControllerReadSecretV1(
     requestParameters: SecretsControllerReadSecretV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.secretsControllerReadSecretV1Raw(requestParameters, initOverrides);
+  ): Promise<SecretsResponse> {
+    const response = await this.secretsControllerReadSecretV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**
    * Read a secrets value
    */
-  async secretsControllerReadSecretV1_1Raw(
+  async secretsControllerReadSecretV1_2Raw(
     requestParameters: SecretsControllerReadSecretV10Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<SecretsResponse>> {
     if (requestParameters['secret'] == null) {
       throw new runtime.RequiredError(
         'secret',
-        'Required parameter "secret" was null or undefined when calling secretsControllerReadSecretV1_1().',
+        'Required parameter "secret" was null or undefined when calling secretsControllerReadSecretV1_2().',
       );
     }
 
@@ -137,16 +218,17 @@ export class SecretsApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => SecretsResponseFromJSON(jsonValue));
   }
 
   /**
    * Read a secrets value
    */
-  async secretsControllerReadSecretV1_1(
+  async secretsControllerReadSecretV1_2(
     requestParameters: SecretsControllerReadSecretV10Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.secretsControllerReadSecretV1_1Raw(requestParameters, initOverrides);
+  ): Promise<SecretsResponse> {
+    const response = await this.secretsControllerReadSecretV1_2Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 }

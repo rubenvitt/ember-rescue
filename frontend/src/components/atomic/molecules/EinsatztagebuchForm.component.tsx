@@ -37,10 +37,10 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       closeForm();
       await createEinsatztagebuchEintrag.mutateAsync({
         content: data.content,
-        empfaenger:
-          fahrzeugeAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
+        empfaenger: fahrzeugeAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
         absender: fahrzeugeAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
         timestamp: data.timestamp,
+        type: 'USER',
       });
     },
     [closeForm, createEinsatztagebuchEintrag],
@@ -70,22 +70,10 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       {(props) => (
         <>
           <InputWrapper name="absender" label="Absender">
-            <Select
-              name="absender"
-              showSearch
-              options={fahrzeugeAsItems}
-              loading={loading}
-              placeholder="Absender auswählen"
-            />
+            <Select name="absender" showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Absender auswählen" />
           </InputWrapper>
           <InputWrapper name="empfaenger" label="Empfänger">
-            <Select
-              name="empfaenger"
-              showSearch
-              options={fahrzeugeAsItems}
-              loading={loading}
-              placeholder="Empfönger auswählen"
-            />
+            <Select name="empfaenger" showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Empfönger auswählen" />
           </InputWrapper>
           <InputWrapper name="content" className="col-span-2" label="Inhalt">
             <Input.TextArea name="content" rows={3} />
@@ -93,13 +81,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
           <InputWrapper name="timestamp" label="Zeitpunkt der Meldung">
             <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} />
           </InputWrapper>
-          <Button
-            className="col-span-2"
-            type="primary"
-            onClick={props.submitForm}
-            htmlType="submit"
-            icon={<PiCaretDown size={24} />}
-          >
+          <Button className="col-span-2" type="primary" onClick={props.submitForm} htmlType="submit" icon={<PiCaretDown size={24} />}>
             ETB Eintrag anlegen
           </Button>
         </>

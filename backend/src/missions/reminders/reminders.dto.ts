@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prop } from '@nestjs/mongoose';
+import { IsISO8601, IsNotEmpty } from 'class-validator';
+import { ApiResponse } from '../../types';
 
-export class EinsatzReminderDto {
+export class ReminderDto {
+  @ApiProperty({ required: true })
+  id: string;
+
   @ApiProperty({ required: true })
   timestamp: string;
 
@@ -17,6 +21,41 @@ export class EinsatzReminderDto {
   @ApiProperty({ required: true })
   content: string;
 
-  @Prop({})
+  @ApiProperty({})
   action?: string;
+}
+
+export class CreateReminderDto {
+  @ApiProperty({ required: true })
+  @IsNotEmpty({})
+  title: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty({})
+  content: string;
+
+  @ApiProperty({})
+  action?: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty({})
+  @IsISO8601({ strict: true })
+  timestamp: string;
+}
+
+export class OneReminderResponse extends ApiResponse<ReminderDto> {
+  @ApiProperty({
+    type: ReminderDto,
+    required: true,
+  })
+  data: ReminderDto;
+}
+
+export class ManyReminderResponse extends ApiResponse<ReminderDto[]> {
+  @ApiProperty({
+    type: ReminderDto,
+    required: true,
+    isArray: true,
+  })
+  data: ReminderDto[];
 }

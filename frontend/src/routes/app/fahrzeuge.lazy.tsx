@@ -8,11 +8,13 @@ export const Route = createLazyFileRoute('/app/fahrzeuge')({
 });
 
 function Fahrzeuge() {
-  const { fahrzeugeImEinsatz } = useFahrzeuge();
+  const { fahrzeuge } = useFahrzeuge();
+
+  if (!fahrzeuge.data) return <div>Loading...</div>;
 
   return (
     <>
-      <FahrzeugelisteComponent fahrzeuge={fahrzeugeImEinsatz.data} />
+      <FahrzeugelisteComponent fahrzeuge={fahrzeuge.data.data} />
       <AddFahrzeuge classNameContainer="mt-12" />
     </>
   );

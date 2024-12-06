@@ -6,6 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
  *
  * @param {...unknown} elements - The parameters to be checked.
  * @throws {Error} If any required parameter is missing.
+ * @deprecated
  */
 export function requireParams(...elements: unknown[]) {
   elements.forEach((el) => {

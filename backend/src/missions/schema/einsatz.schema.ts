@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { Prop, Schema } from '@nestjs/mongoose';
-import { EinsatztagebuchEintragType } from '../../types';
 import {
   Alarmstichwort,
   AlarmstichwortDto,
@@ -12,6 +11,7 @@ import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
 import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
+import { JournalEntryType } from '../journal/journal.dto';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -56,8 +56,9 @@ export class FahrzeugOnEinsatz extends FahrzeugTemplate {
 }
 
 export type FahrzeugOnEinsatzDto = {
+  fullOpta: string;
   einsatzbeginn: Date;
-  einsatzende?: Date; // Optional field
+  einsatzende?: Date;
   personal: {
     name: string;
     qualifikation: QualifikationTemplate;
@@ -92,7 +93,7 @@ class EinsatztagebuchEintrag {
   @Prop({ required: true })
   nummer: number;
   @Prop({ required: true })
-  type: EinsatztagebuchEintragType;
+  type: JournalEntryType;
   @Prop({ required: true })
   bearbeiter: string;
 }

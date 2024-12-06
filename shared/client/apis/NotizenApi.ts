@@ -13,12 +13,12 @@
  */
 
 import * as runtime from '../runtime';
-import type { CreateNotizDto, UpdateNotizDto } from '../models/index';
+import type { CreateNotizDto, ManyNoteResponse } from '../models/index';
 import {
   CreateNotizDtoFromJSON,
   CreateNotizDtoToJSON,
-  UpdateNotizDtoFromJSON,
-  UpdateNotizDtoToJSON,
+  ManyNoteResponseFromJSON,
+  ManyNoteResponseToJSON,
 } from '../models/index';
 
 export interface NotizenControllerCompleteNotizV1Request {
@@ -38,13 +38,13 @@ export interface NotizenControllerDeleteNotizV1Request {
 
 export interface NotizenControllerGetNotizenV1Request {
   missionId: string;
-  done: boolean;
+  done?: boolean;
 }
 
 export interface NotizenControllerUpdateNotizV1Request {
   notizId: string;
   missionId: string;
-  updateNotizDto: UpdateNotizDto;
+  createNotizDto: CreateNotizDto;
 }
 
 /**
@@ -204,18 +204,11 @@ export class NotizenApi extends runtime.BaseAPI {
   async notizenControllerGetNotizenV1Raw(
     requestParameters: NotizenControllerGetNotizenV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ManyNoteResponse>> {
     if (requestParameters['missionId'] == null) {
       throw new runtime.RequiredError(
         'missionId',
         'Required parameter "missionId" was null or undefined when calling notizenControllerGetNotizenV1().',
-      );
-    }
-
-    if (requestParameters['done'] == null) {
-      throw new runtime.RequiredError(
-        'done',
-        'Required parameter "done" was null or undefined when calling notizenControllerGetNotizenV1().',
       );
     }
 
@@ -240,7 +233,7 @@ export class NotizenApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyNoteResponseFromJSON(jsonValue));
   }
 
   /**
@@ -248,8 +241,9 @@ export class NotizenApi extends runtime.BaseAPI {
   async notizenControllerGetNotizenV1(
     requestParameters: NotizenControllerGetNotizenV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.notizenControllerGetNotizenV1Raw(requestParameters, initOverrides);
+  ): Promise<ManyNoteResponse> {
+    const response = await this.notizenControllerGetNotizenV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**
@@ -272,10 +266,10 @@ export class NotizenApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters['updateNotizDto'] == null) {
+    if (requestParameters['createNotizDto'] == null) {
       throw new runtime.RequiredError(
-        'updateNotizDto',
-        'Required parameter "updateNotizDto" was null or undefined when calling notizenControllerUpdateNotizV1().',
+        'createNotizDto',
+        'Required parameter "createNotizDto" was null or undefined when calling notizenControllerUpdateNotizV1().',
       );
     }
 
@@ -293,7 +287,7 @@ export class NotizenApi extends runtime.BaseAPI {
         method: 'PUT',
         headers: headerParameters,
         query: queryParameters,
-        body: UpdateNotizDtoToJSON(requestParameters['updateNotizDto']),
+        body: CreateNotizDtoToJSON(requestParameters['createNotizDto']),
       },
       initOverrides,
     );

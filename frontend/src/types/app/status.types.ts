@@ -8,6 +8,9 @@ export type SmallStatusDto = Identifiable & {
   bezeichnung: string;
 };
 
+/**
+ * @deprecated
+ */
 export type StatusDto = SmallStatusDto & {
   beschreibung: string;
 };

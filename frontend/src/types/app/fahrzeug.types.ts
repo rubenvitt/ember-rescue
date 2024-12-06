@@ -4,6 +4,9 @@ import { Identifiable, WithCreatedUpdatedAt } from '../utils/common.types.js';
 import { IconDefinition } from './icondefinition.types.js';
 import { OptaInput } from '../../components/atomic/molecules/OptaInput.component.js';
 
+/**
+ * @deprecated
+ */
 export type FahrzeugDto = Identifiable &
   WithCreatedUpdatedAt & {
     fullOpta: string;

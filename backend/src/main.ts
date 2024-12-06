@@ -63,6 +63,10 @@ async function bootstrap() {
   });
 
   const document = SwaggerModule.createDocument(app, config);
+  document.servers = [
+    { url: 'http://localhost:3000', description: 'Local Environment' },
+    { url: 'https://ember-rescue.rubeen.dev', description: 'Dev Environment' },
+  ];
   SwaggerModule.setup('api', app, document, {});
   if (process.env.AUTH_TOKEN) {
     logger.log('AUTH_TOKEN is required', process.env.AUTH_TOKEN);

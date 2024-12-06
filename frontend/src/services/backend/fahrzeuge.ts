@@ -1,56 +1,55 @@
-import { backendFetchJson } from '../../utils/http.js';
-import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
-import { FahrzeugDto, FahrzeugTypDto } from '../../types/app/fahrzeug.types.js';
+import { getAPIConfig } from '../../utils/http.js';
+import { createInvalidateQueries } from '../../utils/queries.js';
+import { FahrzeugDto } from '../../types/app/fahrzeug.types.js';
 import { QueryClient } from '@tanstack/react-query';
+import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, FahrzeugeApi, ImportManyFahrzeugeDto } from '@ember-rescue/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
 
-export type PatchFahrzeugType = Omit<
-  FahrzeugDto,
-  '_count' | 'status' | 'fahrzeugTyp' | 'id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'
-> &
-  Partial<Pick<FahrzeugDto, 'id'>>;
+export type PatchFahrzeugType = Omit<FahrzeugDto, '_count' | 'status' | 'fahrzeugTyp' | 'id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'> & Partial<Pick<FahrzeugDto, 'id'>>;
 
 export type PatchFahrzeugeType = PatchFahrzeugType[];
 
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
+const templateApi = new FahrzeugeApi(getAPIConfig());
+const einsatzFahrzeugeApi = new EinsatzFahrzeugeApi(getAPIConfig());
+
 /// fetch
 
 export const fetchAllFahrzeuge = {
-  queryKey: [queryKey],
-  queryFn: function () {
-    return backendFetchJson<FahrzeugDto[]>('fahrzeuge');
-  },
+  queryKey: ({ missionId }: { missionId: string | null }) => [queryKey, missionId],
+  queryFn: ({ missionId }: { missionId: string | null }) =>
+    function () {
+      if (!missionId) {
+        throw new Error('No missionId found in local storage. Please login and select a mission before fetching fahrzeuge.');
+      }
+      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1({
+        einsatzId: missionId,
+      });
+    },
 };
 
 export const fetchAllFahrzeugeJson = {
   queryKey: [queryKey, 'json'],
   queryFn: async function () {
-    return JSON.stringify(await backendFetchJson<unknown>('fahrzeuge/export'), undefined, 2);
+    return JSON.stringify((await templateApi.fahrzeugeControllerFindAllV1()).data, undefined, 2);
   },
-};
-
-export const fetchAllFahrzeugeImEinsatz = {
-  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
-  queryFn: ({ einsatzId }: { einsatzId: string | null }) =>
-    function () {
-      requireParams(einsatzId);
-      return backendFetchJson<FahrzeugDto[]>(`/einsatz/${einsatzId}/fahrzeuge`);
-    },
 };
 
 export const postAddFahrzeugToEinsatz = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
   mutationFn:
     ({ einsatzId }: { einsatzId: string | null }) =>
-    async ({ fahrzeugId }: { fahrzeugId: string }) => {
-      console.log('Add fahrzeug to einsatz', fahrzeugId, einsatzId);
-      return await backendFetchJson<{ status: string }>(`/einsatz/${einsatzId}/fahrzeuge/add`, {
-        body: JSON.stringify({
-          fahrzeugId,
-        }),
-        method: 'POST',
+    async (dto: AddVehicleToMissionDto) => {
+      console.log('Add fahrzeug to einsatz', dto.vehicleId, einsatzId);
+      if (!einsatzId) {
+        throw new Error('No einsatzId found in local storage. Please login and select a mission before fetching einsatzfahrzeuge.');
+      }
+
+      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerAddFahrzeugToEinsatzV1({
+        einsatzId: einsatzId,
+        addVehicleToMissionDto: dto,
       });
     },
 };
@@ -58,24 +57,24 @@ export const postAddFahrzeugToEinsatz = {
 export const fetchFahrzeugTypen = {
   queryKey: [queryKey, 'typen'],
   queryFn: function () {
-    return backendFetchJson<FahrzeugTypDto[]>('/fahrzeuge/typen');
+    return templateApi.fahrzeugeControllerFindAllTypenV1();
   },
 };
 
 // mutate
 
 export const deleteFahrzeugFromEinsatz = {
-  mutationKey: ({ einsatzId, fahrzeugId }: { einsatzId: unknown; fahrzeugId: unknown }) => [
-    queryKey,
-    einsatzId,
-    fahrzeugId,
-    'remove',
-  ],
+  mutationKey: ({ einsatzId, fahrzeugId }: { einsatzId: unknown; fahrzeugId: unknown }) => [queryKey, einsatzId, fahrzeugId, 'remove'],
   mutationFn: ({ fahrzeugId, einsatzId }: { fahrzeugId?: string; einsatzId: string | null }) =>
     async function () {
-      requireParams(fahrzeugId, einsatzId);
-      return await backendFetchJson(`/einsatz/${einsatzId}/fahrzeuge/${fahrzeugId}`, {
-        method: 'DELETE',
+      if (!einsatzId || !fahrzeugId) {
+        throw new Error('No einsatzId or fahrzeugId given. Please provide both.');
+      }
+      console.log('Remove fahrzeug from einsatz', fahrzeugId, einsatzId);
+
+      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerRemoveFromEinsatzV1({
+        einsatzId: einsatzId,
+        fahrzeugId: fahrzeugId,
       });
     },
 };
@@ -84,12 +83,17 @@ export const postStatusForFahrzeug = {
   mutationFn:
     ({ fahrzeugId, einsatzId }: { fahrzeugId?: string; einsatzId?: string | null }) =>
     async ({ statusId }: { statusId: string }) => {
-      requireParams(fahrzeugId, einsatzId);
-      return await backendFetchJson(`/einsatz/${einsatzId}/fahrzeuge/${fahrzeugId}/status`, {
-        body: JSON.stringify({
+      if (!einsatzId || !fahrzeugId) {
+        throw new Error('No einsatzId or fahrzeugId given. Please provide both.');
+      }
+      console.log('Set status for fahrzeug', fahrzeugId, einsatzId);
+
+      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
+        einsatzId: einsatzId,
+        fahrzeugId: fahrzeugId,
+        changeStatusDto: {
           statusId,
-        }),
-        method: 'POST',
+        },
       });
     },
 };
@@ -97,9 +101,8 @@ export const postStatusForFahrzeug = {
 export const postAllFahrzeugeJson = {
   queryKey: [queryKey, 'json'],
   mutationFn: async ({ json }: { json: string }) => {
-    return await backendFetchJson('fahrzeuge/import', {
-      body: json,
-      method: 'POST',
+    return templateApi.fahrzeugeControllerImportFahrzeugeV1({
+      importManyFahrzeugeDto: JSON.parse(json),
     });
   },
 };
@@ -108,10 +111,9 @@ export const postAllFahrzeugeJson = {
 
 export const patchFahrzeuge = {
   mutationKey: [queryKey, 'status'],
-  mutationFn: async (fahrzeuge: PatchFahrzeugeType) => {
-    return await backendFetchJson('/fahrzeuge', {
-      method: 'PATCH',
-      body: JSON.stringify(fahrzeuge),
+  mutationFn: async (fahrzeuge: ImportManyFahrzeugeDto) => {
+    return templateApi.fahrzeugeControllerUpdateManyV1({
+      importManyFahrzeugeDto: fahrzeuge,
     });
   },
 };

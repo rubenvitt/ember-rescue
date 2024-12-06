@@ -3,7 +3,7 @@ import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdateCreateFahrzeugeDto } from '../../types';
+import { ImportFahrzeugDto } from '@templates/vehicles/fahrzeuge.dto';
 
 @Injectable()
 export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
@@ -14,20 +14,13 @@ export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
   }
 
   // TODO: refactor this
-  upsertMany(fahrzeuge: UpdateCreateFahrzeugeDto) {
+  upsertMany(fahrzeuge: ImportFahrzeugDto[]) {
     return Promise.all(
-      fahrzeuge.map(async ({ _id, opta, ...fahrzeug }) => {
-        return this.model.findByIdAndUpdate(
-          _id,
-          {
-            fullOpta: `${opta.district} ${opta.bosCode} ${opta.ort} ${opta.localCode}-${opta.functionCode}-${opta.orderNumber}`,
-            ...fahrzeug,
-          },
-          {
-            upsert: true,
-            new: true,
-          },
-        );
+      fahrzeuge.map(async ({ _id, ...fahrzeug }) => {
+        return this.model.findByIdAndUpdate(_id, fahrzeug, {
+          upsert: true,
+          new: true,
+        });
       }),
     );
   }

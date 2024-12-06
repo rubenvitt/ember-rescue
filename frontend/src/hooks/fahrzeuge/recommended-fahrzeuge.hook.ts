@@ -16,15 +16,15 @@ function sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz: FahrzeugDto[], sor
 }
 
 export const useRecommendedFahrzeuge = (config: UseRecommendedFahrzeugeConfig = {}) => {
-  const { fahrzeugeNichtImEinsatz } = useFahrzeuge();
+  const { fahrzeuge } = useFahrzeuge();
   const { maxResults = 6, sortOrder = 'desc' } = config;
 
   return useMemo(() => {
-    const sortedFahrzeuge = sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz, sortOrder);
+    const sortedFahrzeuge = sortFahrzeugeByEinsatzCount(fahrzeuge.data.data.verfuegbareFahrzeuge, sortOrder);
     return sortedFahrzeuge.slice(0, maxResults).map((fahrzeug) => ({
       label: fahrzeug.funkrufname,
       secondary: `${fahrzeug.optaFunktion?.label} (${fahrzeug.kapazitaet} Plätze)`,
       item: fahrzeug,
     }));
-  }, [fahrzeugeNichtImEinsatz, maxResults, sortOrder]);
+  }, [fahrzeuge.data, maxResults, sortOrder]);
 };

@@ -23,7 +23,13 @@ import {
   OneMissionResponse,
   UpdateMissionDto,
 } from './mission-core.dto';
-import { ApiBody, ApiOkResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @Controller('missions')
 @UseGuards(BearbeiterGuard)
@@ -38,6 +44,7 @@ export class MissionCoreController {
 
   @Get(':id')
   @CacheKey('mission')
+  @ApiBearerAuth('Bearbeiter')
   @ApiParam({
     name: 'id',
     type: String,

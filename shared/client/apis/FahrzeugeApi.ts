@@ -13,13 +13,22 @@
  */
 
 import * as runtime from '../runtime';
+import type { ImportManyFahrzeugeDto, ManyFahrzeugTypResponse, ManyFahrzeugeTemplateResponse } from '../models/index';
+import {
+  ImportManyFahrzeugeDtoFromJSON,
+  ImportManyFahrzeugeDtoToJSON,
+  ManyFahrzeugTypResponseFromJSON,
+  ManyFahrzeugTypResponseToJSON,
+  ManyFahrzeugeTemplateResponseFromJSON,
+  ManyFahrzeugeTemplateResponseToJSON,
+} from '../models/index';
 
 export interface FahrzeugeControllerImportFahrzeugeV1Request {
-  requestBody: Array<string>;
+  importManyFahrzeugeDto: ImportManyFahrzeugeDto;
 }
 
 export interface FahrzeugeControllerUpdateManyV1Request {
-  requestBody: Array<string>;
+  importManyFahrzeugeDto: ImportManyFahrzeugeDto;
 }
 
 /**
@@ -28,39 +37,9 @@ export interface FahrzeugeControllerUpdateManyV1Request {
 export class FahrzeugeApi extends runtime.BaseAPI {
   /**
    */
-  async fahrzeugeControllerExportFahrzeugeV1Raw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    const response = await this.request(
-      {
-        path: `/v1/templates/vehicles/export`,
-        method: 'GET',
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.VoidApiResponse(response);
-  }
-
-  /**
-   */
-  async fahrzeugeControllerExportFahrzeugeV1(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.fahrzeugeControllerExportFahrzeugeV1Raw(initOverrides);
-  }
-
-  /**
-   */
   async fahrzeugeControllerFindAllTypenV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ManyFahrzeugTypResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -75,20 +54,23 @@ export class FahrzeugeApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyFahrzeugTypResponseFromJSON(jsonValue));
   }
 
   /**
    */
-  async fahrzeugeControllerFindAllTypenV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.fahrzeugeControllerFindAllTypenV1Raw(initOverrides);
+  async fahrzeugeControllerFindAllTypenV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<ManyFahrzeugTypResponse> {
+    const response = await this.fahrzeugeControllerFindAllTypenV1Raw(initOverrides);
+    return await response.value();
   }
 
   /**
    */
   async fahrzeugeControllerFindAllV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ManyFahrzeugeTemplateResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -103,13 +85,16 @@ export class FahrzeugeApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyFahrzeugeTemplateResponseFromJSON(jsonValue));
   }
 
   /**
    */
-  async fahrzeugeControllerFindAllV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.fahrzeugeControllerFindAllV1Raw(initOverrides);
+  async fahrzeugeControllerFindAllV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<ManyFahrzeugeTemplateResponse> {
+    const response = await this.fahrzeugeControllerFindAllV1Raw(initOverrides);
+    return await response.value();
   }
 
   /**
@@ -148,10 +133,10 @@ export class FahrzeugeApi extends runtime.BaseAPI {
     requestParameters: FahrzeugeControllerImportFahrzeugeV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
-    if (requestParameters['requestBody'] == null) {
+    if (requestParameters['importManyFahrzeugeDto'] == null) {
       throw new runtime.RequiredError(
-        'requestBody',
-        'Required parameter "requestBody" was null or undefined when calling fahrzeugeControllerImportFahrzeugeV1().',
+        'importManyFahrzeugeDto',
+        'Required parameter "importManyFahrzeugeDto" was null or undefined when calling fahrzeugeControllerImportFahrzeugeV1().',
       );
     }
 
@@ -167,7 +152,7 @@ export class FahrzeugeApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
-        body: requestParameters['requestBody'],
+        body: ImportManyFahrzeugeDtoToJSON(requestParameters['importManyFahrzeugeDto']),
       },
       initOverrides,
     );
@@ -190,10 +175,10 @@ export class FahrzeugeApi extends runtime.BaseAPI {
     requestParameters: FahrzeugeControllerUpdateManyV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
-    if (requestParameters['requestBody'] == null) {
+    if (requestParameters['importManyFahrzeugeDto'] == null) {
       throw new runtime.RequiredError(
-        'requestBody',
-        'Required parameter "requestBody" was null or undefined when calling fahrzeugeControllerUpdateManyV1().',
+        'importManyFahrzeugeDto',
+        'Required parameter "importManyFahrzeugeDto" was null or undefined when calling fahrzeugeControllerUpdateManyV1().',
       );
     }
 
@@ -209,7 +194,7 @@ export class FahrzeugeApi extends runtime.BaseAPI {
         method: 'PATCH',
         headers: headerParameters,
         query: queryParameters,
-        body: requestParameters['requestBody'],
+        body: ImportManyFahrzeugeDtoToJSON(requestParameters['importManyFahrzeugeDto']),
       },
       initOverrides,
     );

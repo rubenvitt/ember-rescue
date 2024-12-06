@@ -1,9 +1,8 @@
 import React from 'react';
-import { StatusLabel } from '../atoms/StatusLabel.component.js';
-import { FahrzeugDto } from '../../../types/app/fahrzeug.types.js';
+import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
 
 interface FahrzeugListItemProps {
-  fahrzeug: FahrzeugDto;
+  fahrzeug: VehicleOnMissionDto;
 }
 
 export const FahrzeugListItemComponent: React.FC<FahrzeugListItemProps> = ({ fahrzeug }) => {
@@ -16,12 +15,7 @@ export const FahrzeugListItemComponent: React.FC<FahrzeugListItemProps> = ({ fah
         </div>
         <div className="flex justify-between gap-x-4 py-3">
           <dt className="text-gray-500">Temporäres Fahrzeug</dt>
-          <dd className="flex items-start gap-x-2">
-            <div className="font-medium text-gray-900 dark:text-gray-300">
-              {fahrzeug.istTemporaer ? 'temp' : 'dauerhaft'}
-            </div>
-            <StatusLabel status={fahrzeug.status} />
-          </dd>
+          <dd className="flex items-start gap-x-2">{/*<StatusLabel status={} /> /!* FIXME[ember-rescue-68](rubeen, 30.11.24): ADD STATUS *!/*/}</dd>
         </div>
       </dl>
     </>

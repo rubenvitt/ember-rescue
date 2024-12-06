@@ -15,6 +15,9 @@ export class Status extends TemplateDocument {
 
 export const StatusSchema = SchemaFactory.createForClass(Status);
 
+/**
+ * @deprecated
+ */
 export type StatusDto = {
   code: string;
   label: string;

@@ -9,7 +9,7 @@ export class NotizenService {
   constructor(private readonly repository: NotizenRepository) {}
 
   async findAllNotizen(einsatzId: string, bearbeiterId: string, done: boolean) {
-    await this.repository.find(
+    return await this.repository.find(
       {
         einsatz: einsatzId,
         bearbeiter: bearbeiterId,

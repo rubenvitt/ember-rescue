@@ -9,7 +9,7 @@ export interface ITemplate {
 
 export let isCurrentlyActiveFilter = {
   isActive: true,
-  isValidFilter: [
+  $or: [
     {
       validTo: { $gte: new Date() },
     },

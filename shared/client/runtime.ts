@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-export const BASE_PATH = 'http://localhost'.replace(/\/+$/, '');
+export const BASE_PATH = 'http://localhost:3000'.replace(/\/+$/, '');
 
 export interface ConfigurationParameters {
   basePath?: string; // override base path
@@ -90,7 +90,7 @@ export const DefaultConfig = new Configuration();
  */
 export class BaseAPI {
   private static readonly jsonRegex = new RegExp(
-    '^(:?application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(:?;.*)?$',
+    '^(:?application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(:?;.*)?$',
     'i',
   );
   private middleware: Middleware[];

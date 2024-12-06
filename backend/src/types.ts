@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { FahrzeugIconDefinitionDto } from '@templates/vehicles/fahrzeug-template.schema';
 
@@ -6,16 +6,18 @@ export type BearbeiterDto = {
   name: string;
 };
 
+/**
+ * @deprecated
+ */
 export type SmallStatusDto = {
   id: string;
   code: string;
   bezeichnung: string;
 };
 
-export type StatusDto = SmallStatusDto & {
-  beschreibung: string;
-};
-
+/**
+ * @deprecated
+ */
 export type UpdateCreateFahrzeugeDto = {
   _id: string | undefined;
   opta: any; // TODO
@@ -61,33 +63,9 @@ export enum EinsatztagebuchEintragEnum {
   BETROFFENE = 'BETROFFENE',
 }
 
-export type EinsatztagebuchEintragType =
-  keyof typeof EinsatztagebuchEintragEnum;
-
-const EinsatztagebuchEintragTypesArray: EinsatztagebuchEintragType[] =
-  Object.values(EinsatztagebuchEintragEnum) as EinsatztagebuchEintragType[];
-
-export class CreateEinsatztagebuchDto {
-  id?: never;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  content: string;
-  @IsOptional()
-  @IsIn(EinsatztagebuchEintragTypesArray)
-  @ApiProperty({ enum: EinsatztagebuchEintragEnum })
-  type?: EinsatztagebuchEintragType;
-  @IsNotEmpty()
-  @ApiProperty()
-  absender: string;
-  @IsNotEmpty()
-  @ApiProperty()
-  empfaenger: string;
-  @IsNotEmpty()
-  @ApiProperty({ pattern: 'YYYY-MM-ddThh:mm:ss' })
-  timestamp: string;
-}
-
+/**
+ * @deprecated
+ */
 export class CreateNotizDto {
   id?: never;
 

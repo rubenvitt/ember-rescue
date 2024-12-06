@@ -1,30 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
-import {
-  CreateMissionDto,
-  ManyMissionsResponse,
-  MissionDto,
-  SmallMissionDto,
-  UpdateMissionDto,
-} from '@ember-rescue/shared/client/index.js';
+import { CreateMissionDto, ManyMissionsResponse, MissionDto, SmallMissionDto, UpdateMissionDto } from '@ember-rescue/shared/client/index.js';
 
 export function useEinsatz() {
   const queryClient = useQueryClient();
-  const { setEinsatz, einsatzId, removeEinsatz } = useStore();
+  const { setEinsatz, missionId, removeEinsatz } = useStore();
 
   const singleEinsatz = useQuery<MissionDto | null>({
-    queryKey: services.backend.einsatze.fetchSingleEinsatz.queryKey({ einsatzId }),
+    queryKey: services.backend.einsatze.fetchSingleEinsatz.queryKey({ einsatzId: missionId }),
     queryFn: async () => {
       return services.backend.einsatze.fetchSingleEinsatz
-        .queryFn({ einsatzId })
+        .queryFn({ einsatzId: missionId })
         .then((einsatz) => einsatz.data ?? Promise.reject())
         .catch(() => {
           removeEinsatz();
           return null;
         });
     },
-    enabled: !!einsatzId,
+    enabled: !!missionId,
   });
 
   const offeneEinsaetze = useQuery<ManyMissionsResponse>({
@@ -57,7 +51,7 @@ export function useEinsatz() {
   });
 
   const einsatzAbschliessen = useMutation<unknown, unknown, SmallMissionDto>({
-    mutationKey: services.backend.einsatze.einsatzAbschliessen.mutationKey({ einsatzId }),
+    mutationKey: services.backend.einsatze.einsatzAbschliessen.mutationKey({ missionId: missionId }),
     mutationFn: services.backend.einsatze.einsatzAbschliessen.mutationFn,
     onSuccess: services.backend.einsatze.invalidateQueries(queryClient),
   });
@@ -67,8 +61,8 @@ export function useEinsatz() {
   }
 
   return {
-    einsatzId,
-    einsatz: { ...singleEinsatz, isDisabled: !einsatzId },
+    missionId,
+    einsatz: { ...singleEinsatz, isDisabled: !missionId },
     saveEinsatz,
     createEinsatz,
     updateEinsatz,

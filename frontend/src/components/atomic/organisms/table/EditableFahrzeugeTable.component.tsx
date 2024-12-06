@@ -1,13 +1,4 @@
-import {
-  HTMLAttributes,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Button, Collapse, Form, Switch as AntSwitch, Table, Tooltip, Typography } from 'antd';
 import { Input, InputNumber, Select, Switch } from 'formik-antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
@@ -18,7 +9,6 @@ import type { AnyObject } from 'antd/es/_util/type.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types.js';
-import { PatchFahrzeugType } from '../../../../services/backend/fahrzeuge.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
@@ -26,6 +16,7 @@ import { toast } from 'react-toastify';
 import { FormLayout } from '../form/FormLayout.comonent.js';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { OptaInputField } from '../../molecules/OptaInput.component.js';
+import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
 
 type EditingStore = {
   id: null | string;
@@ -81,7 +72,8 @@ const newFahrzeugTemplate: FahrzeugDto = {
   optaOrdnung: null,
 };
 
-type EditableFahrzeugType = Omit<PatchFahrzeugType, 'fahrzeugTypId'>;
+// FIXME: type
+type EditableFahrzeugType = Omit<VehicleOnMissionDto, 'fahrzeugTypId'>;
 
 function JsonImExport() {
   const { fahrzeugeJson, updateFahrzeugeJson } = useFahrzeuge();
@@ -101,12 +93,7 @@ function JsonImExport() {
 
   return (
     <Collapse ghost={true} bordered={false} className="w-full">
-      <Collapse.Panel
-        header="Erweiterte Funktionen"
-        key="1"
-        className="w-full text-left"
-        collapsible={fahrzeugeJson.isLoading ? 'disabled' : 'header'}
-      >
+      <Collapse.Panel header="Erweiterte Funktionen" key="1" className="w-full text-left" collapsible={fahrzeugeJson.isLoading ? 'disabled' : 'header'}>
         <div className="flex justify-items-stretch gap-4">
           <FormLayout<{ json: string }>
             buttons={{
@@ -202,15 +189,15 @@ export function EditableFahrzeugeTable() {
     if (newFahrzeugTemplate.id === id) {
       return newFahrzeugTemplate;
     }
-    return fahrzeuge.data?.find((fahrzeug) => fahrzeug._id === id);
+    return fahrzeuge.data?.data.verfuegbareFahrzeuge?.find((fahrzeug) => fahrzeug.id === id);
   }, [fahrzeuge.data, id]);
 
   const fahrzeugeTypItems = useMemo(() => {
     return (
-      fahrzeugeTypen.data?.map(
+      fahrzeugeTypen.data?.data.map(
         (fahrzeugTyp) =>
           ({
-            value: fahrzeugTyp._id,
+            value: fahrzeugTyp.id,
             search: [fahrzeugTyp.label, fahrzeugTyp.description].join(' '),
             label: (
               <div className="flex justify-between">
@@ -234,12 +221,10 @@ export function EditableFahrzeugeTable() {
 
   useEffect(() => {
     formRef.current?.setValues({
-      id: editingFahrzeug?._id ?? '',
+      id: editingFahrzeug?.id ?? '',
       kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
-      istTemporaer: editingFahrzeug?.istTemporaer ?? false,
-      opta: {
-        freetext: editingFahrzeug?.fullOpta ?? 'Test',
-      },
+      fullOpta: editingFahrzeug?.fullOpta ?? '',
+      optaFunktion: editingFahrzeug?.optaFunktion ?? '',
     });
     setTimeout(() => {
       console.log('using form input', { editingFahrzeug, formValue: formRef.current?.values });
@@ -345,10 +330,7 @@ export function EditableFahrzeugeTable() {
   );
 
   const dataSource = useMemo(
-    () =>
-      [id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, fahrzeuge.data]
-        .filter((value) => value !== undefined)
-        .flat(),
+    () => [id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, fahrzeuge.data].filter((value) => value !== undefined).flat(),
     [newFahrzeugTemplate, id, fahrzeuge.data],
   );
   return (
@@ -358,13 +340,16 @@ export function EditableFahrzeugeTable() {
         validationSchema={PatchFahrzeugSchema}
         onSubmit={(data) => {
           console.log('submitting with data', { data });
-          patchFahrzeuge.mutate([{ ...data }]);
+          patchFahrzeuge.mutate({ items: [data] });
         }}
         initialValues={{
           id: editingFahrzeug?.id ?? '',
           fullOpta: '',
-          istTemporaer: editingFahrzeug?.istTemporaer ?? false,
           kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
+          optaFunktion: '',
+          einsatzbeginn: '',
+          personal: [],
+          statusHistory: [],
         }}
         innerRef={formRef}
       >
@@ -376,7 +361,7 @@ export function EditableFahrzeugeTable() {
               },
             }}
             bordered
-            dataSource={dataSource}
+            dataSource={dataSource} // FIXME[ember-rescue-68](rubeen, 30.11.24): This must be fixed
             loading={fahrzeuge.isLoading}
             // @ts-ignore
             columns={mergedColumns}
@@ -409,17 +394,7 @@ function getMin(dataIndex: string) {
   }
 }
 
-function EditableCell<Item>({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  options,
-  children,
-  ...restProps
-}: PropsWithChildren<EditableCellProps<Item>>): ReactNode {
+function EditableCell<Item>({ editing, dataIndex, title, inputType, record, index, options, children, ...restProps }: PropsWithChildren<EditableCellProps<Item>>): ReactNode {
   let inputNode: ReactElement;
   switch (inputType) {
     case 'number':

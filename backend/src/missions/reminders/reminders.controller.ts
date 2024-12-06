@@ -11,6 +11,12 @@ import { RemindersService } from './reminders.service';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterDto } from '../../types';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import {
+  CreateReminderDto,
+  ManyReminderResponse,
+  OneReminderResponse,
+} from './reminders.dto';
 
 @Controller('missions/:missionId/reminders')
 @UseGuards(BearbeiterGuard)
@@ -20,6 +26,9 @@ export class RemindersController {
   constructor(private readonly reminderService: RemindersService) {}
 
   @Get('due')
+  @ApiOkResponse({
+    type: ManyReminderResponse,
+  })
   async getDueReminders(
     @Param('missionId') einsatzId: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
@@ -28,6 +37,12 @@ export class RemindersController {
   }
 
   @Post()
+  @ApiBody({
+    type: CreateReminderDto,
+  })
+  @ApiOkResponse({
+    type: OneReminderResponse,
+  })
   async createReminder(
     @Param('missionId') einsatzId: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,

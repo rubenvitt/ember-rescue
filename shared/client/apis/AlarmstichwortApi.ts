@@ -13,6 +13,8 @@
  */
 
 import * as runtime from '../runtime';
+import type { ManyEinsatzAlarmstichwortDto } from '../models/index';
+import { ManyEinsatzAlarmstichwortDtoFromJSON, ManyEinsatzAlarmstichwortDtoToJSON } from '../models/index';
 
 /**
  *
@@ -22,7 +24,7 @@ export class AlarmstichwortApi extends runtime.BaseAPI {
    */
   async alarmstichwortControllerGetAlarmstichworteV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ManyEinsatzAlarmstichwortDto>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -37,14 +39,15 @@ export class AlarmstichwortApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyEinsatzAlarmstichwortDtoFromJSON(jsonValue));
   }
 
   /**
    */
   async alarmstichwortControllerGetAlarmstichworteV1(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.alarmstichwortControllerGetAlarmstichworteV1Raw(initOverrides);
+  ): Promise<ManyEinsatzAlarmstichwortDto> {
+    const response = await this.alarmstichwortControllerGetAlarmstichworteV1Raw(initOverrides);
+    return await response.value();
   }
 }

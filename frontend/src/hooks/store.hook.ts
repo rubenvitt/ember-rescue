@@ -7,7 +7,7 @@ type Store = {
   setBearbeiter: (bearbeiter: BearbeiterDto) => void;
   removeBearbeiter: () => void;
 
-  einsatzId: string | null;
+  missionId: string | null;
   setEinsatz: (einsatz: SmallMissionDto) => void;
   removeEinsatz: () => void;
 
@@ -27,22 +27,21 @@ export const useStore = create<Store>((set, get) => ({
   removeBearbeiter: () => {
     storage().writeLocalStorage('bearbeiter', null);
     storage().writeLocalStorage('mission', null);
-    set({ bearbeiter: null, einsatzId: null });
+    set({ bearbeiter: null, missionId: null });
   },
 
-  einsatzId: storage().readLocalStorage<string>('mission'),
+  missionId: storage().readLocalStorage<string>('mission'),
   setEinsatz: (einsatz: SmallMissionDto) => {
     storage().writeLocalStorage('mission', einsatz.id);
-    set({ einsatzId: einsatz.id });
+    set({ missionId: einsatz.id });
   },
   removeEinsatz: () => {
     storage().writeLocalStorage('mission', null);
-    set({ einsatzId: null });
+    set({ missionId: null });
   },
 
   theme: {
-    dark:
-      storage().readLocalStorage<boolean>('theme:dark') ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
+    dark: storage().readLocalStorage<boolean>('theme:dark') ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
     setDark: (dark) => {
       let isDark = typeof dark === 'function' ? dark(get().theme.dark) : dark;
       storage().writeLocalStorage('theme:dark', isDark);

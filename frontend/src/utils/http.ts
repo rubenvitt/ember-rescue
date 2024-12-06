@@ -89,47 +89,13 @@ async function makeRequest(
 }
 
 /**
- * Fetches JSON data from the backend server using the specified path and request options.
- *
- * @deprecated Use generated client/api instead
- * @param {string} path - The path to the JSON resource on the server.
- * @param {RequestInit} [init] - The request options object, which may include headers and other parameters.
- *
- * @returns {Promise<T>} - A promise that resolves to the parsed JSON data from the response body.
- */
-export async function backendFetchJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await makeRequest(
-    {
-      ...init,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...init?.headers,
-      },
-    },
-    path,
-  );
-  return (await res.json()) as T;
-}
-
-/**
- * Sends a request to the backend server and returns the response body as plain text.
- *
- * @param path - The path of the endpoint to request.
- * @param init - Optional configuration for the request.
- * @returns A Promise that resolves to the response body as plain text.
- */
-export async function backendFetchPlainText(path: string, init?: RequestInit): Promise<string> {
-  const res = await makeRequest(init, path);
-  return await res.text();
-}
-
-/**
  * Sends a request to the backend server and returns the response as a Blob.
  *
  * @param path - The path of the endpoint to request.
  * @param init - Optional configuration for the request.
  * @returns A Promise that resolves to the response as a Blob.
+ *
+ * @deprecated
  */
 export async function backendFetchBlob(path: string, init?: RequestInit): Promise<Blob> {
   const res = await makeRequest(init, path);

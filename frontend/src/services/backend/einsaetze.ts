@@ -1,19 +1,13 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import {
-  CreateMissionDto,
-  MissionCoreApi,
-  SmallMissionDto,
-  UpdateMissionDto,
-} from '@ember-rescue/shared/client/index.js';
+import { CreateMissionDto, MissionCoreApi, SmallMissionDto, UpdateMissionDto } from '@ember-rescue/shared/client/index.js';
 
 // Export des queryKey
 export const queryKey = 'einsatz';
 
 // Invalidate Queries Funktion
-export const invalidateQueries = (queryClient: QueryClient) =>
-  createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
+export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);
 
 const api = new MissionCoreApi(getAPIConfig());
 
@@ -62,7 +56,7 @@ export const updateEinsatz = {
 
 // PUT Abschluss eines Einsatzes
 export const einsatzAbschliessen = {
-  mutationKey: ({ einsatzId }: { einsatzId: string | null }) => [queryKey, einsatzId, 'close'],
+  mutationKey: ({ missionId }: { missionId: string | null }) => [queryKey, missionId, 'close'],
   mutationFn: async (einsatz: SmallMissionDto) => {
     return api.missionCoreControllerCloseEinsatzV1({
       id: einsatz.id,

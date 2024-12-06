@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TemplateDocument } from '@core/database/base-documents';
 
+/**
+ * @deprecated
+ */
 export class AlarmstichwortDto {
   code: string;
   description: string;

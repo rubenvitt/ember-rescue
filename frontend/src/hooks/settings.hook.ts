@@ -1,25 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
-
-export type Settings = {
-  mapboxApi: string;
-};
+import { SettingsDto, SettingsResponse } from '@ember-rescue/shared/client/index.js';
 
 export function useSettings() {
   const queryClient = useQueryClient();
-  const settings = useQuery<Settings>({
+  const settings = useQuery<SettingsResponse>({
     queryKey: services.backend.settings.fetchSettings.queryKey,
     queryFn: services.backend.settings.fetchSettings.queryFn,
   });
 
-  const save = useMutation<unknown, unknown, Settings>({
+  const save = useMutation<unknown, unknown, SettingsDto>({
     mutationKey: services.backend.settings.saveSettings.mutationKey,
     mutationFn: services.backend.settings.saveSettings.mutationFn,
     onSuccess: () => {
-      return Promise.all([
-        services.backend.settings.invalidateQueries(queryClient),
-        services.backend.fahrzeuge.invalidateQueries(queryClient),
-      ]);
+      return Promise.all([services.backend.settings.invalidateQueries(queryClient), services.backend.fahrzeuge.invalidateQueries(queryClient)]);
     },
   });
 

@@ -64,23 +64,22 @@ const SetupEinsatzSchema = Yup.object<CreateMissionDto>().shape({
 });
 
 export function NewSetupEinsatzForm() {
+  // FIXME[ember-rescue-68](rubeen, 30.11.24): Use fahrzeugeTemplate
   const { fahrzeuge } = useFahrzeuge();
   const { alarmstichworte } = useAlarmstichworte();
   const { createEinsatz, saveEinsatz } = useEinsatz();
   const navigate = useNavigate();
 
   const fahrzeugeItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return fahrzeuge.data?.map(
+    return fahrzeuge.data?.data.verfuegbareFahrzeuge.map(
       (fahrzeug) =>
         ({
-          value: fahrzeug.funkrufname,
-          searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.optaFunktion?.label.toLowerCase(),
+          value: fahrzeug.fullOpta,
+          searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion.toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{fahrzeug.funkrufname}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {fahrzeug.optaFunktion?.label}
-              </span>
+              <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
+              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
             </div>
           ),
           item: fahrzeug,
@@ -89,7 +88,7 @@ export function NewSetupEinsatzForm() {
   }, [fahrzeuge.data]);
 
   const alarmstichworteItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return alarmstichworte.data?.map(
+    return alarmstichworte.data?.data.map(
       (stichwort) =>
         ({
           value: stichwort.id,
@@ -97,9 +96,7 @@ export function NewSetupEinsatzForm() {
           label: (
             <div className="flex justify-between gap-4">
               <span className="flex-shrink-0 truncate">{stichwort.code}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {stichwort.description}
-              </span>
+              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{stichwort.description}</span>
             </div>
           ),
         }) as DefaultOptionType,

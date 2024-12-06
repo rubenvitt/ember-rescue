@@ -2,37 +2,50 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Logger,
   Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
-import { BearbeiterDto, CreateEinsatztagebuchDto } from '../../types';
+import { BearbeiterDto } from '../../types';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import {
+  CreateJournalEntryDto,
+  JournalEntryResponse,
+  JournalResponse,
+} from './journal.dto';
 
 @Controller('missions/:missionId/journal')
 @UseGuards(BearbeiterGuard)
-export class EinsatztagebuchController {
-  private readonly logger = new Logger(EinsatztagebuchController.name);
+export class JournalController {
+  private readonly logger = new Logger(JournalController.name);
 
   constructor(private service: EinsatztagebuchService) {}
 
   @Get()
-  async getEinsatztagebuch(
-    @Headers('bearbeiter') bearbeiterHeader: string,
-    @Param('missionId') einsatzId: string,
-  ) {
+  @ApiOkResponse({
+    type: JournalResponse,
+    description: 'Find journal for mission',
+  })
+  async getJournal(@Param('missionId') einsatzId: string) {
     return this.service.getEinsatztagebuch(einsatzId);
   }
 
   @Post()
-  async createEinsatztagebuchEintrag(
+  @ApiBody({
+    type: CreateJournalEntryDto,
+  })
+  @ApiOkResponse({
+    type: JournalEntryResponse,
+    description: 'Create journal entry',
+  })
+  async createJournalEntry(
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Param('missionId') einsatzId: string,
-    @Body() createEinsatztagebuchDto: CreateEinsatztagebuchDto,
+    @Body() createEinsatztagebuchDto: CreateJournalEntryDto,
   ) {
     this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
       bearbeiterId: bearbeiter.name,
@@ -47,7 +60,10 @@ export class EinsatztagebuchController {
   }
 
   @Post('/:id/archive')
-  async archiveEinsatztagebuchEintrag(
+  @ApiOkResponse({
+    description: 'Archive Einsatztagebuch Eintrag',
+  })
+  async archiveJournalEntry(
     @Param('id') id: string,
     @Param('missionId') missionId: string,
   ) {

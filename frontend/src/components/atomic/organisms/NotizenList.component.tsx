@@ -23,7 +23,7 @@ export function NotizenList({ notizen, addNotiz, loading }: NotesListProps) {
 
   return (
     <>
-      {dueReminders && <>{dueReminders.data?.map((reminder) => <p key={reminder.id}>{reminder.noteId}</p>)}</>}
+      {dueReminders && <>{dueReminders.data?.data.map((reminder) => <p key={reminder.id}>{reminder.action}</p>)}</>}
       {addNotiz && <EmptyState addNote={createNote} />}
       <List loading={loading} dataSource={notizen} renderItem={(item) => <NotizenListItem notiz={item} />} />
     </>

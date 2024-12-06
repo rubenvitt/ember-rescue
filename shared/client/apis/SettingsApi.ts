@@ -13,6 +13,17 @@
  */
 
 import * as runtime from '../runtime';
+import type { SettingsDto, SettingsResponse } from '../models/index';
+import {
+  SettingsDtoFromJSON,
+  SettingsDtoToJSON,
+  SettingsResponseFromJSON,
+  SettingsResponseToJSON,
+} from '../models/index';
+
+export interface SettingsControllerSaveSettingsV1Request {
+  settingsDto: SettingsDto;
+}
 
 /**
  *
@@ -22,7 +33,7 @@ export class SettingsApi extends runtime.BaseAPI {
    */
   async settingsControllerFindSettingsV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<SettingsResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -37,23 +48,36 @@ export class SettingsApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => SettingsResponseFromJSON(jsonValue));
   }
 
   /**
    */
-  async settingsControllerFindSettingsV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.settingsControllerFindSettingsV1Raw(initOverrides);
+  async settingsControllerFindSettingsV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<SettingsResponse> {
+    const response = await this.settingsControllerFindSettingsV1Raw(initOverrides);
+    return await response.value();
   }
 
   /**
    */
   async settingsControllerSaveSettingsV1Raw(
+    requestParameters: SettingsControllerSaveSettingsV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
+    if (requestParameters['settingsDto'] == null) {
+      throw new runtime.RequiredError(
+        'settingsDto',
+        'Required parameter "settingsDto" was null or undefined when calling settingsControllerSaveSettingsV1().',
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
 
     const response = await this.request(
       {
@@ -61,6 +85,7 @@ export class SettingsApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
+        body: SettingsDtoToJSON(requestParameters['settingsDto']),
       },
       initOverrides,
     );
@@ -70,7 +95,10 @@ export class SettingsApi extends runtime.BaseAPI {
 
   /**
    */
-  async settingsControllerSaveSettingsV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.settingsControllerSaveSettingsV1Raw(initOverrides);
+  async settingsControllerSaveSettingsV1(
+    requestParameters: SettingsControllerSaveSettingsV1Request,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.settingsControllerSaveSettingsV1Raw(requestParameters, initOverrides);
   }
 }

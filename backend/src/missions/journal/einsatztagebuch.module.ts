@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { EinsatztagebuchController } from './einsatztagebuch.controller';
+import { JournalController } from './journal.controller';
 import { EinsatztagebuchService } from './einsatztagebuch.service';
 import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
 
 @Module({
   imports: [EinsatzSchemaModule],
-  controllers: [EinsatztagebuchController],
+  controllers: [JournalController],
   providers: [EinsatztagebuchService],
   exports: [EinsatztagebuchService],
 })

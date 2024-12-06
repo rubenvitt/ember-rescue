@@ -5,13 +5,13 @@ import { EinsatzAlarmstichwortDto } from '@templates/alarmstichworte/alarmstichw
 import { JournalDto } from '../journal/journal.dto';
 import { VehicleOnMissionDto } from '../vehicles/vehicle.dto';
 import { EinsatzNoteDto } from '../notes/notes.dto';
-import { EinsatzReminderDto } from '../reminders/reminders.dto';
 import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsISO8601,
 } from 'class-validator';
+import { ReminderDto } from '../reminders/reminders.dto';
 
 export class MissionMetaDto {
   @ApiProperty({ required: true })
@@ -86,7 +86,7 @@ export class MissionDto extends SmallMissionDto {
   notizen: EinsatzNoteDto[];
 
   @ApiProperty({})
-  reminders: EinsatzReminderDto[];
+  reminders: ReminderDto[];
 }
 
 export class OneMissionResponse extends ApiResponse<MissionDto | undefined> {

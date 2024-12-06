@@ -17,9 +17,8 @@ import { DefaultOptionType } from 'antd/lib/select/index.js';
 import * as Yup from 'yup';
 import { Dayjs } from 'dayjs';
 import { RangeValue } from '../../../types/ui/inputs.types.js';
-import { Secret } from '../../../hooks/secrets.hook.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
-import { MissionDto } from '@ember-rescue/shared/client/index.js';
+import { MissionDto, SecretsDto } from '@ember-rescue/shared/client/index.js';
 
 interface Einsatzdaten {
   alarmstichwort: string;
@@ -135,7 +134,7 @@ function FinishEinsatz(props: { einsatz: MissionDto }) {
 interface EinsatzdatenFormProps {}
 
 interface EinsatzdatenFormProps {
-  mapboxApiKey?: Secret;
+  mapboxApiKey?: SecretsDto;
 }
 
 export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.Element {
@@ -144,7 +143,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
 
   const alarmstichworteItems = useMemo<DefaultOptionType[]>(() => {
     return (
-      alarmstichworte.data?.map(
+      alarmstichworte.data?.data.map(
         (item) =>
           ({
             item,
@@ -163,27 +162,15 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
   }, [alarmstichworte.data]);
 
   const defaultStichwort = useMemo<string | undefined>(() => {
-    return alarmstichworte.data?.find((a) => a.code === einsatz.data?.einsatzAlarmstichwort.code)?.id;
+    return alarmstichworte.data?.data.find((a) => a.code === einsatz.data?.einsatzAlarmstichwort.code)?.id;
   }, [alarmstichworte.data, einsatz.data]);
 
   const searchBoxCore = useSearchBoxCore({
-    accessToken: mapboxApiKey?.value,
+    accessToken: mapboxApiKey?.value || '',
     language: 'de',
     country: 'de',
     // @ts-ignore api is newer
-    types: new Set([
-      'country',
-      'region',
-      'postcode',
-      'district',
-      'place',
-      'city',
-      'locality',
-      'neighborhood',
-      'street',
-      'address',
-      'poi',
-    ]),
+    types: new Set(['country', 'region', 'postcode', 'district', 'place', 'city', 'locality', 'neighborhood', 'street', 'address', 'poi']),
   });
 
   // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): Places should be saved on submit

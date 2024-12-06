@@ -1,4 +1,4 @@
-import { Settings, useSettings } from '../../../hooks/settings.hook.js';
+import { useSettings } from '../../../hooks/settings.hook.js';
 import { EditableFahrzeugeTable } from '../organisms/table/EditableFahrzeugeTable.component.js';
 import { Input } from 'formik-antd';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
 import { OptaInput } from '../molecules/OptaInput.component.js';
+import { SettingsDto } from '@ember-rescue/shared/client/index.js';
 
 const ApiCredentialsSchema = Yup.object().shape({
   mapboxApi: Yup.string()
@@ -21,12 +22,12 @@ export function AdminTemplate() {
 
   return (
     <div className="space-y-4 p-6">
-      <FormLayout<Settings>
+      <FormLayout<SettingsDto>
         type="sectioned"
         formik={{
           validationSchema: ApiCredentialsSchema,
           onSubmit: (data) => save.mutate(data),
-          initialValues: { mapboxApi: settings.data.mapboxApi ?? '' },
+          initialValues: { mapboxApi: settings.data.data.mapboxApi ?? '' },
         }}
         buttons={{
           submit: {
@@ -40,11 +41,7 @@ export function AdminTemplate() {
           },
         }}
       >
-        <FormSection
-          className="w-full"
-          heading="API Keys"
-          subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung."
-        >
+        <FormSection className="w-full" heading="API Keys" subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung.">
           <FormContentBox>
             <InputWrapper label="Mapbox Public API Key" name={'mapboxApi'}>
               <Input.Password variant="filled" name="mapboxApi" />
@@ -56,8 +53,11 @@ export function AdminTemplate() {
       <div className="rounded-xl bg-amber-100 p-4">
         <h2>Input Test</h2>
         <OptaInput
+          onBlur={(opta) => {
+            console.log(`onBlur: neue Opta: ${JSON.stringify(opta)}`);
+          }}
           onChange={(opta) => {
-            console.log(`neue Opta: ${JSON.stringify(opta)}`);
+            console.log(`onChange: neue Opta: ${JSON.stringify(opta)}`);
           }}
         />
       </div>

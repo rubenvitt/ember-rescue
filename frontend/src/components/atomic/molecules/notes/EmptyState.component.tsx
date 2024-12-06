@@ -23,7 +23,7 @@ export function EmptyState({ addNote }: EmptyStateProps) {
     async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
       await addNote({ content: data.content })?.then((notiz) => {
         if (data.reminder) {
-          actualCreateReminder(notiz.id, {
+          actualCreateReminder(notiz, {
             onOk: formik.resetForm,
           });
         }

@@ -10,30 +10,51 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FahrzeugeService } from './fahrzeuge.service';
-import { UpdateCreateFahrzeugeDto } from '../../types';
 import { Response } from 'express';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ImportManyFahrzeugeDto,
+  ManyFahrzeugeTemplateResponse,
+  ManyFahrzeugTypResponse,
+} from '@templates/vehicles/fahrzeuge.dto';
 
 @Controller('templates/vehicles')
 @UseGuards(BearbeiterGuard)
 export class FahrzeugeController {
   private readonly logger = new Logger(FahrzeugeController.name);
+
   constructor(private readonly fahrzeugeService: FahrzeugeService) {}
 
   @Get()
+  @ApiOkResponse({
+    type: ManyFahrzeugeTemplateResponse,
+    description: 'List of all vehicles (templates)',
+  })
   findAll() {
     return this.fahrzeugeService.findAll();
   }
 
   @Get('/typen')
+  @ApiOkResponse({
+    type: ManyFahrzeugTypResponse,
+    description: 'List of all vehicles (templates)',
+  })
+  /**
+   * @deprecated
+   */
   findAllTypen() {
-    // FIXME[ember-rescue-68](rubeen, 14.11.24): Typen
+    // FIXME[ember-rescue-68](rubeen, 14.11.24): Typen sind jetzt OPTAs
     return [];
   }
 
   @Patch()
+  @ApiBody({
+    type: ImportManyFahrzeugeDto,
+    description: 'Update many vehicles',
+  })
   async updateMany(
-    @Body() fahrzeuge: UpdateCreateFahrzeugeDto,
+    @Body() fahrzeuge: ImportManyFahrzeugeDto,
     @Res() response: Response,
   ) {
     await this.fahrzeugeService.updateMany(fahrzeuge);
@@ -50,8 +71,12 @@ export class FahrzeugeController {
   }
 
   @Post('/import')
+  @ApiBody({
+    type: ImportManyFahrzeugeDto,
+    description: 'Import many vehicles',
+  })
   async importFahrzeuge(
-    @Body() fahrzeuge: UpdateCreateFahrzeugeDto,
+    @Body() fahrzeuge: ImportManyFahrzeugeDto,
     @Res() response: Response,
   ) {
     this.logger.debug(
@@ -61,12 +86,5 @@ export class FahrzeugeController {
     await this.fahrzeugeService.importFahrzeuge(fahrzeuge);
     response.status(HttpStatus.OK);
     response.send({ status: 'Fahrzeuge updated successfully' });
-  }
-
-  @Get('export')
-  async exportFahrzeuge() {
-    let allFahrzeuge = await this.fahrzeugeService.findAll({
-      istTemporaer: false,
-    });
   }
 }

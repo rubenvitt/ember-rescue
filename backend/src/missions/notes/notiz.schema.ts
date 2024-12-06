@@ -9,11 +9,11 @@ export class Notiz extends Document {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ required: true })
-  doneAt: Date;
+  @Prop({ required: false })
+  doneAt?: Date;
 
   @Prop()
-  deletedAt: Date;
+  deletedAt?: Date;
 
   @Prop({ required: true, type: String })
   bearbeiterId: string;

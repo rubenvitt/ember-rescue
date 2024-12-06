@@ -13,9 +13,19 @@
  */
 
 import * as runtime from '../runtime';
+import type { CreateReminderDto, ManyReminderResponse, OneReminderResponse } from '../models/index';
+import {
+  CreateReminderDtoFromJSON,
+  CreateReminderDtoToJSON,
+  ManyReminderResponseFromJSON,
+  ManyReminderResponseToJSON,
+  OneReminderResponseFromJSON,
+  OneReminderResponseToJSON,
+} from '../models/index';
 
 export interface RemindersControllerCreateReminderV1Request {
   missionId: string;
+  createReminderDto: CreateReminderDto;
 }
 
 export interface RemindersControllerGetDueRemindersV1Request {
@@ -41,7 +51,7 @@ export class RemindersApi extends runtime.BaseAPI {
   async remindersControllerCreateReminderV1Raw(
     requestParameters: RemindersControllerCreateReminderV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<OneReminderResponse>> {
     if (requestParameters['missionId'] == null) {
       throw new runtime.RequiredError(
         'missionId',
@@ -49,9 +59,18 @@ export class RemindersApi extends runtime.BaseAPI {
       );
     }
 
+    if (requestParameters['createReminderDto'] == null) {
+      throw new runtime.RequiredError(
+        'createReminderDto',
+        'Required parameter "createReminderDto" was null or undefined when calling remindersControllerCreateReminderV1().',
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
 
     const response = await this.request(
       {
@@ -62,11 +81,12 @@ export class RemindersApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
+        body: CreateReminderDtoToJSON(requestParameters['createReminderDto']),
       },
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => OneReminderResponseFromJSON(jsonValue));
   }
 
   /**
@@ -74,8 +94,9 @@ export class RemindersApi extends runtime.BaseAPI {
   async remindersControllerCreateReminderV1(
     requestParameters: RemindersControllerCreateReminderV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.remindersControllerCreateReminderV1Raw(requestParameters, initOverrides);
+  ): Promise<OneReminderResponse> {
+    const response = await this.remindersControllerCreateReminderV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**
@@ -83,7 +104,7 @@ export class RemindersApi extends runtime.BaseAPI {
   async remindersControllerGetDueRemindersV1Raw(
     requestParameters: RemindersControllerGetDueRemindersV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<ManyReminderResponse>> {
     if (requestParameters['missionId'] == null) {
       throw new runtime.RequiredError(
         'missionId',
@@ -108,7 +129,7 @@ export class RemindersApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyReminderResponseFromJSON(jsonValue));
   }
 
   /**
@@ -116,8 +137,9 @@ export class RemindersApi extends runtime.BaseAPI {
   async remindersControllerGetDueRemindersV1(
     requestParameters: RemindersControllerGetDueRemindersV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.remindersControllerGetDueRemindersV1Raw(requestParameters, initOverrides);
+  ): Promise<ManyReminderResponse> {
+    const response = await this.remindersControllerGetDueRemindersV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**

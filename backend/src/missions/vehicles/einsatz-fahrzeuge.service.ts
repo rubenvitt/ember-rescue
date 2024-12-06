@@ -4,6 +4,7 @@ import { StatusService } from '@templates/status/status.service';
 import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
 import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
 import { EinsatzRepository } from '../schema/einsatz.repository';
+import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
@@ -57,6 +58,39 @@ export class EinsatzFahrzeugeService {
     await this.changeStatus(fahrzeugId, einsatzId, bearbeiterId, {
       statusCode: 3,
     });
+  }
+
+  async findAktiveFahrzeugeImEinsatz(
+    einsatzId: string,
+  ): Promise<FahrzeugOnEinsatzDto[]> {
+    const einsatz = await this.repository.findById(einsatzId);
+    return einsatz?.fahrzeuge.filter((fahrzeug) => !fahrzeug.einsatzende) || [];
+  }
+
+  async findVerfuegbareFahrzeuge(
+    einsatzId: string,
+  ): Promise<FahrzeugTemplate[]> {
+    // Aktive Fahrzeuge im Einsatz holen
+    const aktiveFahrzeuge = await this.findAktiveFahrzeugeImEinsatz(einsatzId);
+    const aktiveFahrzeugeOptas = new Set(
+      aktiveFahrzeuge.map((f) => f.fullOpta),
+    );
+
+    // Alle Templates und beendete Einsatzfahrzeuge holen
+    const [templates, einsatz] = await Promise.all([
+      this.fahrzeugeService.findAll(),
+      this.repository.findById(einsatzId),
+    ]);
+
+    const beendeteFahrzeuge =
+      einsatz?.fahrzeuge.filter((f) => f.einsatzende) || [];
+
+    // Kombiniere Templates und beendete Fahrzeuge, filtere aktive Fahrzeuge aus
+    const verfuegbareFahrzeuge = [...templates, ...beendeteFahrzeuge].filter(
+      (fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta),
+    );
+
+    return verfuegbareFahrzeuge;
   }
 
   async findFahrzeugeImEinsatz(param: {

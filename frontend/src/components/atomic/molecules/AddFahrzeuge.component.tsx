@@ -21,9 +21,7 @@ const RecommendedFahrzeug: React.FC<{ fahrzeug: any; onAdd: (id: string) => void
         </span>
         <span className="block min-w-0 flex-1">
           <span className="block truncate text-sm font-medium text-gray-900 dark:text-white">{fahrzeug.label}</span>
-          <span className="block truncate text-sm font-medium text-gray-600 dark:text-gray-400">
-            {fahrzeug.secondary}
-          </span>
+          <span className="block truncate text-sm font-medium text-gray-600 dark:text-gray-400">{fahrzeug.secondary}</span>
         </span>
       </span>
       <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center">
@@ -39,7 +37,7 @@ interface Props {
 
 export function AddFahrzeuge({ classNameContainer }: Props) {
   const empfohleneFahrzeuge = useRecommendedFahrzeuge({ maxResults: 6 });
-  const { addFahrzeugToEinsatz, fahrzeugeNichtImEinsatz, fahrzeugeImEinsatz, fahrzeuge } = useFahrzeuge();
+  const { addFahrzeugToEinsatz, fahrzeuge } = useFahrzeuge();
   const form = useForm<{ fahrzeug: string }>({
     onSubmit({ value }) {
       handleAddFahrzeug(value.fahrzeug);
@@ -48,45 +46,33 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
   });
 
   const fahrzeugeNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
-    return fahrzeugeNichtImEinsatz?.map((fahrzeug) => ({
+    return (fahrzeuge.data?.data.verfuegbareFahrzeuge ?? []).map((fahrzeug) => ({
       value: fahrzeug.id,
-      searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.optaFunktion?.label.toLowerCase(),
+      searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase(),
       label: (
         <div className="flex justify-between gap-4">
-          <span className="flex-shrink-0 truncate">{fahrzeug.funkrufname}</span>
-          <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-            {fahrzeug.optaFunktion?.label}
-          </span>
+          <span className="flex-shrink-0 truncate">{fahrzeug.optaFunktion}</span>
+          <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
         </div>
       ),
       item: fahrzeug,
     }));
-  }, [fahrzeugeNichtImEinsatz]);
+  }, [fahrzeuge.data]);
 
   const handleAddFahrzeug = useCallback(
-    async (fahrzeugId: string) => {
-      await addFahrzeugToEinsatz.mutateAsync({ fahrzeugId });
+    async (vehicleId: string) => {
+      await addFahrzeugToEinsatz.mutateAsync({ vehicleId });
     },
     [addFahrzeugToEinsatz],
   );
 
   return (
-    <div
-      className={twMerge('mx-auto max-w-md rounded-lg border border-primary-500 p-6 sm:max-w-3xl', classNameContainer)}
-    >
+    <div className={twMerge('mx-auto max-w-md rounded-lg border border-primary-500 p-6 sm:max-w-3xl', classNameContainer)}>
       <div className="mb-6 text-center">
-        {empfohleneFahrzeuge.length == 0 ? (
-          <PiEmpty className="mx-auto h-12 w-12 text-red-500" aria-hidden="true" />
-        ) : (
-          <PiShieldPlus className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
-        )}
-        <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900 dark:text-white">
-          Neue Fahrzeug disponieren
-        </h2>
-        {fahrzeugeImEinsatz.data?.length === 0 && (
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Dem Einsatz wurden noch keine Fahrzeuge zugewiesen. Jetzt Fahrzeuge zuweisen.
-          </p>
+        {empfohleneFahrzeuge.length == 0 ? <PiEmpty className="mx-auto h-12 w-12 text-red-500" aria-hidden="true" /> : <PiShieldPlus className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />}
+        <h2 className="mt-2 text-base font-semibold leading-6 text-gray-900 dark:text-white">Neue Fahrzeug disponieren</h2>
+        {fahrzeuge.data?.data.fahrzeugeImEinsatz.length === 0 && (
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Dem Einsatz wurden noch keine Fahrzeuge zugewiesen. Jetzt Fahrzeuge zuweisen.</p>
         )}
       </div>
 
@@ -130,9 +116,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         {empfohleneFahrzeuge.length > 0 ? (
           <>
             <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {empfohleneFahrzeuge?.map((fahrzeug) => (
-                <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
-              ))}
+              {empfohleneFahrzeuge?.map((fahrzeug) => <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />)}
             </ul>
           </>
         ) : (

@@ -13,6 +13,8 @@
  */
 
 import * as runtime from '../runtime';
+import type { MetaResponse } from '../models/index';
+import { MetaResponseFromJSON, MetaResponseToJSON } from '../models/index';
 
 /**
  *
@@ -22,7 +24,7 @@ export class MetaApi extends runtime.BaseAPI {
    */
   async metaControllerGetMetaV1Raw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<MetaResponse>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -37,12 +39,13 @@ export class MetaApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => MetaResponseFromJSON(jsonValue));
   }
 
   /**
    */
-  async metaControllerGetMetaV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-    await this.metaControllerGetMetaV1Raw(initOverrides);
+  async metaControllerGetMetaV1(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetaResponse> {
+    const response = await this.metaControllerGetMetaV1Raw(initOverrides);
+    return await response.value();
   }
 }

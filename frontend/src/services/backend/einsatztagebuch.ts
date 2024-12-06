@@ -1,43 +1,56 @@
-import { backendFetchJson } from '../../utils/http.js';
-import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
-import { CreateEinsatztagebuchEintrag, EinsatztagebuchEintrag } from '../../types/app/einsatztagebuch.types.js';
+import { getAPIConfig } from '../../utils/http.js';
+import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
+import { CreateJournalEntryDto, JournalApi } from '@ember-rescue/shared/client/index.js';
 
-// Export des queryKey
 export const queryKey = 'einsatztagebuch';
-
-// Invalidate Queries Funktion
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
+
+const api = new JournalApi(getAPIConfig());
 
 // GET All EinsatztagebuchEinträge
 export const fetchAllEinsatztagebuchEintraege = {
-  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId],
-  queryFn: function () {
-    return backendFetchJson<EinsatztagebuchEintrag[]>('einsatztagebuch');
-  },
+  queryKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId],
+  queryFn: ({ missionId }: { missionId: string | null }) =>
+    function () {
+      if (!missionId) {
+        throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
+      }
+      return api.journalControllerGetJournalV1({
+        missionId,
+      });
+    },
 };
 
 // POST New EinsatztagebuchEintrag
 export const createEinsatztagebuchEintrag = {
-  mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
-  mutationFn: async (einsatztagebuchEintrag: CreateEinsatztagebuchEintrag) => {
-    return await backendFetchJson<EinsatztagebuchEintrag>('/einsatztagebuch', {
-      method: 'POST',
-      body: JSON.stringify(einsatztagebuchEintrag),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  },
+  mutationKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'add'],
+  mutationFn:
+    ({ missionId }: { missionId: string | null }) =>
+    async (createJournalEntryDto: CreateJournalEntryDto) => {
+      if (!missionId) {
+        throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
+      }
+      return api.journalControllerCreateJournalEntryV1({
+        missionId,
+        createJournalEntryDto,
+      });
+    },
 };
 
 // POST Archive EinsatztagebuchEintrag
 export const archiveEinsatztagebuchEintrag = {
-  mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'archive'],
-  mutationFn: async ({ einsatztagebuchEintragId }: { einsatztagebuchEintragId: string }) => {
-    requireParams(einsatztagebuchEintragId);
-    return await backendFetchJson(`/einsatztagebuch/${einsatztagebuchEintragId}/archive`, {
-      method: 'POST',
-    });
-  },
+  mutationKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'archive'],
+  mutationFn:
+    ({ missionId }: { missionId: string | null }) =>
+    async ({ entryId }: { entryId: string }) => {
+      if (!missionId) {
+        throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
+      }
+
+      return api.journalControllerArchiveJournalEntryV1({
+        missionId,
+        id: entryId,
+      });
+    },
 };

@@ -13,14 +13,25 @@
  */
 
 import * as runtime from '../runtime';
+import type { AddVehicleToMissionDto, ChangeStatusDto, VehiclesResponse } from '../models/index';
+import {
+  AddVehicleToMissionDtoFromJSON,
+  AddVehicleToMissionDtoToJSON,
+  ChangeStatusDtoFromJSON,
+  ChangeStatusDtoToJSON,
+  VehiclesResponseFromJSON,
+  VehiclesResponseToJSON,
+} from '../models/index';
 
 export interface EinsatzFahrzeugeControllerAddFahrzeugToEinsatzV1Request {
   einsatzId: string;
+  addVehicleToMissionDto: AddVehicleToMissionDto;
 }
 
 export interface EinsatzFahrzeugeControllerChangeStatusV1Request {
   einsatzId: string;
   fahrzeugId: string;
+  changeStatusDto: ChangeStatusDto;
 }
 
 export interface EinsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Request {
@@ -49,9 +60,18 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       );
     }
 
+    if (requestParameters['addVehicleToMissionDto'] == null) {
+      throw new runtime.RequiredError(
+        'addVehicleToMissionDto',
+        'Required parameter "addVehicleToMissionDto" was null or undefined when calling einsatzFahrzeugeControllerAddFahrzeugToEinsatzV1().',
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
 
     const response = await this.request(
       {
@@ -62,6 +82,7 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
+        body: AddVehicleToMissionDtoToJSON(requestParameters['addVehicleToMissionDto']),
       },
       initOverrides,
     );
@@ -98,9 +119,18 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       );
     }
 
+    if (requestParameters['changeStatusDto'] == null) {
+      throw new runtime.RequiredError(
+        'changeStatusDto',
+        'Required parameter "changeStatusDto" was null or undefined when calling einsatzFahrzeugeControllerChangeStatusV1().',
+      );
+    }
+
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
 
     const response = await this.request(
       {
@@ -110,6 +140,7 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
+        body: ChangeStatusDtoToJSON(requestParameters['changeStatusDto']),
       },
       initOverrides,
     );
@@ -131,7 +162,7 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
   async einsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Raw(
     requestParameters: EinsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<VehiclesResponse>> {
     if (requestParameters['einsatzId'] == null) {
       throw new runtime.RequiredError(
         'einsatzId',
@@ -156,7 +187,7 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => VehiclesResponseFromJSON(jsonValue));
   }
 
   /**
@@ -164,8 +195,9 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
   async einsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1(
     requestParameters: EinsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.einsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Raw(requestParameters, initOverrides);
+  ): Promise<VehiclesResponse> {
+    const response = await this.einsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**

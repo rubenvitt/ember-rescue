@@ -50,7 +50,7 @@ export function NotizenListItem({ notiz }: Props) {
           <Tooltip title="Erinnerung anlegen">
             <Button
               onClick={() => {
-                actualCreateReminder(notiz.id);
+                actualCreateReminder(notiz);
               }}
               key="list-loadmore-more"
               icon={<PiClock />}
@@ -85,9 +85,7 @@ export function NotizenListItem({ notiz }: Props) {
               <p>
                 <span>{notiz.bearbeiter.name}</span>
                 <span className="text-gray-500"> (erstellt: {formatNatoDateTime(notiz.createdAt)})</span>
-                {notiz.doneAt && (
-                  <span className="text-primary-500/50"> (abgeschlossen: {formatNatoDateTime(notiz.doneAt)})</span>
-                )}
+                {notiz.doneAt && <span className="text-primary-500/50"> (abgeschlossen: {formatNatoDateTime(notiz.doneAt)})</span>}
               </p>
             }
           />

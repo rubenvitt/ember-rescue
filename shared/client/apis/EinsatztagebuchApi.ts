@@ -13,8 +13,13 @@
  */
 
 import * as runtime from '../runtime';
-import type { CreateEinsatztagebuchDto } from '../models/index';
-import { CreateEinsatztagebuchDtoFromJSON, CreateEinsatztagebuchDtoToJSON } from '../models/index';
+import type { CreateJournalEntryDto, JournalResponse } from '../models/index';
+import {
+  CreateJournalEntryDtoFromJSON,
+  CreateJournalEntryDtoToJSON,
+  JournalResponseFromJSON,
+  JournalResponseToJSON,
+} from '../models/index';
 
 export interface EinsatztagebuchControllerArchiveEinsatztagebuchEintragV1Request {
   id: string;
@@ -23,11 +28,10 @@ export interface EinsatztagebuchControllerArchiveEinsatztagebuchEintragV1Request
 
 export interface EinsatztagebuchControllerCreateEinsatztagebuchEintragV1Request {
   missionId: string;
-  createEinsatztagebuchDto: CreateEinsatztagebuchDto;
+  createJournalEntryDto: CreateJournalEntryDto;
 }
 
 export interface EinsatztagebuchControllerGetEinsatztagebuchV1Request {
-  bearbeiter: string;
   missionId: string;
 }
 
@@ -96,10 +100,10 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters['createEinsatztagebuchDto'] == null) {
+    if (requestParameters['createJournalEntryDto'] == null) {
       throw new runtime.RequiredError(
-        'createEinsatztagebuchDto',
-        'Required parameter "createEinsatztagebuchDto" was null or undefined when calling einsatztagebuchControllerCreateEinsatztagebuchEintragV1().',
+        'createJournalEntryDto',
+        'Required parameter "createJournalEntryDto" was null or undefined when calling einsatztagebuchControllerCreateEinsatztagebuchEintragV1().',
       );
     }
 
@@ -118,7 +122,7 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
-        body: CreateEinsatztagebuchDtoToJSON(requestParameters['createEinsatztagebuchDto']),
+        body: CreateJournalEntryDtoToJSON(requestParameters['createJournalEntryDto']),
       },
       initOverrides,
     );
@@ -140,14 +144,7 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
   async einsatztagebuchControllerGetEinsatztagebuchV1Raw(
     requestParameters: EinsatztagebuchControllerGetEinsatztagebuchV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    if (requestParameters['bearbeiter'] == null) {
-      throw new runtime.RequiredError(
-        'bearbeiter',
-        'Required parameter "bearbeiter" was null or undefined when calling einsatztagebuchControllerGetEinsatztagebuchV1().',
-      );
-    }
-
+  ): Promise<runtime.ApiResponse<JournalResponse>> {
     if (requestParameters['missionId'] == null) {
       throw new runtime.RequiredError(
         'missionId',
@@ -158,10 +155,6 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
-
-    if (requestParameters['bearbeiter'] != null) {
-      headerParameters['bearbeiter'] = String(requestParameters['bearbeiter']);
-    }
 
     const response = await this.request(
       {
@@ -176,7 +169,7 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => JournalResponseFromJSON(jsonValue));
   }
 
   /**
@@ -184,7 +177,8 @@ export class EinsatztagebuchApi extends runtime.BaseAPI {
   async einsatztagebuchControllerGetEinsatztagebuchV1(
     requestParameters: EinsatztagebuchControllerGetEinsatztagebuchV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.einsatztagebuchControllerGetEinsatztagebuchV1Raw(requestParameters, initOverrides);
+  ): Promise<JournalResponse> {
+    const response = await this.einsatztagebuchControllerGetEinsatztagebuchV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 }

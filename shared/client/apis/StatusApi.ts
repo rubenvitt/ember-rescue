@@ -13,9 +13,11 @@
  */
 
 import * as runtime from '../runtime';
+import type { ManyStatusDtoReponse } from '../models/index';
+import { ManyStatusDtoReponseFromJSON, ManyStatusDtoReponseToJSON } from '../models/index';
 
 export interface StatusControllerStatusV1Request {
-  code: number;
+  code?: number;
 }
 
 /**
@@ -55,14 +57,7 @@ export class StatusApi extends runtime.BaseAPI {
   async statusControllerStatusV1Raw(
     requestParameters: StatusControllerStatusV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    if (requestParameters['code'] == null) {
-      throw new runtime.RequiredError(
-        'code',
-        'Required parameter "code" was null or undefined when calling statusControllerStatusV1().',
-      );
-    }
-
+  ): Promise<runtime.ApiResponse<ManyStatusDtoReponse>> {
     const queryParameters: any = {};
 
     if (requestParameters['code'] != null) {
@@ -81,15 +76,16 @@ export class StatusApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyStatusDtoReponseFromJSON(jsonValue));
   }
 
   /**
    */
   async statusControllerStatusV1(
-    requestParameters: StatusControllerStatusV1Request,
+    requestParameters: StatusControllerStatusV1Request = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.statusControllerStatusV1Raw(requestParameters, initOverrides);
+  ): Promise<ManyStatusDtoReponse> {
+    const response = await this.statusControllerStatusV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 }

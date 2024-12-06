@@ -200,6 +200,10 @@ export class MissionCoreApi extends runtime.BaseAPI {
 
     const headerParameters: runtime.HTTPHeaders = {};
 
+    if (this.configuration && this.configuration.apiKey) {
+      headerParameters['bearbeiter'] = await this.configuration.apiKey('bearbeiter'); // Bearbeiter authentication
+    }
+
     const response = await this.request(
       {
         path: `/v1/missions/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(requestParameters['id']))),
