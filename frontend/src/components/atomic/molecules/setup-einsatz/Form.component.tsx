@@ -13,6 +13,7 @@ import { FormContentBox } from '../../organisms/form/FormContentBox.component.js
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { DatePicker, Select } from 'formik-antd';
 import { CreateMissionDto } from '@ember-rescue/shared/client/index.js';
+import { useOpta } from '../../../../hooks/opta.hook.js';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -65,27 +66,28 @@ const SetupEinsatzSchema = Yup.object<CreateMissionDto>().shape({
 
 export function NewSetupEinsatzForm() {
   // FIXME[ember-rescue-68](rubeen, 30.11.24): Use fahrzeugeTemplate
-  const { fahrzeuge } = useFahrzeuge();
+  const { templateFahrzeuge } = useFahrzeuge();
+  const { functionOpta } = useOpta();
   const { alarmstichworte } = useAlarmstichworte();
   const { createEinsatz, saveEinsatz } = useEinsatz();
   const navigate = useNavigate();
 
   const fahrzeugeItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return fahrzeuge.data?.data.verfuegbareFahrzeuge.map(
-      (fahrzeug) =>
-        ({
-          value: fahrzeug.fullOpta,
-          searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion.toLowerCase(),
-          label: (
-            <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
-            </div>
-          ),
-          item: fahrzeug,
-        }) as DefaultOptionType,
-    );
-  }, [fahrzeuge.data]);
+    return templateFahrzeuge.data?.data.map((fahrzeug) => {
+      let fahrzeugFunctionOpta = functionOpta.data?.data.find((opta) => opta.code === fahrzeug.opta.functionCode);
+      return {
+        value: fahrzeug.fullOpta,
+        searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeugFunctionOpta?.label.toLowerCase(),
+        label: (
+          <div className="flex justify-between gap-4">
+            <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
+            <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeugFunctionOpta?.label}</span>
+          </div>
+        ),
+        item: fahrzeug,
+      } as DefaultOptionType;
+    });
+  }, [templateFahrzeuge.data, functionOpta.data]);
 
   const alarmstichworteItems = useMemo<DefaultOptionType[] | undefined>(() => {
     return alarmstichworte.data?.data.map(
@@ -147,7 +149,7 @@ export function NewSetupEinsatzForm() {
               spellCheck={false}
               filterOption={(inputValue, option) => option?.searchString.includes(inputValue.toLowerCase())}
               options={fahrzeugeItems}
-              loading={fahrzeuge.isLoading}
+              loading={templateFahrzeuge.isLoading}
             />
           </InputWrapper>
         </FormContentBox>

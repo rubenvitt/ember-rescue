@@ -4,7 +4,9 @@ import {
   OrganisationId,
   VerwaltungsstufeId,
 } from 'taktische-zeichen-core';
-import { BaseOptaTemplate } from '@templates/opta/schemas/base-opta.schema';
+import { Opta } from '@templates/opta/schemas/opta.schema';
+import mongoose from 'mongoose';
+import { TemplateDocument } from '@core/database';
 
 // TODO: remove this:
 export type FahrzeugIconDefinitionDto = {
@@ -25,12 +27,19 @@ class FahrzeugIconDefinition {
 }
 
 @Schema({ timestamps: true, collection: 'fahrzeug-templates' })
-export class FahrzeugTemplate extends BaseOptaTemplate {
+export class FahrzeugTemplate extends TemplateDocument {
   @Prop({ required: true })
   fullOpta: string;
 
   @Prop()
   iconDefinition: FahrzeugIconDefinition;
+
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Opta',
+  })
+  opta: Opta;
 
   @Prop()
   kapazitaet?: number;

@@ -27,6 +27,7 @@ import { TemplateDocument } from '@core/database/base-documents';
 import { QualifikationenRepository } from '@templates/qualifications/qualifikationen.repository';
 import { StatusRepository } from '@templates/status/status.repository';
 import { EinsatzRepository } from '../../missions/schema/einsatz.repository';
+import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -46,6 +47,7 @@ export class SeedService implements OnModuleInit {
     private readonly qualifikationenRepository: QualifikationenRepository,
     private readonly statusRepository: StatusRepository,
     private readonly einsatzRepository: EinsatzRepository,
+    private readonly fahrzeugTemplateRepository: FahrzeugeRepository,
   ) {}
 
   async onModuleInit() {
@@ -125,6 +127,21 @@ export class SeedService implements OnModuleInit {
       });
     } catch (e) {
       this.logger.error('Error while seeding bearbeiter: ' + e.message);
+    }
+
+    if ((await this.fahrzeugTemplateRepository.count({})) === 0) {
+      this.logger.debug('🤖 Attempting to create a new Fahrzeug');
+      const opta = (
+        await this.optaRepository.findActive({}, {}, { limit: 1 })
+      )[0];
+      await this.fahrzeugTemplateRepository.create({
+        opta: opta,
+        fullOpta: opta.fullOpta,
+        kapazitaet: 2,
+      });
+      this.logger.log('✳️ Created new Fahrzeug');
+    } else {
+      this.logger.debug('🦘 Skipped: Fahrzeug already exists');
     }
 
     if (!(await this.einsatzRepository.anyActive())) {

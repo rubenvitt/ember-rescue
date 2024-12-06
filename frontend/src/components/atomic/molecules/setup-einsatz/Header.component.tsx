@@ -9,18 +9,12 @@ interface EinsatzHeaderProps {
 export const SetupEinsatzHeader: React.FC<EinsatzHeaderProps> = ({ einsatzOffen }) => {
   const { bearbeiter } = useBearbeiter();
   return (
-    <div className="flex w-full flex-col items-center bg-primary-800 dark:bg-primary-950">
-      <div className="flex w-full max-w-6xl gap-16 pb-12 pt-24">
+    <div data-tauri-drag-region className="flex w-full flex-col items-center bg-primary-800 dark:bg-primary-950">
+      <div data-tauri-drag-region className="flex w-full max-w-6xl gap-16 pb-12 pt-24">
         <div className="px-6 lg:px-8">
           <div className="mx-auto lg:mx-0">
             <h2 className="mt-2 flex items-center text-4xl font-bold tracking-tight text-white sm:text-6xl dark:text-gray-100">
-              <Image
-                src="/logo.png"
-                preview={false}
-                className="rounded-xl"
-                wrapperClassName="bg-green-500 w-24 rounded-xl"
-                alt="EmberRescue Logo"
-              />
+              <Image src="/logo.png" preview={false} className="rounded-xl" wrapperClassName="bg-green-500 w-24 rounded-xl" alt="EmberRescue Logo" />
               <span className="ml-4">EmberRescue</span>
             </h2>
             <div className="ml-28 mt-6 text-lg leading-8 text-white">

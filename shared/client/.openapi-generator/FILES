@@ -8,6 +8,7 @@ apis/MetaApi.ts
 apis/MissionCoreApi.ts
 apis/NinaApi.ts
 apis/NotizenApi.ts
+apis/OptaApi.ts
 apis/OptaSchemaApi.ts
 apis/QualifikationenApi.ts
 apis/RemindersApi.ts
@@ -27,12 +28,13 @@ models/CreateJournalEntryDto.ts
 models/CreateMissionDto.ts
 models/CreateNotizDto.ts
 models/CreateReminderDto.ts
+models/CreateUpdateFahrzeugDto.ts
 models/EinsatzAlarmstichwortDto.ts
 models/EinsatzNoteDto.ts
 models/FahrzeugTemplateDto.ts
 models/FahrzeugTypDto.ts
+models/FunctionOptaDto.ts
 models/IconDefinitionDto.ts
-models/ImportFahrzeugDto.ts
 models/ImportManyFahrzeugeDto.ts
 models/JournalDto.ts
 models/JournalEntryDto.ts
@@ -42,6 +44,7 @@ models/ManyBearbeiterResponse.ts
 models/ManyEinsatzAlarmstichwortDto.ts
 models/ManyFahrzeugTypResponse.ts
 models/ManyFahrzeugeTemplateResponse.ts
+models/ManyFunctionOptaTemplatesResponse.ts
 models/ManyMissionsResponse.ts
 models/ManyNoteResponse.ts
 models/ManyQualificationsResponse.ts
@@ -56,6 +59,7 @@ models/MyMultiApiResponse.ts
 models/OneBearbeiterResponse.ts
 models/OneMissionResponse.ts
 models/OneReminderResponse.ts
+models/OptaDto.ts
 models/QualificationDto.ts
 models/ReminderDto.ts
 models/SecretsDto.ts

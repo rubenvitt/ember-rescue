@@ -1,6 +1,7 @@
 import { ApiResponse } from '../../types';
 import { ApiProperty } from '@nestjs/swagger';
 import { FunctionGroup, OptaType } from '@templates/opta/constants';
+import { OptaDto } from '@templates/opta/dtos/opta.dto';
 
 export class IconDefinitionDto {
   @ApiProperty({ required: false })
@@ -14,6 +15,9 @@ export class IconDefinitionDto {
 export class FahrzeugTemplateDto {
   @ApiProperty()
   id: string;
+
+  @ApiProperty()
+  opta: OptaDto;
 
   @ApiProperty()
   fullOpta: string;
@@ -68,20 +72,20 @@ export class ManyFahrzeugTypResponse extends ApiResponse<FahrzeugTypDto[]> {
 //   iconDefinition: FahrzeugIconDefinitionDto;
 // }[];
 
-export class ImportFahrzeugDto {
+export class CreateUpdateFahrzeugDto {
   @ApiProperty({ required: false })
   _id?: string;
 
-  @ApiProperty({ required: true })
-  fullOpta: string;
+  @ApiProperty({ required: false })
+  opta: OptaDto;
 
   @ApiProperty({ required: false })
   iconDefinition: IconDefinitionDto;
 }
 
 export class ImportManyFahrzeugeDto {
-  @ApiProperty({ required: true, type: ImportFahrzeugDto, isArray: true })
-  items: ImportFahrzeugDto[];
+  @ApiProperty({ required: true, type: CreateUpdateFahrzeugDto, isArray: true })
+  items: CreateUpdateFahrzeugDto[];
 }
 
 export class ManyFahrzeugeTemplateResponse extends ApiResponse<

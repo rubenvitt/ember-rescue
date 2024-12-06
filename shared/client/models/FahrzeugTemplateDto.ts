@@ -13,6 +13,8 @@
  */
 
 import { mapValues } from '../runtime';
+import type { OptaDto } from './OptaDto';
+import { OptaDtoFromJSON, OptaDtoFromJSONTyped, OptaDtoToJSON, OptaDtoToJSONTyped } from './OptaDto';
 import type { IconDefinitionDto } from './IconDefinitionDto';
 import {
   IconDefinitionDtoFromJSON,
@@ -33,6 +35,12 @@ export interface FahrzeugTemplateDto {
    * @memberof FahrzeugTemplateDto
    */
   id: string;
+  /**
+   *
+   * @type {OptaDto}
+   * @memberof FahrzeugTemplateDto
+   */
+  opta: OptaDto;
   /**
    *
    * @type {string}
@@ -58,6 +66,7 @@ export interface FahrzeugTemplateDto {
  */
 export function instanceOfFahrzeugTemplateDto(value: object): value is FahrzeugTemplateDto {
   if (!('id' in value) || value['id'] === undefined) return false;
+  if (!('opta' in value) || value['opta'] === undefined) return false;
   if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   if (!('iconDefinition' in value) || value['iconDefinition'] === undefined) return false;
   if (!('kapazitaet' in value) || value['kapazitaet'] === undefined) return false;
@@ -74,6 +83,7 @@ export function FahrzeugTemplateDtoFromJSONTyped(json: any, ignoreDiscriminator:
   }
   return {
     id: json['id'],
+    opta: OptaDtoFromJSON(json['opta']),
     fullOpta: json['fullOpta'],
     iconDefinition: IconDefinitionDtoFromJSON(json['iconDefinition']),
     kapazitaet: json['kapazitaet'],
@@ -94,6 +104,7 @@ export function FahrzeugTemplateDtoToJSONTyped(
 
   return {
     id: value['id'],
+    opta: OptaDtoToJSON(value['opta']),
     fullOpta: value['fullOpta'],
     iconDefinition: IconDefinitionDtoToJSON(value['iconDefinition']),
     kapazitaet: value['kapazitaet'],

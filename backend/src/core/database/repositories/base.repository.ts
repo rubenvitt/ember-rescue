@@ -180,10 +180,18 @@ export abstract class BaseRepository<T extends Document>
   }
 
   // Method to find active (non-deleted) documents
-  async findActive(filterQuery: FilterQuery<T> = {}): Promise<T[]> {
-    return this.find({
-      ...filterQuery,
-      deletedAt: { $exists: false },
-    } as FilterQuery<T>);
+  async findActive(
+    filterQuery: FilterQuery<T> = {},
+    projection: AnyKeys<T> = {},
+    options: QueryOptions = {},
+  ): Promise<T[]> {
+    return this.find(
+      {
+        ...filterQuery,
+        deletedAt: { $exists: false },
+      } as FilterQuery<T>,
+      projection,
+      options,
+    );
   }
 }

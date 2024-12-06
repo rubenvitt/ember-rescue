@@ -2,7 +2,7 @@ import {
   isCurrentlyActiveFilter,
   ITemplate,
 } from '@templates/core/interfaces/template.interface';
-import { Document, FilterQuery, Model } from 'mongoose';
+import { AnyKeys, Document, FilterQuery, Model, QueryOptions } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { BaseRepository } from '@core/database/repositories/base.repository';
 
@@ -16,12 +16,16 @@ export abstract class TemplateRepository<
     super(model, loggername);
   }
 
-  async findActive(additionalFilter: FilterQuery<T> = {}): Promise<T[]> {
+  async findActive(
+    additionalFilter: FilterQuery<T> = {},
+    projection: AnyKeys<T> = {},
+    options: QueryOptions = {},
+  ): Promise<T[]> {
     const baseFilter = {
       ...isCurrentlyActiveFilter,
       ...additionalFilter,
     };
-    return super.findActive(baseFilter);
+    return super.findActive(baseFilter, projection, options);
   }
 
   async findActiveById(id: string): Promise<T> {

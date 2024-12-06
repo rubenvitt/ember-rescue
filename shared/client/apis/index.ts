@@ -10,6 +10,7 @@ export * from './MetaApi';
 export * from './MissionCoreApi';
 export * from './NinaApi';
 export * from './NotizenApi';
+export * from './OptaApi';
 export * from './OptaSchemaApi';
 export * from './QualifikationenApi';
 export * from './RemindersApi';

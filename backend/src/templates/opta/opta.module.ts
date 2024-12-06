@@ -13,6 +13,7 @@ import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.reposit
 import { DistrictOptaRepository } from '@templates/opta/repositories/district-opta.repository';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
 import { LocalCodeOptaRepository } from '@templates/opta/repositories/local-code-opta.repository';
+import { OptaController } from '@templates/opta/opta.controller';
 
 const repositories: Provider[] = [
   OptaRepository,
@@ -25,6 +26,7 @@ const repositories: Provider[] = [
 @Module({
   providers: [...repositories],
   exports: [...repositories],
+  controllers: [OptaController],
   imports: [
     SchemaModule,
     MongooseModule.forFeatureAsync([

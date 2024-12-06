@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ImportFahrzeugDto } from './ImportFahrzeugDto';
+import type { CreateUpdateFahrzeugDto } from './CreateUpdateFahrzeugDto';
 import {
-  ImportFahrzeugDtoFromJSON,
-  ImportFahrzeugDtoFromJSONTyped,
-  ImportFahrzeugDtoToJSON,
-  ImportFahrzeugDtoToJSONTyped,
-} from './ImportFahrzeugDto';
+  CreateUpdateFahrzeugDtoFromJSON,
+  CreateUpdateFahrzeugDtoFromJSONTyped,
+  CreateUpdateFahrzeugDtoToJSON,
+  CreateUpdateFahrzeugDtoToJSONTyped,
+} from './CreateUpdateFahrzeugDto';
 
 /**
  *
@@ -29,10 +29,10 @@ import {
 export interface ImportManyFahrzeugeDto {
   /**
    *
-   * @type {Array<ImportFahrzeugDto>}
+   * @type {Array<CreateUpdateFahrzeugDto>}
    * @memberof ImportManyFahrzeugeDto
    */
-  items: Array<ImportFahrzeugDto>;
+  items: Array<CreateUpdateFahrzeugDto>;
 }
 
 /**
@@ -52,7 +52,7 @@ export function ImportManyFahrzeugeDtoFromJSONTyped(json: any, ignoreDiscriminat
     return json;
   }
   return {
-    items: (json['items'] as Array<any>).map(ImportFahrzeugDtoFromJSON),
+    items: (json['items'] as Array<any>).map(CreateUpdateFahrzeugDtoFromJSON),
   };
 }
 
@@ -69,6 +69,6 @@ export function ImportManyFahrzeugeDtoToJSONTyped(
   }
 
   return {
-    items: (value['items'] as Array<any>).map(ImportFahrzeugDtoToJSON),
+    items: (value['items'] as Array<any>).map(CreateUpdateFahrzeugDtoToJSON),
   };
 }

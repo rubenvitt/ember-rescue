@@ -7,11 +7,13 @@ import {
   FahrzeugTemplateSchema,
 } from '@templates/vehicles/fahrzeug-template.schema';
 import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
+import { OptaModule } from '@templates/opta/opta.module';
 
 @Module({
   controllers: [FahrzeugeController],
   providers: [FahrzeugeService, FahrzeugeRepository],
   imports: [
+    OptaModule,
     MongooseModule.forFeature([
       {
         name: FahrzeugTemplate.name,
@@ -19,6 +21,6 @@ import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
       },
     ]),
   ],
-  exports: [FahrzeugeService],
+  exports: [FahrzeugeService, FahrzeugeRepository],
 })
 export class FahrzeugeModule {}

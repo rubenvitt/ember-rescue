@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEinsatz } from '../einsatz.hook.js';
 import { services } from '../../services/index.js';
-import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugTypResponse, type VehiclesResponse } from '@ember-rescue/shared/client/index.js';
+import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugeTemplateResponse, ManyFahrzeugTypResponse, type VehiclesResponse } from '@ember-rescue/shared/client/index.js';
 
 export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   const queryClient = useQueryClient();
@@ -14,6 +14,10 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   const fahrzeugeJson = useQuery<string>({
     queryKey: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryKey,
     queryFn: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryFn,
+  });
+  const templateFahrzeuge = useQuery<ManyFahrzeugeTemplateResponse>({
+    queryKey: services.backend.fahrzeuge.fetchAllTemplateFahrzeuge.queryKey,
+    queryFn: services.backend.fahrzeuge.fetchAllTemplateFahrzeuge.queryFn,
   });
 
   const fahrzeugeTypen = useQuery<ManyFahrzeugTypResponse>({
@@ -66,6 +70,7 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   return {
     fahrzeuge,
     fahrzeugeJson,
+    templateFahrzeuge,
     fahrzeugeTypen,
     patchFahrzeuge,
     addFahrzeugToEinsatz,

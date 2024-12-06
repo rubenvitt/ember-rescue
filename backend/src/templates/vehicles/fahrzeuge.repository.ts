@@ -1,9 +1,9 @@
 import { TemplateRepository } from '@templates/template.repository';
 import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { AnyKeys, FilterQuery, Model, QueryOptions } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { ImportFahrzeugDto } from '@templates/vehicles/fahrzeuge.dto';
+import { CreateUpdateFahrzeugDto } from '@templates/vehicles/fahrzeuge.dto';
 
 @Injectable()
 export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
@@ -14,7 +14,7 @@ export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
   }
 
   // TODO: refactor this
-  upsertMany(fahrzeuge: ImportFahrzeugDto[]) {
+  upsertMany(fahrzeuge: CreateUpdateFahrzeugDto[]) {
     return Promise.all(
       fahrzeuge.map(async ({ _id, ...fahrzeug }) => {
         return this.model.findByIdAndUpdate(_id, fahrzeug, {
@@ -23,5 +23,13 @@ export class FahrzeugeRepository extends TemplateRepository<FahrzeugTemplate> {
         });
       }),
     );
+  }
+
+  findActiveWithOpta(
+    filterQuery: FilterQuery<FahrzeugTemplate> = {},
+    projection: AnyKeys<FahrzeugTemplate> = {},
+    options: QueryOptions = {},
+  ) {
+    return this.model.find(filterQuery, projection, options).populate('opta');
   }
 }

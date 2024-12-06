@@ -37,6 +37,13 @@ export const fetchAllFahrzeugeJson = {
   },
 };
 
+export let fetchAllTemplateFahrzeuge = {
+  queryKey: [queryKey, 'template'],
+  queryFn: async function () {
+    return templateApi.fahrzeugeControllerFindAllV1();
+  },
+};
+
 export const postAddFahrzeugToEinsatz = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
   mutationFn:

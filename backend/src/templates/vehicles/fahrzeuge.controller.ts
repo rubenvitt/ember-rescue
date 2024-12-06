@@ -18,13 +18,17 @@ import {
   ManyFahrzeugeTemplateResponse,
   ManyFahrzeugTypResponse,
 } from '@templates/vehicles/fahrzeuge.dto';
+import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
 
 @Controller('templates/vehicles')
 @UseGuards(BearbeiterGuard)
 export class FahrzeugeController {
   private readonly logger = new Logger(FahrzeugeController.name);
 
-  constructor(private readonly fahrzeugeService: FahrzeugeService) {}
+  constructor(
+    private readonly fahrzeugeService: FahrzeugeService,
+    private readonly functionOptaRepository: FunctionOptaRepository,
+  ) {}
 
   @Get()
   @ApiOkResponse({
@@ -43,9 +47,12 @@ export class FahrzeugeController {
   /**
    * @deprecated
    */
-  findAllTypen() {
+  async findAllTypen() {
     // FIXME[ember-rescue-68](rubeen, 14.11.24): Typen sind jetzt OPTAs
-    return [];
+
+    const optas = await this.functionOptaRepository.findActive({});
+
+    return optas;
   }
 
   @Patch()
