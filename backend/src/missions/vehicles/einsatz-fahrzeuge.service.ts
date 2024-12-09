@@ -4,7 +4,9 @@ import { StatusService } from '@templates/status/status.service';
 import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
 import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
 import { EinsatzRepository } from '../schema/einsatz.repository';
-import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
+import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
+import { VehicleOnMissionDto } from './vehicle.dto';
+import { FahrzeugTemplateDto } from '@templates/vehicles/fahrzeuge.dto';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
@@ -15,6 +17,7 @@ export class EinsatzFahrzeugeService {
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly statusService: StatusService,
     private readonly repository: EinsatzRepository,
+    private readonly functionOptaRepository: FunctionOptaRepository,
   ) {}
 
   async addFahrzeugToEinsatz(
@@ -62,14 +65,26 @@ export class EinsatzFahrzeugeService {
 
   async findAktiveFahrzeugeImEinsatz(
     einsatzId: string,
-  ): Promise<FahrzeugOnEinsatzDto[]> {
+  ): Promise<VehicleOnMissionDto[]> {
     const einsatz = await this.repository.findById(einsatzId);
-    return einsatz?.fahrzeuge.filter((fahrzeug) => !fahrzeug.einsatzende) || [];
+    // @ts-ignore FIXME
+    return (
+      einsatz?.fahrzeuge
+        .filter((fahrzeug) => !fahrzeug.einsatzende)
+        .map(async (fahrzeug) => ({
+          ...fahrzeug,
+          optaFunktion: (
+            await this.functionOptaRepository.findOne({
+              code: fahrzeug.opta.functionCode,
+            })
+          )?.label,
+        })) || []
+    );
   }
 
   async findVerfuegbareFahrzeuge(
     einsatzId: string,
-  ): Promise<FahrzeugTemplate[]> {
+  ): Promise<FahrzeugTemplateDto[]> {
     // Aktive Fahrzeuge im Einsatz holen
     const aktiveFahrzeuge = await this.findAktiveFahrzeugeImEinsatz(einsatzId);
     const aktiveFahrzeugeOptas = new Set(
@@ -86,9 +101,17 @@ export class EinsatzFahrzeugeService {
       einsatz?.fahrzeuge.filter((f) => f.einsatzende) || [];
 
     // Kombiniere Templates und beendete Fahrzeuge, filtere aktive Fahrzeuge aus
-    const verfuegbareFahrzeuge = [...templates, ...beendeteFahrzeuge].filter(
-      (fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta),
-    );
+    const verfuegbareFahrzeuge = [...templates, ...beendeteFahrzeuge]
+      .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
+      .map(async (fahrzeug) => ({
+        ...fahrzeug,
+        fullOpta: fahrzeug.fullOpta,
+        optaFunktion: (
+          await this.functionOptaRepository.findOne({
+            code: fahrzeug.opta.functionCode,
+          })
+        )?.label,
+      }));
 
     return verfuegbareFahrzeuge;
   }

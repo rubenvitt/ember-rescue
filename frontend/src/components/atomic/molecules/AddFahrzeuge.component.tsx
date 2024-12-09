@@ -48,10 +48,10 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
   const fahrzeugeNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
     return (fahrzeuge.data?.data.verfuegbareFahrzeuge ?? []).map((fahrzeug) => ({
       value: fahrzeug.id,
-      searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase(),
+      searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase?.(),
       label: (
         <div className="flex justify-between gap-4">
-          <span className="flex-shrink-0 truncate">{fahrzeug.optaFunktion}</span>
+          <span className="flex-shrink-0 truncate">{fahrzeug.optaFunktion?.toLowerCase?.()}</span>
           <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
         </div>
       ),

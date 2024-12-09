@@ -4,6 +4,7 @@ import { Bearbeiter } from './bearbeiter.schema';
 import { Model } from 'mongoose';
 
 import { BearbeiterDto } from './bearbeiter.dto';
+import { CacheKey } from '@nestjs/cache-manager';
 
 @Injectable()
 export class BearbeiterCoreService {
@@ -48,6 +49,7 @@ export class BearbeiterCoreService {
     return bearbeiter;
   }
 
+  @CacheKey('bearbeiter')
   async findOne(name: string) {
     this.logger.log(`BearbeiterController.findOne() ${name}`);
     let bearbeiter = await this.bearbeiterModel

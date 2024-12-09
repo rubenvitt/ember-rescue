@@ -15,7 +15,7 @@ const api = new RemindersApi(getAPIConfig());
 export const fetchDueReminders = {
   queryKey: (props: { einsatzId: unknown }) => [queryKey, ...[Object.values(props)], 'due'],
   queryFn: function () {
-    let missionId = storage().readLocalStorage<string>('einsatz');
+    let missionId = storage().readLocalStorage<string>('mission');
     if (!missionId) {
       throw new Error('No missionId found in local storage. Please login and select a mission before fetching reminders.');
     }

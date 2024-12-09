@@ -13,7 +13,8 @@ export function useEinsatz() {
       return services.backend.einsatze.fetchSingleEinsatz
         .queryFn({ einsatzId: missionId })
         .then((einsatz) => einsatz.data ?? Promise.reject())
-        .catch(() => {
+        .catch((reason) => {
+          console.error('error fetching einsatz', reason);
           removeEinsatz();
           return null;
         });

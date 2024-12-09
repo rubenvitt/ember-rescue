@@ -27,7 +27,7 @@ export abstract class BaseRepository<T extends Document>
   }
 
   async findById(id: string): Promise<T | null> {
-    return await this.model.findById(id).exec();
+    return this.model.findById(id);
   }
 
   async findOne(filterQuery: FilterQuery<T>): Promise<T | null> {
@@ -45,7 +45,7 @@ export abstract class BaseRepository<T extends Document>
     options?: QueryOptions,
   ): Promise<T[]> {
     try {
-      return await this.model.find(filterQuery, projection, options).exec();
+      return await this.model.find(filterQuery, projection, options);
     } catch (error) {
       this.logger.error(`Error finding documents: ${error.message}`);
       throw error;

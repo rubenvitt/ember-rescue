@@ -13,12 +13,14 @@
  */
 
 import * as runtime from '../runtime';
-import type { CreateNotizDto, ManyNoteResponse } from '../models/index';
+import type { CreateNotizDto, ManyNoteResponse, OneNoteResponse } from '../models/index';
 import {
   CreateNotizDtoFromJSON,
   CreateNotizDtoToJSON,
   ManyNoteResponseFromJSON,
   ManyNoteResponseToJSON,
+  OneNoteResponseFromJSON,
+  OneNoteResponseToJSON,
 } from '../models/index';
 
 export interface NotizenControllerCompleteNotizV1Request {
@@ -104,7 +106,7 @@ export class NotizenApi extends runtime.BaseAPI {
   async notizenControllerCreateNotizV1Raw(
     requestParameters: NotizenControllerCreateNotizV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
+  ): Promise<runtime.ApiResponse<OneNoteResponse>> {
     if (requestParameters['missionId'] == null) {
       throw new runtime.RequiredError(
         'missionId',
@@ -139,7 +141,7 @@ export class NotizenApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    return new runtime.VoidApiResponse(response);
+    return new runtime.JSONApiResponse(response, (jsonValue) => OneNoteResponseFromJSON(jsonValue));
   }
 
   /**
@@ -147,8 +149,9 @@ export class NotizenApi extends runtime.BaseAPI {
   async notizenControllerCreateNotizV1(
     requestParameters: NotizenControllerCreateNotizV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.notizenControllerCreateNotizV1Raw(requestParameters, initOverrides);
+  ): Promise<OneNoteResponse> {
+    const response = await this.notizenControllerCreateNotizV1Raw(requestParameters, initOverrides);
+    return await response.value();
   }
 
   /**

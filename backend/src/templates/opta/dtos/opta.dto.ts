@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class OptaDto {
   @ApiProperty({ required: true })
-  id: string;
+  id?: string;
 
   @ApiProperty({ required: false })
   district?: string;

@@ -3,15 +3,28 @@ import storage from './storage.js';
 import { isTauri } from '@tauri-apps/api/core';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 import { Bearbeiter } from '../types/app/bearbeiter.types.js';
-import { Configuration } from '@ember-rescue/shared/client';
+import { Configuration, FetchParams, RequestContext } from '@ember-rescue/shared/client';
 
 export function getAPIConfig(): Configuration {
   return new Configuration({
     basePath: storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000',
     fetchApi: tauriFetch,
-    headers: {
-      bearbeiter: storage().readLocalStorage<Bearbeiter>('bearbeiter')?.name ?? '',
-    },
+    middleware: [
+      {
+        pre(context: RequestContext): Promise<FetchParams | void> {
+          return Promise.resolve({
+            url: context.url,
+            init: {
+              ...context.init,
+              headers: {
+                ...context.init.headers,
+                bearbeiter: storage().readLocalStorage<Bearbeiter>('bearbeiter')?.name ?? '',
+              },
+            },
+          });
+        },
+      },
+    ],
     apiKey: () => storage().readLocalStorage<string>('backendAccessToken') ?? '',
   });
 }
@@ -56,7 +69,7 @@ async function makeRequest(
 ) {
   const baseUrl = storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000';
   const bearbeiter = storage().readLocalStorage<Bearbeiter>('bearbeiter');
-  const einsatzId = storage().readLocalStorage<string>('einsatz');
+  const einsatzId = storage().readLocalStorage<string>('mission');
   const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
   const additionalHeaders: { Bearbeiter?: string; Einsatz?: string; Authorization?: string } = {};
 

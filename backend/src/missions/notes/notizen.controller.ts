@@ -15,7 +15,7 @@ import { BearbeiterDto } from '../../types';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 import { ApiBody, ApiOkResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { CreateNotizDto, ManyNoteResponse } from './notes.dto';
+import { CreateNotizDto, ManyNoteResponse, OneNoteResponse } from './notes.dto';
 
 @Controller(`/missions/:missionId/notes`)
 @UseGuards(BearbeiterGuard)
@@ -53,6 +53,7 @@ export class NotizenController {
   @Post()
   @ApiOkResponse({
     description: 'Create new notiz',
+    type: OneNoteResponse,
   })
   @ApiParam({
     name: 'missionId',
@@ -72,7 +73,7 @@ export class NotizenController {
     this.logger.log('Creating new notiz', { notizDto });
     return this.notizenService.createNotiz({
       einsatzId,
-      bearbeiterId: bearbeiter.name,
+      bearbeiterName: bearbeiter.name,
       notizDto,
     });
   }
@@ -105,7 +106,7 @@ export class NotizenController {
   ) {
     this.logger.log('Update notiz', { notizDto, notizId });
     return await this.notizenService.updateNotiz({
-      bearbeiterId: bearbeiter.name,
+      bearbeiterName: bearbeiter.name,
       einsatzId,
       notizDto,
       notizId,

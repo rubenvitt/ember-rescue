@@ -13,12 +13,32 @@
  */
 
 import { mapValues } from '../runtime';
+import type { BearbeiterDto } from './BearbeiterDto';
+import {
+  BearbeiterDtoFromJSON,
+  BearbeiterDtoFromJSONTyped,
+  BearbeiterDtoToJSON,
+  BearbeiterDtoToJSONTyped,
+} from './BearbeiterDto';
+
 /**
  *
  * @export
  * @interface EinsatzNoteDto
  */
 export interface EinsatzNoteDto {
+  /**
+   *
+   * @type {string}
+   * @memberof EinsatzNoteDto
+   */
+  id: string;
+  /**
+   *
+   * @type {BearbeiterDto}
+   * @memberof EinsatzNoteDto
+   */
+  bearbeiter: BearbeiterDto;
   /**
    *
    * @type {string}
@@ -37,13 +57,22 @@ export interface EinsatzNoteDto {
    * @memberof EinsatzNoteDto
    */
   deletedAt?: Date;
+  /**
+   *
+   * @type {string}
+   * @memberof EinsatzNoteDto
+   */
+  createdAt: string;
 }
 
 /**
  * Check if a given object implements the EinsatzNoteDto interface.
  */
 export function instanceOfEinsatzNoteDto(value: object): value is EinsatzNoteDto {
+  if (!('id' in value) || value['id'] === undefined) return false;
+  if (!('bearbeiter' in value) || value['bearbeiter'] === undefined) return false;
   if (!('content' in value) || value['content'] === undefined) return false;
+  if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
   return true;
 }
 
@@ -56,9 +85,12 @@ export function EinsatzNoteDtoFromJSONTyped(json: any, ignoreDiscriminator: bool
     return json;
   }
   return {
+    id: json['_id'],
+    bearbeiter: BearbeiterDtoFromJSON(json['bearbeiter']),
     content: json['content'],
     doneAt: json['doneAt'] == null ? undefined : new Date(json['doneAt']),
     deletedAt: json['deletedAt'] == null ? undefined : new Date(json['deletedAt']),
+    createdAt: json['createdAt'],
   };
 }
 
@@ -72,8 +104,11 @@ export function EinsatzNoteDtoToJSONTyped(value?: EinsatzNoteDto | null, ignoreD
   }
 
   return {
+    _id: value['id'],
+    bearbeiter: BearbeiterDtoToJSON(value['bearbeiter']),
     content: value['content'],
     doneAt: value['doneAt'] == null ? undefined : value['doneAt'].toISOString(),
     deletedAt: value['deletedAt'] == null ? undefined : value['deletedAt'].toISOString(),
+    createdAt: value['createdAt'],
   };
 }

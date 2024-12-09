@@ -4,7 +4,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { CreateMissionDto, MissionCoreApi, SmallMissionDto, UpdateMissionDto } from '@ember-rescue/shared/client/index.js';
 
 // Export des queryKey
-export const queryKey = 'einsatz';
+export const queryKey = 'mission';
 
 // Invalidate Queries Funktion
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey, 'offeneEinsaetze'], queryClient);

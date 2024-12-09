@@ -13,8 +13,7 @@ import { addDays, addMinutes, formatISO } from 'date-fns';
 import dayjs from 'dayjs';
 import { natoDateTimeAnt } from '../utils/time.js';
 import * as Yup from 'yup';
-import { ManyReminderResponse } from '@ember-rescue/shared/client/index.js';
-import { NotizDto } from '../types/app/notes.types.js';
+import { EinsatzNoteDto, ManyReminderResponse } from '@ember-rescue/shared/client/index.js';
 
 const CreateReminderValidationSchema = Yup.object().shape({
   reminderTime: Yup.date()
@@ -25,27 +24,27 @@ const CreateReminderValidationSchema = Yup.object().shape({
 
 export function useReminders() {
   const queryClient = useQueryClient();
-  const { einsatzId } = useEinsatz();
+  const { missionId } = useEinsatz();
   const dueReminders = useQuery<ManyReminderResponse>({
-    queryKey: services.backend.reminders.fetchDueReminders.queryKey({ einsatzId }),
+    queryKey: services.backend.reminders.fetchDueReminders.queryKey({ einsatzId: missionId }),
     queryFn: services.backend.reminders.fetchDueReminders.queryFn,
     refetchInterval: 10000,
     refetchIntervalInBackground: true,
-    enabled: Boolean(einsatzId),
+    enabled: Boolean(missionId),
   });
   const markAsNotified = useMutation({
-    mutationKey: services.backend.reminders.postMarkNotified.mutationKey({ einsatzId }),
-    mutationFn: services.backend.reminders.postMarkNotified.mutationFn({ missionId: einsatzId }),
+    mutationKey: services.backend.reminders.postMarkNotified.mutationKey({ einsatzId: missionId }),
+    mutationFn: services.backend.reminders.postMarkNotified.mutationFn({ missionId: missionId }),
     onSuccess: services.backend.reminders.invalidateQueries(queryClient),
   });
   const markAsRead = useMutation({
-    mutationKey: services.backend.reminders.postMarkRead.mutationKey({ einsatzId }),
-    mutationFn: services.backend.reminders.postMarkRead.mutationFn({ missionId: einsatzId }),
+    mutationKey: services.backend.reminders.postMarkRead.mutationKey({ einsatzId: missionId }),
+    mutationFn: services.backend.reminders.postMarkRead.mutationFn({ missionId: missionId }),
     onSuccess: services.backend.reminders.invalidateQueries(queryClient),
   });
   const createReminder = useMutation({
-    mutationKey: services.backend.reminders.postNewReminder.mutationKey({ einsatzId }),
-    mutationFn: services.backend.reminders.postNewReminder.mutationFn({ missionId: einsatzId }),
+    mutationKey: services.backend.reminders.postNewReminder.mutationKey({ einsatzId: missionId }),
+    mutationFn: services.backend.reminders.postNewReminder.mutationFn({ missionId: missionId }),
     onSuccess: services.backend.reminders.invalidateQueries(queryClient),
   });
   const submitCreateReminder = useCallback(
@@ -61,7 +60,7 @@ export function useReminders() {
   );
 
   const actualCreateReminder = useMemo(() => {
-    return (note: NotizDto, props?: { onOk: () => unknown }) => {
+    return (note: EinsatzNoteDto, props?: { onOk: () => unknown }) => {
       console.log('creating reminder');
       Modal.confirm({
         icon: <PiNote size={24} />,
@@ -120,7 +119,8 @@ export function useReminders() {
   }, []);
 
   useEffect(() => {
-    if ((dueReminders.data?.meta.pagination.total ?? 0) > 0) {
+    //if ((dueReminders.data?.meta.pagination.total ?? 0) > 0) {
+    if (false) {
       dueReminders.data?.data.forEach((reminder) => {
         toast.info(
           <div>

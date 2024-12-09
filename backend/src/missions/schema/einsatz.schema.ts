@@ -55,6 +55,9 @@ export class FahrzeugOnEinsatz extends FahrzeugTemplate {
   status_history: StatusHistoryEntry[];
 }
 
+/**
+ * @deprecated
+ */
 export type FahrzeugOnEinsatzDto = {
   fullOpta: string;
   einsatzbeginn: Date;

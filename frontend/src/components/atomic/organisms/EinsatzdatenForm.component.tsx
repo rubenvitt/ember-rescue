@@ -225,7 +225,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
             // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
             // ort: einsatz.data.ort,
             einsatzleiter: { name: 'Peter Müller' },
-            ort: einsatz.data.einsatzMeta.ort,
+            ort: einsatz.data.einsatzMeta?.ort,
             timeframe: [einsatz.data.beginn, einsatz.data.ende].filter((time) => time) as [string, string],
           },
           onSubmit: (data) => {

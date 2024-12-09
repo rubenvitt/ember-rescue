@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { CreateNotizDto, NotizDto } from '../../../../types/app/notes.types.js';
 import { Button, Card } from 'antd';
 import { Input } from 'formik-antd';
 import { PiAlarm, PiNote } from 'react-icons/pi';
@@ -8,9 +7,10 @@ import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import { useReminders } from '../../../../hooks/reminders.hook.js';
 import { FormikHelpers } from 'formik/dist/types.js';
+import { CreateNotizDto, OneNoteResponse } from '@ember-rescue/shared/client/index.js';
 
 type EmptyStateProps = {
-  addNote: (note: CreateNotizDto) => Promise<NotizDto> | undefined;
+  addNote: (note: CreateNotizDto) => Promise<OneNoteResponse> | undefined;
 };
 
 const CreateNotizSchema = Yup.object().shape({
@@ -23,7 +23,7 @@ export function EmptyState({ addNote }: EmptyStateProps) {
     async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
       await addNote({ content: data.content })?.then((notiz) => {
         if (data.reminder) {
-          actualCreateReminder(notiz, {
+          actualCreateReminder(notiz.data, {
             onOk: formik.resetForm,
           });
         }

@@ -1,4 +1,3 @@
-import { NotizDto } from '../../../../types/app/notes.types.js';
 import { useCallback, useMemo, useState } from 'react';
 import { Formik, FormikProps } from 'formik';
 import { Button, List, Tooltip } from 'antd';
@@ -7,9 +6,10 @@ import { Input } from 'formik-antd';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
 import { formatNatoDateTime } from '../../../../utils/time.js';
 import { useReminders } from '../../../../hooks/reminders.hook.tsx';
+import { EinsatzNoteDto } from '@ember-rescue/shared/client/index.js';
 
 interface Props {
-  notiz: NotizDto;
+  notiz: EinsatzNoteDto;
 }
 
 interface _NotesListItemProps {

@@ -5,6 +5,7 @@ import { EinsatztagebuchModule } from '../journal/einsatztagebuch.module';
 import { StatusModule } from '@templates/status/status.module';
 import { FahrzeugeModule } from '@templates/vehicles/fahrzeuge.module';
 import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
+import { OptaModule } from '@templates/opta/opta.module';
 
 @Module({
   controllers: [EinsatzFahrzeugeController],
@@ -14,6 +15,7 @@ import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
     FahrzeugeModule,
     EinsatztagebuchModule,
     StatusModule,
+    OptaModule,
   ],
 })
 export class EinsatzFahrzeugeModule {}

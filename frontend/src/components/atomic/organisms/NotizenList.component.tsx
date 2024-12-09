@@ -1,13 +1,13 @@
-import { CreateNotizDto, NotizDto } from '../../../types/app/notes.types.js';
 import { useCallback } from 'react';
 import { List } from 'antd';
 import { NotizenListItem } from '../molecules/notes/NotesListItem.component.js';
 import { EmptyState } from '../molecules/notes/EmptyState.component.js';
 import { useReminders } from '../../../hooks/reminders.hook.tsx';
+import { CreateNotizDto, EinsatzNoteDto, OneNoteResponse } from '@ember-rescue/shared/client/index.js';
 
 interface NotesListProps {
-  notizen?: NotizDto[];
-  addNotiz?: (notiz: CreateNotizDto) => Promise<NotizDto>;
+  notizen?: EinsatzNoteDto[];
+  addNotiz?: (notiz: CreateNotizDto) => Promise<OneNoteResponse>;
   loading: boolean;
 }
 

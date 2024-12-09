@@ -41,6 +41,7 @@ export * from './MyApiResponse';
 export * from './MyMultiApiResponse';
 export * from './OneBearbeiterResponse';
 export * from './OneMissionResponse';
+export * from './OneNoteResponse';
 export * from './OneReminderResponse';
 export * from './OptaDto';
 export * from './QualificationDto';

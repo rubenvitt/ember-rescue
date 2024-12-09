@@ -9,9 +9,11 @@ import { useLocation, useNavigate } from '@tanstack/react-router';
 import { ConfigProvider, Menu } from 'antd';
 import { navigation } from '../../molecules/Navigation.js';
 
-export const SidebarContentComponent: React.FC<SidebarContentProps & {
-  isCollapsed?: boolean
-}> = ({ isCollapsed = false }) => {
+export const SidebarContentComponent: React.FC<
+  SidebarContentProps & {
+    isCollapsed?: boolean;
+  }
+> = ({ isCollapsed = false }) => {
   const openAdmin = useAppWindow({ appWindow: Windows.ADMIN, windowOptions: WindowOptions.admin });
   const openDocs = useAppWindow({ appWindow: Windows.DOCS, windowOptions: WindowOptions.docs });
   const navigate = useNavigate();
@@ -52,20 +54,11 @@ export const SidebarContentComponent: React.FC<SidebarContentProps & {
           },
         }}
       >
-        <div className={`flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950 ${
-          isCollapsed ? 'items-center' : ''
-        }`}>
+        <div className={`flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950 ${isCollapsed ? 'items-center' : ''}`}>
           <div className={isCollapsed ? 'hidden' : 'px-6 py-4'}>
             <EinsatzInfoComponent />
           </div>
-          <Menu
-            selectedKeys={[pathname]}
-            mode="inline"
-            items={navItems}
-            inlineCollapsed={isCollapsed}
-            style={menuStyle}
-            className={`border-none ${isCollapsed ? 'w-full' : ''}`}
-          />
+          <Menu selectedKeys={[pathname]} mode="inline" items={navItems} inlineCollapsed={isCollapsed} style={menuStyle} className={`border-none ${isCollapsed ? 'w-full' : ''}`} />
           <Menu
             className={`mt-auto border-none ${isCollapsed ? 'w-full' : ''}`}
             selectedKeys={[pathname]}

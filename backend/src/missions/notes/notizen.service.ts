@@ -1,63 +1,97 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateNotizDto, UpdateNotizDto } from '../../types';
 import { NotizenRepository } from './notizen.repository';
+import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class NotizenService {
   private readonly logger = new Logger(NotizenService.name);
 
-  constructor(private readonly repository: NotizenRepository) {}
+  constructor(
+    private readonly repository: NotizenRepository,
+    private readonly bearbeiterCoreService: BearbeiterCoreService,
+  ) {}
 
-  async findAllNotizen(einsatzId: string, bearbeiterId: string, done: boolean) {
-    return await this.repository.find(
+  async findAllNotizen(
+    einsatzId: string,
+    bearbeiterName: string,
+    done: boolean,
+  ) {
+    this.logger.log('Find all notizen for einsatz', einsatzId, bearbeiterName);
+
+    const result = await this.repository.model.aggregate([
       {
-        einsatz: einsatzId,
-        bearbeiter: bearbeiterId,
-        done: done ? { $ne: null } : null,
-        deleted: null,
-      },
-      null,
-      {
-        sort: {
-          done: -1,
-          createdAt: -1,
+        $lookup: {
+          from: 'bearbeiters',
+          localField: 'bearbeiter',
+          foreignField: '_id',
+          as: 'bearbeiterDetails',
         },
       },
-    );
+      {
+        $unwind: '$bearbeiterDetails',
+      },
+      {
+        $match: {
+          'bearbeiterDetails.name': 'Bearbeiter: rubeen',
+          einsatz: new mongoose.Types.ObjectId(einsatzId),
+          done: done ? { $ne: null } : null,
+          deleted: null,
+        },
+      },
+      {
+        $sort: {
+          doneAt: 1,
+        },
+      },
+    ]);
+    this.logger.log('Found notizen', result);
+
+    return result;
   }
 
-  createNotiz({
+  async createNotiz({
     einsatzId,
-    bearbeiterId,
+    bearbeiterName,
     notizDto,
   }: {
     einsatzId: string;
-    bearbeiterId: string;
+    bearbeiterName: string;
     notizDto: CreateNotizDto;
   }) {
-    return this.repository.create({
-      ...notizDto,
+    const bearbeiter = await this.bearbeiterCoreService.findOne(bearbeiterName);
+
+    this.logger.log('Create notiz for bearbeiter with id', bearbeiter?.id);
+
+    const saveResult = await this.repository.create({
       einsatz: einsatzId,
-      bearbeiter: bearbeiterId,
+      bearbeiter: bearbeiter,
+      bearbeiterId: bearbeiter?.id,
+      content: notizDto.content,
     });
+
+    return saveResult.populate('bearbeiter');
   }
 
   async updateNotiz({
-    bearbeiterId,
+    bearbeiterName,
     einsatzId,
     notizDto,
     notizId,
   }: {
-    bearbeiterId: string;
+    bearbeiterName: string;
     einsatzId: string;
     notizDto: UpdateNotizDto;
     notizId: string;
   }) {
+    const bearbeiter = await this.bearbeiterCoreService.findOne(bearbeiterName);
+
     return this.repository.findOneAndUpdate(
       {
         _id: notizId,
         einsatz: einsatzId,
-        bearbeiter: bearbeiterId,
+        bearbeiter: bearbeiter?.id,
       },
       {
         $set: {
@@ -71,27 +105,35 @@ export class NotizenService {
    *
    * @param _id
    * @param einsatz => einsatzId
-   * @param bearbeiter => bearbeiterId
+   * @param bearbeiterName => bearbeiterId
    */
-  async toggleCompleteNotiz(_id: string, einsatz: string, bearbeiter: string) {
+  async toggleCompleteNotiz(
+    _id: string,
+    einsatz: string,
+    bearbeiterName: string,
+  ) {
+    const bearbeiter = await this.bearbeiterCoreService.findOne(bearbeiterName);
+
     const notiz = await this.repository.findOne({
       _id,
       einsatz,
-      bearbeiter,
+      bearbeiter: bearbeiter?.id,
     });
 
     return this.repository.findOneAndUpdate(
-      { _id, einsatz, bearbeiter },
+      { _id, einsatz, bearbeiter: bearbeiter?.id },
       { $set: { doneAt: notiz?.doneAt ? null : new Date() } },
     );
   }
 
-  deleteNotiz(_id: string, einsatz: string, bearbeiter: string) {
+  async deleteNotiz(_id: string, einsatz: string, bearbeiterName: string) {
+    const bearbeiter = await this.bearbeiterCoreService.findOne(bearbeiterName);
+
     return this.repository.findOneAndUpdate(
       {
         _id,
         einsatz,
-        bearbeiter,
+        bearbeiter: bearbeiter?.id,
       },
       { $set: { deletedAt: new Date() } },
     );
