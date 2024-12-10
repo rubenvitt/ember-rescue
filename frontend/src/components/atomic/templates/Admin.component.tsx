@@ -8,6 +8,7 @@ import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
 import { OptaInput } from '../molecules/OptaInput.component.js';
 import { SettingsDto } from '@ember-rescue/shared/client/index.js';
+import { ButtonProps } from 'antd';
 
 const ApiCredentialsSchema = Yup.object().shape({
   mapboxApi: Yup.string()
@@ -18,6 +19,17 @@ const ApiCredentialsSchema = Yup.object().shape({
 export function AdminTemplate() {
   const { settings, save } = useSettings();
 
+  const buttons: { submit: ButtonProps; reset: ButtonProps } = {
+    submit: {
+      type: 'primary',
+      children: 'Speichern',
+      loading: save.isPending,
+    },
+    reset: {
+      type: 'default',
+      children: 'Formular zurücksetzen',
+    },
+  };
   if (!settings.isFetchedAfterMount || !settings.data) return null;
 
   return (
@@ -26,25 +38,15 @@ export function AdminTemplate() {
         type="sectioned"
         formik={{
           validationSchema: ApiCredentialsSchema,
-          onSubmit: (data) => save.mutate(data),
+          onSubmit: (data) => save.mutateAsync(data),
           initialValues: { mapboxApi: settings.data.data.mapboxApi ?? '' },
         }}
-        buttons={{
-          submit: {
-            type: 'primary',
-            children: 'Speichern',
-            loading: save.isPending,
-          },
-          reset: {
-            type: 'default',
-            children: 'Formular zurücksetzen',
-          },
-        }}
+        buttons={buttons}
       >
         <FormSection className="w-full" heading="API Keys" subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung.">
           <FormContentBox>
             <InputWrapper label="Mapbox Public API Key" name={'mapboxApi'}>
-              <Input.Password variant="filled" name="mapboxApi" />
+              <Input.Password rootClassName="dark:bg-gray-600/50" variant="filled" name="mapboxApi" />
             </InputWrapper>
           </FormContentBox>
         </FormSection>

@@ -50,7 +50,6 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
             loading={context.isSubmitting}
             onClick={async (event) => {
               await context.validateForm();
-              console.log('Hi hier bin ich', context.errors, context.values);
               submit?.onClick?.(event);
               return context.submitForm().then(() => {
                 if (resetOnSubmit) {
@@ -88,11 +87,7 @@ export function FormLayout<Values extends FormikValues = FormikValues, ExtraProp
       {(props: FormikProps<Values>) => (
         <Form {...form} className={twMerge(form?.className, styling({ type }))}>
           {typeof children === 'function' ? children(props) : children}
-          <SubmitButtons
-            buttonContainerClassName={type === 'sectioned' ? 'mt-4' : ''}
-            buttons={buttons ?? {}}
-            resetOnSubmit={resetOnSubmit}
-          />
+          <SubmitButtons buttonContainerClassName={type === 'sectioned' ? 'mt-4' : ''} buttons={buttons ?? {}} resetOnSubmit={resetOnSubmit} />
         </Form>
       )}
     </Formik>

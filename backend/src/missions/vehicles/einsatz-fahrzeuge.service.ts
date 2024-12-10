@@ -101,19 +101,19 @@ export class EinsatzFahrzeugeService {
       einsatz?.fahrzeuge.filter((f) => f.einsatzende) || [];
 
     // Kombiniere Templates und beendete Fahrzeuge, filtere aktive Fahrzeuge aus
-    const verfuegbareFahrzeuge = [...templates, ...beendeteFahrzeuge]
-      .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
-      .map(async (fahrzeug) => ({
-        ...fahrzeug,
-        fullOpta: fahrzeug.fullOpta,
-        optaFunktion: (
-          await this.functionOptaRepository.findOne({
-            code: fahrzeug.opta.functionCode,
-          })
-        )?.label,
-      }));
-
-    return verfuegbareFahrzeuge;
+    return await Promise.all(
+      [...templates, ...beendeteFahrzeuge]
+        .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
+        .map(async (fahrzeug) => ({
+          ...fahrzeug,
+          fullOpta: fahrzeug.fullOpta,
+          optaFunktion: (
+            await this.functionOptaRepository.findOne({
+              code: fahrzeug.opta.functionCode,
+            })
+          )?.label,
+        })),
+    );
   }
 
   async findFahrzeugeImEinsatz(param: {

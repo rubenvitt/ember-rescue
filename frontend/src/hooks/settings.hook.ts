@@ -12,8 +12,8 @@ export function useSettings() {
   const save = useMutation<unknown, unknown, SettingsDto>({
     mutationKey: services.backend.settings.saveSettings.mutationKey,
     mutationFn: services.backend.settings.saveSettings.mutationFn,
-    onSuccess: () => {
-      return Promise.all([services.backend.settings.invalidateQueries(queryClient), services.backend.fahrzeuge.invalidateQueries(queryClient)]);
+    onSuccess: async () => {
+      return await Promise.all([services.backend.settings.invalidateQueries(queryClient)(), services.backend.fahrzeuge.invalidateQueries(queryClient)()]);
     },
   });
 
