@@ -12,7 +12,7 @@ import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { Input, Select } from 'formik-antd';
 import dayjs from 'dayjs';
-import { JournalEntryDto } from '@ember-rescue/shared/client/index.js';
+import { JournalEntryDto } from '@bluelight-hub/shared/client/index.js';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();

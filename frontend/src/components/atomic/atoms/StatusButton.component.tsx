@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { statusLabel } from './StatusLabel.component.js';
 import { Button } from 'antd';
-import { StatusDto } from '@ember-rescue/shared/client/index.js';
+import { StatusDto } from '@bluelight-hub/shared/client/index.js';
 
 interface StatusButtonProps {
   onClick: (props: { statusId: string }) => unknown;

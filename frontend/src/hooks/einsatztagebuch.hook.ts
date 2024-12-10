@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
-import { CreateJournalEntryDto, JournalEntryResponse, JournalResponse } from '@ember-rescue/shared/client/index.js';
+import { CreateJournalEntryDto, JournalEntryResponse, JournalResponse } from '@bluelight-hub/shared/client/index.js';
 
 export function useEinsatztagebuch() {
   const { missionId } = useStore();

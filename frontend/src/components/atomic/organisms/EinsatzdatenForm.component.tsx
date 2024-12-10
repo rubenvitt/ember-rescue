@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import { Dayjs } from 'dayjs';
 import { RangeValue } from '../../../types/ui/inputs.types.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
-import { MissionDto, SecretsDto } from '@ember-rescue/shared/client/index.js';
+import { MissionDto, SecretsDto } from '@bluelight-hub/shared/client/index.js';
 
 interface Einsatzdaten {
   alarmstichwort: string;

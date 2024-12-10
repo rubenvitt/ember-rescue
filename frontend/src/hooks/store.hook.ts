@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import storage from '../utils/storage.js';
-import { BearbeiterDto, SmallMissionDto } from '@ember-rescue/shared/client/index.js';
+import { BearbeiterDto, SmallMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 type Store = {
   bearbeiter: BearbeiterDto | null;

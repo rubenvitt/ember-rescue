@@ -12,7 +12,7 @@ import { FormSection } from '../../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { DatePicker, Select } from 'formik-antd';
-import { CreateMissionDto } from '@ember-rescue/shared/client/index.js';
+import { CreateMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useOpta } from '../../../../hooks/opta.hook.js';
 
 // const AddressAutocomplete: React.FC = () => {

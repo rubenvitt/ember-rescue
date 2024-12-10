@@ -6,7 +6,7 @@ import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useStatus } from '../../../hooks/status.hook.js';
 import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
 import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
-import { StatusDto, VehicleOnMissionDto, VehiclesDto } from '@ember-rescue/shared/client/index.js';
+import { StatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
 
 interface FahrzeugelisteComponentProps {
   fahrzeuge?: VehiclesDto;

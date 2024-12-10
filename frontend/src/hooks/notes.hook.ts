@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 import { useEinsatz } from './einsatz.hook.js';
-import { CreateNotizDto, ManyNoteResponse, OneNoteResponse } from '@ember-rescue/shared/client/index.js';
+import { CreateNotizDto, ManyNoteResponse, OneNoteResponse } from '@bluelight-hub/shared/client/index.js';
 
 type Props = {
   notizId?: string;

@@ -1,7 +1,7 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { AlarmstichwortApi } from '@ember-rescue/shared/client/index.js';
+import { AlarmstichwortApi } from '@bluelight-hub/shared/client/index.js';
 
 // Export des queryKey
 export const queryKey = 'alarmstichwort';

@@ -13,7 +13,7 @@ import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
 import { MapLayerOptions } from './MapLayerOptions.component.tsx';
 import { WarningsOptions } from './WeatherOptions.component.js';
-import { NinaApi, VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
+import { NinaApi, VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 export const useMapStore = create<{
   map?: Map;

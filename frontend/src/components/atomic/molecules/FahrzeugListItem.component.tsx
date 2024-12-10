@@ -1,5 +1,5 @@
 import React from 'react';
-import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 interface FahrzeugListItemProps {
   fahrzeug: VehicleOnMissionDto;

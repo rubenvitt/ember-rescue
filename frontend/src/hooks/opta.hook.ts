@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ManyFunctionOptaTemplatesResponse } from '@ember-rescue/shared/client/index.js';
+import { ManyFunctionOptaTemplatesResponse } from '@bluelight-hub/shared/client/index.js';
 import { services } from '../services/index.js';
 
 export function useOpta() {

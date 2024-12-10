@@ -11,7 +11,7 @@ export function DefaultDashboard() {
   const navigate = useNavigate({ from: '/app/' });
 
   useWindowSetup({
-    title: 'Project Rescue',
+    title: 'Bluelight Hub',
     resizable: true,
     fullscreen: process.env.NODE_ENV !== 'development',
   });

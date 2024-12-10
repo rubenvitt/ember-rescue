@@ -1,7 +1,7 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { SecretsApi } from '@ember-rescue/shared/client/index.js';
+import { SecretsApi } from '@bluelight-hub/shared/client/index.js';
 
 type PossibleSecrets = 'mapboxApi';
 

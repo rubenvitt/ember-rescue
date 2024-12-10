@@ -3,7 +3,7 @@ import { List } from 'antd';
 import { NotizenListItem } from '../molecules/notes/NotesListItem.component.js';
 import { EmptyState } from '../molecules/notes/EmptyState.component.js';
 import { useReminders } from '../../../hooks/reminders.hook.tsx';
-import { CreateNotizDto, EinsatzNoteDto, OneNoteResponse } from '@ember-rescue/shared/client/index.js';
+import { CreateNotizDto, EinsatzNoteDto, OneNoteResponse } from '@bluelight-hub/shared/client/index.js';
 
 interface NotesListProps {
   notizen?: EinsatzNoteDto[];

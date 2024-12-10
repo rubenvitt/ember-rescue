@@ -82,7 +82,7 @@ export function FahrzeugTemplateDtoFromJSONTyped(json: any, ignoreDiscriminator:
     return json;
   }
   return {
-    id: json['id'],
+    id: json['_id'],
     opta: OptaDtoFromJSON(json['opta']),
     fullOpta: json['fullOpta'],
     iconDefinition: IconDefinitionDtoFromJSON(json['iconDefinition']),
@@ -103,7 +103,7 @@ export function FahrzeugTemplateDtoToJSONTyped(
   }
 
   return {
-    id: value['id'],
+    _id: value['id'],
     opta: OptaDtoToJSON(value['opta']),
     fullOpta: value['fullOpta'],
     iconDefinition: IconDefinitionDtoToJSON(value['iconDefinition']),

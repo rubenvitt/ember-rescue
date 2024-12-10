@@ -9,7 +9,7 @@ import { List, Tag } from 'antd';
 import { ExpandableListItem } from '../molecules/ExpandableListItem.component.js';
 import { listStyles } from '../../../styles/expandableList.styles.js';
 import { PiNetwork } from 'react-icons/pi';
-import { SmallMissionDto } from '@ember-rescue/shared/client/index.js';
+import { SmallMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 export const OffeneEinsaetzeList: React.FC = () => {
   const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
@@ -22,17 +22,14 @@ export const OffeneEinsaetzeList: React.FC = () => {
     return (
       <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
-          <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            Stichwort: {einsatz.einsatzAlarmstichwort.code}
-          </p>
+          <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Stichwort: {einsatz.einsatzAlarmstichwort.code}</p>
           <Tag icon={<PiNetwork className="mr-1 inline" />} color="blue">
             Remote-Einsatz
           </Tag>
         </div>
         <div className="mt-1 flex flex-col text-right text-xs leading-5 text-blue-800 dark:text-blue-300">
           <p>
-            Beginn: <time dateTime={formatISO(einsatz.beginn)}>{formatNatoDateTime(einsatz.beginn)}</time> (Laufzeit
-            bisher: {beginnToNow})
+            Beginn: <time dateTime={formatISO(einsatz.beginn)}>{formatNatoDateTime(einsatz.beginn)}</time> (Laufzeit bisher: {beginnToNow})
           </p>
         </div>
       </div>
@@ -61,8 +58,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
         danger: true,
         dialog: {
           title: 'Laufenden Einsatz wirklich archivieren?',
-          message:
-            'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
+          message: 'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
           confirmLabel: 'Einsatz archivieren',
           cancelLabel: 'Abbrechen',
           onConfirm: (einsatz) => einsatzAbschliessen.mutate(einsatz),
@@ -83,14 +79,7 @@ export const OffeneEinsaetzeList: React.FC = () => {
         className={listStyles()}
         itemLayout="horizontal"
         dataSource={offeneEinsaetze.data?.data}
-        renderItem={(item) => (
-          <ExpandableListItem
-            item={item}
-            renderContent={renderEinsatz}
-            renderExpandedContent={renderExpandedContent}
-            actionButtons={actionButtons}
-          />
-        )}
+        renderItem={(item) => <ExpandableListItem item={item} renderContent={renderEinsatz} renderExpandedContent={renderExpandedContent} actionButtons={actionButtons} />}
       />
     </>
   );

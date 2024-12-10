@@ -1,5 +1,5 @@
 {
-  "name": "@ember-rescue/backend",
+  "name": "@bluelight-hub/backend",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,7 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@ember-rescue/shared": "link:../shared",
+    "@bluelight-hub/shared": "link:../shared",
     "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.4.13",
     "@nestjs/config": "^3.3.0",

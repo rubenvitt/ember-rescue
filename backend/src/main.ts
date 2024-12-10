@@ -42,7 +42,7 @@ async function bootstrap() {
 
   const config = {
     ...new DocumentBuilder()
-      .setTitle('Project Rescue Backend API')
+      .setTitle('Bluelight Hub Backend API')
       .setVersion(process.env.VERSION || 'unknown')
       .addApiKey(
         {

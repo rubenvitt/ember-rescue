@@ -1,5 +1,5 @@
 {
-  "name": "@ember-rescue/frontend",
+  "name": "@bluelight-hub/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,7 +16,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@ember-rescue/shared": "link:../shared",
+    "@bluelight-hub/shared": "link:../shared",
     "@fontsource-variable/inter": "^5.1.0",
     "@fontsource-variable/montserrat": "^5.1.0",
     "@fontsource-variable/nunito": "^5.1.0",

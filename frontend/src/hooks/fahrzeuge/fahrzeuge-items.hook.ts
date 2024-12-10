@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useFahrzeuge } from './fahrzeuge.hook.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 interface Props {
   fahrzeuge?: VehicleOnMissionDto[];

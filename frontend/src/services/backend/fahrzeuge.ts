@@ -2,7 +2,7 @@ import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { FahrzeugDto } from '../../types/app/fahrzeug.types.js';
 import { QueryClient } from '@tanstack/react-query';
-import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, FahrzeugeApi, ImportManyFahrzeugeDto } from '@ember-rescue/shared/client/index.js';
+import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, FahrzeugeApi, ImportManyFahrzeugeDto } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
 

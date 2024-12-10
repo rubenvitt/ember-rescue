@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFahrzeuge } from './fahrzeuge.hook.js';
-import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 interface UseRecommendedFahrzeugeConfig {
   maxResults?: number;

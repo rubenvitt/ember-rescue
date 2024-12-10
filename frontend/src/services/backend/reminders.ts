@@ -1,7 +1,7 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { CreateReminderDto, RemindersApi } from '@ember-rescue/shared/client/index.js';
+import { CreateReminderDto, RemindersApi } from '@bluelight-hub/shared/client/index.js';
 import storage from '../../utils/storage.js';
 
 export const queryKey = 'reminders';

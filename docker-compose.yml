@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
       DB_USER: ${MONGO_USER:-user}
       DB_PASS: ${MONGO_PASSWORD:-pass}
-      MONGO_INITDB_DATABASE: ember-rescue
+      MONGO_INITDB_DATABASE: bluelight-hub
     volumes:
       - mongo:/data/db
       - ./backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro

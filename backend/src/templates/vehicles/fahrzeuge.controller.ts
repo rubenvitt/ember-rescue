@@ -14,6 +14,7 @@ import { Response } from 'express';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import {
+  FahrzeugTemplateDto,
   ImportManyFahrzeugeDto,
   ManyFahrzeugeTemplateResponse,
   ManyFahrzeugTypResponse,
@@ -35,7 +36,7 @@ export class FahrzeugeController {
     type: ManyFahrzeugeTemplateResponse,
     description: 'List of all vehicles (templates)',
   })
-  findAll() {
+  findAll(): Promise<FahrzeugTemplateDto[]> {
     return this.fahrzeugeService.findAll();
   }
 

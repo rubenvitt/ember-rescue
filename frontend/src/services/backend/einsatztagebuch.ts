@@ -1,7 +1,7 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { CreateJournalEntryDto, JournalApi } from '@ember-rescue/shared/client/index.js';
+import { CreateJournalEntryDto, JournalApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'einsatztagebuch';
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);

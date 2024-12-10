@@ -13,7 +13,7 @@ import { addDays, addMinutes, formatISO } from 'date-fns';
 import dayjs from 'dayjs';
 import { natoDateTimeAnt } from '../utils/time.js';
 import * as Yup from 'yup';
-import { EinsatzNoteDto, ManyReminderResponse } from '@ember-rescue/shared/client/index.js';
+import { EinsatzNoteDto, ManyReminderResponse } from '@bluelight-hub/shared/client/index.js';
 
 const CreateReminderValidationSchema = Yup.object().shape({
   reminderTime: Yup.date()

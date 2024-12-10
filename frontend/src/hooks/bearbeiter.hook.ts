@@ -2,12 +2,7 @@ import { useStore } from './store.hook.js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  BearbeiterDto,
-  CreateBearbeiterDto,
-  ManyBearbeiterResponse,
-  OneBearbeiterResponse,
-} from '@ember-rescue/shared/client/index.js';
+import { BearbeiterDto, CreateBearbeiterDto, ManyBearbeiterResponse, OneBearbeiterResponse } from '@bluelight-hub/shared/client/index.js';
 
 type Props = {
   requireBearbeiter?: boolean;

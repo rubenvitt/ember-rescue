@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { services } from '../services/index.js';
-import { SecretsDto } from '@ember-rescue/shared/client/index.js';
+import { SecretsDto } from '@bluelight-hub/shared/client/index.js';
 
 type PossibleSecrets = 'mapboxApi';
 

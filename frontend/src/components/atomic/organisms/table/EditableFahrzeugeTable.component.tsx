@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import { FormLayout } from '../form/FormLayout.comonent.js';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { OptaInputField } from '../../molecules/OptaInput.component.js';
-import { VehicleOnMissionDto } from '@ember-rescue/shared/client/index.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 type EditingStore = {
   id: null | string;
@@ -186,6 +186,7 @@ export function EditableFahrzeugeTable() {
   const cancel = useCallback(resetEditingId, [resetEditingId]);
 
   const editingFahrzeug = useMemo(() => {
+    console.log('getting editing fahrzeug', { id, fahrzeuge: fahrzeuge.data?.data.verfuegbareFahrzeuge }, { newFahrzeugTemplate });
     if (newFahrzeugTemplate.id === id) {
       return newFahrzeugTemplate;
     }

@@ -7,7 +7,7 @@ import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
 import { OptaInput } from '../molecules/OptaInput.component.js';
-import { SettingsDto } from '@ember-rescue/shared/client/index.js';
+import { SettingsDto } from '@bluelight-hub/shared/client/index.js';
 import { ButtonProps } from 'antd';
 
 const ApiCredentialsSchema = Yup.object().shape({

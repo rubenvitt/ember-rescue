@@ -1,7 +1,7 @@
 {
-  "productName": "project-rescue",
+  "productName": "bluelight-hub",
   "version": "0.0.0",
-  "identifier": "dev.rubeen.project-rescue",
+  "identifier": "dev.rubeen.bluelight-hub",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "[DEV] Project Rescue",
+        "title": "[DEV] Bluelight Hub",
         "width": 1600,
         "height": 1000
       }

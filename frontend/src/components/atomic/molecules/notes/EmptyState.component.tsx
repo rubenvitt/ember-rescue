@@ -7,7 +7,7 @@ import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import { useReminders } from '../../../../hooks/reminders.hook.js';
 import { FormikHelpers } from 'formik/dist/types.js';
-import { CreateNotizDto, OneNoteResponse } from '@ember-rescue/shared/client/index.js';
+import { CreateNotizDto, OneNoteResponse } from '@bluelight-hub/shared/client/index.js';
 
 type EmptyStateProps = {
   addNote: (note: CreateNotizDto) => Promise<OneNoteResponse> | undefined;

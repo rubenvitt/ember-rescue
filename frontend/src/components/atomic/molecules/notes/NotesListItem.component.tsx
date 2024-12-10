@@ -6,7 +6,7 @@ import { Input } from 'formik-antd';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
 import { formatNatoDateTime } from '../../../../utils/time.js';
 import { useReminders } from '../../../../hooks/reminders.hook.tsx';
-import { EinsatzNoteDto } from '@ember-rescue/shared/client/index.js';
+import { EinsatzNoteDto } from '@bluelight-hub/shared/client/index.js';
 
 interface Props {
   notiz: EinsatzNoteDto;

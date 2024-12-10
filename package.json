@@ -1,5 +1,5 @@
 {
-  "name": "project-rescue",
+  "name": "bluelight-hub",
   "private": true,
   "scripts": {
     "start-frontend": "pnpm --filter frontend tauri:dev",

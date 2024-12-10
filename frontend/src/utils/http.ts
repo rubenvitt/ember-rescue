@@ -3,7 +3,7 @@ import storage from './storage.js';
 import { isTauri } from '@tauri-apps/api/core';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 import { Bearbeiter } from '../types/app/bearbeiter.types.js';
-import { Configuration, FetchParams, RequestContext } from '@ember-rescue/shared/client';
+import { Configuration, FetchParams, RequestContext } from '@bluelight-hub/shared/client';
 
 export function getAPIConfig(): Configuration {
   return new Configuration({

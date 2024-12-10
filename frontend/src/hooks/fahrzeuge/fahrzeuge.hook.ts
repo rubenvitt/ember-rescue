@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEinsatz } from '../einsatz.hook.js';
 import { services } from '../../services/index.js';
-import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugeTemplateResponse, ManyFahrzeugTypResponse, type VehiclesResponse } from '@ember-rescue/shared/client/index.js';
+import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugeTemplateResponse, ManyFahrzeugTypResponse, type VehiclesResponse } from '@bluelight-hub/shared/client/index.js';
 
 export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   const queryClient = useQueryClient();

@@ -14,7 +14,7 @@ export class IconDefinitionDto {
 
 export class FahrzeugTemplateDto {
   @ApiProperty({ required: true })
-  id?: string;
+  _id?: string;
 
   @ApiProperty()
   opta: OptaDto;

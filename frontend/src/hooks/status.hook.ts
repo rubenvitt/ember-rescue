@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { services } from '../services/index.js';
-import { ManyStatusDtoReponse } from '@ember-rescue/shared/client/index.js';
+import { ManyStatusDtoReponse } from '@bluelight-hub/shared/client/index.js';
 
 export function useStatus() {
   const status = useQuery<ManyStatusDtoReponse>({

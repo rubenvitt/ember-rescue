@@ -2,7 +2,7 @@
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { Configuration, MetaApi } from '@ember-rescue/shared/client/index.js';
+import { Configuration, MetaApi } from '@bluelight-hub/shared/client/index.js';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 
 // Export des queryKey

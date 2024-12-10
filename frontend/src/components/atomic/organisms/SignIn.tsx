@@ -50,19 +50,8 @@ export const SignIn: React.FC = () => {
         />
       </div>
       <div className="flex flex-col sm:mx-auto sm:w-full sm:max-w-sm">
-        <Image
-          src="/logo.png"
-          preview={false}
-          wrapperClassName="bg-green-500 w-36 mx-auto h-36"
-          alt="EmberRescue Logo"
-        />
-        <h2
-          className={cva(
-            'mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white',
-          )()}
-        >
-          Project Rescue • Anmelden
-        </h2>
+        <Image src="/logo.png" preview={false} wrapperClassName="bg-green-500 w-36 mx-auto h-36" alt="EmberRescue Logo" />
+        <h2 className={cva('mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white')()}>Bluelight Hub • Anmelden</h2>
       </div>
       <div className={'mt-10 sm:mx-auto sm:w-full sm:max-w-sm'}>
         <LoginForm />
@@ -99,13 +88,7 @@ export const SignIn: React.FC = () => {
             title="Access Token"
           >
             <InputWrapper name="accessToken">
-              <Input.Password
-                ref={password}
-                autoFocus={true}
-                size="large"
-                placeholder="Access Token benötigt"
-                name="accessToken"
-              />
+              <Input.Password ref={password} autoFocus={true} size="large" placeholder="Access Token benötigt" name="accessToken" />
             </InputWrapper>
           </Modal>
         )}

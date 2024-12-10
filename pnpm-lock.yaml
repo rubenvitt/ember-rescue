@@ -32,7 +32,7 @@ importers:
 
   backend:
     dependencies:
-      '@ember-rescue/shared':
+      '@bluelight-hub/shared':
         specifier: link:../shared
         version: link:../shared
       '@nestjs/cache-manager':
@@ -180,7 +180,7 @@ importers:
 
   frontend:
     dependencies:
-      '@ember-rescue/shared':
+      '@bluelight-hub/shared':
         specifier: link:../shared
         version: link:../shared
       '@fontsource-variable/inter':
@@ -8726,7 +8726,7 @@ snapshots:
       '@babel/runtime': 7.26.0
       classnames: 2.5.1
       lodash: 4.17.21
-      rc-util: 5.43.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-util: 5.44.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
