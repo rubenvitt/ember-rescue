@@ -24,8 +24,8 @@ importers:
         specifier: ^14.0.1
         version: 14.0.1(semantic-release@24.2.0(typescript@5.6.3))
       pnpm:
-        specifier: ^9.12.3
-        version: 9.12.3
+        specifier: ^9.15.0
+        version: 9.15.0
       semantic-release:
         specifier: ^24.2.0
         version: 24.2.0(typescript@5.6.3)
@@ -945,8 +945,8 @@ packages:
     resolution: {integrity: sha512-C+VUP+8jis7EsQZIhDYmS5qlNtjv2yP4SNtjXK9AP1ZcTRlnSfuumaTnRfYZnYgUUYVIKqL0fRvmUGDV2fmp6g==}
     engines: {node: '>=4'}
 
-  pnpm@9.12.3:
-    resolution: {integrity: sha512-zOD53pxafJW++UQWnMXf6HQav7FFB4wNUIuGgFaEiofIHmJiRstglny9f9KabAYu9z/4QNlrPIbECsks9KgT7g==}
+  pnpm@9.15.0:
+    resolution: {integrity: sha512-duI3l2CkMo7EQVgVvNZije5yevN3mqpMkU45RBVsQpmSGon5djge4QfUHxLPpLZmgcqccY8GaPoIMe1MbYulbA==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -2100,7 +2100,7 @@ snapshots:
       find-up: 2.1.0
       load-json-file: 4.0.0
 
-  pnpm@9.12.3: {}
+  pnpm@9.15.0: {}
 
   pretty-ms@9.1.0:
     dependencies:
