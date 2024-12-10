@@ -50,7 +50,8 @@ export const SignIn: React.FC = () => {
         />
       </div>
       <div className="flex flex-col sm:mx-auto sm:w-full sm:max-w-sm">
-        <Image src="/logo.png" preview={false} wrapperClassName="bg-green-500 w-36 mx-auto h-36" alt="EmberRescue Logo" />
+        <Image src="/brandbook/mobile-white.png" preview={false} wrapperClassName="hidden dark:block w-36 mx-auto h-36" alt="Bluelight Hub Logo" />
+        <Image src="/brandbook/mobile-logo.png" preview={false} wrapperClassName="block dark:hidden w-36 mx-auto h-36" alt="Bluelight Hub Logo" />
         <h2 className={cva('mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white')()}>Bluelight Hub • Anmelden</h2>
       </div>
       <div className={'mt-10 sm:mx-auto sm:w-full sm:max-w-sm'}>

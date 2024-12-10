@@ -14,8 +14,8 @@ export const SetupEinsatzHeader: React.FC<EinsatzHeaderProps> = ({ einsatzOffen 
         <div className="px-6 lg:px-8">
           <div className="mx-auto lg:mx-0">
             <h2 className="mt-2 flex items-center text-4xl font-bold tracking-tight text-white sm:text-6xl dark:text-gray-100">
-              <Image src="/logo.png" preview={false} className="rounded-xl" wrapperClassName="bg-green-500 w-24 rounded-xl" alt="EmberRescue Logo" />
-              <span className="ml-4">EmberRescue</span>
+              <Image src="/brandbook/mobile-white.png" preview={false} className="rounded-xl" wrapperClassName="w-24 rounded-xl" alt="Bluelight Hub Logo" />
+              <span className="ml-4">Bluelight Hub</span>
             </h2>
             <div className="ml-28 mt-6 text-lg leading-8 text-white">
               <p>

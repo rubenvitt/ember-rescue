@@ -2,7 +2,7 @@
 title: Erste Schritte
 ---
 
-Einfache Schritte, um schnell mit EmberRescue zu beginnen. {% .lead %}
+Einfache Schritte, um schnell mit Bluelight Hub zu beginnen. {% .lead %}
 
 {% quick-links %}
 
