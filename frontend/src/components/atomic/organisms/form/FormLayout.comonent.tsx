@@ -1,25 +1,24 @@
-import { Formik, useFormikContext } from 'formik';
-import { FormikConfig, FormikProps, FormikValues } from 'formik/dist/types.js';
-import { Button, ButtonProps, Form, FormProps } from 'antd';
-import React, { useMemo } from 'react';
+import { Button, ButtonProps, Form, FormInstance, FormProps } from 'antd';
+import React, { useCallback, useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { cva } from 'class-variance-authority';
 
 type Buttons = {
   buttons: { submit?: ButtonProps; reset?: ButtonProps; cancel?: ButtonProps };
   buttonContainerClassName?: string;
-  resetOnSubmit?: boolean;
+  isLoading?: boolean;
 };
 
-type Props<Values extends FormikValues, ExtraProps = {}> = {
+type Props<Values> = {
   type?: 'sectioned' | 'oneLine' | 'default';
-  formik: FormikConfig<Values> & ExtraProps;
-  children: ((props: FormikProps<Values>) => React.ReactNode) | React.ReactNode;
-  form?: FormProps;
+  formInstance?: FormInstance<Values> & { onFinish?: (values: Values) => void | Promise<void>; onFinishFailed?: (errorInfo: any) => void | Promise<void> };
+  children: ((props?: FormInstance<Values>) => React.ReactNode) | React.ReactNode;
+  resetOnSubmit?: boolean;
+  form?: FormProps<Values>;
 } & Partial<Buttons>;
 
-function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClassName, resetOnSubmit }: Buttons) {
-  const context = useFormikContext();
+function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClassName, isLoading }: Buttons) {
+  const context = Form.useFormInstance();
   const buttonCount = useMemo(() => {
     return [submit, reset, cancel].filter((button) => button !== undefined).length;
   }, [submit, reset, cancel]);
@@ -29,8 +28,9 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
         {cancel && (
           <Button
             {...cancel}
+            disabled={isLoading}
             onClick={(event) => {
-              context.resetForm();
+              context.resetFields();
               cancel?.onClick?.(event);
             }}
           ></Button>
@@ -38,8 +38,9 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
         {reset && (
           <Button
             {...reset}
+            disabled={isLoading}
             onClick={(event) => {
-              context.resetForm();
+              context.resetFields();
               reset?.onClick?.(event);
             }}
           />
@@ -47,15 +48,11 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
         {submit && (
           <Button
             {...submit}
-            loading={context.isSubmitting}
+            loading={isLoading}
             onClick={async (event) => {
-              await context.validateForm();
+              await context.validateFields();
               submit?.onClick?.(event);
-              return context.submitForm().then(() => {
-                if (resetOnSubmit) {
-                  context.resetForm();
-                }
-              });
+              context.submit();
             }}
           />
         )}
@@ -74,22 +71,41 @@ const styling = cva('flex', {
   },
 });
 
-export function FormLayout<Values extends FormikValues = FormikValues, ExtraProps = {}>({
-  formik,
-  children,
-  form,
-  buttons,
-  type = 'default',
-  resetOnSubmit = false,
-}: Props<Values, ExtraProps>): React.JSX.Element {
+export function FormLayout<Values = any>({ children, form, buttons, type = 'default', resetOnSubmit = false, formInstance }: Props<Values>): React.JSX.Element {
+  const [antForm] = Form.useForm<Values>(formInstance);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleOnFinish = useCallback(
+    async (values: any) => {
+      try {
+        setIsLoading(true);
+        await Promise.all([form?.onFinish?.(values)]);
+        if (resetOnSubmit) {
+          antForm.resetFields();
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [form, resetOnSubmit, antForm],
+  );
+
+  const handleOnFinishFailed = useCallback(
+    async (errorInfo: any) => {
+      try {
+        setIsLoading(true);
+        await Promise.all([form?.onFinishFailed?.(errorInfo)]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [form],
+  );
+
   return (
-    <Formik {...formik}>
-      {(props: FormikProps<Values>) => (
-        <Form {...form} className={twMerge(form?.className, styling({ type }))}>
-          {typeof children === 'function' ? children(props) : children}
-          <SubmitButtons buttonContainerClassName={type === 'sectioned' ? 'mt-4' : ''} buttons={buttons ?? {}} resetOnSubmit={resetOnSubmit} />
-        </Form>
-      )}
-    </Formik>
+    <Form<Values> {...form} onFinish={handleOnFinish} onFinishFailed={handleOnFinishFailed} form={antForm} className={twMerge(form?.className, styling({ type }))}>
+      {typeof children === 'function' ? children(formInstance) : children}
+      <SubmitButtons buttonContainerClassName={type === 'sectioned' ? 'mt-4' : ''} buttons={buttons ?? {}} isLoading={isLoading} />
+    </Form>
   );
 }

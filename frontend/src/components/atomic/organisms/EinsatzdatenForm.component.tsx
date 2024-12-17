@@ -7,14 +7,12 @@ import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
 import { format } from 'date-fns';
 import { backendFetchBlob } from '../../../utils/http.js';
 import { isTauri } from '@tauri-apps/api/core';
-import { Button, ConfigProvider, Modal, Tooltip } from 'antd';
+import { AutoComplete, Button, ConfigProvider, DatePicker, Modal, Select, Tooltip } from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { AutoComplete, DatePicker, Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import * as Yup from 'yup';
 import { Dayjs } from 'dayjs';
 import { RangeValue } from '../../../types/ui/inputs.types.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
@@ -26,16 +24,6 @@ interface Einsatzdaten {
   ort: string;
   timeframe: [string, string];
 }
-
-const EinsatzdatenValidationSchema = Yup.object().shape({
-  alarmstichwort: Yup.string().required('Alarmstichwort ist ein Pflichtfeld'),
-  einsatzleiter: Yup.object().shape({
-    id: Yup.string().nullable(),
-    name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),
-  }),
-  ort: Yup.string().required('Ort ist ein Pflichtfeld'),
-  timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld'),
-});
 
 function FinishEinsatz(props: { einsatz: MissionDto }) {
   const [etbExported, setEtbExported] = useState(false);
@@ -217,34 +205,42 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
       <h1 className="">Einsatzdaten</h1>
       <FormLayout<Einsatzdaten>
         type="sectioned"
-        formik={{
-          validationSchema: EinsatzdatenValidationSchema,
-          validateOnBlur: true,
+        form={{
+          className: 'space-y-4',
+          validateTrigger: 'onBlur',
           initialValues: {
             alarmstichwort: defaultStichwort,
-            // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
-            // ort: einsatz.data.ort,
-            einsatzleiter: { name: 'Peter Müller' },
-            ort: einsatz.data.einsatzMeta?.ort,
+            einsatzleiter: { name: 'Peter Müller', ort: einsatz.data.einsatzMeta?.ort },
             timeframe: [einsatz.data.beginn, einsatz.data.ende].filter((time) => time) as [string, string],
           },
-          onSubmit: (data) => {
+          async onFinish(data) {
             console.log('submitting einsatzdaten', { data });
-            updateEinsatz.mutate({ id: einsatz.data!!.id, data });
+            await updateEinsatz.mutate({ id: einsatz.data!!.id, data });
+          },
+          validateMessages: {
+            required: '${label} ist ein Pflichtfeld',
           },
         }}
-        form={{ className: 'space-y-4' }}
       >
         {(props) => (
           <>
+            {/*  const EinsatzdatenValidationSchema = Yup.object().shape({*/}
+            {/*  alarmstichwort: Yup.string().required('Alarmstichwort ist ein Pflichtfeld'),*/}
+            {/*  einsatzleiter: Yup.object().shape({*/}
+            {/*  id: Yup.string().nullable(),*/}
+            {/*  name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),*/}
+            {/*}),*/}
+            {/*  ort: Yup.string().required('Ort ist ein Pflichtfeld'),*/}
+            {/*  timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld'),*/}
+            {/*});*/}
+
             <FormSection heading="Alarmierung">
               <FormContentBox>
-                <InputWrapper name="alarmstichwort" label="Alarmstichwort">
-                  <Select name="alarmstichwort" loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
+                <InputWrapper name="alarmstichwort" label="Alarmstichwort" rules={[{ required: true }]}>
+                  <Select loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
                 </InputWrapper>
-                <InputWrapper name="beginn" label="Alarmierungszeit">
+                <InputWrapper name="timeframe" label="Alarmierungszeit" rules={[{ required: true }]}>
                   <DatePicker.RangePicker
-                    name="timeframe"
                     showTime
                     format={{ format: natoDateTimeAnt }}
                     showSecond={false}
@@ -255,21 +251,21 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
                     }}
                   />
                 </InputWrapper>
-                <InputWrapper name="ort" label="Ort">
-                  {/* todo connect mapbox api */}
-                  <AutoComplete onSearch={handleSearch} options={options} name="ort" />
+                <InputWrapper name="ort" label="Ort" rules={[{ required: true }]}>
+                  {/* TODO: connect mapbox api */}
+                  <AutoComplete onSearch={handleSearch} options={options} />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
             <FormSection heading="Laufender Einsatz">
               {JSON.stringify(einsatz.data)}
               <FormContentBox>
-                <InputWrapper name="einsatzleiter" label="Einsatzleiter">
-                  <Select name="einsatzleiter" disabled />
+                <InputWrapper name="einsatzleiter" label="Einsatzleiter" rules={[{ required: true }]}>
+                  <Select disabled />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
-            <Button onClick={props.submitForm} type="primary" htmlType="submit">
+            <Button onClick={props?.submit} type="primary" htmlType="submit" loading={updateEinsatz.isPending}>
               Speichern
             </Button>
           </>

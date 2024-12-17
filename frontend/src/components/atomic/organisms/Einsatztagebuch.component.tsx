@@ -7,10 +7,10 @@ import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHead
 import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
 import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { Button, Drawer, Empty, Input as AntInput, InputRef, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
+import { Button, Drawer, Empty, Input as AntInput, Input, InputRef, Select, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
+
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Input, Select } from 'formik-antd';
 import dayjs from 'dayjs';
 import { JournalEntryDto } from '@bluelight-hub/shared/client/index.js';
 
@@ -218,7 +218,7 @@ export function EinsatztagebuchComponent() {
         {
           editingEintrag && (
             <FormLayout<JournalEntryDto>
-              formik={{
+              form={{
                 initialValues: {
                   ...editingEintrag,
                   sender:
@@ -228,7 +228,7 @@ export function EinsatztagebuchComponent() {
                     [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.id ??
                     editingEintrag.receiver,
                 },
-                onSubmit: async (data) => {
+                onFinish: async (data) => {
                   await createEinsatztagebuchEintrag.mutateAsync({
                     ...data,
                     // FIXME[ember-rescue-68](rubeen, 30.11.24): this may be simplyfied
@@ -242,13 +242,13 @@ export function EinsatztagebuchComponent() {
               }}
             >
               <InputWrapper label="Absender" name="absender">
-                <Select name="absender" />
+                <Select />
               </InputWrapper>
               <InputWrapper label="Empfänger" name="empfaenger">
-                <Select name="empfaenger" />
+                <Select />
               </InputWrapper>
               <InputWrapper label="Notiz" name="content">
-                <Input.TextArea name="content" rows={5} />
+                <Input.TextArea rows={5} />
               </InputWrapper>
             </FormLayout>
           )

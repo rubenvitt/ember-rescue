@@ -6,21 +6,12 @@ import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch
 import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { DatePicker, Input, Select } from 'formik-antd';
-import * as Yup from 'yup';
-import { Button } from 'antd';
+import { Button, DatePicker, Input, Select } from 'antd';
 import { PiCaretDown } from 'react-icons/pi';
 
 interface Props {
   closeForm: () => void;
 }
-
-const CreateEtbShema = Yup.object().shape({
-  timestamp: Yup.string().required('Es wird ein Zeitpunkt der Meldung benötigt'),
-  absender: Yup.string().required('Es sollte ein Absender angegeben werden'),
-  empfaenger: Yup.string().required('Es sollte ein Empfänger angegeben werden'),
-  content: Yup.string().required('Ein Eintrag benötigt eine Nachricht'),
-});
 
 // TODO[main](rubeen, 01.09.24): Lagemeldungen sollten möglich sein - eventuell mit einer Checkbox `isLagemeldung`?
 //  oder type: 'lagemeldung' ein bisschen erweiterbarer.
@@ -52,36 +43,30 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
 
   return (
     <FormLayout<CreateEinsatztagebuchEintrag>
-      form={{ rootClassName: 'grid grid-cols-2 gap-4' }}
-      formik={{
-        initialValues: {
-          timestamp: formatISO(new Date()),
-          absender: '',
-          empfaenger: aufnehmendesRettungsmittelId,
-          content: '',
-        },
-        onSubmit: async (data, formikHelpers) => {
+      resetOnSubmit={true}
+      form={{
+        rootClassName: 'grid grid-cols-2 gap-4',
+        initialValues: { timestamp: formatISO(new Date()), empfaenger: aufnehmendesRettungsmittelId },
+        async onFinish(data) {
           await handleSubmit(data);
-          formikHelpers.resetForm();
         },
-        validationSchema: CreateEtbShema,
       }}
     >
       {(props) => (
         <>
-          <InputWrapper name="absender" label="Absender">
-            <Select name="absender" showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Absender auswählen" />
+          <InputWrapper name="absender" label="Absender" rules={[{ required: true, message: 'Es sollte ein Absender angegeben werden' }]}>
+            <Select showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Absender auswählen" />
           </InputWrapper>
-          <InputWrapper name="empfaenger" label="Empfänger">
-            <Select name="empfaenger" showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Empfönger auswählen" />
+          <InputWrapper name="empfaenger" label="Empfänger" rules={[{ required: true, message: 'Es sollte ein Empfänger angegeben werden' }]}>
+            <Select showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Empfönger auswählen" />
           </InputWrapper>
-          <InputWrapper name="content" className="col-span-2" label="Inhalt">
+          <InputWrapper name="content" className="col-span-2" label="Inhalt" rules={[{ required: true, message: 'Ein Eintrag benötigt eine Nachricht' }]}>
             <Input.TextArea name="content" rows={3} />
           </InputWrapper>
-          <InputWrapper name="timestamp" label="Zeitpunkt der Meldung">
+          <InputWrapper name="timestamp" label="Zeitpunkt der Meldung" rules={[{ required: true, message: 'Es wird ein Zeitpunkt der Meldung benötigt' }]}>
             <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} />
           </InputWrapper>
-          <Button className="col-span-2" type="primary" onClick={props.submitForm} htmlType="submit" icon={<PiCaretDown size={24} />}>
+          <Button className="col-span-2" type="primary" onClick={props?.submit} htmlType="submit" icon={<PiCaretDown size={24} />}>
             ETB Eintrag anlegen
           </Button>
         </>

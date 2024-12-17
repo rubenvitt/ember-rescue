@@ -1,27 +1,14 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, Space } from 'antd';
 import { PiPen } from 'react-icons/pi';
 import { useToggle } from '@reactuses/core';
-import { FormikFieldProps } from 'formik-antd/src/FieldProps.js';
-import { Field } from 'formik-antd';
+import { useOpta } from '../../../hooks/opta.hook.js';
+import { OptaDto } from '@bluelight-hub/shared/client/index.js';
 
-type FullOptaInput = {
-  district: string;
-  bosCode: string;
-  ort: string;
-  localCode: string;
-  functionCode: string;
-  orderNumber: string;
-  supplement?: string;
-};
-
-export type OptaInput = {
-  freetext: string;
-  full: FullOptaInput;
-};
+export type OptaInput = OptaDto;
 
 type FieldConfig = {
-  name: keyof FullOptaInput;
+  name: keyof Omit<OptaDto, 'id' | 'fullOpta'>;
   placeholder: string;
   width: number;
 };
@@ -47,11 +34,11 @@ const SmartInput = ({
   handleInputChange,
   formData,
 }: {
-  name: keyof FullOptaInput;
+  name: keyof Omit<OptaDto, 'id' | 'fullOpta'>;
   placeholder: string;
   width: number;
   options: OptaOptions;
-  handleInputChange: (name: keyof FullOptaInput, value: string) => void;
+  handleInputChange: (name: keyof Omit<OptaDto, 'id' | 'fullOpta'>, value: string) => void;
   formData: OptaInput;
 }) => {
   return (
@@ -59,7 +46,7 @@ const SmartInput = ({
       <div>
         {options[name] ? (
           <Select
-            value={formData.full[name]}
+            value={formData[name]}
             onChange={(value: string) => {
               console.log(`changed select ${value}`);
               handleInputChange(name, value);
@@ -82,79 +69,60 @@ const SmartInput = ({
             }))}
             filterOption={(input, option) => {
               const searchString = input.toLocaleLowerCase();
-              return (
-                (option?.value.toString().toLocaleLowerCase().includes(searchString) ?? false) ||
-                (option?.description.toLocaleLowerCase().includes(searchString) ?? false)
-              );
+              return (option?.value.toString().toLocaleLowerCase().includes(searchString) ?? false) || (option?.description.toLocaleLowerCase().includes(searchString) ?? false);
             }}
           />
         ) : (
-          <Input
-            value={formData.full[name]}
-            onChange={(e) => handleInputChange(name, e.target.value)}
-            size="small"
-            placeholder={placeholder}
-            style={{ width }}
-          />
+          <Input value={formData[name]} onChange={(e) => handleInputChange(name, e.target.value)} size="small" placeholder={placeholder} style={{ width }} />
         )}
       </div>
     </div>
   );
 };
 
-export const OptaInputField = ({
-  name,
-  validate,
-  fast,
-  onChange,
-}: FormikFieldProps & { onChange: (value: OptaInput) => void }) => {
-  return (
-    <Field name={name} validate={validate} fast={fast}>
-      {({ field: { value }, form: { setFieldValue, setFieldTouched } }) => (
-        <OptaInput
-          value={value}
-          onBlur={(value) => {
-            setFieldTouched(name);
-            onChange && onChange(value);
-          }}
-          onChange={useCallback(
-            (value: OptaInput) => {
-              console.log(`updating ${name} = ${value}`);
-              setFieldValue(name, value);
+export const OptaInputField = () => <>TODO</>;
 
-              if (onChange) {
-                onChange(value);
-              }
-            },
-            [setFieldValue, name],
-          )}
-        />
-      )}
-    </Field>
-  );
-};
+// FIXME[ember-rescue-68](rubeen, 16.12.24): rewrite this:
+// export const OptaInputField = ({ name, validate, fast, onChange }: FormikFieldProps & { onChange: (value: OptaInput) => void }) => {
+//   return (
+//     <Field name={name} validate={validate} fast={fast}>
+//       {({ field: { value }, form: { setFieldValue, setFieldTouched } }) => (
+//         <OptaInput
+//           value={value}
+//           onBlur={(value) => {
+//             setFieldTouched(name);
+//             onChange && onChange(value);
+//           }}
+//           onChange={useCallback(
+//             (value: OptaInput) => {
+//               console.log(`updating ${name} = ${value}`);
+//               setFieldValue(name, value);
+//
+//               if (onChange) {
+//                 onChange(value);
+//               }
+//             },
+//             [setFieldValue, name],
+//           )}
+//         />
+//       )}
+//     </Field>
+//   );
+// };
 
-export const OptaInput = ({
-  onBlur,
-  onChange,
-  value,
-}: {
-  onChange: (value: OptaInput) => void;
-  onBlur: (value: OptaInput) => void;
-  value?: OptaInput;
-}) => {
+export const OptaInput = ({ onChange, value }: { onChange: (value: OptaInput) => void; onBlur: (value: OptaInput) => void; value?: OptaInput }) => {
   const [formData, setFormData] = useState<OptaInput>({
-    full: {
-      bosCode: '',
-      district: '',
-      functionCode: '',
-      localCode: '',
-      orderNumber: '',
-      ort: '',
-      supplement: '',
-    },
-    freetext: '',
+    bosCode: '',
+    district: '',
+    functionCode: '',
+    localCode: '',
+    orderNumber: '',
+    ort: '',
+    supplement: '',
+    fullOpta: '',
+    id: '',
   });
+  const { functionOpta } = useOpta();
 
   const [isFreetext, toggleFreetext] = useToggle(false);
   const [freetext, setFreetext] = useState<string>('');
@@ -172,23 +140,17 @@ export const OptaInput = ({
         { code: '40', description: 'Was auch immer' },
         { code: '41', description: 'Noch etwas' },
       ],
-      functionCode: [
-        { code: '1', description: 'ELW' },
-        { code: '2', description: 'Banane' },
-      ],
+      functionCode: functionOpta.data?.data.map((f) => ({ code: f.code, description: f.description })) ?? [],
     }),
     [],
   );
 
-  const handleInputChange = (name: keyof FullOptaInput, value: string) => {
+  const handleInputChange = (name: keyof Omit<OptaDto, 'id' | 'fullOpta'>, value: string) => {
     console.log(`updating ${name} = ${value}`);
     setFormData((prevData) => {
       const newFormData = {
         ...prevData,
-        full: {
-          ...prevData.full,
-          [name]: value,
-        },
+        [name]: value,
       };
       onChange(newFormData);
       return newFormData;
@@ -196,23 +158,24 @@ export const OptaInput = ({
   };
 
   useEffect(() => {
-    if (value?.freetext) {
-      setFormData((prevState) => ({
-        full: prevState.full,
-        freetext: value.freetext,
-      }));
-      setFreetext(value.freetext);
+    if (value?.fullOpta) {
+      setFormData((prevState) => prevState);
+      setFreetext(value.fullOpta);
       toggleFreetext(true);
     }
-  }, [value?.freetext]);
+  }, [value?.fullOpta]);
 
   useEffect(() => {
     onChange(formData);
   }, [formData, isFreetext, freetext, onChange]);
 
+  useEffect(() => {
+    console.log('my opta value', value);
+  }, [value]);
+
   return (
     <Space size="small" direction="vertical">
-      <Space size="small" className="rounded border">
+      <Space size="small" className="rounded">
         {isFreetext ? (
           <Input
             value={freetext}
@@ -225,44 +188,29 @@ export const OptaInput = ({
             }}
             placeholder="NI DRK Uelzen 40-12-1"
             style={{ width: 240 }}
-            size="small"
+            size="middle"
           />
         ) : (
-          <>
-            {FIELD_CONFIGS.slice(0, 3).map((config) => (
-              <SmartInput
-                key={config.name}
-                options={optaOptions}
-                formData={formData}
-                handleInputChange={handleInputChange}
-                {...config}
-              />
-            ))}
-            <Space size={1} />
-            {FIELD_CONFIGS.slice(3).map((config, idx) => (
-              <Fragment key={config.name}>
-                {idx > 0 && <span>-</span>}
-                <SmartInput
-                  key={config.name}
-                  options={optaOptions}
-                  formData={formData}
-                  handleInputChange={handleInputChange}
-                  {...config}
-                />
-              </Fragment>
-            ))}
-          </>
+          <Space size="small" direction="vertical">
+            <Space size="small">
+              {FIELD_CONFIGS.slice(0, 3).map((config) => (
+                <SmartInput key={config.name} options={optaOptions} formData={formData} handleInputChange={handleInputChange} {...config} />
+              ))}
+            </Space>
+            <Space size="small">
+              {FIELD_CONFIGS.slice(3).map((config, idx) => (
+                <Space size={'small'} key={config.name}>
+                  {idx > 0 && <span>-</span>}
+                  <SmartInput key={config.name} options={optaOptions} formData={formData} handleInputChange={handleInputChange} {...config} />
+                </Space>
+              ))}
+            </Space>
+          </Space>
         )}
-        <Button
-          className="text-gray-700"
-          type="text"
-          icon={<PiPen className="h-3.5 w-3.5" size="small" onClick={() => toggleFreetext()} />}
-        />
+        <Button className="text-gray-700 dark:text-white" type="text" icon={<PiPen className="h-3.5 w-3.5" size="small" onClick={() => toggleFreetext()} />} />
       </Space>
-      <pre>
-        {isFreetext
-          ? freetext
-          : `${formData.full.district} ${formData.full.bosCode} ${formData.full.ort} ${formData.full.localCode}-${formData.full.functionCode}-${formData.full.orderNumber}`}
+      <pre className="font-mono text-xs text-gray-500">
+        {isFreetext ? freetext : `${formData.district} ${formData.bosCode} ${formData.ort} ${formData.localCode}-${formData.functionCode}-${formData.orderNumber}`}
       </pre>
     </Space>
   );

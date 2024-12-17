@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
 import { useTheme } from '../../../hooks/theme.hook.js';
@@ -15,9 +15,14 @@ import { Dropdown } from 'antd';
 import { useReminders } from '../../../hooks/reminders.hook.js';
 import { ButtonWithShortcut } from '../atoms/ButtonWithShortcut.component.js';
 import { userNavigation } from '../molecules/Navigation.js';
+import { resetApp, useBackend } from '../../../hooks/backend.hook.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
-  useBearbeiter({ requireBearbeiter: true });
+  const { isAvailable } = useBackend();
+  const { removeBearbeiter } = useBearbeiter({ requireBearbeiter: true });
+  useEffect(() => {
+    resetApp(isAvailable, removeBearbeiter);
+  }, [isAvailable, removeBearbeiter]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { toggleTheme } = useTheme();

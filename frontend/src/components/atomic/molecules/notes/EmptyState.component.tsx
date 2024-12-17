@@ -1,31 +1,22 @@
 import { useCallback } from 'react';
-import { Button, Card } from 'antd';
-import { Input } from 'formik-antd';
+import { Button, Card, Input } from 'antd';
 import { PiAlarm, PiNote } from 'react-icons/pi';
-import * as Yup from 'yup';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import { useReminders } from '../../../../hooks/reminders.hook.js';
-import { FormikHelpers } from 'formik/dist/types.js';
 import { CreateNotizDto, OneNoteResponse } from '@bluelight-hub/shared/client/index.js';
 
 type EmptyStateProps = {
   addNote: (note: CreateNotizDto) => Promise<OneNoteResponse> | undefined;
 };
 
-const CreateNotizSchema = Yup.object().shape({
-  content: Yup.string().required('Um etwas zu notieren, sollte eine Notiz angegeben werden.'),
-});
-
 export function EmptyState({ addNote }: EmptyStateProps) {
   const { actualCreateReminder } = useReminders();
   const handleSubmit = useCallback(
-    async (data: CreateNotizDto & { reminder: boolean }, formik: FormikHelpers<any>) => {
+    async (data: CreateNotizDto & { reminder: boolean }) => {
       await addNote({ content: data.content })?.then((notiz) => {
         if (data.reminder) {
-          actualCreateReminder(notiz.data, {
-            onOk: formik.resetForm,
-          });
+          return actualCreateReminder(notiz.data);
         }
       });
     },
@@ -35,11 +26,11 @@ export function EmptyState({ addNote }: EmptyStateProps) {
   return (
     <FormLayout<CreateNotizDto & { reminder: boolean }>
       type="sectioned"
-      formik={{
-        validationSchema: CreateNotizSchema,
-        validateOnChange: false,
-        initialValues: { content: '', reminder: false },
-        onSubmit: (data, formikHelpers) => handleSubmit(data, formikHelpers),
+      resetOnSubmit={true}
+      form={{
+        async onFinish(data) {
+          await handleSubmit(data);
+        },
       }}
     >
       {(props) => (
@@ -53,8 +44,8 @@ export function EmptyState({ addNote }: EmptyStateProps) {
                 icon={<PiNote />}
                 type="primary"
                 onClick={async () => {
-                  await props.setFieldValue('reminder', false);
-                  props.handleSubmit();
+                  props?.setFieldValue('reminder', false);
+                  props?.submit();
                 }}
               >
                 Notiz anlegen
@@ -62,8 +53,8 @@ export function EmptyState({ addNote }: EmptyStateProps) {
               <Button
                 icon={<PiAlarm />}
                 onClick={async () => {
-                  await props.setFieldValue('reminder', true);
-                  props.handleSubmit();
+                  props?.setFieldValue('reminder', true);
+                  props?.submit();
                 }}
               >
                 Erinnerung anlegen
@@ -71,7 +62,15 @@ export function EmptyState({ addNote }: EmptyStateProps) {
             </div>,
           ]}
         >
-          <InputWrapper name={'content'}>
+          <InputWrapper
+            name={'content'}
+            rules={[
+              {
+                required: true,
+                message: 'Um etwas zu notieren, sollte eine Notiz angegeben werden.',
+              },
+            ]}
+          >
             <Input.TextArea
               name="content"
               rows={5}

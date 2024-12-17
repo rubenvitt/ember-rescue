@@ -10,9 +10,11 @@ import { FeaturesModule } from './features/features.module';
 import { UserModule } from './user/user.module';
 import { MissionsModule } from './missions/missions.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { TransformInterceptor } from '@core/interceptors/transform.interceptor';
 import { LoggingInterceptor } from '@core/interceptors/logging.interceptor';
+import { PingController } from './ping/ping.controller';
+import { AppCacheInterceptor } from '@core/interceptors/cache.interceptor';
 
 @Module({
   imports: [
@@ -45,7 +47,7 @@ import { LoggingInterceptor } from '@core/interceptors/logging.interceptor';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
+      useClass: AppCacheInterceptor,
     },
     {
       provide: APP_GUARD,
@@ -56,6 +58,7 @@ import { LoggingInterceptor } from '@core/interceptors/logging.interceptor';
       useClass: AuthGuard,
     },
   ],
+  controllers: [PingController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {

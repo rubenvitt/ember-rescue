@@ -5,8 +5,8 @@ import React, { useCallback, useMemo } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { twMerge } from 'tailwind-merge';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
-import { Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
+import { Select } from 'antd';
 
 const RecommendedFahrzeug: React.FC<{ fahrzeug: any; onAdd: (id: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
@@ -78,9 +78,9 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
 
       <FormLayout<{ fahrzeugId: string }>
         type="oneLine"
-        formik={{
+        form={{
           initialValues: { fahrzeugId: '' },
-          async onSubmit(data) {
+          async onFinish(data) {
             await handleAddFahrzeug(data.fahrzeugId);
           },
         }}
@@ -96,7 +96,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         resetOnSubmit={true}
       >
         <Select
-          name="fahrzeugId"
+          fieldNames={{ value: 'fahrzeugId' }}
           placeholder="Fahrzeug dem Einsatz hinzufügen"
           className="w-full"
           showSearch

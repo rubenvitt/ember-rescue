@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PersonalDto } from '../personal/personal.dto';
 import { ApiResponse } from '../../types';
+import { FahrzeugTemplateDto } from '@templates/vehicles/fahrzeuge.dto';
 
 export class AddVehicleToMissionDto {
   @ApiProperty({ required: true })
@@ -63,7 +64,7 @@ export class VehiclesDto {
   fahrzeugeImEinsatz: VehicleOnMissionDto[];
 
   @ApiProperty({ required: true, type: VehicleOnMissionDto, isArray: true })
-  verfuegbareFahrzeuge: VehicleOnMissionDto[];
+  verfuegbareFahrzeuge: FahrzeugTemplateDto[];
 }
 
 export class VehiclesResponse extends ApiResponse<VehiclesDto> {

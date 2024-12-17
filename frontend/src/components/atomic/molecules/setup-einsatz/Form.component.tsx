@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import * as Yup from 'yup';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import dayjs from 'dayjs';
@@ -11,9 +10,9 @@ import { PiArrowCircleUpRight } from 'react-icons/pi';
 import { FormSection } from '../../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
-import { DatePicker, Select } from 'formik-antd';
 import { CreateMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useOpta } from '../../../../hooks/opta.hook.js';
+import { DatePicker, Select } from 'antd';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -56,13 +55,6 @@ import { useOpta } from '../../../../hooks/opta.hook.js';
 //     </div>
 //   );
 // };
-
-const SetupEinsatzSchema = Yup.object<CreateMissionDto>().shape({
-  erstAlarmiert: Yup.string().required('Zeitpunkt der Erstalarmierung wird benötigt'),
-  aufnehmendesRettungsmittel: Yup.string().required('Das Aufnehmende Rettungsmittel wird benötigt'),
-  alarmstichwort: Yup.string().required('Geben Sie ein Einsatzstichwort an'),
-  ort: Yup.string().required('Geben Sie einen Ort an'),
-});
 
 export function NewSetupEinsatzForm() {
   // FIXME[ember-rescue-68](rubeen, 30.11.24): Use fahrzeugeTemplate
@@ -108,18 +100,14 @@ export function NewSetupEinsatzForm() {
   const handleAbbrechen = useCallback(() => navigate({ to: '/auth/signout' }), [navigate]);
 
   return (
-    <FormLayout
+    <FormLayout<CreateMissionDto>
       type="sectioned"
-      formik={{
-        validationSchema: SetupEinsatzSchema,
+      form={{
         initialValues: {
           erstAlarmiert: dayjs().toISOString(),
-          aufnehmendesRettungsmittel: '',
-          alarmstichwort: '',
-          ort: '',
         },
-        onSubmit: async (data) => {
-          console.log('my data', { data });
+        async onFinish(data) {
+          console.log('createMissionDto', { data });
           await createEinsatz.mutateAsync({ ...data }).then((einsatz) => {
             saveEinsatz(einsatz);
             navigate({ to: '/app/' });
@@ -139,9 +127,8 @@ export function NewSetupEinsatzForm() {
     >
       <FormSection heading="Einsatzdaten" subHeading="Grundlegende Daten zum Einsatz">
         <FormContentBox>
-          <InputWrapper label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel">
+          <InputWrapper label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel" rules={[{ required: true, message: 'Das aufnehmende Rettungsmittel wird benötigt' }]}>
             <Select
-              name="aufnehmendesRettungsmittel"
               placeholder="Aufnehmendes Rettungsmittel"
               className="w-full"
               showSearch
@@ -157,12 +144,11 @@ export function NewSetupEinsatzForm() {
 
       <FormSection heading="Alarmierung" subHeading="Informationen zur Alarmierung">
         <FormContentBox>
-          <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert">
+          <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert" rules={[{ required: true, message: 'Zeitpunkt der Erstalarmierung wird benötigt' }]}>
             <DatePicker className="w-full" showTime showSecond={false} name="erstAlarmiert" />
           </InputWrapper>
-          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarm">
+          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarm" rules={[{ required: true, message: 'Geben Sie ein Einsatzstichwort an' }]}>
             <Select
-              name="alarmstichwort"
               placeholder="Einsatzstichwort der Alarmierung"
               className="w-full"
               showSearch

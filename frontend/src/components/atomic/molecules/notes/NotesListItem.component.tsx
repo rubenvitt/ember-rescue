@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Formik, FormikProps } from 'formik';
-import { Button, List, Tooltip } from 'antd';
+import { Button, Form, Input, List, Tooltip } from 'antd';
 import { PiCheck, PiClock, PiFloppyDisk, PiPencil, PiX } from 'react-icons/pi';
-import { Input } from 'formik-antd';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
 import { formatNatoDateTime } from '../../../../utils/time.js';
 import { useReminders } from '../../../../hooks/reminders.hook.tsx';
@@ -12,16 +10,13 @@ interface Props {
   notiz: EinsatzNoteDto;
 }
 
-interface _NotesListItemProps {
-  props?: FormikProps<{ content: string }>;
-}
-
 export function NotizenListItem({ notiz }: Props) {
   const [isEdit, setIsEdit] = useState(false);
   const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
   const { actualCreateReminder } = useReminders();
 
-  function _NotesListItem({ props }: _NotesListItemProps) {
+  function _NotesListItem() {
+    let instance = Form.useFormInstance();
     const toggleEdit = useCallback(
       (fixed?: boolean) => {
         if (fixed !== undefined) {
@@ -29,13 +24,13 @@ export function NotizenListItem({ notiz }: Props) {
         } else {
           setIsEdit((prevState) => !prevState);
         }
-        props?.resetForm();
+        instance.resetFields();
       },
       [setIsEdit],
     );
 
     const saveNotiz = useCallback(() => {
-      props?.submitForm();
+      instance.resetFields();
       setIsEdit(false);
     }, [setIsEdit]);
 
@@ -96,16 +91,13 @@ export function NotizenListItem({ notiz }: Props) {
   }
 
   return (
-    <Formik<{ content: string }>
-      onSubmit={(data) => {
-        console.log('my current data is', data);
-        changeNotiz.mutate(data);
-      }}
+    <Form<{ content: string }>
+      onFinish={changeNotiz.mutate}
       initialValues={{
         content: notiz.content,
       }}
     >
-      {(props) => <_NotesListItem props={props} />}
-    </Formik>
+      <_NotesListItem />
+    </Form>
   );
 }

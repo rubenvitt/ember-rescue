@@ -5,22 +5,13 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import { twConfig } from '../styles/tailwindcss.styles.js';
 import { PiAlarmBold, PiNote } from 'react-icons/pi';
-import { Button, Modal } from 'antd';
+import { Button, DatePicker, Input, Modal } from 'antd';
 import { FormLayout } from '../components/atomic/organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../components/atomic/atoms/InputWrapper.component.js';
-import { DatePicker, Input } from 'formik-antd';
 import { addDays, addMinutes, formatISO } from 'date-fns';
 import dayjs from 'dayjs';
 import { natoDateTimeAnt } from '../utils/time.js';
-import * as Yup from 'yup';
 import { EinsatzNoteDto, ManyReminderResponse } from '@bluelight-hub/shared/client/index.js';
-
-const CreateReminderValidationSchema = Yup.object().shape({
-  reminderTime: Yup.date()
-    .required()
-    .min(addMinutes(new Date(), 1), 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen')
-    .max(addDays(new Date(), 1), 'Die Erinnerungszeit ist nicht plausibel'),
-});
 
 export function useReminders() {
   const queryClient = useQueryClient();
@@ -77,36 +68,35 @@ export function useReminders() {
           <div>
             <h2 className="font-bold">Zeitpunkt der Erinnerung</h2>
             <FormLayout<{ reminderTime: string; message: string }>
-              form={{ className: 'block mt-2' }}
-              formik={{
+              form={{
+                className: 'block mt-2',
                 initialValues: {
                   reminderTime: addMinutes(new Date(), 10).toISOString(),
-                  message: '',
                 },
-                onSubmit: async (data) => {
+                async onFinish(data) {
                   await submitCreateReminder(data.message, 'note:' + note.id, note.content, new Date(data.reminderTime));
                   props?.onOk();
                   Modal.destroyAll();
                 },
-                validationSchema: CreateReminderValidationSchema,
               }}
             >
               {(props) => (
                 <>
-                  <InputWrapper name="reminderTime" label="Erinnerungszeit">
-                    <DatePicker
-                      showTime
-                      format={natoDateTimeAnt}
-                      showSecond={false}
-                      maxDate={dayjs(addDays(new Date(), 1).toISOString())}
-                      minDate={dayjs(addMinutes(new Date(), 1).toISOString())}
-                      name="reminderTime"
-                    />
+                  <InputWrapper
+                    name="reminderTime"
+                    label="Erinnerungszeit"
+                    rules={[
+                      { type: 'date', required: true, message: 'Eine Erinnerungszeit muss angegeben werden' },
+                      { min: addMinutes(new Date(), 1).getDate(), message: 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen' },
+                      { max: addDays(new Date(), 10).getDate(), message: 'Die Erinnerungszeit ist nicht plausibel' },
+                    ]}
+                  >
+                    <DatePicker showTime format={natoDateTimeAnt} showSecond={false} maxDate={dayjs(addDays(new Date(), 1).toISOString())} minDate={dayjs(addMinutes(new Date(), 1).toISOString())} />
                   </InputWrapper>
                   <InputWrapper name="message" label="Eigene Notiz">
-                    <Input name="message" />
+                    <Input />
                   </InputWrapper>
-                  <Button type="primary" htmlType="submit" onClick={() => props.submitForm()}>
+                  <Button type="primary" htmlType="submit" onClick={() => props?.submit()} loading={createReminder.isPending}>
                     Erinnerung erstellen
                   </Button>
                 </>

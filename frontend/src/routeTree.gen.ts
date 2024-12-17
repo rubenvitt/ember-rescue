@@ -25,7 +25,6 @@ const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
 const AppUavLazyImport = createFileRoute('/app/uav')()
-const AppTestLazyImport = createFileRoute('/app/test')()
 const AppSchadenLazyImport = createFileRoute('/app/schaden')()
 const AppNotizenLazyImport = createFileRoute('/app/notizen')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
@@ -86,12 +85,6 @@ const AppUavLazyRoute = AppUavLazyImport.update({
   path: '/uav',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/app/uav.lazy').then((d) => d.Route))
-
-const AppTestLazyRoute = AppTestLazyImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/test.lazy').then((d) => d.Route))
 
 const AppSchadenLazyRoute = AppSchadenLazyImport.update({
   id: '/schaden',
@@ -248,13 +241,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSchadenLazyImport
       parentRoute: typeof AppImport
     }
-    '/app/test': {
-      id: '/app/test'
-      path: '/test'
-      fullPath: '/app/test'
-      preLoaderRoute: typeof AppTestLazyImport
-      parentRoute: typeof AppImport
-    }
     '/app/uav': {
       id: '/app/uav'
       path: '/uav'
@@ -297,7 +283,6 @@ interface AppRouteChildren {
   AppLagekarteLazyRoute: typeof AppLagekarteLazyRoute
   AppNotizenLazyRoute: typeof AppNotizenLazyRoute
   AppSchadenLazyRoute: typeof AppSchadenLazyRoute
-  AppTestLazyRoute: typeof AppTestLazyRoute
   AppUavLazyRoute: typeof AppUavLazyRoute
   AppIndexLazyRoute: typeof AppIndexLazyRoute
 }
@@ -311,7 +296,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppLagekarteLazyRoute: AppLagekarteLazyRoute,
   AppNotizenLazyRoute: AppNotizenLazyRoute,
   AppSchadenLazyRoute: AppSchadenLazyRoute,
-  AppTestLazyRoute: AppTestLazyRoute,
   AppUavLazyRoute: AppUavLazyRoute,
   AppIndexLazyRoute: AppIndexLazyRoute,
 }
@@ -332,7 +316,6 @@ export interface FileRoutesByFullPath {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/test': typeof AppTestLazyRoute
   '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
@@ -352,7 +335,6 @@ export interface FileRoutesByTo {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/test': typeof AppTestLazyRoute
   '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
@@ -374,7 +356,6 @@ export interface FileRoutesById {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/test': typeof AppTestLazyRoute
   '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin/': typeof AdminIndexRoute
@@ -397,7 +378,6 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/test'
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
@@ -416,7 +396,6 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/test'
     | '/app/uav'
     | '/prestart/settings'
     | '/admin'
@@ -436,7 +415,6 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/test'
     | '/app/uav'
     | '/prestart/settings'
     | '/admin/'
@@ -497,7 +475,6 @@ export const routeTree = rootRoute
         "/app/lagekarte",
         "/app/notizen",
         "/app/schaden",
-        "/app/test",
         "/app/uav",
         "/app/"
       ]
@@ -541,10 +518,6 @@ export const routeTree = rootRoute
     },
     "/app/schaden": {
       "filePath": "app/schaden.lazy.tsx",
-      "parent": "/app"
-    },
-    "/app/test": {
-      "filePath": "app/test.lazy.tsx",
       "parent": "/app"
     },
     "/app/uav": {

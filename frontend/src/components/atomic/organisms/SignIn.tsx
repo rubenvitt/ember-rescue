@@ -1,29 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { PiGear, PiSecurityCamera, PiSkipBack } from 'react-icons/pi';
 import { cva } from 'class-variance-authority';
 import { useWindowSetup } from '../../../hooks/window.hook.ts';
 import { WindowOptions } from '../../../utils/window.js';
 import storage from '../../../utils/storage.js';
-import { Button, Image, Modal } from 'antd';
+import { Button, Form, Image, Input, Modal } from 'antd';
 import { LoginForm } from '../molecules/LoginForm.component.tsx';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Input } from 'formik-antd';
 
 export const SignIn: React.FC = () => {
   const navigate = useNavigate({ from: '/signin' });
+  const formInstance = Form.useFormInstance();
 
   useWindowSetup(WindowOptions.main);
   const navigateToSettings = useCallback(() => navigate({ to: '/prestart/settings' }), [navigate]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const password = useRef<HTMLInputElement | null>(null);
 
   const handleRequestAccessToken = useCallback(() => {
     if (!isModalOpen) {
       setIsModalOpen(true);
       setTimeout(() => {
-        password.current?.focus();
+        formInstance.focusField('password');
       }, 100);
       storage().writeLocalStorage('backendAccessToken', null);
     }
@@ -59,10 +58,9 @@ export const SignIn: React.FC = () => {
       </div>
 
       <FormLayout<{ accessToken: string }>
-        formik={{
-          initialValues: { accessToken: '' },
-          onSubmit: (data) => {
-            storage().writeLocalStorage('backendAccessToken', data.accessToken);
+        form={{
+          onFinish: async () => {
+            storage().writeLocalStorage('backendAccessToken', null);
             setIsModalOpen(false);
             window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
           },
@@ -75,8 +73,8 @@ export const SignIn: React.FC = () => {
       >
         {(props) => (
           <Modal
-            onClose={() => props.resetForm()}
-            onCancel={() => props.resetForm()}
+            onClose={() => props?.resetFields()}
+            onCancel={() => props?.resetFields()}
             okText="Speichern"
             okButtonProps={{
               icon: <PiSecurityCamera />,
@@ -84,12 +82,12 @@ export const SignIn: React.FC = () => {
             cancelButtonProps={{
               icon: <PiSkipBack />,
             }}
-            onOk={props.submitForm}
+            onOk={props?.submit}
             open={isModalOpen}
             title="Access Token"
           >
             <InputWrapper name="accessToken">
-              <Input.Password ref={password} autoFocus={true} size="large" placeholder="Access Token benötigt" name="accessToken" />
+              <Input.Password autoFocus={true} size="large" placeholder="Access Token benötigt" name="accessToken" />
             </InputWrapper>
           </Modal>
         )}

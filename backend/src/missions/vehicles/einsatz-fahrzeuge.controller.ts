@@ -17,6 +17,7 @@ import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
 import {
   AddVehicleToMissionDto,
   ChangeStatusDto,
+  VehiclesDto,
   VehiclesResponse,
 } from './vehicle.dto';
 
@@ -32,7 +33,9 @@ export class EinsatzFahrzeugeController {
     type: VehiclesResponse,
     description: 'List of active and available vehicles',
   })
-  async findFahrzeugeImEinsatz(@Param('einsatzId') einsatzId: string) {
+  async findFahrzeugeImEinsatz(
+    @Param('einsatzId') einsatzId: string,
+  ): Promise<VehiclesDto> {
     this.logger.log('Find fahrzeuge im Einsatz', einsatzId);
 
     const [aktiveFahrzeuge, verfuegbareFahrzeuge] = await Promise.all([
