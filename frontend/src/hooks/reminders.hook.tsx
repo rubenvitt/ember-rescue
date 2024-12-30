@@ -5,12 +5,10 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import { twConfig } from '../styles/tailwindcss.styles.js';
 import { PiAlarmBold, PiNote } from 'react-icons/pi';
-import { Button, DatePicker, Input, Modal } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { FormLayout } from '../components/atomic/organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../components/atomic/atoms/InputWrapper.component.js';
-import { addDays, addMinutes, formatISO } from 'date-fns';
-import dayjs from 'dayjs';
-import { natoDateTimeAnt } from '../utils/time.js';
+import { addMinutes, formatISO } from 'date-fns';
 import { EinsatzNoteDto, ManyReminderResponse } from '@bluelight-hub/shared/client/index.js';
 
 export function useReminders() {
@@ -82,17 +80,17 @@ export function useReminders() {
             >
               {(props) => (
                 <>
-                  <InputWrapper
-                    name="reminderTime"
-                    label="Erinnerungszeit"
-                    rules={[
-                      { type: 'date', required: true, message: 'Eine Erinnerungszeit muss angegeben werden' },
-                      { min: addMinutes(new Date(), 1).getDate(), message: 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen' },
-                      { max: addDays(new Date(), 10).getDate(), message: 'Die Erinnerungszeit ist nicht plausibel' },
-                    ]}
-                  >
-                    <DatePicker showTime format={natoDateTimeAnt} showSecond={false} maxDate={dayjs(addDays(new Date(), 1).toISOString())} minDate={dayjs(addMinutes(new Date(), 1).toISOString())} />
-                  </InputWrapper>
+                  {/*<InputWrapper*/}
+                  {/*  name="reminderTime"*/}
+                  {/*  label="Erinnerungszeit"*/}
+                  {/*  rules={[*/}
+                  {/*    { type: 'date', required: true, message: 'Eine Erinnerungszeit muss angegeben werden' },*/}
+                  {/*    { min: addMinutes(new Date(), 1).getDate(), message: 'Die Erinnerungszeit kann nicht in der Vergangenheit liegen' },*/}
+                  {/*    { max: addDays(new Date(), 10).getDate(), message: 'Die Erinnerungszeit ist nicht plausibel' },*/}
+                  {/*  ]}*/}
+                  {/*>*/}
+                  {/*  <DatePicker showTime format={natoDateTimeAnt} showSecond={false} maxDate={dayjs(addDays(new Date(), 1).toISOString())} minDate={dayjs(addMinutes(new Date(), 1).toISOString())} />*/}
+                  {/*</InputWrapper>*/}
                   <InputWrapper name="message" label="Eigene Notiz">
                     <Input />
                   </InputWrapper>

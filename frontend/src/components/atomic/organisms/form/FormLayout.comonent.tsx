@@ -52,6 +52,7 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
             onClick={async (event) => {
               await context.validateFields();
               submit?.onClick?.(event);
+              console.log('submitting form', context.getFieldsValue());
               context.submit();
             }}
           />

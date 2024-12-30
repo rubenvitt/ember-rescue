@@ -3,18 +3,16 @@ import { useMemo, useReducer, useState } from 'react';
 import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
 import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
-import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { format } from 'date-fns';
 import { backendFetchBlob } from '../../../utils/http.js';
 import { isTauri } from '@tauri-apps/api/core';
-import { AutoComplete, Button, ConfigProvider, DatePicker, Modal, Select, Tooltip } from 'antd';
+import { AutoComplete, Button, ConfigProvider, Modal, Select, Tooltip } from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { Dayjs } from 'dayjs';
-import { RangeValue } from '../../../types/ui/inputs.types.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
 import { MissionDto, SecretsDto } from '@bluelight-hub/shared/client/index.js';
 
@@ -239,18 +237,18 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
                 <InputWrapper name="alarmstichwort" label="Alarmstichwort" rules={[{ required: true }]}>
                   <Select loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
                 </InputWrapper>
-                <InputWrapper name="timeframe" label="Alarmierungszeit" rules={[{ required: true }]}>
-                  <DatePicker.RangePicker
-                    showTime
-                    format={{ format: natoDateTimeAnt }}
-                    showSecond={false}
-                    placeholder={['', 'Laufend']}
-                    allowEmpty={[false, true]}
-                    onChange={(date: RangeValue<Dayjs>) => {
-                      console.log(date?.[0], date?.[1]);
-                    }}
-                  />
-                </InputWrapper>
+                {/*<InputWrapper name="timeframe" label="Alarmierungszeit" rules={[{ required: true }]}>*/}
+                {/*  <DatePicker.RangePicker*/}
+                {/*    showTime*/}
+                {/*    format={{ format: natoDateTimeAnt }}*/}
+                {/*    showSecond={false}*/}
+                {/*    placeholder={['', 'Laufend']}*/}
+                {/*    allowEmpty={[false, true]}*/}
+                {/*    onChange={(date: RangeValue<Dayjs>) => {*/}
+                {/*      console.log(date?.[0], date?.[1]);*/}
+                {/*    }}*/}
+                {/*  />*/}
+                {/*</InputWrapper>*/}
                 <InputWrapper name="ort" label="Ort" rules={[{ required: true }]}>
                   {/* TODO: connect mapbox api */}
                   <AutoComplete onSearch={handleSearch} options={options} />

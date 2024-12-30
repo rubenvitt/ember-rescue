@@ -2,6 +2,7 @@ import { ApiResponse } from '../../types';
 import { ApiProperty } from '@nestjs/swagger';
 import { FunctionGroup, OptaType } from '@templates/opta/constants';
 import { OptaDto } from '@templates/opta/dtos/opta.dto';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class IconDefinitionDto {
   @ApiProperty({ required: false })
@@ -74,12 +75,16 @@ export class ManyFahrzeugTypResponse extends ApiResponse<FahrzeugTypDto[]> {
 
 export class CreateUpdateFahrzeugDto {
   @ApiProperty({ required: false })
+  @IsOptional()
   _id?: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNotEmpty()
   opta: OptaDto;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   iconDefinition: IconDefinitionDto;
 }
 

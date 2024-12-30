@@ -34,5 +34,4 @@ services:
         condition: service_healthy
 
 volumes:
-  postgres:
   mongo:

@@ -1,12 +1,11 @@
 import { useSettings } from '../../../hooks/settings.hook.js';
 import { EditableFahrzeugeTable } from '../organisms/table/EditableFahrzeugeTable.component.js';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
 import { OptaInput } from '../molecules/OptaInput.component.js';
 import { SettingsDto } from '@bluelight-hub/shared/client/index.js';
-import { ButtonProps, Input } from 'antd';
+import { ButtonProps, Form, Input } from 'antd';
 
 export function AdminTemplate() {
   const { settings, save } = useSettings();
@@ -22,6 +21,7 @@ export function AdminTemplate() {
       children: 'Formular zurücksetzen',
     },
   };
+
   if (!settings.isFetchedAfterMount || !settings.data) return null;
 
   return (
@@ -29,25 +29,19 @@ export function AdminTemplate() {
       <FormLayout<SettingsDto>
         type="sectioned"
         form={{
+          layout: 'vertical',
           async onFinish(data) {
             await save.mutateAsync(data);
           },
-          initialValues: { mapboxApi: settings.data.data.mapboxApi },
+          initialValues: settings.data.data,
         }}
         buttons={buttons}
       >
         <FormSection className="w-full" heading="API Keys" subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung.">
           <FormContentBox>
-            <InputWrapper
-              label="Mapbox Public API Key"
-              name="mapboxApi"
-              rules={[
-                { required: true, message: 'Es muss eine Mapbox Public API Key angegeben werden' },
-                { pattern: /^pk\.ey/, message: 'Mapbox API Key muss mit "pk.ey" beginnen.' },
-              ]}
-            >
+            <Form.Item name="mapboxApi" label="Mapbox Public API Key" className="w-full" rules={[{ pattern: /^pk\.ey/, message: 'Mapbox API Key muss mit "pk.ey" beginnen.' }]}>
               <Input.Password rootClassName="dark:bg-gray-600/50" variant="filled" />
-            </InputWrapper>
+            </Form.Item>
           </FormContentBox>
         </FormSection>
       </FormLayout>
@@ -57,7 +51,7 @@ export function AdminTemplate() {
         <OptaInput
           value={{
             id: 'test',
-            fullOpta: 'Test',
+            fullOpta: 'Banana-Wagen',
             ort: 'Test',
             district: 'Test',
             functionCode: 'Test',
@@ -66,12 +60,25 @@ export function AdminTemplate() {
             orderNumber: 'Test',
             localCode: 'Test',
           }}
-          onBlur={(opta) => {
-            console.log(`onBlur: neue Opta: ${JSON.stringify(opta)}`);
-          }}
           onChange={(opta) => {
+            // FIXME[ember-rescue-68](rubeen, 19.12.24): being called to often
             console.log(`onChange: neue Opta: ${JSON.stringify(opta)}`);
           }}
+        />
+
+        <OptaInput
+          value={{
+            id: 'test',
+            fullOpta: 'NI DRK Uelzen 40-12-1',
+            ort: '',
+            district: '',
+            functionCode: '',
+            supplement: '',
+            bosCode: '',
+            orderNumber: '',
+            localCode: '',
+          }}
+          onChange={() => {}}
         />
       </div>
 

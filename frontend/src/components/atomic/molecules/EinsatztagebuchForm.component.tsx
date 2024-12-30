@@ -1,6 +1,5 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { useCallback, useMemo } from 'react';
-import { formatISO } from 'date-fns';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
@@ -8,6 +7,7 @@ import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { Button, DatePicker, Input, Select } from 'antd';
 import { PiCaretDown } from 'react-icons/pi';
+import dayjs from 'dayjs';
 
 interface Props {
   closeForm: () => void;
@@ -46,7 +46,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       resetOnSubmit={true}
       form={{
         rootClassName: 'grid grid-cols-2 gap-4',
-        initialValues: { timestamp: formatISO(new Date()), empfaenger: aufnehmendesRettungsmittelId },
+        initialValues: { timestamp: dayjs(), empfaenger: aufnehmendesRettungsmittelId },
         async onFinish(data) {
           await handleSubmit(data);
         },

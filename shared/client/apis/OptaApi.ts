@@ -13,13 +13,89 @@
  */
 
 import * as runtime from '../runtime';
-import type { ManyFunctionOptaTemplatesResponse } from '../models/index';
-import { ManyFunctionOptaTemplatesResponseFromJSON, ManyFunctionOptaTemplatesResponseToJSON } from '../models/index';
+import type {
+  ManyBosOptaTemplatesResponse,
+  ManyDistrictOptaTemplatesResponse,
+  ManyFunctionOptaTemplatesResponse,
+  ManyLocalCodeOptaTemplatesResponse,
+} from '../models/index';
+import {
+  ManyBosOptaTemplatesResponseFromJSON,
+  ManyBosOptaTemplatesResponseToJSON,
+  ManyDistrictOptaTemplatesResponseFromJSON,
+  ManyDistrictOptaTemplatesResponseToJSON,
+  ManyFunctionOptaTemplatesResponseFromJSON,
+  ManyFunctionOptaTemplatesResponseToJSON,
+  ManyLocalCodeOptaTemplatesResponseFromJSON,
+  ManyLocalCodeOptaTemplatesResponseToJSON,
+} from '../models/index';
 
 /**
  *
  */
 export class OptaApi extends runtime.BaseAPI {
+  /**
+   */
+  async optaControllerFindBosOptaV1Raw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<ManyBosOptaTemplatesResponse>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v1/templates/opta/bos`,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyBosOptaTemplatesResponseFromJSON(jsonValue));
+  }
+
+  /**
+   */
+  async optaControllerFindBosOptaV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<ManyBosOptaTemplatesResponse> {
+    const response = await this.optaControllerFindBosOptaV1Raw(initOverrides);
+    return await response.value();
+  }
+
+  /**
+   */
+  async optaControllerFindDistrictOptaV1Raw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<ManyDistrictOptaTemplatesResponse>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v1/templates/opta/district`,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyDistrictOptaTemplatesResponseFromJSON(jsonValue));
+  }
+
+  /**
+   */
+  async optaControllerFindDistrictOptaV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<ManyDistrictOptaTemplatesResponse> {
+    const response = await this.optaControllerFindDistrictOptaV1Raw(initOverrides);
+    return await response.value();
+  }
+
   /**
    */
   async optaControllerFindFunctionOptaV1Raw(
@@ -48,6 +124,37 @@ export class OptaApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<ManyFunctionOptaTemplatesResponse> {
     const response = await this.optaControllerFindFunctionOptaV1Raw(initOverrides);
+    return await response.value();
+  }
+
+  /**
+   */
+  async optaControllerFindLocalCodeOptaV1Raw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<ManyLocalCodeOptaTemplatesResponse>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/v1/templates/opta/local-code`,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) => ManyLocalCodeOptaTemplatesResponseFromJSON(jsonValue));
+  }
+
+  /**
+   */
+  async optaControllerFindLocalCodeOptaV1(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<ManyLocalCodeOptaTemplatesResponse> {
+    const response = await this.optaControllerFindLocalCodeOptaV1Raw(initOverrides);
     return await response.value();
   }
 }

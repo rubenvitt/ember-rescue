@@ -12,7 +12,6 @@ import { Status } from '@templates/status/status.schema';
 import { Bearbeiter } from '../../user/bearbeiter/core/bearbeiter.schema';
 import { Counter } from './mongo/schemas/counter.schema';
 import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.repository';
-import { BosGroup } from '@templates/opta/constants';
 import { OptaRepository } from '@templates/opta/repositories/opta.repository';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
 import { LocalCodeOptaRepository } from '@templates/opta/repositories/local-code-opta.repository';
@@ -52,18 +51,6 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('🌱 Start Seeding');
-
-    try {
-      await this.bosOptaRepository.create({
-        code: 'DRK',
-        description: 'Dresden',
-        label: 'Dresden',
-        group: BosGroup.Feuerwehren,
-        rufname: "Flotte 'Dresden'",
-      });
-    } catch (e) {
-      this.logger.error('Error while seeding bos opta: ' + e.message);
-    }
 
     // Alarmstichworte
     await this.insertSeedServiceData(

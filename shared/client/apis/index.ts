@@ -12,6 +12,7 @@ export * from './NinaApi';
 export * from './NotizenApi';
 export * from './OptaApi';
 export * from './OptaSchemaApi';
+export * from './PingApi';
 export * from './QualifikationenApi';
 export * from './RemindersApi';
 export * from './SecretsApi';

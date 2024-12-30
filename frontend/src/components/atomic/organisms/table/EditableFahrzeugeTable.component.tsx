@@ -10,7 +10,7 @@ import { InputWrapper } from '../../atoms/InputWrapper.component.js';
 import { toast } from 'react-toastify';
 import { FormLayout } from '../form/FormLayout.comonent.js';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
-import { OptaInputField } from '../../molecules/OptaInput.component.js';
+import { OptaInput } from '../../molecules/OptaInput.component.js';
 import { FahrzeugTemplateDto } from '@bluelight-hub/shared/client/index.js';
 import { Rule } from 'antd/es/form/index.js';
 
@@ -72,8 +72,6 @@ function JsonImExport() {
   const { fahrzeugeJson, updateFahrzeugeJson } = useFahrzeuge();
   const [importForm] = Form.useForm();
   const [exportForm] = Form.useForm();
-  // const exportFormikRef = useRef<FormikProps<{ json: string }>>(null);
-  // const importFormikRef = useRef<FormikProps<{ json: string }>>(null);
 
   useEffect(() => {
     if (!importForm.isFieldsTouched()) {
@@ -110,17 +108,15 @@ function JsonImExport() {
             }}
           >
             <Typography.Text>Export-JSON</Typography.Text>
-            <InputWrapper name={'json'}>
-              TODO
-              {/*<Input.TextArea*/}
-              {/*  name="json"*/}
-              {/*  rows={6}*/}
-              {/*  onFocus={(e) =>*/}
-              {/*    setTimeout(async () => {*/}
-              {/*      e.target.select();*/}
-              {/*    })*/}
-              {/*  }*/}
-              {/*/>*/}
+            <InputWrapper name="json">
+              <Input.TextArea
+                rows={6}
+                onFocus={(e) =>
+                  setTimeout(async () => {
+                    e.target.select();
+                  })
+                }
+              />
             </InputWrapper>
           </FormLayout>
 
@@ -143,7 +139,8 @@ function JsonImExport() {
             }}
             buttons={{
               submit: {
-                children: <>Fahrzeuge speichern</>,
+                children: <>Fahrzeuge speichern (kaputt 😭)</>,
+                disabled: true,
                 htmlType: 'submit',
                 icon: <PiCode size={24} />,
                 variant: 'dashed',
@@ -441,7 +438,7 @@ function EditableCell<Item>({ editing, dataIndex, title, inputType, record, inde
       break;
     case 'opta':
       inputNode = (
-        <OptaInputField
+        <OptaInput
         // name={dataIndex}
         // onChange={(opta) => {
         //   console.log(`neue Opta: ${JSON.stringify(opta)}`);
@@ -463,17 +460,21 @@ function EditableCell<Item>({ editing, dataIndex, title, inputType, record, inde
           name={dataIndex}
           rules={
             [
-              dataIndex === 'kapazitaet' && {
-                ...[
-                  { type: 'number', required: true, message: 'Kapazität wird benötigt' },
-                  { min: 0, message: 'Eine negative Stärke ist unzulässig.' },
-                ],
-              },
-              dataIndex === 'fullOpta' && {
-                required: true,
-                message: 'Eine Opta wird benötigt',
-              },
-            ].filter((value) => !!value) as Rule[]
+              dataIndex === 'kapazitaet'
+                ? {
+                    type: 'number',
+                    required: true,
+                    message: 'Kapazität wird benötigt',
+                    min: 0,
+                  }
+                : null,
+              dataIndex === 'fullOpta'
+                ? {
+                    required: true,
+                    message: 'Eine Opta wird benötigt',
+                  }
+                : null,
+            ].filter((value) => value !== null && value !== undefined) as Rule[]
           }
         >
           {inputNode}

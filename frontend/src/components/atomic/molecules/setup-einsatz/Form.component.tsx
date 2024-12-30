@@ -104,7 +104,7 @@ export function NewSetupEinsatzForm() {
       type="sectioned"
       form={{
         initialValues: {
-          erstAlarmiert: dayjs().toISOString(),
+          erstAlarmiert: dayjs(),
         },
         async onFinish(data) {
           console.log('createMissionDto', { data });

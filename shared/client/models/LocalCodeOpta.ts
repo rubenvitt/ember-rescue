@@ -12,98 +12,98 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  *
  * @export
- * @interface FunctionOptaDto
+ * @interface LocalCodeOpta
  */
-export interface FunctionOptaDto {
+export interface LocalCodeOpta {
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   code: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   label: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   type: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   description: string;
   /**
    *
    * @type {boolean}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   isActive: boolean;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   createdAt: string;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   updatedAt: Date;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
   validFrom: Date;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof LocalCodeOpta
    */
-  group: FunctionOptaDtoGroupEnum;
+  group: LocalCodeOptaGroupEnum;
 }
 
 /**
  * @export
  */
-export const FunctionOptaDtoGroupEnum = {
-  OrtsfesteFunkstellen: 'Ortsfeste Funkstellen',
-  Funktionskennungen: 'Funktionskennungen',
-  Einsatzleitfahrzeuge: 'Einsatzleitfahrzeuge',
-  Mannschaftstransport: 'Mannschaftstransport',
-  Logistikfahrzeuge: 'Logistikfahrzeuge',
-  Betreuungsfahrzeuge: 'Betreuungsfahrzeuge',
-  Notfallrettung: 'Notfallrettung',
-  VorbergehendeEinrichtungen: 'Vorübergehende Einrichtungen',
-  Krankentransport: 'Krankentransport',
-  Sanittsdienst: 'Sanitätsdienst',
-  Spezialtransport: 'Spezialtransport',
-  SonstigeTransportmittel: 'Sonstige Transportmittel',
+export const LocalCodeOptaGroupEnum = {
+  MinisteriumFrInneresUndSport: 'Ministerium für Inneres und Sport',
+  NiederschsischesLandesamtFrBrandUndKatastrophenschutz:
+    'Niedersächsisches Landesamt für Brand- und Katastrophenschutz',
+  Sonstige: 'Sonstige',
+  GemeindeFf: 'Gemeinde / FF',
+  HilfsorganisationenAufLandesebene: 'Hilfsorganisationen auf Landesebene',
+  BeauftragteFrRdOhneHilfsorganisation: 'Beauftragte für RD ohne Hilfsorganisation',
+  LandeseinheitenImKatastrophenschutz: 'Landeseinheiten im Katastrophenschutz',
+  Intensivtransport: 'Intensivtransport',
+  Waldbrandbeauftragte: 'Waldbrandbeauftragte',
+  Werkfeuerwehr: 'Werkfeuerwehr',
+  FhrungskrfteRettungsdienst: 'Führungskräfte Rettungsdienst',
+  FhrungskrfteFeuerwehr: 'Führungskräfte Feuerwehr',
 } as const;
-export type FunctionOptaDtoGroupEnum = (typeof FunctionOptaDtoGroupEnum)[keyof typeof FunctionOptaDtoGroupEnum];
+export type LocalCodeOptaGroupEnum = (typeof LocalCodeOptaGroupEnum)[keyof typeof LocalCodeOptaGroupEnum];
 
 /**
- * Check if a given object implements the FunctionOptaDto interface.
+ * Check if a given object implements the LocalCodeOpta interface.
  */
-export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaDto {
+export function instanceOfLocalCodeOpta(value: object): value is LocalCodeOpta {
   if (!('id' in value) || value['id'] === undefined) return false;
   if (!('code' in value) || value['code'] === undefined) return false;
   if (!('label' in value) || value['label'] === undefined) return false;
@@ -117,11 +117,11 @@ export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaD
   return true;
 }
 
-export function FunctionOptaDtoFromJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoFromJSONTyped(json, false);
+export function LocalCodeOptaFromJSON(json: any): LocalCodeOpta {
+  return LocalCodeOptaFromJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): FunctionOptaDto {
+export function LocalCodeOptaFromJSONTyped(json: any, ignoreDiscriminator: boolean): LocalCodeOpta {
   if (json == null) {
     return json;
   }
@@ -139,11 +139,11 @@ export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
   };
 }
 
-export function FunctionOptaDtoToJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoToJSONTyped(json, false);
+export function LocalCodeOptaToJSON(json: any): LocalCodeOpta {
+  return LocalCodeOptaToJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoToJSONTyped(value?: FunctionOptaDto | null, ignoreDiscriminator: boolean = false): any {
+export function LocalCodeOptaToJSONTyped(value?: LocalCodeOpta | null, ignoreDiscriminator: boolean = false): any {
   if (value == null) {
     return value;
   }

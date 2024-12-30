@@ -23,8 +23,10 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      enableDebugMessages: true, // FIXME[ember-rescue-68](rubeen, 23.12.24): remove this in prod
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       exceptionFactory: (errors) => {
         const formattedErrors = errors.reduce((acc, err) => {

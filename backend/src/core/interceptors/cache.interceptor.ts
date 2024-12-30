@@ -16,9 +16,9 @@ export class AppCacheInterceptor extends CacheInterceptor {
       context.getHandler(),
     );
     if (isSkipCache) {
-      AppCacheInterceptor.logger.verbose(
-        `Skip cache for ${context.switchToHttp().getRequest().url}`,
-      );
+      let url = context.switchToHttp().getRequest().url;
+      if (!url.includes('ping'))
+        AppCacheInterceptor.logger.verbose(`Skip cache for ${url}`);
       return undefined;
     }
     AppCacheInterceptor.logger.verbose(

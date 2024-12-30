@@ -12,98 +12,72 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  *
  * @export
- * @interface FunctionOptaDto
+ * @interface DistrictOpta
  */
-export interface FunctionOptaDto {
+export interface DistrictOpta {
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   code: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   label: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   type: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   description: string;
   /**
    *
    * @type {boolean}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   isActive: boolean;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   createdAt: string;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   updatedAt: Date;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof DistrictOpta
    */
   validFrom: Date;
-  /**
-   *
-   * @type {string}
-   * @memberof FunctionOptaDto
-   */
-  group: FunctionOptaDtoGroupEnum;
 }
 
 /**
- * @export
+ * Check if a given object implements the DistrictOpta interface.
  */
-export const FunctionOptaDtoGroupEnum = {
-  OrtsfesteFunkstellen: 'Ortsfeste Funkstellen',
-  Funktionskennungen: 'Funktionskennungen',
-  Einsatzleitfahrzeuge: 'Einsatzleitfahrzeuge',
-  Mannschaftstransport: 'Mannschaftstransport',
-  Logistikfahrzeuge: 'Logistikfahrzeuge',
-  Betreuungsfahrzeuge: 'Betreuungsfahrzeuge',
-  Notfallrettung: 'Notfallrettung',
-  VorbergehendeEinrichtungen: 'Vorübergehende Einrichtungen',
-  Krankentransport: 'Krankentransport',
-  Sanittsdienst: 'Sanitätsdienst',
-  Spezialtransport: 'Spezialtransport',
-  SonstigeTransportmittel: 'Sonstige Transportmittel',
-} as const;
-export type FunctionOptaDtoGroupEnum = (typeof FunctionOptaDtoGroupEnum)[keyof typeof FunctionOptaDtoGroupEnum];
-
-/**
- * Check if a given object implements the FunctionOptaDto interface.
- */
-export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaDto {
+export function instanceOfDistrictOpta(value: object): value is DistrictOpta {
   if (!('id' in value) || value['id'] === undefined) return false;
   if (!('code' in value) || value['code'] === undefined) return false;
   if (!('label' in value) || value['label'] === undefined) return false;
@@ -113,15 +87,14 @@ export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaD
   if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
   if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
   if (!('validFrom' in value) || value['validFrom'] === undefined) return false;
-  if (!('group' in value) || value['group'] === undefined) return false;
   return true;
 }
 
-export function FunctionOptaDtoFromJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoFromJSONTyped(json, false);
+export function DistrictOptaFromJSON(json: any): DistrictOpta {
+  return DistrictOptaFromJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): FunctionOptaDto {
+export function DistrictOptaFromJSONTyped(json: any, ignoreDiscriminator: boolean): DistrictOpta {
   if (json == null) {
     return json;
   }
@@ -135,15 +108,14 @@ export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     createdAt: json['createdAt'],
     updatedAt: new Date(json['updatedAt']),
     validFrom: new Date(json['validFrom']),
-    group: json['group'],
   };
 }
 
-export function FunctionOptaDtoToJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoToJSONTyped(json, false);
+export function DistrictOptaToJSON(json: any): DistrictOpta {
+  return DistrictOptaToJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoToJSONTyped(value?: FunctionOptaDto | null, ignoreDiscriminator: boolean = false): any {
+export function DistrictOptaToJSONTyped(value?: DistrictOpta | null, ignoreDiscriminator: boolean = false): any {
   if (value == null) {
     return value;
   }
@@ -158,6 +130,5 @@ export function FunctionOptaDtoToJSONTyped(value?: FunctionOptaDto | null, ignor
     createdAt: value['createdAt'],
     updatedAt: value['updatedAt'].toISOString(),
     validFrom: value['validFrom'].toISOString(),
-    group: value['group'],
   };
 }

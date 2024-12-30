@@ -12,98 +12,96 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  *
  * @export
- * @interface FunctionOptaDto
+ * @interface BosOpta
  */
-export interface FunctionOptaDto {
+export interface BosOpta {
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   code: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   label: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   type: string;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   description: string;
   /**
    *
    * @type {boolean}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   isActive: boolean;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   createdAt: string;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   updatedAt: Date;
   /**
    *
    * @type {Date}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
   validFrom: Date;
   /**
    *
    * @type {string}
-   * @memberof FunctionOptaDto
+   * @memberof BosOpta
    */
-  group: FunctionOptaDtoGroupEnum;
+  group: BosOptaGroupEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof BosOpta
+   */
+  rufname: string;
 }
 
 /**
  * @export
  */
-export const FunctionOptaDtoGroupEnum = {
-  OrtsfesteFunkstellen: 'Ortsfeste Funkstellen',
-  Funktionskennungen: 'Funktionskennungen',
-  Einsatzleitfahrzeuge: 'Einsatzleitfahrzeuge',
-  Mannschaftstransport: 'Mannschaftstransport',
-  Logistikfahrzeuge: 'Logistikfahrzeuge',
-  Betreuungsfahrzeuge: 'Betreuungsfahrzeuge',
-  Notfallrettung: 'Notfallrettung',
-  VorbergehendeEinrichtungen: 'Vorübergehende Einrichtungen',
-  Krankentransport: 'Krankentransport',
-  Sanittsdienst: 'Sanitätsdienst',
-  Spezialtransport: 'Spezialtransport',
-  SonstigeTransportmittel: 'Sonstige Transportmittel',
+export const BosOptaGroupEnum = {
+  Feuerwehren: 'Feuerwehren',
+  Hilfsorganisationen: 'Hilfsorganisationen',
+  Katastrophenschutz: 'Katastrophenschutz',
+  Polizei: 'Polizei',
+  SonstigeBos: 'Sonstige BOS',
 } as const;
-export type FunctionOptaDtoGroupEnum = (typeof FunctionOptaDtoGroupEnum)[keyof typeof FunctionOptaDtoGroupEnum];
+export type BosOptaGroupEnum = (typeof BosOptaGroupEnum)[keyof typeof BosOptaGroupEnum];
 
 /**
- * Check if a given object implements the FunctionOptaDto interface.
+ * Check if a given object implements the BosOpta interface.
  */
-export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaDto {
+export function instanceOfBosOpta(value: object): value is BosOpta {
   if (!('id' in value) || value['id'] === undefined) return false;
   if (!('code' in value) || value['code'] === undefined) return false;
   if (!('label' in value) || value['label'] === undefined) return false;
@@ -114,14 +112,15 @@ export function instanceOfFunctionOptaDto(value: object): value is FunctionOptaD
   if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
   if (!('validFrom' in value) || value['validFrom'] === undefined) return false;
   if (!('group' in value) || value['group'] === undefined) return false;
+  if (!('rufname' in value) || value['rufname'] === undefined) return false;
   return true;
 }
 
-export function FunctionOptaDtoFromJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoFromJSONTyped(json, false);
+export function BosOptaFromJSON(json: any): BosOpta {
+  return BosOptaFromJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): FunctionOptaDto {
+export function BosOptaFromJSONTyped(json: any, ignoreDiscriminator: boolean): BosOpta {
   if (json == null) {
     return json;
   }
@@ -136,14 +135,15 @@ export function FunctionOptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     updatedAt: new Date(json['updatedAt']),
     validFrom: new Date(json['validFrom']),
     group: json['group'],
+    rufname: json['rufname'],
   };
 }
 
-export function FunctionOptaDtoToJSON(json: any): FunctionOptaDto {
-  return FunctionOptaDtoToJSONTyped(json, false);
+export function BosOptaToJSON(json: any): BosOpta {
+  return BosOptaToJSONTyped(json, false);
 }
 
-export function FunctionOptaDtoToJSONTyped(value?: FunctionOptaDto | null, ignoreDiscriminator: boolean = false): any {
+export function BosOptaToJSONTyped(value?: BosOpta | null, ignoreDiscriminator: boolean = false): any {
   if (value == null) {
     return value;
   }
@@ -159,5 +159,6 @@ export function FunctionOptaDtoToJSONTyped(value?: FunctionOptaDto | null, ignor
     updatedAt: value['updatedAt'].toISOString(),
     validFrom: value['validFrom'].toISOString(),
     group: value['group'],
+    rufname: value['rufname'],
   };
 }
