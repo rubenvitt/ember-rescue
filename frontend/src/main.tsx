@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 // @ts-ignore
 import { routeTree } from './routeTree.gen';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
+import '@ant-design/v5-patch-for-react-19';
 
 // Create a new router instance
 const router = createRouter({
