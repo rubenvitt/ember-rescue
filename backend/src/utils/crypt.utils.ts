@@ -93,4 +93,5 @@ export function createEncryptedSchema<TClass extends PreHookDocument>(
   schema.post('init', createDecryptionHook<TClass>(fields, secret));
 }
 
+// TODO[ember-rescue-68](rubeen, 30.12.24): was ist hiermit?
 export type EncryptedDocument<T> = T & PreHookDocument;
