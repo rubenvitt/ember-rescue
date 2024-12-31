@@ -47,6 +47,12 @@ export interface CreateUpdateFahrzeugDto {
    * @memberof CreateUpdateFahrzeugDto
    */
   iconDefinition?: IconDefinitionDto;
+  /**
+   *
+   * @type {number}
+   * @memberof CreateUpdateFahrzeugDto
+   */
+  kapazitaet?: number;
 }
 
 /**
@@ -68,6 +74,7 @@ export function CreateUpdateFahrzeugDtoFromJSONTyped(json: any, ignoreDiscrimina
     id: json['_id'] == null ? undefined : json['_id'],
     opta: json['opta'] == null ? undefined : OptaDtoFromJSON(json['opta']),
     iconDefinition: json['iconDefinition'] == null ? undefined : IconDefinitionDtoFromJSON(json['iconDefinition']),
+    kapazitaet: json['kapazitaet'] == null ? undefined : json['kapazitaet'],
   };
 }
 
@@ -87,5 +94,6 @@ export function CreateUpdateFahrzeugDtoToJSONTyped(
     _id: value['id'],
     opta: OptaDtoToJSON(value['opta']),
     iconDefinition: IconDefinitionDtoToJSON(value['iconDefinition']),
+    kapazitaet: value['kapazitaet'],
   };
 }

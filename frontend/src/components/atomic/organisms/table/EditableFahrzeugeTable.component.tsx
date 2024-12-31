@@ -1,8 +1,8 @@
 import { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useMemo } from 'react';
-import { Button, Collapse, Form, Input, InputNumber, Select, Switch as AntSwitch, Switch, Table, Tooltip, Typography } from 'antd';
+import { Button, Collapse, Form, Input, InputNumber, Select, Switch, Table, Tooltip, Typography } from 'antd';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { create } from 'zustand';
-import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiX } from 'react-icons/pi';
+import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiTrash, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
@@ -13,6 +13,7 @@ import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { OptaInput } from '../../molecules/OptaInput.component.js';
 import { FahrzeugTemplateDto } from '@bluelight-hub/shared/client/index.js';
 import { Rule } from 'antd/es/form/index.js';
+import { useOpta } from '../../../../hooks/opta.hook.js';
 
 type EditingStore = {
   id: null | string;
@@ -26,7 +27,7 @@ const useEditingStore = create<EditingStore>((setState, getState) => ({
   isEditing(id: string) {
     return getState().id === id;
   },
-  setEditingId: (id: string) => setState({ id }),
+  setEditingId: (id) => setState({ id }),
   resetEditingId: () => setState({ id: null }),
 }));
 
@@ -43,11 +44,10 @@ function selectInputType(dataIndex?: string) {
       return 'opta';
     case 'kapazitaet':
       return 'number';
-    case 'istTemporaer':
-      return 'checkbox';
   }
 }
 
+const fahrzeugCreateId = 'create.fahrzeug';
 const newFahrzeugTemplate: FahrzeugTemplateDto = {
   opta: {
     id: 'custom',
@@ -61,7 +61,7 @@ const newFahrzeugTemplate: FahrzeugTemplateDto = {
   },
   fullOpta: 'NI Rotkreuz Uelzen 40-12-1',
   kapazitaet: 0,
-  id: 'create.fahrzeug',
+  id: fahrzeugCreateId,
   iconDefinition: {},
 };
 
@@ -173,11 +173,21 @@ function JsonImExport() {
 }
 
 export function EditableFahrzeugeTable() {
-  const [form] = Form.useForm();
-  const { templateFahrzeuge, patchFahrzeuge, fahrzeugeTypen } = useFahrzeuge();
+  const [form] = Form.useForm<EditableFahrzeugType>();
+  const { templateFahrzeuge, patchFahrzeuge, removeVehicleTemplate, fahrzeugeTypen } = useFahrzeuge();
   const { isEditing, setEditingId, id, resetEditingId } = useEditingStore();
+  const { functionOpta } = useOpta();
 
   const cancel = useCallback(resetEditingId, [resetEditingId]);
+  const remove = useCallback(async () => {
+    console.log('Removing', id);
+    await removeVehicleTemplate.mutateAsync(id!!);
+    resetEditingId();
+  }, [id]);
+
+  const functionCodeMap = useMemo(() => {
+    return new Map(functionOpta.data?.data.map((opta) => [opta.code, opta]));
+  }, [functionOpta.data]);
 
   const editingFahrzeug = useMemo(() => {
     if (newFahrzeugTemplate.id === id) {
@@ -238,7 +248,7 @@ export function EditableFahrzeugeTable() {
     });
 
     // Nach dem Reset prüfen
-    console.trace('Form values after reset:', form.getFieldsValue());
+    console.debug('Form values after reset:', form.getFieldsValue());
   }, [editingFahrzeug]);
 
   const columns = useMemo<EditableColumnsType<FahrzeugTemplateDto>>(
@@ -249,6 +259,7 @@ export function EditableFahrzeugeTable() {
         editable: false,
         width: 100,
         render: (value) => {
+          if (value === fahrzeugCreateId) return null;
           return (
             <Tooltip
               title={value}
@@ -269,20 +280,31 @@ export function EditableFahrzeugeTable() {
         title: 'Typ des Fahrzeugs',
         dataIndex: 'fahrzeugTyp',
         editable: false,
-        render: (_, record) => record.opta.functionCode,
+        render: (_, record) => {
+          if (!record.opta.functionCode) {
+            return null;
+          }
+
+          const functionOpta = functionCodeMap.get(record.opta.functionCode);
+          if (!functionOpta) {
+            return record.opta.functionCode;
+          }
+          return (
+            <div>
+              <p>
+                {functionOpta.code} - {functionOpta.label}
+              </p>
+              <p className="text-sm text-gray-600">{functionOpta.group}</p>
+            </div>
+          );
+        },
       },
       { title: 'Standardanzahl Kräfte', dataIndex: 'kapazitaet', editable: true },
-      {
-        title: 'Temporär',
-        dataIndex: 'istTemporaer',
-        editable: true,
-        render: (value) => <AntSwitch value={value} disabled={true} />,
-      },
       {
         title: (
           <div className="flex justify-center">
             <Tooltip title="Neue Fahrzeug hinzufügen">
-              <Button icon={<PiPlus />} onClick={() => setEditingId('create.fahrzeug')} />
+              <Button icon={<PiPlus />} onClick={() => setEditingId(fahrzeugCreateId)} />
             </Tooltip>
           </div>
         ),
@@ -292,12 +314,21 @@ export function EditableFahrzeugeTable() {
           if (editing) {
             return (
               <div className="flex justify-around">
-                <Tooltip title="Bearbeitung abbrechen">
-                  <Button danger onClick={cancel} icon={<PiX />} />
-                </Tooltip>
-                <Tooltip title="Änderungen bestätigen">
-                  <Button type="primary" onClick={form.submit} icon={<PiCheck />} loading={patchFahrzeuge.isPending} />
-                </Tooltip>
+                {id !== fahrzeugCreateId && (
+                  <div>
+                    <Tooltip title="Fahrzeugvorlage löschen">
+                      <Button danger onClick={remove} icon={<PiTrash />} />
+                    </Tooltip>
+                  </div>
+                )}
+                <div className="flex space-x-2">
+                  <Tooltip title="Bearbeitung abbrechen">
+                    <Button danger onClick={cancel} icon={<PiX />} />
+                  </Tooltip>
+                  <Tooltip title="Änderungen bestätigen">
+                    <Button type="primary" htmlType="submit" icon={<PiCheck />} loading={patchFahrzeuge.isPending} />
+                  </Tooltip>
+                </div>
               </div>
             );
           }
@@ -347,12 +378,18 @@ export function EditableFahrzeugeTable() {
   );
   return (
     <>
+      <Typography.Title level={3}>Fahrzeug-Template Verwaltung</Typography.Title>
       <Form<EditableFahrzeugType>
         form={form}
         validateTrigger={['onBlur', 'onSubmit']}
+        onFinishFailed={(errorInfo) => {
+          console.log('Failed:', errorInfo);
+          toast.error('Fehler beim Bearbeiten des Fahrzeugs');
+          // TODO[ember-rescue-68](rubeen, 30.12.24): das hier wird nicht aufgerufen, aber das Form auch nicht korrekt abgeschickt. Was da los
+        }}
         onFinish={async (data) => {
           console.log('submitting with data', { data });
-          await patchFahrzeuge.mutateAsync({ items: [data] });
+          await patchFahrzeuge.mutateAsync({ items: [{ ...data, id: id === fahrzeugCreateId ? undefined : (id as string) }] });
           resetEditingId();
         }}
         initialValues={{

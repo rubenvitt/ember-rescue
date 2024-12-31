@@ -84,7 +84,7 @@ const SmartInput = ({
   );
 };
 
-export const OptaInput = ({ onChange, value }: { onChange: (value: OptaInput) => void; value?: OptaInput }) => {
+export const OptaInput = ({ onChange, value }: { onChange?: (value: OptaInput) => void; value?: OptaInput }) => {
   const [formData, setFormData] = useState<OptaInput>(() => ({
     bosCode: '',
     district: '',
@@ -134,7 +134,7 @@ export const OptaInput = ({ onChange, value }: { onChange: (value: OptaInput) =>
         ...prev,
         [name]: newValue,
       };
-      onChange(updated);
+      onChange?.(updated);
       return updated;
     });
   };
@@ -145,7 +145,7 @@ export const OptaInput = ({ onChange, value }: { onChange: (value: OptaInput) =>
       ...formData,
       fullOpta: newFreetext,
     };
-    onChange(updated);
+    onChange?.(updated);
   };
 
   return (

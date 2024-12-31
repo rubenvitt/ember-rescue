@@ -2,7 +2,7 @@ import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { FahrzeugDto } from '../../types/app/fahrzeug.types.js';
 import { QueryClient } from '@tanstack/react-query';
-import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, FahrzeugeApi, ImportManyFahrzeugeDto } from '@bluelight-hub/shared/client/index.js';
+import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
 
@@ -12,7 +12,7 @@ export type PatchFahrzeugeType = PatchFahrzeugType[];
 
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
-const templateApi = new FahrzeugeApi(getAPIConfig());
+const templateApi = new VehiclesApi(getAPIConfig());
 const einsatzFahrzeugeApi = new EinsatzFahrzeugeApi(getAPIConfig());
 
 /// fetch
@@ -33,14 +33,14 @@ export const fetchAllFahrzeuge = {
 export const fetchAllFahrzeugeJson = {
   queryKey: [queryKey, 'json'],
   queryFn: async function () {
-    return JSON.stringify((await templateApi.fahrzeugeControllerFindAllV1()).data, undefined, 2);
+    return JSON.stringify((await templateApi.vehiclesControllerFindAllV1()).data, undefined, 2);
   },
 };
 
 export let fetchAllTemplateFahrzeuge = {
   queryKey: [queryKey, 'template'],
   queryFn: async function () {
-    return templateApi.fahrzeugeControllerFindAllV1();
+    return templateApi.vehiclesControllerFindAllV1();
   },
 };
 
@@ -64,7 +64,7 @@ export const postAddFahrzeugToEinsatz = {
 export const fetchFahrzeugTypen = {
   queryKey: [queryKey, 'typen'],
   queryFn: function () {
-    return templateApi.fahrzeugeControllerFindAllTypenV1();
+    return templateApi.vehiclesControllerFindAllTypenV1();
   },
 };
 
@@ -108,19 +108,25 @@ export const postStatusForFahrzeug = {
 export const postAllFahrzeugeJson = {
   queryKey: [queryKey, 'json'],
   mutationFn: async ({ json }: { json: string }) => {
-    return templateApi.fahrzeugeControllerImportFahrzeugeV1({
+    return templateApi.vehiclesControllerImportFahrzeugeV1({
       importManyFahrzeugeDto: JSON.parse(json),
     });
   },
 };
 
-// helper
-
 export const patchFahrzeuge = {
-  mutationKey: [queryKey, 'status'],
+  mutationKey: [queryKey, 'patch'],
   mutationFn: async (fahrzeuge: ImportManyFahrzeugeDto) => {
-    return templateApi.fahrzeugeControllerUpdateManyV1({
+    return await templateApi.vehiclesControllerUpdateManyV1({
       importManyFahrzeugeDto: fahrzeuge,
+    });
+  },
+};
+export const removeVehicleTemplate = {
+  mutationKey: [queryKey, 'remove'],
+  mutationFn: async (vehicleId: string) => {
+    return await templateApi.vehiclesControllerDeleteVehicleV1({
+      vehicleId,
     });
   },
 };

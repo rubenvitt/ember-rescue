@@ -9,7 +9,7 @@ import { Notiz } from '../notes/notiz.schema';
 import { Reminder } from '../reminders/reminder.schema';
 import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
-import { FahrzeugTemplate } from '@templates/vehicles/fahrzeug-template.schema';
+import { VehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
 import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
 import { JournalEntryType } from '../journal/journal.dto';
 
@@ -38,7 +38,7 @@ class Personal {
 }
 
 @Schema({ timestamps: true })
-export class FahrzeugOnEinsatz extends FahrzeugTemplate {
+export class FahrzeugOnEinsatz extends VehiclesTemplate {
   @Prop({ required: true })
   einsatzbeginn: Date;
 

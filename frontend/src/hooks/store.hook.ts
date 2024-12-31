@@ -32,9 +32,9 @@ export const useStore = create<Store>((set, get) => ({
 
   missionId: storage().readLocalStorage<string>('mission'),
   setEinsatz: (einsatz: SmallMissionDto) => {
-    console.trace('setEinsatz', einsatz.id, 'missionId', get().missionId, 'storage', storage().readLocalStorage('mission'), 'set', 'missionId', 'setEinsatz');
+    console.debug('setEinsatz', einsatz.id, 'missionId', get().missionId, 'storage', storage().readLocalStorage('mission'), 'set', 'missionId', 'setEinsatz');
     storage().writeLocalStorage('mission', einsatz.id);
-    console.trace('storage', storage().readLocalStorage('mission'), 'set', 'missionId', 'setEinsatz');
+    console.debug('storage', storage().readLocalStorage('mission'), 'set', 'missionId', 'setEinsatz');
     set({ missionId: einsatz.id });
   },
   removeEinsatz: () => {

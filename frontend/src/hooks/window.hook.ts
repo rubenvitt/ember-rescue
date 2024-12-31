@@ -65,7 +65,7 @@ export const useAppWindow = ({ appWindow, windowOptions }: UseAppWindowParameter
           }
         });
       } else {
-        console.trace('not using tauri for window creation');
+        console.debug('not using tauri for window creation');
         if (WindowUrls[appWindow].startsWith('http')) {
           // navigate with browser api
           window.open(WindowUrls[appWindow]);

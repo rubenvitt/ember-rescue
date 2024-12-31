@@ -2,7 +2,6 @@ apis/AlarmstichwortApi.ts
 apis/BearbeiterCoreApi.ts
 apis/EinsatzFahrzeugeApi.ts
 apis/ExportApi.ts
-apis/FahrzeugeApi.ts
 apis/JournalApi.ts
 apis/MetaApi.ts
 apis/MissionCoreApi.ts
@@ -16,6 +15,7 @@ apis/RemindersApi.ts
 apis/SecretsApi.ts
 apis/SettingsApi.ts
 apis/StatusApi.ts
+apis/VehiclesApi.ts
 apis/index.ts
 index.ts
 models/AddVehicleToMissionDto.ts

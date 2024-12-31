@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class OptaDto {
   @ApiProperty({ required: false })
@@ -42,8 +42,8 @@ export class OptaDto {
   @IsOptional()
   supplement?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   fullOpta: string;
 }

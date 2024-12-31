@@ -26,7 +26,7 @@ import { TemplateDocument } from '@core/database/base-documents';
 import { QualifikationenRepository } from '@templates/qualifications/qualifikationen.repository';
 import { StatusRepository } from '@templates/status/status.repository';
 import { EinsatzRepository } from '../../missions/schema/einsatz.repository';
-import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
+import { VehiclesRepository } from '@templates/vehicles/vehicles.repository';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -46,7 +46,7 @@ export class SeedService implements OnModuleInit {
     private readonly qualifikationenRepository: QualifikationenRepository,
     private readonly statusRepository: StatusRepository,
     private readonly einsatzRepository: EinsatzRepository,
-    private readonly fahrzeugTemplateRepository: FahrzeugeRepository,
+    private readonly fahrzeugTemplateRepository: VehiclesRepository,
   ) {}
 
   async onModuleInit() {

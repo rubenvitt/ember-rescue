@@ -31,6 +31,12 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
+  const removeVehicleTemplate = useMutation<unknown, unknown, string>({
+    mutationKey: services.backend.fahrzeuge.removeVehicleTemplate.mutationKey,
+    mutationFn: services.backend.fahrzeuge.removeVehicleTemplate.mutationFn,
+    onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
+  });
+
   const addFahrzeugToEinsatz = useMutation<unknown, unknown, AddVehicleToMissionDto>({
     mutationKey: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationKey({ einsatzId: missionId }),
     mutationFn: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationFn({ einsatzId: missionId }),
@@ -73,6 +79,7 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
     templateFahrzeuge,
     fahrzeugeTypen,
     patchFahrzeuge,
+    removeVehicleTemplate,
     addFahrzeugToEinsatz,
     removeFahrzeugFromEinsatz,
     changeStatus,

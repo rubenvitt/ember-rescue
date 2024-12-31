@@ -24,7 +24,7 @@ export interface OptaDto {
    * @type {string}
    * @memberof OptaDto
    */
-  id: string;
+  id?: string;
   /**
    *
    * @type {string}
@@ -72,15 +72,13 @@ export interface OptaDto {
    * @type {string}
    * @memberof OptaDto
    */
-  fullOpta: string;
+  fullOpta?: string;
 }
 
 /**
  * Check if a given object implements the OptaDto interface.
  */
 export function instanceOfOptaDto(value: object): value is OptaDto {
-  if (!('id' in value) || value['id'] === undefined) return false;
-  if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   return true;
 }
 
@@ -93,7 +91,7 @@ export function OptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
     return json;
   }
   return {
-    id: json['id'],
+    id: json['id'] == null ? undefined : json['id'],
     district: json['district'] == null ? undefined : json['district'],
     bosCode: json['bosCode'] == null ? undefined : json['bosCode'],
     localCode: json['localCode'] == null ? undefined : json['localCode'],
@@ -101,7 +99,7 @@ export function OptaDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
     orderNumber: json['orderNumber'] == null ? undefined : json['orderNumber'],
     ort: json['ort'] == null ? undefined : json['ort'],
     supplement: json['supplement'] == null ? undefined : json['supplement'],
-    fullOpta: json['fullOpta'],
+    fullOpta: json['fullOpta'] == null ? undefined : json['fullOpta'],
   };
 }
 

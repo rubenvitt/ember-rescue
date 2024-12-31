@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  Inject,
   Logger,
+  Param,
   Patch,
   Post,
   Res,
@@ -12,7 +15,7 @@ import {
 import { FahrzeugeService } from './fahrzeuge.service';
 import { Response } from 'express';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
-import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
 import {
   FahrzeugTemplateDto,
   ImportManyFahrzeugeDto,
@@ -20,18 +23,21 @@ import {
   ManyFahrzeugTypResponse,
 } from '@templates/vehicles/fahrzeuge.dto';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
+import { Cache, CACHE_MANAGER, CacheKey } from '@nestjs/cache-manager';
 
 @Controller('templates/vehicles')
 @UseGuards(BearbeiterGuard)
-export class FahrzeugeController {
-  private readonly logger = new Logger(FahrzeugeController.name);
+export class VehiclesController {
+  private readonly logger = new Logger(VehiclesController.name);
 
   constructor(
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly functionOptaRepository: FunctionOptaRepository,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Get()
+  @CacheKey('vehicles')
   @ApiOkResponse({
     type: ManyFahrzeugeTemplateResponse,
     description: 'List of all vehicles (templates)',
@@ -66,8 +72,24 @@ export class FahrzeugeController {
     @Res() response: Response,
   ) {
     await this.fahrzeugeService.updateMany(fahrzeuge);
-    response.status(HttpStatus.CREATED);
+    await this.cacheManager.del('vehicles');
+    response.status(HttpStatus.OK);
     response.send({ status: 'Fahrzeuge updated successfully' });
+  }
+
+  @Delete(':vehicleId')
+  @ApiOkResponse({
+    description: 'Delete a vehicle template by id',
+  })
+  @ApiParam({
+    name: 'vehicleId',
+    required: true,
+    type: String,
+    description: 'Fahrzeug ID',
+  })
+  async deleteVehicle(@Param('vehicleId') vehicleId: string) {
+    await this.fahrzeugeService.deleteVehicle(vehicleId);
+    await this.cacheManager.del('vehicles');
   }
 
   @Get('/import/schema/v2')

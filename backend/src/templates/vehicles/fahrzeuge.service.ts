@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FahrzeugDto, FahrzeugImportDto } from '../../types';
-import { FahrzeugeRepository } from '@templates/vehicles/fahrzeuge.repository';
+import { VehiclesRepository } from '@templates/vehicles/vehicles.repository';
 import { ValidationException } from '@core/exceptions/validation.exception';
 import {
   CreateUpdateFahrzeugDto,
@@ -11,14 +11,13 @@ import {
 export class FahrzeugeService {
   private readonly logger = new Logger(FahrzeugeService.name);
 
-  constructor(private readonly repository: FahrzeugeRepository) {}
+  constructor(private readonly repository: VehiclesRepository) {}
 
   async findAll() {
     return this.repository.findActiveWithOpta();
   }
 
   updateMany(fahrzeuge: ImportManyFahrzeugeDto) {
-    this.logger.debug('updateMany', fahrzeuge);
     return this.repository.upsertMany(fahrzeuge.items);
   }
 
@@ -36,6 +35,10 @@ export class FahrzeugeService {
       ...rest,
       fullOpta: rest.opta.fullOpta,
     });
+  }
+
+  async deleteVehicle(vehicleId: string) {
+    return this.repository.deleteOne({ _id: vehicleId });
   }
 
   // TODO move this method to OPTA

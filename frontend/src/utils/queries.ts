@@ -25,8 +25,10 @@ export function requireParams(...elements: unknown[]) {
  * @return {() => Promise<void>} The function that invalidates the queries.
  */
 export function createInvalidateQueries(queryKey: unknown[], queryClient: QueryClient): () => Promise<void> {
-  return async () =>
+  return async () => {
+    console.log('invalidating queries:', { queryKey });
     await queryClient.invalidateQueries({
       queryKey,
     });
+  };
 }

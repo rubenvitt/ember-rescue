@@ -46,7 +46,7 @@ export interface FahrzeugTemplateDto {
    * @type {string}
    * @memberof FahrzeugTemplateDto
    */
-  fullOpta: string;
+  fullOpta?: string;
   /**
    *
    * @type {IconDefinitionDto}
@@ -67,7 +67,6 @@ export interface FahrzeugTemplateDto {
 export function instanceOfFahrzeugTemplateDto(value: object): value is FahrzeugTemplateDto {
   if (!('id' in value) || value['id'] === undefined) return false;
   if (!('opta' in value) || value['opta'] === undefined) return false;
-  if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   if (!('iconDefinition' in value) || value['iconDefinition'] === undefined) return false;
   if (!('kapazitaet' in value) || value['kapazitaet'] === undefined) return false;
   return true;
@@ -84,7 +83,7 @@ export function FahrzeugTemplateDtoFromJSONTyped(json: any, ignoreDiscriminator:
   return {
     id: json['_id'],
     opta: OptaDtoFromJSON(json['opta']),
-    fullOpta: json['fullOpta'],
+    fullOpta: json['fullOpta'] == null ? undefined : json['fullOpta'],
     iconDefinition: IconDefinitionDtoFromJSON(json['iconDefinition']),
     kapazitaet: json['kapazitaet'],
   };

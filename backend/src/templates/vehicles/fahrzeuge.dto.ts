@@ -2,7 +2,7 @@ import { ApiResponse } from '../../types';
 import { ApiProperty } from '@nestjs/swagger';
 import { FunctionGroup, OptaType } from '@templates/opta/constants';
 import { OptaDto } from '@templates/opta/dtos/opta.dto';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
 
 export class IconDefinitionDto {
   @ApiProperty({ required: false })
@@ -20,7 +20,9 @@ export class FahrzeugTemplateDto {
   @ApiProperty()
   opta: OptaDto;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   fullOpta: string;
 
   @ApiProperty({
@@ -86,10 +88,17 @@ export class CreateUpdateFahrzeugDto {
   @ApiProperty({ required: false })
   @IsOptional()
   iconDefinition: IconDefinitionDto;
+
+  @ApiProperty({ required: false })
+  @Min(0)
+  @Max(1000)
+  @IsOptional()
+  kapazitaet?: number;
 }
 
 export class ImportManyFahrzeugeDto {
   @ApiProperty({ required: true, type: CreateUpdateFahrzeugDto, isArray: true })
+  @IsArray()
   items: CreateUpdateFahrzeugDto[];
 }
 

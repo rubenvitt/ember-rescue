@@ -3,7 +3,6 @@ import { EditableFahrzeugeTable } from '../organisms/table/EditableFahrzeugeTabl
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
-import { OptaInput } from '../molecules/OptaInput.component.js';
 import { SettingsDto } from '@bluelight-hub/shared/client/index.js';
 import { ButtonProps, Form, Input } from 'antd';
 
@@ -45,43 +44,6 @@ export function AdminTemplate() {
           </FormContentBox>
         </FormSection>
       </FormLayout>
-
-      <div className="rounded-xl bg-amber-100 p-4 dark:bg-amber-900">
-        <h2>Input Test</h2>
-        <OptaInput
-          value={{
-            id: 'test',
-            fullOpta: 'Banana-Wagen',
-            ort: 'Test',
-            district: 'Test',
-            functionCode: 'Test',
-            supplement: 'Test',
-            bosCode: 'Test',
-            orderNumber: 'Test',
-            localCode: 'Test',
-          }}
-          onChange={(opta) => {
-            // FIXME[ember-rescue-68](rubeen, 19.12.24): being called to often
-            console.log(`onChange: neue Opta: ${JSON.stringify(opta)}`);
-          }}
-        />
-
-        <OptaInput
-          value={{
-            id: 'test',
-            fullOpta: 'NI DRK Uelzen 40-12-1',
-            ort: '',
-            district: '',
-            functionCode: '',
-            supplement: '',
-            bosCode: '',
-            orderNumber: '',
-            localCode: '',
-          }}
-          onChange={() => {}}
-        />
-      </div>
-
       <EditableFahrzeugeTable />
     </div>
   );

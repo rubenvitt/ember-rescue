@@ -28,6 +28,7 @@ import { AppCacheInterceptor } from '@core/interceptors/cache.interceptor';
     CacheModule.register({
       ttl: 10000,
       max: 100,
+      isGlobal: true,
     }),
     ThrottlerModule.forRoot([
       {

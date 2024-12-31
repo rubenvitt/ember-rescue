@@ -51,7 +51,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
       searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase?.(),
       label: (
         <div className="flex justify-between gap-4">
-          <span className="flex-shrink-0 truncate">{fahrzeug.optaFunktion?.toLowerCase?.()}</span>
+          <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
           <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
         </div>
       ),
@@ -61,6 +61,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
 
   const handleAddFahrzeug = useCallback(
     async (vehicleId: string) => {
+      console.log('addFahrzeugToEinsatz', { vehicleId });
       await addFahrzeugToEinsatz.mutateAsync({ vehicleId });
     },
     [addFahrzeugToEinsatz],
@@ -116,7 +117,13 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         {empfohleneFahrzeuge.length > 0 ? (
           <>
             <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {empfohleneFahrzeuge?.map((fahrzeug) => <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />)}
+              {empfohleneFahrzeuge?.map((fahrzeug) => {
+                return (
+                  <>
+                    <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} /> <p>({fahrzeug.item.id})</p>
+                  </>
+                );
+              })}
             </ul>
           </>
         ) : (
