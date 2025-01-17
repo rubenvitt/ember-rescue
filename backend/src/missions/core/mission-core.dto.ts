@@ -10,6 +10,9 @@ import {
   ArrayMinSize,
   IsArray,
   IsISO8601,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 import { ReminderDto } from '../reminders/reminders.dto';
 
@@ -20,12 +23,20 @@ export class MissionMetaDto {
 
 export class CreateMissionDto {
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   erstAlarmiert: string;
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   aufnehmendesRettungsmittel: string;
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   alarmstichwort: string;
   @ApiProperty({ required: true })
+  @IsString()
+  @IsOptional()
   ort: string;
 }
 

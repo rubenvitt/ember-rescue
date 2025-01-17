@@ -69,7 +69,7 @@ export function NewSetupEinsatzForm() {
       let fahrzeugFunctionOpta = functionOpta.data?.data.find((opta) => opta.code === fahrzeug.opta.functionCode);
       return {
         value: fahrzeug.fullOpta,
-        searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeugFunctionOpta?.label.toLowerCase(),
+        searchString: fahrzeug.fullOpta?.toLowerCase() ?? '' + fahrzeugFunctionOpta?.label.toLowerCase(),
         label: (
           <div className="flex justify-between gap-4">
             <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
@@ -147,7 +147,7 @@ export function NewSetupEinsatzForm() {
           <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert" rules={[{ required: true, message: 'Zeitpunkt der Erstalarmierung wird benötigt' }]}>
             <DatePicker className="w-full" showTime showSecond={false} name="erstAlarmiert" />
           </InputWrapper>
-          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarm" rules={[{ required: true, message: 'Geben Sie ein Einsatzstichwort an' }]}>
+          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarmstichwort" rules={[{ required: true, message: 'Geben Sie ein Einsatzstichwort an' }]}>
             <Select
               placeholder="Einsatzstichwort der Alarmierung"
               className="w-full"

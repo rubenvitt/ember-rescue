@@ -30,34 +30,54 @@ export class EinsatzFahrzeugeService {
       einsatzId,
       bearbeiterId,
     });
+    // Fahrzeug template finden
     const existingFahrzeug =
       await this.fahrzeugeService.findFahrzeug(fahrzeugId);
+    if (!existingFahrzeug) {
+      throw new NotFoundException('Fahrzeug not found');
+    }
 
     const einsatz = await this.repository.findById(einsatzId);
-    if (!einsatz)
-      throw new NotFoundException('Einsatz not found', {
-        description: `Einsatz mit der ID ${einsatzId} nicht gefunden.`,
-      });
+    if (!einsatz) {
+      throw new NotFoundException('Einsatz not found');
+    }
 
+    // Einsatztagebuch Eintrag erstellen
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
-      absender: existingFahrzeug!!.fullOpta,
+      absender: existingFahrzeug.fullOpta,
       empfaenger: einsatz.aufnehmendesRettungsmittel,
       type: 'RESSOURCEN',
       einsatzId,
       bearbeiterId,
-      content: `${existingFahrzeug?.fullOpta} wurde dem Einsatz hinzugefügt.`,
+      content: `${existingFahrzeug.fullOpta} wurde dem Einsatz hinzugefügt.`,
     });
 
+    // Korrekt formatiertes Fahrzeug-Objekt erstellen
+    const fahrzeugData = {
+      opta: {
+        district: existingFahrzeug.opta.district,
+        bosCode: existingFahrzeug.opta.bosCode,
+        localCode: existingFahrzeug.opta.localCode,
+        functionCode: existingFahrzeug.opta.functionCode,
+        orderNumber: existingFahrzeug.opta.orderNumber,
+        ort: existingFahrzeug.opta.ort,
+        supplement: existingFahrzeug.opta.supplement,
+        fullOpta: existingFahrzeug.fullOpta,
+      },
+      einsatzbeginn: new Date(),
+      kapazitaet: existingFahrzeug.kapazitaet || 0,
+      personal: [],
+      status_history: [],
+    };
+
+    // Fahrzeug zum Einsatz hinzufügen
     await this.repository.findOneByIdAndUpdate(einsatzId, {
       $push: {
-        fahrzeuge: {
-          opta: existingFahrzeug!!.fullOpta,
-          einsatzbeginn: new Date(),
-          kapazitaet: existingFahrzeug!!.kapazitaet,
-        },
+        fahrzeuge: fahrzeugData,
       },
     });
 
+    // Status ändern
     await this.changeStatus(fahrzeugId, einsatzId, bearbeiterId, {
       statusCode: 3,
     });
@@ -104,15 +124,20 @@ export class EinsatzFahrzeugeService {
     return await Promise.all(
       [...templates, ...beendeteFahrzeuge]
         .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
-        .map(async (fahrzeug) => ({
-          ...fahrzeug,
-          fullOpta: fahrzeug.fullOpta,
-          optaFunktion: (
-            await this.functionOptaRepository.findOne({
-              code: fahrzeug.opta.functionCode,
-            })
-          )?.label,
-        })),
+        .map(async (fahrzeug) => {
+          return {
+            id: fahrzeug.id,
+            opta: fahrzeug.opta,
+            iconDefinition: fahrzeug.iconDefinition,
+            fullOpta: fahrzeug.fullOpta,
+            // TODO[ember-rescue-68](rubeen, 31.12.24): maybe do this on client side?
+            optaFunktion: (
+              await this.functionOptaRepository.findOne({
+                code: fahrzeug.opta.functionCode,
+              })
+            )?.label,
+          } as FahrzeugTemplateDto;
+        }),
     );
   }
 

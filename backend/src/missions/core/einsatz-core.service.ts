@@ -42,7 +42,13 @@ export class EinsatzCoreService {
       bearbeiter: createEinsatzDto.bearbeiter,
       beginn: new Date(),
       aufnehmendesRettungsmittel: createEinsatzDto.aufnehmendesRettungsmittel,
-      einsatzAlarmstichwort: alarmstichwort,
+      einsatzAlarmstichwort: alarmstichwort.pop(),
+      einsatzTagebuch: {
+        items: [],
+      },
+      einsatzMeta: {
+        ort: 'asd', // FIXME[ember-rescue-68](rubeen, 31.12.24): needs valid ORT from frontend
+      },
     });
 
     this.logger.log('Created new Einsatz', { id: einsatz.id });

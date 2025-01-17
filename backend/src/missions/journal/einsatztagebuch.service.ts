@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EinsatzRepository } from '../schema/einsatz.repository';
 
 @Injectable()
 export class EinsatztagebuchService {
+  private readonly logger = new Logger(EinsatztagebuchService.name);
+
   constructor(private readonly einsatzRepository: EinsatzRepository) {}
 
   async getEinsatztagebuch(einsatzId: string) {
@@ -21,26 +23,39 @@ export class EinsatztagebuchService {
       timestamp: item.timestamp,
       type: item.type,
       content: item.content,
-      absender: item.absender,
-      empfaenger: item.empfaenger,
+      sender: item.absender, // geändert
+      receiver: item.empfaenger, // geändert
       archived: item.archived,
-      //einsatzId: item.einsatzId,
-      bearbeiterId: item.bearbeiterId,
-      id: undefined,
-      fortlaufende_nummer: undefined,
-      createdAt: undefined,
-      updatedAt: undefined,
+      bearbeiter: item.bearbeiterId, // geändert
+      //nummer: item.nummer || Math.floor(Date.now() / 1000), // hinzugefügt
     });
 
-    return this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
-      $push: {
-        einsatzTagebuch: {
-          items: {
-            $each: Array.isArray(data) ? data.map(mapData) : [mapData(data)],
+    this.einsatzRepository.findOne({ id: einsatzId }).then((einsatz) => {
+      this.logger.log(
+        'tagebuch',
+        einsatz?.einsatzTagebuch ?? 'Einsatztagebuch is undefined',
+      );
+    });
+
+    this.logger.log('Creating einsatztagebucheintrag');
+
+    return this.einsatzRepository
+      .findOneByIdAndUpdate(einsatzId, {
+        $set: {
+          'einsatzTagebuch.items': {
+            $ifNull: ['$einsatzTagebuch.items', []],
           },
         },
-      },
-    });
+      })
+      .then(() =>
+        this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
+          $push: {
+            'einsatzTagebuch.items': {
+              $each: Array.isArray(data) ? data.map(mapData) : [mapData(data)],
+            },
+          },
+        }),
+      );
   }
 
   archiveEinsatztagebuchEintrag(id: string, missionId: string) {

@@ -12,7 +12,7 @@ function sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz: VehicleOnMissionDt
     // FIXME[ember-rescue-68](rubeen, 31.12.24): try to reimplement _count (need to do that in backend)
     // const sortValue = a._count.einsatz_fahrzeug - b._count.einsatz_fahrzeug;
     // return sortOrder === 'asc' ? sortValue : -sortValue;
-    return a.fullOpta.localeCompare(b.fullOpta, undefined, { sensitivity: 'base', usage: 'sort' });
+    return a.fullOpta?.localeCompare(b.fullOpta, undefined, { sensitivity: 'base', usage: 'sort' });
   });
 }
 

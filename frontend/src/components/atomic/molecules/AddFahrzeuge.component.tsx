@@ -120,7 +120,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
               {empfohleneFahrzeuge?.map((fahrzeug) => {
                 return (
                   <>
-                    <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} /> <p>({fahrzeug.item.id})</p>
+                    <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
                   </>
                 );
               })}

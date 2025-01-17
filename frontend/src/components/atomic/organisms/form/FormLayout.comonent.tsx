@@ -45,18 +45,7 @@ function SubmitButtons({ buttons: { submit, cancel, reset }, buttonContainerClas
             }}
           />
         )}
-        {submit && (
-          <Button
-            {...submit}
-            loading={isLoading}
-            onClick={async (event) => {
-              await context.validateFields();
-              submit?.onClick?.(event);
-              console.log('submitting form', context.getFieldsValue());
-              context.submit();
-            }}
-          />
-        )}
+        {submit && <Button {...submit} htmlType="submit" loading={isLoading} />}
       </div>
     </>
   );

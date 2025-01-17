@@ -46,6 +46,6 @@ export class VehiclesRepository extends TemplateRepository<VehiclesTemplate> {
     projection: AnyKeys<VehiclesTemplate> = {},
     options: QueryOptions = {},
   ) {
-    return this.model.find(filterQuery, projection, options).populate('opta');
+    return this.model.find(filterQuery, projection, options).exec();
   }
 }
