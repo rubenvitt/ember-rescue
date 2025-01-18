@@ -23,7 +23,7 @@ import {
 export class JournalController {
   private readonly logger = new Logger(JournalController.name);
 
-  constructor(private service: EinsatztagebuchService) {}
+  constructor(private service: EinsatztagebuchService) { }
 
   @Get()
   @ApiOkResponse({
@@ -63,14 +63,14 @@ export class JournalController {
     });
   }
 
-  @Post('/:id/archive')
+  @Post('/:nummer/archive')
   @ApiOkResponse({
     description: 'Archive Einsatztagebuch Eintrag',
   })
   async archiveJournalEntry(
-    @Param('id') id: string,
+    @Param('nummer') nummer: string,
     @Param('missionId') missionId: string,
   ) {
-    return this.service.archiveEinsatztagebuchEintrag(id, missionId);
+    return this.service.archiveEinsatztagebuchEintrag(nummer, missionId);
   }
 }

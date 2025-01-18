@@ -24,7 +24,7 @@ import {
 } from '../models/index';
 
 export interface JournalControllerArchiveJournalEntryV1Request {
-  id: string;
+  nummer: string;
   missionId: string;
 }
 
@@ -47,10 +47,10 @@ export class JournalApi extends runtime.BaseAPI {
     requestParameters: JournalControllerArchiveJournalEntryV1Request,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
-    if (requestParameters['id'] == null) {
+    if (requestParameters['nummer'] == null) {
       throw new runtime.RequiredError(
-        'id',
-        'Required parameter "id" was null or undefined when calling journalControllerArchiveJournalEntryV1().',
+        'nummer',
+        'Required parameter "nummer" was null or undefined when calling journalControllerArchiveJournalEntryV1().',
       );
     }
 
@@ -67,8 +67,8 @@ export class JournalApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/v1/missions/{missionId}/journal/{id}/archive`
-          .replace(`{${'id'}}`, encodeURIComponent(String(requestParameters['id'])))
+        path: `/v1/missions/{missionId}/journal/{nummer}/archive`
+          .replace(`{${'nummer'}}`, encodeURIComponent(String(requestParameters['nummer'])))
           .replace(`{${'missionId'}}`, encodeURIComponent(String(requestParameters['missionId']))),
         method: 'POST',
         headers: headerParameters,

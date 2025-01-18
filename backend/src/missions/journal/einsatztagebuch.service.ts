@@ -79,23 +79,17 @@ export class EinsatztagebuchService {
     });
   }
 
-  archiveEinsatztagebuchEintrag(id: string, missionId: string) {
+  archiveEinsatztagebuchEintrag(nummer: string, missionId: string) {
     return this.einsatzRepository.findOneAndUpdate(
       {
         _id: missionId,
-        einsatzTagebuch: {
-          items: {
-            $elemMatch: {
-              id,
-            },
-          },
-        },
+        'einsatzTagebuch.items.nummer': nummer
       },
       {
         $set: {
           'einsatzTagebuch.items.$.archived': true,
         },
-      },
+      }
     );
   }
 }

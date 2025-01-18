@@ -55,9 +55,11 @@ export function EinsatztagebuchComponent() {
         ?.toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()) ?? false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+    filterDropdownProps: {
+      onOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
       }
     },
   });
@@ -83,10 +85,10 @@ export function EinsatztagebuchComponent() {
     );
     const rufnahmeFilter = fahrzeugTypen
       ? Object.entries(fahrzeugTypen).map(([key, value]) => ({
-          text: key,
-          value: key,
-          children: value,
-        }))
+        text: key,
+        value: key,
+        children: value,
+      }))
       : [];
 
     return [
@@ -181,7 +183,10 @@ export function EinsatztagebuchComponent() {
                   <Button onClick={() => !isOpen && modifyEntry(record)} type="dashed" shape="circle" icon={<PiSwap />} />
                 </Tooltip>
                 <Tooltip title="Eintrag streichen">
-                  <Button onClick={() => archiveEinsatztagebuchEintrag.mutate({ entryId: record.id })} type="default" danger shape="circle" icon={<PiTextStrikethrough />} />
+                  <Button onClick={() => {
+                    console.log('mutating', { record });
+                    return archiveEinsatztagebuchEintrag.mutate({ nummer: record.nummer });
+                  }} type="default" danger shape="circle" icon={<PiTextStrikethrough />} />
                 </Tooltip>
               </>
             )}
@@ -205,7 +210,7 @@ export function EinsatztagebuchComponent() {
               loading={!einsatztagebuch}
               columns={columns}
               virtual
-              scroll={{ x: true }}
+              scroll={{ y: 1500 }}
               pagination={false}
               locale={{
                 emptyText: <Empty image={<PiEmpty size={48} />} description="Keine Einträge verfügbar" />,
@@ -235,7 +240,7 @@ export function EinsatztagebuchComponent() {
                     absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
                     empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
                   });
-                  await archiveEinsatztagebuchEintrag.mutateAsync({ entryId: editingEintrag?.id });
+                  await archiveEinsatztagebuchEintrag.mutateAsync({ nummer: editingEintrag?.nummer });
                   setIsOpen(false);
                   setEditingEintrag(null);
                 },

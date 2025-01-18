@@ -1,13 +1,14 @@
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
 import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Button, DatePicker, Input, Select } from 'antd';
+import { Button, DatePicker, Form, Input, Select } from 'antd';
 import { PiCaretDown } from 'react-icons/pi';
 import dayjs from 'dayjs';
+
 
 interface Props {
   closeForm: () => void;
@@ -18,6 +19,18 @@ interface Props {
 export function EinsatztagebuchForm({ closeForm }: Props) {
   const { createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const { einsatz } = useEinsatz();
+  const [hasUserChangedTimestamp, setHasUserChangedTimestamp] = useState(false);
+  const [form] = Form.useForm();
+
+  const updateTimestamp = useCallback(() => {
+    form.setFieldValue('timestamp', dayjs());
+  }, [form]);
+
+  useEffect(() => {
+    if (hasUserChangedTimestamp) return;
+    const interval = setInterval(updateTimestamp, 1000);
+    return () => clearInterval(interval);
+  }, [hasUserChangedTimestamp, form, updateTimestamp]);
 
   const { fahrzeugeAsItems, loading } = useFahrzeugeItems({
     include: ['fahrzeugeImEinsatz', 'fahrzeugeNichtImEinsatz'],
@@ -44,6 +57,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
   return (
     <FormLayout<CreateEinsatztagebuchEintrag>
       resetOnSubmit={true}
+      formInstance={form}
       form={{
         rootClassName: 'grid grid-cols-2 gap-4',
         initialValues: { timestamp: dayjs(), empfaenger: aufnehmendesRettungsmittelId },
@@ -64,7 +78,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
             <Input.TextArea name="content" rows={3} />
           </InputWrapper>
           <InputWrapper name="timestamp" label="Zeitpunkt der Meldung" rules={[{ required: true, message: 'Es wird ein Zeitpunkt der Meldung benötigt' }]}>
-            <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} />
+            <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} onChange={() => setHasUserChangedTimestamp(true)} />
           </InputWrapper>
           <Button className="col-span-2" type="primary" onClick={props?.submit} htmlType="submit" icon={<PiCaretDown size={24} />}>
             ETB Eintrag anlegen

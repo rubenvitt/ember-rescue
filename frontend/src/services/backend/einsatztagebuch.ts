@@ -27,15 +27,15 @@ export const createEinsatztagebuchEintrag = {
   mutationKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'add'],
   mutationFn:
     ({ missionId }: { missionId: string | null }) =>
-    async (createJournalEntryDto: CreateJournalEntryDto) => {
-      if (!missionId) {
-        throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
-      }
-      return api.journalControllerCreateJournalEntryV1({
-        missionId,
-        createJournalEntryDto,
-      });
-    },
+      async (createJournalEntryDto: CreateJournalEntryDto) => {
+        if (!missionId) {
+          throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
+        }
+        return api.journalControllerCreateJournalEntryV1({
+          missionId,
+          createJournalEntryDto,
+        });
+      },
 };
 
 // POST Archive EinsatztagebuchEintrag
@@ -43,14 +43,15 @@ export const archiveEinsatztagebuchEintrag = {
   mutationKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'archive'],
   mutationFn:
     ({ missionId }: { missionId: string | null }) =>
-    async ({ entryId }: { entryId: string }) => {
-      if (!missionId) {
-        throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
-      }
+      async ({ nummer }: { nummer: number }) => {
+        if (!missionId) {
+          throw new Error('No missionId found in local storage. Please login and select a mission before fetching einsatztagebuch.');
+        }
 
-      return api.journalControllerArchiveJournalEntryV1({
-        missionId,
-        id: entryId,
-      });
-    },
+        console.log('archiving entry', nummer);
+        return api.journalControllerArchiveJournalEntryV1({
+          missionId,
+          nummer: String(nummer),
+        });
+      },
 };

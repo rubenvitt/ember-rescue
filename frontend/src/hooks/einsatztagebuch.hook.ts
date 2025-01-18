@@ -17,7 +17,7 @@ export function useEinsatztagebuch() {
     onSuccess: services.backend.einsatztagebuch.invalidateQueries(queryClient),
   });
 
-  const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { entryId: string }>({
+  const archiveEinsatztagebuchEintrag = useMutation<unknown, unknown, { nummer: number }>({
     mutationKey: services.backend.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationKey({ missionId: missionId }),
     mutationFn: services.backend.einsatztagebuch.archiveEinsatztagebuchEintrag.mutationFn({ missionId: missionId }),
     onSuccess: services.backend.einsatztagebuch.invalidateQueries(queryClient),
