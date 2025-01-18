@@ -1,6 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { FahrzeugIconDefinitionDto } from '@templates/vehicles/vehicles-template.schema';
 
 export type BearbeiterDto = {
   name: string;
@@ -18,12 +17,6 @@ export type SmallStatusDto = {
 /**
  * @deprecated
  */
-export type UpdateCreateFahrzeugeDto = {
-  _id: string | undefined;
-  opta: any; // TODO
-  iconDefinition: FahrzeugIconDefinitionDto;
-}[];
-
 export type FahrzeugDto = {
   id: string;
   funkrufname: string;

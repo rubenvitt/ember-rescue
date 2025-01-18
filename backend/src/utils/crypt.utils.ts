@@ -7,7 +7,7 @@ const saltLength = 16;
 interface PreHookDocument extends mongoose.Document {
   isModified(path: string): boolean;
 
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 function generateKey(secret: string, salt: Buffer): Buffer {

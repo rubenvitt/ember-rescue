@@ -5,7 +5,7 @@ import { EinsatzRepository } from '../schema/einsatz.repository';
 export class EinsatztagebuchService {
   private readonly logger = new Logger(EinsatztagebuchService.name);
 
-  constructor(private readonly einsatzRepository: EinsatzRepository) {}
+  constructor(private readonly einsatzRepository: EinsatzRepository) { }
 
   async getEinsatztagebuch(einsatzId: string) {
     const einsatz = await this.einsatzRepository.findById(einsatzId);

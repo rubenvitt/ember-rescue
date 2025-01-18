@@ -100,9 +100,7 @@ export class FahrzeugeService {
           throw new ValidationException(
             {
               property: 'funkrufname',
-              constraints: {
-                isFunkrufname: 'funkrufname must be a valid funkrufname',
-              },
+              constraints: 'funkrufname must be a valid funkrufname'
             },
             {
               property: 'funkrufname',

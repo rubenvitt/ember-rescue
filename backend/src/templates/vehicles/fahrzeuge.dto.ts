@@ -69,12 +69,6 @@ export class ManyFahrzeugTypResponse extends ApiResponse<FahrzeugTypDto[]> {
   data: FahrzeugTypDto[];
 }
 
-//export type UpdateCreateFahrzeugeDto = {
-//   _id: string | undefined;
-//   opta: any; // TODO
-//   iconDefinition: FahrzeugIconDefinitionDto;
-// }[];
-
 export class CreateUpdateFahrzeugDto {
   @ApiProperty({ required: false })
   @IsOptional()

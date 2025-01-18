@@ -9,6 +9,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from '@core';
 import { createEncryptedSchema } from '../../utils/crypt.utils';
+import { Schema } from 'mongoose';
 
 export const mongooseImports: DynamicModule[] = [
   MongooseModule.forRootAsync({
@@ -28,10 +29,8 @@ export const mongooseImports: DynamicModule[] = [
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const SecretSchema = SchemaFactory.createForClass(Secret);
-
-        // Der Aufruf bleibt identisch
         createEncryptedSchema(
-          SecretSchema,
+          SecretSchema as Schema<any>,
           ['value'],
           configService.getOrThrow<string>(config.encryptionKey),
         );

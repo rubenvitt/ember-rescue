@@ -19,7 +19,7 @@ export class EinsatzCoreService {
     private readonly alarmstichwortService: AlarmstichwortRepository,
     private readonly repository: EinsatzRepository,
     private readonly einsatzMapper: EinsatzMapper,
-  ) {}
+  ) { }
 
   async getEinsatz(id: string) {
     const einsatz = await this.repository.findById(id);
@@ -138,13 +138,13 @@ export class EinsatzCoreService {
   }
 
   private async updateEinsatzstichwort(
-    einsatz: any,
+    einsatz: Einsatz,
     updateEinsatzDto: UpdateEinsatzDto,
     einsatzId: string,
   ) {
     if (
       this.einsatzStichwortChanged(
-        einsatz.einsatz_alarmstichwort['id'],
+        einsatz.einsatzAlarmstichwort.id,
         updateEinsatzDto.alarmstichwort,
       )
     ) {

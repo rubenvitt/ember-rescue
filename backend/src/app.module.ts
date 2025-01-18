@@ -62,7 +62,8 @@ import { AppCacheInterceptor } from '@core/interceptors/cache.interceptor';
   controllers: [PingController],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
+  // noinspection JSUnusedGlobalSymbols
+  configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }
