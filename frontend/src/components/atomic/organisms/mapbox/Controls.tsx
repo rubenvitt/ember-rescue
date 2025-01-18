@@ -18,10 +18,10 @@ import { NinaApi, VehicleOnMissionDto } from '@bluelight-hub/shared/client/index
 export const useMapStore = create<{
   map?: Map;
   setMap: (map: Map) => void;
-  markerPerFahrzeug: { [fahrzeugId: string]: Marker };
-  addMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
-  removeMarkerForFahrzeug: (fahrzeugId: string) => void;
-  updateMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
+  markerPerFahrzeug: { [fullOpta: string]: Marker };
+  addMarkerForFahrzeug: (fullOpta: string, marker: Marker) => void;
+  removeMarkerForFahrzeug: (fullOpta: string) => void;
+  updateMarkerForFahrzeug: (fullOpta: string, marker: Marker) => void;
 }>((set, get) => ({
   setMap: (map) => set({ map: map }),
   markerPerFahrzeug: {},

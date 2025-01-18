@@ -2,9 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from './store.hook.js';
 import { services } from '../services/index.js';
 import { CreateMissionDto, ManyMissionsResponse, MissionDto, SmallMissionDto, UpdateMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { useEffect } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 
-export function useEinsatz() {
+export function useEinsatz(required: boolean = true) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { setEinsatz, missionId, removeEinsatz } = useStore();
 
   const singleEinsatz = useQuery<MissionDto | null>({
@@ -21,6 +24,10 @@ export function useEinsatz() {
     },
     enabled: !!missionId,
   });
+
+  useEffect(() => {
+    if (required && !missionId) navigate({ to: '/setupEinsatz' });
+  }, [missionId, required]);
 
   const offeneEinsaetze = useQuery<ManyMissionsResponse>({
     queryKey: services.backend.einsatze.fetchOffeneEinsaetze.queryKey,

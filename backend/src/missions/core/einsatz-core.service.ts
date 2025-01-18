@@ -104,21 +104,19 @@ export class EinsatzCoreService {
   }
 
   private async updateEinsatzort(
-    einsatz: any,
+    einsatz: Einsatz,
     updateEinsatzDto: UpdateEinsatzDto,
     einsatzId: string,
   ) {
-    if (
-      this.einsatzortChanged(einsatz.einsatz_meta['ort'], updateEinsatzDto.ort)
-    ) {
+    if (this.einsatzortChanged(einsatz.einsatzMeta.ort, updateEinsatzDto.ort)) {
       await this.einsatztagebuchService.createEinsatztagebuchEintrag(
         einsatzId,
         {
           einsatzId: einsatzId,
           type: EinsatztagebuchEintragEnum.GENERISCH,
-          content: `Der Einsatzort wurde von ${einsatz.einsatz_meta['ort']} nach ${updateEinsatzDto.ort} verschoben.`,
-          absender: einsatz.aufnehmendes_rettungsmittel.funkrufname,
-          empfaenger: einsatz.aufnehmendes_rettungsmittel.funkrufname,
+          content: `Der Einsatzort wurde von ${einsatz.einsatzMeta.ort} nach ${updateEinsatzDto.ort} verschoben.`,
+          absender: einsatz.aufnehmendesRettungsmittel,
+          empfaenger: einsatz.aufnehmendesRettungsmittel,
         },
       );
 

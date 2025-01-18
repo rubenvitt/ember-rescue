@@ -24,14 +24,14 @@ export interface AddVehicleToMissionDto {
    * @type {string}
    * @memberof AddVehicleToMissionDto
    */
-  vehicleId: string;
+  fullOpta: string;
 }
 
 /**
  * Check if a given object implements the AddVehicleToMissionDto interface.
  */
 export function instanceOfAddVehicleToMissionDto(value: object): value is AddVehicleToMissionDto {
-  if (!('vehicleId' in value) || value['vehicleId'] === undefined) return false;
+  if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   return true;
 }
 
@@ -44,7 +44,7 @@ export function AddVehicleToMissionDtoFromJSONTyped(json: any, ignoreDiscriminat
     return json;
   }
   return {
-    vehicleId: json['vehicleId'],
+    fullOpta: json['fullOpta'],
   };
 }
 
@@ -61,6 +61,6 @@ export function AddVehicleToMissionDtoToJSONTyped(
   }
 
   return {
-    vehicleId: value['vehicleId'],
+    fullOpta: value['fullOpta'],
   };
 }

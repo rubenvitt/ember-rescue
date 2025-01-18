@@ -61,7 +61,7 @@ export function NewSetupEinsatzForm() {
   const { templateFahrzeuge } = useFahrzeuge();
   const { functionOpta } = useOpta();
   const { alarmstichworte } = useAlarmstichworte();
-  const { createEinsatz, saveEinsatz } = useEinsatz();
+  const { createEinsatz, saveEinsatz } = useEinsatz(false);
   const navigate = useNavigate();
 
   const fahrzeugeItems = useMemo<DefaultOptionType[] | undefined>(() => {

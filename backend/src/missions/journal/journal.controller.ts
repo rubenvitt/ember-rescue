@@ -31,7 +31,9 @@ export class JournalController {
     description: 'Find journal for mission',
   })
   async getJournal(@Param('missionId') einsatzId: string) {
-    return this.service.getEinsatztagebuch(einsatzId);
+    let journal = await this.service.getEinsatztagebuch(einsatzId);
+    this.logger.debug(`Get Einsatztagebuch`);
+    return journal;
   }
 
   @Post()
@@ -50,7 +52,9 @@ export class JournalController {
     this.logger.debug(`Creating Einsatztagebuch Eintrag`, {
       bearbeiterId: bearbeiter.name,
       einsatzId,
+      createEinsatztagebuchDto,
     });
+
     return this.service.createEinsatztagebuchEintrag(einsatzId!!, {
       bearbeiterId: bearbeiter.name,
       einsatzId,

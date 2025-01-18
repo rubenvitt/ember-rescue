@@ -5,7 +5,7 @@ import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { NewSetupEinsatzForm } from '../molecules/setup-einsatz/Form.component.js';
 
 export const SetupEinsatzTemplate: React.FC = () => {
-  const { offeneEinsaetze } = useEinsatz();
+  const { offeneEinsaetze } = useEinsatz(false);
   const einsatzOffen = useMemo(() => offeneEinsaetze.data && offeneEinsaetze.data.data.length > 0, [offeneEinsaetze.data]);
 
   return (

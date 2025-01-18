@@ -7,12 +7,13 @@ import { twMerge } from 'tailwind-merge';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { Select } from 'antd';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
-const RecommendedFahrzeug: React.FC<{ fahrzeug: any; onAdd: (id: string) => void }> = ({ fahrzeug, onAdd }) => (
+const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; label: string; secondary: string }; onAdd: (fullOpta: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
     <button
       type="button"
-      onClick={() => onAdd(fahrzeug.item.id)}
+      onClick={() => onAdd(fahrzeug.item.fullOpta)}
       className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
     >
       <span className="flex min-w-0 flex-1 items-center space-x-3">
@@ -47,7 +48,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
 
   const fahrzeugeNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
     return (fahrzeuge.data?.data.verfuegbareFahrzeuge ?? []).map((fahrzeug) => ({
-      value: fahrzeug.id,
+      value: fahrzeug.fullOpta,
       searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase?.(),
       label: (
         <div className="flex justify-between gap-4">
@@ -60,9 +61,9 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
   }, [fahrzeuge.data]);
 
   const handleAddFahrzeug = useCallback(
-    async (vehicleId: string) => {
-      console.log('addFahrzeugToEinsatz', { vehicleId });
-      await addFahrzeugToEinsatz.mutateAsync({ vehicleId });
+    async (fullOpta: string) => {
+      console.log('addFahrzeugToEinsatz', { fullOpta });
+      await addFahrzeugToEinsatz.mutateAsync({ fullOpta });
     },
     [addFahrzeugToEinsatz],
   );
@@ -77,12 +78,12 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         )}
       </div>
 
-      <FormLayout<{ fahrzeugId: string }>
+      <FormLayout<{ fullOpta: string }>
         type="oneLine"
         form={{
-          initialValues: { fahrzeugId: '' },
+          initialValues: { fullOpta: '' },
           async onFinish(data) {
-            await handleAddFahrzeug(data.fahrzeugId);
+            await handleAddFahrzeug(data.fullOpta);
           },
         }}
         buttons={{
@@ -97,7 +98,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         resetOnSubmit={true}
       >
         <Select
-          fieldNames={{ value: 'fahrzeugId' }}
+          fieldNames={{ value: 'fullOpta' }}
           placeholder="Fahrzeug dem Einsatz hinzufügen"
           className="w-full"
           showSearch
@@ -120,7 +121,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
               {empfohleneFahrzeuge?.map((fahrzeug) => {
                 return (
                   <>
-                    <RecommendedFahrzeug key={fahrzeug.item.id} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
+                    <RecommendedFahrzeug key={fahrzeug.item.fullOpta} fahrzeug={fahrzeug} onAdd={handleAddFahrzeug} />
                   </>
                 );
               })}

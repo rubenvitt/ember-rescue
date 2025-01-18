@@ -21,8 +21,11 @@ export class FahrzeugeService {
     return this.repository.upsertMany(fahrzeuge.items);
   }
 
-  findFahrzeug(id: string) {
-    return this.repository.findActiveById(id);
+  findFahrzeug(fullOpta: string) {
+    return this.repository.findOne({
+      fullOpta: fullOpta,
+      isActive: true,
+    });
   }
 
   async importFahrzeuge(fahrzeuge: ImportManyFahrzeugeDto) {

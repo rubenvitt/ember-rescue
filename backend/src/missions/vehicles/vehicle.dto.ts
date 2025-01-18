@@ -8,7 +8,7 @@ export class AddVehicleToMissionDto {
   @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
-  vehicleId: string;
+  fullOpta: string;
 }
 
 export class StatusDto {
@@ -36,9 +36,6 @@ export class ChangeStatusDto {
 }
 
 export class VehicleOnMissionDto {
-  @ApiProperty()
-  id: string;
-
   @ApiProperty()
   fullOpta: string;
 

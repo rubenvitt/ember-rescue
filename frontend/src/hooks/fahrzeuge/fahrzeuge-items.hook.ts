@@ -15,7 +15,7 @@ function convertToItems(fahrzeuge?: VehicleOnMissionDto[]) {
     return fahrzeuge.map((item) => {
       return {
         label: item.optaFunktion,
-        value: item.id,
+        value: item.fullOpta,
         title: item.optaFunktion,
         item,
         // item,

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   Alarmstichwort,
   AlarmstichwortDto,
@@ -37,7 +37,7 @@ class Personal {
   isFuehrungskraft: boolean;
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, _id: false })
 export class FahrzeugOnEinsatz extends VehiclesTemplate {
   @Prop({ required: true })
   einsatzbeginn: Date;
@@ -81,7 +81,9 @@ class EinsatzMetadaten {
   ort: string;
 }
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 class EinsatztagebuchEintrag {
   @Prop({ required: true })
   timestamp: string;
@@ -101,14 +103,21 @@ class EinsatztagebuchEintrag {
   bearbeiter: string;
 }
 
+const EinsatztagebuchEintragSchema = SchemaFactory.createForClass(
+  EinsatztagebuchEintrag,
+);
+
 @Schema()
 class Einsatztagebuch {
   @Prop({
     required: true,
     default: [],
-    type: [{ type: EinsatztagebuchEintrag }],
+    type: [{ type: EinsatztagebuchEintragSchema }],
   })
   items: EinsatztagebuchEintrag[];
+
+  @Prop({ default: 0 })
+  counter: number;
 }
 
 export type CreateEinsatzDto = {

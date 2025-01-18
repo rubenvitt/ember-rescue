@@ -24,12 +24,6 @@ export interface VehicleOnMissionDto {
    * @type {string}
    * @memberof VehicleOnMissionDto
    */
-  id: string;
-  /**
-   *
-   * @type {string}
-   * @memberof VehicleOnMissionDto
-   */
   fullOpta: string;
   /**
    *
@@ -73,7 +67,6 @@ export interface VehicleOnMissionDto {
  * Check if a given object implements the VehicleOnMissionDto interface.
  */
 export function instanceOfVehicleOnMissionDto(value: object): value is VehicleOnMissionDto {
-  if (!('id' in value) || value['id'] === undefined) return false;
   if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   if (!('optaFunktion' in value) || value['optaFunktion'] === undefined) return false;
   if (!('einsatzbeginn' in value) || value['einsatzbeginn'] === undefined) return false;
@@ -93,7 +86,6 @@ export function VehicleOnMissionDtoFromJSONTyped(json: any, ignoreDiscriminator:
     return json;
   }
   return {
-    id: json['id'],
     fullOpta: json['fullOpta'],
     optaFunktion: json['optaFunktion'],
     einsatzbeginn: json['einsatzbeginn'],
@@ -117,7 +109,6 @@ export function VehicleOnMissionDtoToJSONTyped(
   }
 
   return {
-    id: value['id'],
     fullOpta: value['fullOpta'],
     optaFunktion: value['optaFunktion'],
     einsatzbeginn: value['einsatzbeginn'],

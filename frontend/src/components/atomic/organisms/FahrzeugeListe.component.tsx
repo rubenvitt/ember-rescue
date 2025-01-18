@@ -14,7 +14,7 @@ interface FahrzeugelisteComponentProps {
 
 function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
   const { status } = useStatus();
-  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fahrzeugId: fahrzeug.id });
+  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fullOpta: fahrzeug.fullOpta });
 
   const onStatusButtonClick = useCallback(
     async (item: { statusId: string }) => {
@@ -96,7 +96,7 @@ export const FahrzeugelisteComponent: React.FC<FahrzeugelisteComponentProps> = (
       return (
         <List.Item>
           <Card type="inner" extra={<FahrzeugExtra fahrzeug={fahrzeug} />} title={`${fahrzeug.fullOpta} (${fahrzeug.optaFunktion})`}>
-            <FahrzeugListItemComponent key={fahrzeug.id} fahrzeug={fahrzeug} />
+            <FahrzeugListItemComponent key={fahrzeug.fullOpta} fahrzeug={fahrzeug} />
           </Card>
         </List.Item>
       );

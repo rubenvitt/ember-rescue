@@ -21,18 +21,17 @@ export class EinsatzFahrzeugeService {
   ) {}
 
   async addFahrzeugToEinsatz(
-    fahrzeugId: string,
+    fullOpta: string,
     einsatzId: string,
     bearbeiterId: string,
   ) {
     this.logger.log('Adding Fahrzeug to Einsatz', {
-      fahrzeugId,
+      fullOpta,
       einsatzId,
       bearbeiterId,
     });
     // Fahrzeug template finden
-    const existingFahrzeug =
-      await this.fahrzeugeService.findFahrzeug(fahrzeugId);
+    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug(fullOpta);
     if (!existingFahrzeug) {
       throw new NotFoundException('Fahrzeug not found');
     }
@@ -64,6 +63,7 @@ export class EinsatzFahrzeugeService {
         supplement: existingFahrzeug.opta.supplement,
         fullOpta: existingFahrzeug.fullOpta,
       },
+      fullOpta: existingFahrzeug.fullOpta ?? existingFahrzeug.opta.fullOpta,
       einsatzbeginn: new Date(),
       kapazitaet: existingFahrzeug.kapazitaet || 0,
       personal: [],
@@ -78,7 +78,7 @@ export class EinsatzFahrzeugeService {
     });
 
     // Status ändern
-    await this.changeStatus(fahrzeugId, einsatzId, bearbeiterId, {
+    await this.changeStatus(fullOpta, einsatzId, bearbeiterId, {
       statusCode: 3,
     });
   }
@@ -126,7 +126,6 @@ export class EinsatzFahrzeugeService {
         .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
         .map(async (fahrzeug) => {
           return {
-            id: fahrzeug.id,
             opta: fahrzeug.opta,
             iconDefinition: fahrzeug.iconDefinition,
             fullOpta: fahrzeug.fullOpta,
@@ -160,7 +159,7 @@ export class EinsatzFahrzeugeService {
   }
 
   async changeStatus(
-    fahrzeugId: string,
+    fullOpta: string,
     einsatzId: string,
     bearbeiterId: string,
     {
@@ -170,7 +169,8 @@ export class EinsatzFahrzeugeService {
       | { statusCode?: never; statusId: string }
       | { statusCode: number; statusId?: never },
   ) {
-    this.logger.log(`Change status for ${fahrzeugId} to ${statusId}`);
+    this.logger.log(`Change status for ${fullOpta} to ${statusId}`);
+
     const status = statusId
       ? await this.statusService.findStatusById(statusId)
       : await this.statusService.findStatusByCode(statusCode!!);
@@ -187,47 +187,40 @@ export class EinsatzFahrzeugeService {
         },
       },
       {
-        arrayFilters: [{ 'elem._id': fahrzeugId }],
+        arrayFilters: [{ 'elem.fullOpta': fullOpta }],
       },
     );
-    await this.repository.findOne({
-      _id: einsatzId,
-      'fahrzeuge.$[elem]': 1,
-    });
-    this.logger.debug(
-      'updateResult: ' + JSON.stringify(updateResult, null, ''),
+
+    const mission = await this.repository.findById(einsatzId);
+    if (!mission) {
+      throw new NotFoundException('Einsatz not found');
+    }
+
+    const vehicle = mission.fahrzeuge.find(
+      (f) => f.fullOpta.toString() == fullOpta,
     );
-
-    const einsatz = await this.repository.findById(einsatzId);
-
-    await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
-      einsatzId,
-      bearbeiterId,
-      type: 'RESSOURCEN',
-      absender: einsatz!!.aufnehmendesRettungsmittel,
-      empfaenger: fahrzeugId,
-      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.description}).`,
-    });
+    if (!vehicle) {
+      throw new NotFoundException('Vehicle not found in Mission');
+    }
 
     await this.einsatztagebuchService.createEinsatztagebuchEintrag(einsatzId, {
       einsatzId,
       bearbeiterId,
       type: 'RESSOURCEN',
-      absender: 'TODO', //fahrzeug.funkrufname,
-      empfaenger: einsatz!!.aufnehmendesRettungsmittel,
-      content: `${'TODO'} wechselt in Status${status!!.code} (${status!!.description}).`,
+      absender: mission!!.aufnehmendesRettungsmittel,
+      empfaenger: vehicle.fullOpta,
+      content: `${vehicle.fullOpta} wechselt in Status${status!!.code} (${status!!.description}).`,
     });
   }
 
   async removeFahrzeugFromEinsatz(
-    fahrzeugId: string,
+    fullOpta: string,
     einsatzId: string,
     bearbeiterId: string,
   ) {
     this.logger.debug('chaning status');
 
-    const existingFahrzeug =
-      await this.fahrzeugeService.findFahrzeug(fahrzeugId);
+    const existingFahrzeug = await this.fahrzeugeService.findFahrzeug(fullOpta);
 
     const einsatz = await this.repository.findOneByIdAndUpdate(
       einsatzId,
@@ -237,7 +230,7 @@ export class EinsatzFahrzeugeService {
         },
       },
       {
-        arrayFilters: [{ 'elem._id': fahrzeugId }],
+        arrayFilters: [{ 'elem.fullOpta': fullOpta }],
       },
     );
 

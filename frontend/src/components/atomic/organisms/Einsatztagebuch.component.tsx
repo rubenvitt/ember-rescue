@@ -222,18 +222,18 @@ export function EinsatztagebuchComponent() {
                 initialValues: {
                   ...editingEintrag,
                   sender:
-                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.id ??
+                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.fullOpta ??
                     editingEintrag.sender,
                   receiver:
-                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.id ??
+                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.fullOpta ??
                     editingEintrag.receiver,
                 },
                 onFinish: async (data) => {
                   await createEinsatztagebuchEintrag.mutateAsync({
                     ...data,
                     // FIXME[ember-rescue-68](rubeen, 30.11.24): this may be simplyfied
-                    absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.id === data.sender)?.fullOpta ?? data.sender,
-                    empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.id === data.receiver)?.fullOpta ?? data.receiver,
+                    absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
+                    empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
                   });
                   await archiveEinsatztagebuchEintrag.mutateAsync({ entryId: editingEintrag?.id });
                   setIsOpen(false);

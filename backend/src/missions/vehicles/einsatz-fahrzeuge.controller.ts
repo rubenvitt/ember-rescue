@@ -62,7 +62,7 @@ export class EinsatzFahrzeugeController {
     @Body() body: AddVehicleToMissionDto,
   ) {
     await this.fahrzeugeService.addFahrzeugToEinsatz(
-      body.vehicleId,
+      body.fullOpta,
       einsatzId,
       bearbeiter.name,
     );
@@ -70,7 +70,7 @@ export class EinsatzFahrzeugeController {
     return { status: 'ok' };
   }
 
-  @Post(':fahrzeugId/status')
+  @Post(':fullOpta/status')
   @ApiOkResponse({
     description: 'Change vehicle status',
   })
@@ -78,7 +78,7 @@ export class EinsatzFahrzeugeController {
     type: ChangeStatusDto,
   })
   @ApiParam({
-    name: 'fahrzeugId',
+    name: 'fullOpta',
     required: true,
     type: String,
     description: 'Fahrzeug ID',
@@ -91,12 +91,12 @@ export class EinsatzFahrzeugeController {
   })
   async changeStatus(
     @Param('einsatzId') einsatzId: string,
-    @Param('fahrzeugId') fahrzeugId: string,
+    @Param('fullOpta') fullOpta: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: ChangeStatusDto,
   ) {
     await this.fahrzeugeService.changeStatus(
-      fahrzeugId,
+      fullOpta,
       einsatzId,
       bearbeiter.name,
       body,
@@ -105,15 +105,15 @@ export class EinsatzFahrzeugeController {
     return { status: 'ok' };
   }
 
-  @Delete(':fahrzeugId')
+  @Delete(':fullOpta')
   @ApiOkResponse({
     description: 'Remove vehicle from einsatz',
   })
   @ApiParam({
-    name: 'fahrzeugId',
+    name: 'fullOpta',
     required: true,
     type: String,
-    description: 'Fahrzeug ID',
+    description: 'FullOpta of vehicle to remove',
   })
   @ApiParam({
     name: 'einsatzId',
@@ -123,11 +123,11 @@ export class EinsatzFahrzeugeController {
   })
   async removeFromEinsatz(
     @Param('einsatzId') einsatzId: string,
-    @Param('fahrzeugId') fahrzeugId: string,
+    @Param('fullOpta') fullOpta: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
   ) {
     await this.fahrzeugeService.removeFahrzeugFromEinsatz(
-      fahrzeugId,
+      fullOpta,
       einsatzId,
       bearbeiter.name,
     );

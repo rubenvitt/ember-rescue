@@ -140,7 +140,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
         <div className="flex flex-nowrap gap-2 overflow-scroll">
           {fahrzeuge.data?.data.fahrzeugeImEinsatz.map((fahrzeug) => (
             <Button
-              key={fahrzeug.id}
+              key={fahrzeug.fullOpta}
               type="link"
               className="break-keep"
               onClick={() => {

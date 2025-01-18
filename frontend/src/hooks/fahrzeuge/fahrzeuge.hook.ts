@@ -3,7 +3,7 @@ import { useEinsatz } from '../einsatz.hook.js';
 import { services } from '../../services/index.js';
 import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugeTemplateResponse, ManyFahrzeugTypResponse, type VehiclesResponse } from '@bluelight-hub/shared/client/index.js';
 
-export function useFahrzeuge(props?: { fahrzeugId?: string }) {
+export function useFahrzeuge(props?: { fullOpta?: string }) {
   const queryClient = useQueryClient();
   const { missionId } = useEinsatz();
   // TODO: refactor this to use einsatzFahrzeugeController (and rename that). Controller needs to merge active vehicles and controller vehicles
@@ -46,10 +46,10 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   const removeFahrzeugFromEinsatz = useMutation<unknown, unknown, {}>({
     mutationKey: services.backend.fahrzeuge.deleteFahrzeugFromEinsatz.mutationKey({
       einsatzId: missionId,
-      fahrzeugId: props?.fahrzeugId,
+      fullOpta: props?.fullOpta,
     }),
     mutationFn: services.backend.fahrzeuge.deleteFahrzeugFromEinsatz.mutationFn({
-      fahrzeugId: props?.fahrzeugId,
+      fullOpta: props?.fullOpta,
       einsatzId: missionId,
     }),
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
@@ -58,11 +58,11 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   const changeStatus = useMutation<unknown, unknown, ChangeStatusDto>({
     mutationKey: services.backend.fahrzeuge.postStatusForFahrzeug.mutationKey({
       einsatzId: missionId,
-      fahrzeuggId: props?.fahrzeugId,
+      fahrzeuggId: props?.fullOpta,
     }),
     mutationFn: services.backend.fahrzeuge.postStatusForFahrzeug.mutationFn({
       einsatzId: missionId,
-      fahrzeugId: props?.fahrzeugId,
+      fullOpta: props?.fullOpta,
     }),
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });

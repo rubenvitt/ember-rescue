@@ -11,7 +11,7 @@ export const Route = createLazyFileRoute('/setupEinsatz')({
 });
 
 function SetupEinsatz() {
-  const { einsatz } = useEinsatz();
+  const { einsatz } = useEinsatz(false);
   const navigate = useNavigate({ from: '/setupEinsatz' });
   const { isAvailable } = useBackend();
   const { removeBearbeiter } = useBearbeiter({ requireBearbeiter: true });

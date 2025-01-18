@@ -30,7 +30,7 @@ export interface EinsatzFahrzeugeControllerAddFahrzeugToEinsatzV1Request {
 
 export interface EinsatzFahrzeugeControllerChangeStatusV1Request {
   einsatzId: string;
-  fahrzeugId: string;
+  fullOpta: string;
   changeStatusDto: ChangeStatusDto;
 }
 
@@ -40,7 +40,7 @@ export interface EinsatzFahrzeugeControllerFindFahrzeugeImEinsatzV1Request {
 
 export interface EinsatzFahrzeugeControllerRemoveFromEinsatzV1Request {
   einsatzId: string;
-  fahrzeugId: string;
+  fullOpta: string;
 }
 
 /**
@@ -112,10 +112,10 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters['fahrzeugId'] == null) {
+    if (requestParameters['fullOpta'] == null) {
       throw new runtime.RequiredError(
-        'fahrzeugId',
-        'Required parameter "fahrzeugId" was null or undefined when calling einsatzFahrzeugeControllerChangeStatusV1().',
+        'fullOpta',
+        'Required parameter "fullOpta" was null or undefined when calling einsatzFahrzeugeControllerChangeStatusV1().',
       );
     }
 
@@ -134,9 +134,9 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/v1/missions/{einsatzId}/vehicles/{fahrzeugId}/status`
+        path: `/v1/missions/{einsatzId}/vehicles/{fullOpta}/status`
           .replace(`{${'einsatzId'}}`, encodeURIComponent(String(requestParameters['einsatzId'])))
-          .replace(`{${'fahrzeugId'}}`, encodeURIComponent(String(requestParameters['fahrzeugId']))),
+          .replace(`{${'fullOpta'}}`, encodeURIComponent(String(requestParameters['fullOpta']))),
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,
@@ -213,10 +213,10 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters['fahrzeugId'] == null) {
+    if (requestParameters['fullOpta'] == null) {
       throw new runtime.RequiredError(
-        'fahrzeugId',
-        'Required parameter "fahrzeugId" was null or undefined when calling einsatzFahrzeugeControllerRemoveFromEinsatzV1().',
+        'fullOpta',
+        'Required parameter "fullOpta" was null or undefined when calling einsatzFahrzeugeControllerRemoveFromEinsatzV1().',
       );
     }
 
@@ -226,9 +226,9 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/v1/missions/{einsatzId}/vehicles/{fahrzeugId}`
+        path: `/v1/missions/{einsatzId}/vehicles/{fullOpta}`
           .replace(`{${'einsatzId'}}`, encodeURIComponent(String(requestParameters['einsatzId'])))
-          .replace(`{${'fahrzeugId'}}`, encodeURIComponent(String(requestParameters['fahrzeugId']))),
+          .replace(`{${'fullOpta'}}`, encodeURIComponent(String(requestParameters['fullOpta']))),
         method: 'DELETE',
         headers: headerParameters,
         query: queryParameters,

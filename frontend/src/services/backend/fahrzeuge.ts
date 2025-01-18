@@ -49,7 +49,8 @@ export const postAddFahrzeugToEinsatz = {
   mutationFn:
     ({ einsatzId }: { einsatzId: string | null }) =>
     async (dto: AddVehicleToMissionDto) => {
-      console.log('Add fahrzeug to einsatz', dto.vehicleId, einsatzId);
+      // fixme: something not working here. fullOpta is... undefined
+      console.log('Add fahrzeug to einsatz', dto.fullOpta, einsatzId);
       if (!einsatzId) {
         throw new Error('No einsatzId found in local storage. Please login and select a mission before fetching einsatzfahrzeuge.');
       }
@@ -71,33 +72,33 @@ export const fetchFahrzeugTypen = {
 // mutate
 
 export const deleteFahrzeugFromEinsatz = {
-  mutationKey: ({ einsatzId, fahrzeugId }: { einsatzId: unknown; fahrzeugId: unknown }) => [queryKey, einsatzId, fahrzeugId, 'remove'],
-  mutationFn: ({ fahrzeugId, einsatzId }: { fahrzeugId?: string; einsatzId: string | null }) =>
+  mutationKey: ({ einsatzId, fullOpta }: { einsatzId: unknown; fullOpta: unknown }) => [queryKey, einsatzId, fullOpta, 'remove'],
+  mutationFn: ({ fullOpta, einsatzId }: { fullOpta?: string; einsatzId: string | null }) =>
     async function () {
-      if (!einsatzId || !fahrzeugId) {
-        throw new Error('No einsatzId or fahrzeugId given. Please provide both.');
+      if (!einsatzId || !fullOpta) {
+        throw new Error('No einsatzId or fullOpta given. Please provide both.');
       }
-      console.log('Remove fahrzeug from einsatz', fahrzeugId, einsatzId);
+      console.log('Remove fahrzeug from einsatz', fullOpta, einsatzId);
 
       return einsatzFahrzeugeApi.einsatzFahrzeugeControllerRemoveFromEinsatzV1({
         einsatzId: einsatzId,
-        fahrzeugId: fahrzeugId,
+        fullOpta: fullOpta,
       });
     },
 };
 export const postStatusForFahrzeug = {
   mutationKey: (props: { einsatzId: unknown; fahrzeuggId: unknown }) => [queryKey, ...[Object.values(props)], 'status'],
   mutationFn:
-    ({ fahrzeugId, einsatzId }: { fahrzeugId?: string; einsatzId?: string | null }) =>
+    ({ fullOpta, einsatzId }: { fullOpta?: string; einsatzId?: string | null }) =>
     async ({ statusId }: { statusId: string }) => {
-      if (!einsatzId || !fahrzeugId) {
-        throw new Error('No einsatzId or fahrzeugId given. Please provide both.');
+      if (!einsatzId || !fullOpta) {
+        throw new Error('No einsatzId or fullOpta given. Please provide both.');
       }
-      console.log('Set status for fahrzeug', fahrzeugId, einsatzId);
+      console.log('Set status for fahrzeug', fullOpta, einsatzId);
 
       return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
         einsatzId: einsatzId,
-        fahrzeugId: fahrzeugId,
+        fullOpta: fullOpta,
         changeStatusDto: {
           statusId,
         },

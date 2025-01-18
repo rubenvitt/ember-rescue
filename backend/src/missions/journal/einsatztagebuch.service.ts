@@ -18,44 +18,65 @@ export class EinsatztagebuchService {
   }
 
   // FIXME[ember-rescue-68](rubeen, 15.11.24): TYPES
-  createEinsatztagebuchEintrag(einsatzId: string, data: any | any[]) {
+  async createEinsatztagebuchEintrag(einsatzId: string, data: any | any[]) {
+    // helper method transforming entry
     const mapData = (item: any) => ({
-      timestamp: item.timestamp,
+      timestamp: item.timestamp ?? new Date().toISOString(),
       type: item.type,
       content: item.content,
-      sender: item.absender, // geändert
-      receiver: item.empfaenger, // geändert
+      sender: item.absender, // changed
+      receiver: item.empfaenger, // changed
       archived: item.archived,
-      bearbeiter: item.bearbeiterId, // geändert
-      //nummer: item.nummer || Math.floor(Date.now() / 1000), // hinzugefügt
+      bearbeiter: item.bearbeiterId, // changed
+      //nummer is set later
     });
 
-    this.einsatzRepository.findOne({ id: einsatzId }).then((einsatz) => {
-      this.logger.log(
-        'tagebuch',
-        einsatz?.einsatzTagebuch ?? 'Einsatztagebuch is undefined',
-      );
-    });
+    // entry / entries as array
+    const mappedData = Array.isArray(data)
+      ? data.map(mapData)
+      : [mapData(data)];
 
-    this.logger.log('Creating einsatztagebucheintrag');
+    // mission exists?
+    const mission = await this.einsatzRepository.findById(einsatzId);
+    if (!mission) {
+      throw new NotFoundException('Mission not found');
+    }
 
-    return this.einsatzRepository
-      .findOneByIdAndUpdate(einsatzId, {
-        $set: {
-          'einsatzTagebuch.items': {
-            $ifNull: ['$einsatzTagebuch.items', []],
-          },
+    // create items if not existent yet
+    if (!mission.einsatzTagebuch?.items) {
+      await this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
+        $set: { 'einsatzTagebuch.items': [] },
+      });
+    }
+
+    // increment counter
+    const updatedMission = await this.einsatzRepository.findOneByIdAndUpdate(
+      einsatzId,
+      {
+        $inc: { 'einsatzTagebuch.counter': mappedData.length },
+      },
+      { new: true },
+    );
+    if (!updatedMission) {
+      throw new NotFoundException('Mission not found (on inc)');
+    }
+
+    // count old base
+    const oldValue = updatedMission.einsatzTagebuch.counter - mappedData.length;
+
+    // set counter to entries
+    const dataForInsert = mappedData.map((item, index) => ({
+      ...item,
+      nummer: oldValue + index + 1,
+    }));
+
+    return await this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
+      $push: {
+        'einsatzTagebuch.items': {
+          $each: dataForInsert,
         },
-      })
-      .then(() =>
-        this.einsatzRepository.findOneByIdAndUpdate(einsatzId, {
-          $push: {
-            'einsatzTagebuch.items': {
-              $each: Array.isArray(data) ? data.map(mapData) : [mapData(data)],
-            },
-          },
-        }),
-      );
+      },
+    });
   }
 
   archiveEinsatztagebuchEintrag(id: string, missionId: string) {

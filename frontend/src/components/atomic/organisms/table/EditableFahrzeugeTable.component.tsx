@@ -189,11 +189,11 @@ export function EditableFahrzeugeTable() {
     return new Map(functionOpta.data?.data.map((opta) => [opta.code, opta]));
   }, [functionOpta.data]);
 
-  const editingFahrzeug = useMemo(() => {
+  const editingFahrzeugTemplate = useMemo(() => {
     if (newFahrzeugTemplate.id === id) {
       return newFahrzeugTemplate;
     }
-    return templateFahrzeuge.data?.data?.find((fahrzeug) => fahrzeug.id === id);
+    return templateFahrzeuge.data?.data?.find((template) => template.id === id);
   }, [templateFahrzeuge.data, id]);
 
   const fahrzeugeTypItems = useMemo(() => {
@@ -224,32 +224,32 @@ export function EditableFahrzeugeTable() {
   }
 
   useEffect(() => {
-    console.log('Effect triggered with editingFahrzeug:', editingFahrzeug);
+    console.log('Effect triggered with editingFahrzeug:', editingFahrzeugTemplate);
 
-    if (!editingFahrzeug) {
+    if (!editingFahrzeugTemplate) {
       console.log('No editingFahrzeug, returning early');
       return;
     }
 
     console.log('About to reset form with values:', {
-      id: editingFahrzeug.id,
-      kapazitaet: editingFahrzeug.kapazitaet,
-      fullOpta: editingFahrzeug.fullOpta,
-      opta: { ...editingFahrzeug.opta },
-      iconDefinition: editingFahrzeug.iconDefinition ?? {},
+      id: editingFahrzeugTemplate.id,
+      kapazitaet: editingFahrzeugTemplate.kapazitaet,
+      fullOpta: editingFahrzeugTemplate.fullOpta,
+      opta: { ...editingFahrzeugTemplate.opta },
+      iconDefinition: editingFahrzeugTemplate.iconDefinition ?? {},
     });
 
     form.setFieldsValue({
-      id: editingFahrzeug.id,
-      kapazitaet: editingFahrzeug.kapazitaet,
-      fullOpta: editingFahrzeug.fullOpta,
-      opta: { ...editingFahrzeug.opta },
-      iconDefinition: editingFahrzeug.iconDefinition ?? {},
+      id: editingFahrzeugTemplate.id,
+      kapazitaet: editingFahrzeugTemplate.kapazitaet,
+      fullOpta: editingFahrzeugTemplate.fullOpta,
+      opta: { ...editingFahrzeugTemplate.opta },
+      iconDefinition: editingFahrzeugTemplate.iconDefinition ?? {},
     });
 
     // Nach dem Reset prüfen
     console.debug('Form values after reset:', form.getFieldsValue());
-  }, [editingFahrzeug]);
+  }, [editingFahrzeugTemplate]);
 
   const columns = useMemo<EditableColumnsType<FahrzeugTemplateDto>>(
     () => [
@@ -393,20 +393,20 @@ export function EditableFahrzeugeTable() {
           resetEditingId();
         }}
         initialValues={{
-          id: editingFahrzeug?.id ?? '',
-          fullOpta: editingFahrzeug?.fullOpta ?? '',
-          kapazitaet: editingFahrzeug?.kapazitaet ?? 0,
+          id: editingFahrzeugTemplate?.id ?? '',
+          fullOpta: editingFahrzeugTemplate?.fullOpta ?? '',
+          kapazitaet: editingFahrzeugTemplate?.kapazitaet ?? 0,
           opta: {
-            id: editingFahrzeug?.opta.id ?? '',
-            fullOpta: editingFahrzeug?.opta.fullOpta ?? '',
-            ort: editingFahrzeug?.opta.ort ?? '',
-            district: editingFahrzeug?.opta.district ?? '',
-            bosCode: editingFahrzeug?.opta.bosCode ?? '',
-            localCode: editingFahrzeug?.opta.localCode ?? '',
-            functionCode: editingFahrzeug?.opta.functionCode ?? '',
-            orderNumber: editingFahrzeug?.opta.orderNumber ?? '',
+            id: editingFahrzeugTemplate?.opta.id ?? '',
+            fullOpta: editingFahrzeugTemplate?.opta.fullOpta ?? '',
+            ort: editingFahrzeugTemplate?.opta.ort ?? '',
+            district: editingFahrzeugTemplate?.opta.district ?? '',
+            bosCode: editingFahrzeugTemplate?.opta.bosCode ?? '',
+            localCode: editingFahrzeugTemplate?.opta.localCode ?? '',
+            functionCode: editingFahrzeugTemplate?.opta.functionCode ?? '',
+            orderNumber: editingFahrzeugTemplate?.opta.orderNumber ?? '',
           },
-          iconDefinition: editingFahrzeug?.iconDefinition ?? {},
+          iconDefinition: editingFahrzeugTemplate?.iconDefinition ?? {},
         }}
       >
         <Table

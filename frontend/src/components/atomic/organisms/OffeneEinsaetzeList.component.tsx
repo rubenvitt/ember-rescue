@@ -12,7 +12,7 @@ import { PiNetwork } from 'react-icons/pi';
 import { SmallMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 export const OffeneEinsaetzeList: React.FC = () => {
-  const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
+  const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz(false);
   const { fahrzeuge } = useFahrzeuge();
   const { allBearbeiter } = useBearbeiter();
 
