@@ -6,8 +6,9 @@ import { useForm } from '@tanstack/react-form';
 import { twMerge } from 'tailwind-merge';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { Select } from 'antd';
+import { Form, Select } from 'antd';
 import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.tsx';
 
 const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; label: string; secondary: string }; onAdd: (fullOpta: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
@@ -83,6 +84,7 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         form={{
           initialValues: { fullOpta: '' },
           async onFinish(data) {
+            console.log('onFinish', { data });
             await handleAddFahrzeug(data.fullOpta);
           },
         }}
@@ -97,21 +99,26 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
         }}
         resetOnSubmit={true}
       >
-        <Select
-          fieldNames={{ value: 'fullOpta' }}
-          placeholder="Fahrzeug dem Einsatz hinzufügen"
-          className="w-full"
-          showSearch
-          // @ts-ignore
-          spellCheck={false}
-          filterOption={(inputValue, option) => {
-            // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
-            const regex = new RegExp(inputValue.split('').join('.*'), 'i');
-            return regex.test(option?.searchString);
-          }}
-          options={fahrzeugeNichtImEinsatzItems}
-          loading={fahrzeuge.isLoading}
-        />
+        <Form.Item name="fullOpta" className="w-full m-0 p-0">
+          <Select
+            placeholder="Fahrzeug dem Einsatz hinzufügen"
+            className="w-full"
+            showSearch
+            allowClear
+            // @ts-ignore
+            spellCheck={false}
+            filterOption={(inputValue, option) => {
+              // Create a regular expression that matches the characters of inputValue in sequence, ignoring spaces.
+              const regex = new RegExp(inputValue.split('').join('.*'), 'i');
+              return regex.test(option?.searchString);
+            }}
+            onChange={(value) => {
+              console.log('onChange', { value });
+            }}
+            options={fahrzeugeNichtImEinsatzItems}
+            loading={fahrzeuge.isLoading}
+          />
+        </Form.Item>
       </FormLayout>
       <div className="mt-10">
         <h3 className="text-sm font-medium text-gray-500">Empfohlene Fahrzeuge</h3>

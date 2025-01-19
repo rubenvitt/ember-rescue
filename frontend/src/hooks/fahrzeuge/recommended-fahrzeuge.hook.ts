@@ -22,7 +22,7 @@ export const useRecommendedFahrzeuge = (config: UseRecommendedFahrzeugeConfig = 
 
   return useMemo(() => {
     if (!fahrzeuge.data) return [];
-    const sortedFahrzeuge = sortFahrzeugeByEinsatzCount([...fahrzeuge.data.data.verfuegbareFahrzeuge, ...fahrzeuge.data.data.fahrzeugeImEinsatz], sortOrder);
+    const sortedFahrzeuge = sortFahrzeugeByEinsatzCount([...fahrzeuge.data.data.verfuegbareFahrzeuge], sortOrder);
     return sortedFahrzeuge.slice(0, maxResults).map((fahrzeug) => ({
       label: fahrzeug.fullOpta,
       secondary: `${fahrzeug.optaFunktion} ${fahrzeug.kapazitaet ? `(${fahrzeug.kapazitaet} Plätze)` : ''}`,

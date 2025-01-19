@@ -26,7 +26,7 @@ import {
 export class EinsatzFahrzeugeController {
   private readonly logger = new Logger(MissionCoreController.name);
 
-  constructor(private readonly fahrzeugeService: EinsatzFahrzeugeService) {}
+  constructor(private readonly fahrzeugeService: EinsatzFahrzeugeService) { }
 
   @Get()
   @ApiOkResponse({
@@ -43,8 +43,11 @@ export class EinsatzFahrzeugeController {
       this.fahrzeugeService.findVerfuegbareFahrzeuge(einsatzId),
     ]);
 
+    const resolvedAktiveFahrzeuge = await Promise.all(aktiveFahrzeuge);
+    this.logger.log({ verfuegbareFahrzeuge });
+
     return {
-      fahrzeugeImEinsatz: aktiveFahrzeuge,
+      fahrzeugeImEinsatz: resolvedAktiveFahrzeuge,
       verfuegbareFahrzeuge: verfuegbareFahrzeuge,
     };
   }

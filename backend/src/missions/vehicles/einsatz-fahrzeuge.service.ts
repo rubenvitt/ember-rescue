@@ -18,7 +18,7 @@ export class EinsatzFahrzeugeService {
     private readonly statusService: StatusService,
     private readonly repository: EinsatzRepository,
     private readonly functionOptaRepository: FunctionOptaRepository,
-  ) {}
+  ) { }
 
   async addFahrzeugToEinsatz(
     fullOpta: string,
@@ -87,19 +87,41 @@ export class EinsatzFahrzeugeService {
     einsatzId: string,
   ): Promise<VehicleOnMissionDto[]> {
     const einsatz = await this.repository.findById(einsatzId);
-    // @ts-ignore FIXME
-    return (
-      einsatz?.fahrzeuge
-        .filter((fahrzeug) => !fahrzeug.einsatzende)
-        .map(async (fahrzeug) => ({
-          ...fahrzeug,
-          optaFunktion: (
-            await this.functionOptaRepository.findOne({
-              code: fahrzeug.opta.functionCode,
-            })
-          )?.label,
-        })) || []
+    if (!einsatz?.fahrzeuge?.length) {
+      return [];
+    }
+
+    const aktiveFahrzeuge = einsatz.fahrzeuge.filter(
+      (fahrzeug) => !fahrzeug.einsatzende
     );
+
+    const fahrzeugeWithOptaFunction = await Promise.all(
+      aktiveFahrzeuge.map(async (fahrzeug) => {
+        const functionOpta = await this.functionOptaRepository.findOne({
+          code: fahrzeug.opta.functionCode,
+        });
+
+        return {
+          fullOpta: fahrzeug.fullOpta,
+          optaFunktion: functionOpta?.label || fahrzeug.opta.functionCode,
+          einsatzbeginn: fahrzeug.einsatzbeginn.toISOString(),
+          einsatzende: fahrzeug.einsatzende,
+          personal: fahrzeug.personal.map(p => ({
+            name: p.name,
+            qualifikation: p.qualifikation?.abkuerzung || '',
+            telefonnummer: p.telefonnummer || '',
+            isFuehrungskraft: p.isFuehrungskraft || false
+          })),
+          kapazitaet: fahrzeug.kapazitaet,
+          status_history: fahrzeug.status_history.map(entry => ({
+            timestamp: entry.timestamp?.toISOString(),
+            status: entry.status
+          })),
+        };
+      })
+    );
+
+    return fahrzeugeWithOptaFunction;
   }
 
   async findVerfuegbareFahrzeuge(
@@ -120,9 +142,10 @@ export class EinsatzFahrzeugeService {
     const beendeteFahrzeuge =
       einsatz?.fahrzeuge.filter((f) => f.einsatzende) || [];
 
-    // Kombiniere Templates und beendete Fahrzeuge, filtere aktive Fahrzeuge aus
+    const uniqueFahrzeuge = [...new Map([...beendeteFahrzeuge, ...templates].map(item => [item.fullOpta, item])).values()];
+
     return await Promise.all(
-      [...templates, ...beendeteFahrzeuge]
+      uniqueFahrzeuge
         .filter((fahrzeug) => !aktiveFahrzeugeOptas.has(fahrzeug.fullOpta))
         .map(async (fahrzeug) => {
           return {

@@ -130,7 +130,8 @@ export function EinsatztagebuchComponent() {
         title: 'Absender',
         dataIndex: 'sender',
         key: 'sender',
-        width: 100,
+        width: 120,
+        render: (_value, record) => smallOpta(record),
         filters: rufnahmeFilter,
         onFilter: (value, record) => record.sender === value,
         filterMultiple: true,
@@ -142,6 +143,7 @@ export function EinsatztagebuchComponent() {
         dataIndex: 'receiver',
         key: 'receiver',
         width: 120,
+        render: (_value, record) => smallOpta(record),
         filters: rufnahmeFilter,
         onFilter: (value, record) => record.receiver === value,
         filterMultiple: true,
@@ -308,3 +310,10 @@ export function EinsatztagebuchComponent() {
     </div>
   );
 }
+function smallOpta({ sender }: JournalEntryDto) {
+  return (() => {
+    const optaMatch = sender.match(/(?:.*?)(\d+-\d+(?:-\d+)?)(.*)?$/);
+    return optaMatch ? `${optaMatch[1]}${optaMatch[2] || ''}` : sender;
+  })();
+}
+

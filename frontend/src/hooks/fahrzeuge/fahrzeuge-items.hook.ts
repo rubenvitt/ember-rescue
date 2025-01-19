@@ -57,5 +57,7 @@ export function useFahrzeugeItems({ fahrzeuge, include }: Props) {
     );
   }, []) as DefaultOptionType[];
 
+  console.log({ fahrzeugeAsItems, allFahrzeugeItems, fahrzeugeImEinsatzItems, fahrzeugeNichtImEinsatzItems, customFahrzeugeItems });
+
   return { fahrzeugeAsItems, loading: allFahrzeuge.isLoading };
 }

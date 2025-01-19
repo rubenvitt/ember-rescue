@@ -1,14 +1,9 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
-import { FahrzeugDto } from '../../types/app/fahrzeug.types.js';
 import { QueryClient } from '@tanstack/react-query';
 import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
-
-export type PatchFahrzeugType = Omit<FahrzeugDto, '_count' | 'status' | 'fahrzeugTyp' | 'id' | 'optaOrt' | 'optaFunktion' | 'optaOrdnung'> & Partial<Pick<FahrzeugDto, 'id'>>;
-
-export type PatchFahrzeugeType = PatchFahrzeugType[];
 
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
@@ -48,18 +43,18 @@ export const postAddFahrzeugToEinsatz = {
   mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
   mutationFn:
     ({ einsatzId }: { einsatzId: string | null }) =>
-    async (dto: AddVehicleToMissionDto) => {
-      // fixme: something not working here. fullOpta is... undefined
-      console.log('Add fahrzeug to einsatz', dto.fullOpta, einsatzId);
-      if (!einsatzId) {
-        throw new Error('No einsatzId found in local storage. Please login and select a mission before fetching einsatzfahrzeuge.');
-      }
+      async (dto: AddVehicleToMissionDto) => {
+        // fixme: something not working here. fullOpta is... undefined
+        console.log('Add fahrzeug to einsatz', dto.fullOpta, einsatzId);
+        if (!einsatzId) {
+          throw new Error('No einsatzId found in local storage. Please login and select a mission before fetching einsatzfahrzeuge.');
+        }
 
-      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerAddFahrzeugToEinsatzV1({
-        einsatzId: einsatzId,
-        addVehicleToMissionDto: dto,
-      });
-    },
+        return einsatzFahrzeugeApi.einsatzFahrzeugeControllerAddFahrzeugToEinsatzV1({
+          einsatzId: einsatzId,
+          addVehicleToMissionDto: dto,
+        });
+      },
 };
 
 export const fetchFahrzeugTypen = {
@@ -90,20 +85,20 @@ export const postStatusForFahrzeug = {
   mutationKey: (props: { einsatzId: unknown; fahrzeuggId: unknown }) => [queryKey, ...[Object.values(props)], 'status'],
   mutationFn:
     ({ fullOpta, einsatzId }: { fullOpta?: string; einsatzId?: string | null }) =>
-    async ({ statusId }: { statusId: string }) => {
-      if (!einsatzId || !fullOpta) {
-        throw new Error('No einsatzId or fullOpta given. Please provide both.');
-      }
-      console.log('Set status for fahrzeug', fullOpta, einsatzId);
+      async ({ statusId }: { statusId: string }) => {
+        if (!einsatzId || !fullOpta) {
+          throw new Error('No einsatzId or fullOpta given. Please provide both.');
+        }
+        console.log('Set status for fahrzeug', fullOpta, einsatzId);
 
-      return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
-        einsatzId: einsatzId,
-        fullOpta: fullOpta,
-        changeStatusDto: {
-          statusId,
-        },
-      });
-    },
+        return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
+          einsatzId: einsatzId,
+          fullOpta: fullOpta,
+          changeStatusDto: {
+            statusId,
+          },
+        });
+      },
 };
 
 export const postAllFahrzeugeJson = {
