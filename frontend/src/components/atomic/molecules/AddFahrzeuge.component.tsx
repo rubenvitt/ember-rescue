@@ -8,7 +8,6 @@ import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { Form, Select } from 'antd';
 import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.tsx';
 
 const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; label: string; secondary: string }; onAdd: (fullOpta: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>

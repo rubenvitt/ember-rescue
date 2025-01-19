@@ -24,7 +24,7 @@ export const SidebarContentComponent: React.FC<
       (item: MenuItem) =>
         ({
           onClick: async () => {
-            await navigate({ to: item!.key });
+            await navigate({ to: String(item!.key) });
           },
           ...item,
           // @ts-ignore its... complicated 🫣

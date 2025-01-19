@@ -7,7 +7,8 @@ interface UseRecommendedFahrzeugeConfig {
   sortOrder?: 'asc' | 'desc';
 }
 
-function sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz: VehicleOnMissionDto[], sortOrder: 'asc' | 'desc') {
+// TODO[ember-rescue-68](rubeen, 19.01.2025): sortOrder is not used, implement it
+function sortFahrzeugeByEinsatzCount(fahrzeugeNichtImEinsatz: VehicleOnMissionDto[], _sortOrder: 'asc' | 'desc') {
   return fahrzeugeNichtImEinsatz.sort((a, b) => {
     // FIXME[ember-rescue-68](rubeen, 31.12.24): try to reimplement _count (need to do that in backend)
     // const sortValue = a._count.einsatz_fahrzeug - b._count.einsatz_fahrzeug;

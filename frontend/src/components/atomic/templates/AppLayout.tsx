@@ -51,7 +51,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <form className="relative flex flex-1" action="#" method="GET">
               <ButtonWithShortcut
-                shortcut={navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? '⌘ K' : 'STRG K' /*TODO: this one is deprecated, need replacement*/}
+                shortcut={navigator.userAgent.toLowerCase().includes('mac') ? '⌘ K' : 'STRG K'}
                 id="search-field"
                 onClick={openPalette}
                 icon={<PiRabbit className="h-6 w-6" />}
