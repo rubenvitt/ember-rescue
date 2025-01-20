@@ -13,7 +13,7 @@ export class AddVehicleToMissionDto {
 
 export class StatusDto {
   @ApiProperty({ required: true })
-  code: string;
+  code: number;
 
   @ApiProperty({ required: true })
   label: string;
@@ -32,7 +32,7 @@ export class StatusHistoryEntryDto {
 
 export class ChangeStatusDto {
   @ApiProperty({ required: true })
-  statusId: string;
+  code: number;
 }
 
 export class VehicleOnMissionDto {

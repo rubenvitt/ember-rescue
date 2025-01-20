@@ -10,8 +10,8 @@ export type BearbeiterDto = {
  */
 export type SmallStatusDto = {
   id: string;
-  code: string;
-  bezeichnung: string;
+  code: number;
+  label: string;
 };
 
 /**

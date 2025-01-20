@@ -1,7 +1,7 @@
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { AddVehicleToMissionDto, EinsatzFahrzeugeApi, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
+import { AddVehicleToMissionDto, ChangeStatusDto, EinsatzFahrzeugeApi, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
 
@@ -85,18 +85,17 @@ export const postStatusForFahrzeug = {
   mutationKey: (props: { einsatzId: unknown; fahrzeuggId: unknown }) => [queryKey, ...[Object.values(props)], 'status'],
   mutationFn:
     ({ fullOpta, einsatzId }: { fullOpta?: string; einsatzId?: string | null }) =>
-      async ({ statusId }: { statusId: string }) => {
+      async (changeStatusDto: ChangeStatusDto) => {
         if (!einsatzId || !fullOpta) {
           throw new Error('No einsatzId or fullOpta given. Please provide both.');
         }
-        console.log('Set status for fahrzeug', fullOpta, einsatzId);
+
+        console.log('Change status for fahrzeug', fullOpta, einsatzId, changeStatusDto);
 
         return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
           einsatzId: einsatzId,
           fullOpta: fullOpta,
-          changeStatusDto: {
-            statusId,
-          },
+          changeStatusDto
         });
       },
 };

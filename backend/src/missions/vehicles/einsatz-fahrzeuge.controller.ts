@@ -98,6 +98,7 @@ export class EinsatzFahrzeugeController {
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: ChangeStatusDto,
   ) {
+    this.logger.log('Change status', { fullOpta, einsatzId, body });
     await this.fahrzeugeService.changeStatus(
       fullOpta,
       einsatzId,

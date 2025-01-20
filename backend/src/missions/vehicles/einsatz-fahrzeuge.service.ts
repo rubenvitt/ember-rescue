@@ -78,9 +78,7 @@ export class EinsatzFahrzeugeService {
     });
 
     // Status ändern
-    await this.changeStatus(fullOpta, einsatzId, bearbeiterId, {
-      statusCode: 3,
-    });
+    await this.changeStatus(fullOpta, einsatzId, bearbeiterId, { code: 3 });
   }
 
   async findAktiveFahrzeugeImEinsatz(
@@ -185,18 +183,11 @@ export class EinsatzFahrzeugeService {
     fullOpta: string,
     einsatzId: string,
     bearbeiterId: string,
-    {
-      statusId,
-      statusCode,
-    }:
-      | { statusCode?: never; statusId: string }
-      | { statusCode: number; statusId?: never },
+    { code }: { code: number },
   ) {
-    this.logger.log(`Change status for ${fullOpta} to ${statusId}`);
+    this.logger.log(`Change status for ${fullOpta} to ${code}`);
 
-    const status = statusId
-      ? await this.statusService.findStatusById(statusId)
-      : await this.statusService.findStatusByCode(statusCode!!);
+    const status = await this.statusService.findStatusByCode(code);
 
     const updateResult = await this.repository.findOneByIdAndUpdate(
       einsatzId,

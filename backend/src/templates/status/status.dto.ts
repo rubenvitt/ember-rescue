@@ -5,7 +5,7 @@ export class StatusDto {
   @ApiProperty({})
   id: string;
   @ApiProperty({})
-  code: string;
+  code: number;
   @ApiProperty({})
   label: string;
   @ApiProperty({})

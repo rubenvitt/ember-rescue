@@ -21,17 +21,17 @@ import { mapValues } from '../runtime';
 export interface ChangeStatusDto {
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof ChangeStatusDto
    */
-  statusId: string;
+  code: number;
 }
 
 /**
  * Check if a given object implements the ChangeStatusDto interface.
  */
 export function instanceOfChangeStatusDto(value: object): value is ChangeStatusDto {
-  if (!('statusId' in value) || value['statusId'] === undefined) return false;
+  if (!('code' in value) || value['code'] === undefined) return false;
   return true;
 }
 
@@ -44,7 +44,7 @@ export function ChangeStatusDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
     return json;
   }
   return {
-    statusId: json['statusId'],
+    code: json['code'],
   };
 }
 
@@ -58,6 +58,6 @@ export function ChangeStatusDtoToJSONTyped(value?: ChangeStatusDto | null, ignor
   }
 
   return {
-    statusId: value['statusId'],
+    code: value['code'],
   };
 }

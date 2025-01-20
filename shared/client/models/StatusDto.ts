@@ -30,7 +30,7 @@ export interface StatusDto {
    * @type {string}
    * @memberof StatusDto
    */
-  code: string;
+  code: number;
   /**
    *
    * @type {string}

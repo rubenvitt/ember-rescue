@@ -17,7 +17,7 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
   const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fullOpta: fahrzeug.fullOpta });
 
   const onStatusButtonClick = useCallback(
-    async (item: { statusId: string }) => {
+    async (item: { code: number }) => {
       await changeStatus.mutateAsync(item);
       return Modal.destroyAll();
     },
