@@ -1,13 +1,13 @@
-import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
-import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { Button, DatePicker, Form, Input, Select } from 'antd';
-import { PiCaretDown } from 'react-icons/pi';
 import dayjs from 'dayjs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PiCaretDown } from 'react-icons/pi';
+import { useEinsatz } from '../../../hooks/einsatz.hook.js';
+import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
+import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.js';
+import { CreateEinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 
 
 interface Props {
@@ -32,8 +32,11 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
     return () => clearInterval(interval);
   }, [hasUserChangedTimestamp, form, updateTimestamp]);
 
-  const { fahrzeugeAsItems, loading } = useFahrzeugeItems({
-    include: ['fahrzeugeImEinsatz', 'fahrzeugeNichtImEinsatz'],
+  const { fahrzeugeAsItems: fahrzeugeImEinsatzAsItems, loading: fahrzeugeImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeImEinsatz'],
+  });
+  const { fahrzeugeAsItems: fahrzeugeNichtImEinsatzAsItems, loading: fahrzeugeNichtImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeNichtImEinsatz'],
   });
 
   const handleSubmit = useCallback(
@@ -41,8 +44,8 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       closeForm();
       await createEinsatztagebuchEintrag.mutateAsync({
         content: data.content,
-        empfaenger: fahrzeugeAsItems.find((item) => data.empfaenger === item.item.id)?.item?.funkrufname ?? data.empfaenger,
-        absender: fahrzeugeAsItems.find((item) => data.absender === item.item.id)?.item?.funkrufname ?? data.absender,
+        empfaenger: data.empfaenger,
+        absender: data.absender,
         timestamp: data.timestamp,
         type: 'USER',
       });
@@ -69,10 +72,38 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
       {(props) => (
         <>
           <InputWrapper name="absender" label="Absender" rules={[{ required: true, message: 'Es sollte ein Absender angegeben werden' }]}>
-            <Select showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Absender auswählen" />
+            <Select
+              showSearch
+              options={[
+                {
+                  label: 'Fahrzeuge im Einsatz',
+                  options: fahrzeugeImEinsatzAsItems ?? [],
+                },
+                {
+                  label: 'Verfügbare Fahrzeuge',
+                  options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                },
+              ]}
+              loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+              placeholder="Absender auswählen"
+            />
           </InputWrapper>
           <InputWrapper name="empfaenger" label="Empfänger" rules={[{ required: true, message: 'Es sollte ein Empfänger angegeben werden' }]}>
-            <Select showSearch options={fahrzeugeAsItems} loading={loading} placeholder="Empfönger auswählen" />
+            <Select
+              showSearch
+              options={[
+                {
+                  label: 'Fahrzeuge im Einsatz',
+                  options: fahrzeugeImEinsatzAsItems ?? [],
+                },
+                {
+                  label: 'Verfügbare Fahrzeuge',
+                  options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                },
+              ]}
+              loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+              placeholder="Empfönger auswählen"
+            />
           </InputWrapper>
           <InputWrapper name="content" className="col-span-2" label="Inhalt" rules={[{ required: true, message: 'Ein Eintrag benötigt eine Nachricht' }]}>
             <Input.TextArea name="content" rows={3} />

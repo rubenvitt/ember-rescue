@@ -1,18 +1,19 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { Input as AntInput, Button, Drawer, Empty, Input, InputRef, Select, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
 import { format } from 'date-fns';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { natoDateTime } from '../../../utils/time.js';
-import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
-import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
-import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { Button, Drawer, Empty, Input as AntInput, Input, InputRef, Select, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
-
-import { FormLayout } from './form/FormLayout.comonent.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import dayjs from 'dayjs';
+import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
+import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
+import { FormLayout } from './form/FormLayout.comonent.js';
+
 import { JournalEntryDto } from '@bluelight-hub/shared/client/index.js';
+import dayjs from 'dayjs';
+import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.ts';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
@@ -21,6 +22,12 @@ export function EinsatztagebuchComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingEintrag, setEditingEintrag] = useState<JournalEntryDto | null>(null);
   const { fahrzeuge } = useFahrzeuge();
+  const { fahrzeugeAsItems: fahrzeugeImEinsatzAsItems, loading: fahrzeugeImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeImEinsatz'],
+  });
+  const { fahrzeugeAsItems: fahrzeugeNichtImEinsatzAsItems, loading: fahrzeugeNichtImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeNichtImEinsatz'],
+  });
   const onDrawerClose = useCallback(() => {
     setEditingEintrag(null);
     setIsOpen(false);
@@ -99,11 +106,33 @@ export function EinsatztagebuchComponent() {
         fixed: true,
         width: 80,
         sorter: (a, b) => a.nummer - b.nummer,
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Zeitpunkt',
         key: 'timestamp',
         width: 200,
+        filters: [
+          { text: 'Alle Einträge', value: 'timestamp' },
+          { text: 'Bearbeitete Einträge', value: 'createdAt' },
+          { text: 'Gelöschte Einträge', value: 'updatedAt' },
+        ],
+        filterMode: 'menu',
+        filterMultiple: false,
+        defaultFilteredValue: ['timestamp'],
+        sortDirections: ['ascend', 'descend', 'ascend'],
+        defaultSortOrder: 'descend',
+        onFilter: (value, record) => {
+          const timestampAsNato = format(record.timestamp, natoDateTime);
+          const createdAsNato = format(record.createdAt, natoDateTime);
+          const updatedAsNato = format(record.updatedAt, natoDateTime);
+          const selectedField = value as keyof Pick<JournalEntryDto, 'timestamp' | 'createdAt' | 'updatedAt'>;
+          return selectedField === 'timestamp' || (selectedField === 'createdAt' ? createdAsNato !== timestampAsNato : (record.archived && updatedAsNato !== timestampAsNato));
+        },
+        sorter: (a, b) => {
+          const selectedFilter = (columns.find(col => col.key === 'timestamp')?.filteredValue?.[0] ?? 'timestamp') as keyof Pick<JournalEntryDto, 'timestamp' | 'createdAt' | 'updatedAt'>;
+          return dayjs(a[selectedFilter] as any).diff(dayjs(b[selectedFilter] as any), 'milliseconds');
+        },
         render: (_, record) => {
           const timestampAsNato = format(record.timestamp, natoDateTime);
           const createdAsNato = format(record.createdAt, natoDateTime);
@@ -124,7 +153,6 @@ export function EinsatztagebuchComponent() {
             </>
           );
         },
-        sorter: (a, b) => dayjs(a.timestamp).unix() - dayjs(b.timestamp).unix(),
       },
       {
         title: 'Absender',
@@ -212,7 +240,7 @@ export function EinsatztagebuchComponent() {
               loading={!einsatztagebuch}
               columns={columns}
               virtual
-              scroll={{ y: 1500 }}
+              scroll={{ y: 1000 }}
               pagination={false}
               locale={{
                 emptyText: <Empty image={<PiEmpty size={48} />} description="Keine Einträge verfügbar" />,
@@ -222,98 +250,82 @@ export function EinsatztagebuchComponent() {
         </div>
       </div>
       <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
-        {
-          editingEintrag && (
-            <FormLayout<JournalEntryDto>
-              form={{
-                initialValues: {
-                  ...editingEintrag,
-                  sender:
-                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.fullOpta ??
-                    editingEintrag.sender,
-                  receiver:
-                    [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.fullOpta ??
-                    editingEintrag.receiver,
-                },
-                onFinish: async (data) => {
-                  await createEinsatztagebuchEintrag.mutateAsync({
-                    ...data,
-                    // FIXME[ember-rescue-68](rubeen, 30.11.24): this may be simplyfied
-                    absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
-                    empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
-                  });
-                  await archiveEinsatztagebuchEintrag.mutateAsync({ nummer: editingEintrag?.nummer });
-                  setIsOpen(false);
-                  setEditingEintrag(null);
-                },
-              }}
-            >
-              <InputWrapper label="Absender" name="absender">
-                <Select />
-              </InputWrapper>
-              <InputWrapper label="Empfänger" name="empfaenger">
-                <Select />
-              </InputWrapper>
-              <InputWrapper label="Notiz" name="content">
-                <Input.TextArea rows={5} />
-              </InputWrapper>
-            </FormLayout>
-          )
-          // <GenericForm<EinsatztagebuchEintrag>
-          //   defaultValues={{
-          //     ...editingEintrag,
-          //     absender: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
-          //     empfaenger: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
-          //   }}
-          //   submitText="Eintrag ändern"
-          //   submitIcon={PiGitPullRequest}
-          //   sections={[
-          //     {
-          //       fields: [
-          //         {
-          //           name: 'absender',
-          //           label: 'Absender',
-          //           type: 'combo',
-          //           placeholder: 'Empfänger des Eintrags',
-          //           validators: {
-          //             onChange: z.string({ message: 'Ein Absender wird benötigt' }).min(0),
-          //           },
-          //           items: fahrzeugeAsItems,
-          //           width: 'half',
-          //         },
-          //         {
-          //           name: 'empfaenger',
-          //           label: 'Empfänger',
-          //           type: 'combo',
-          //           placeholder: 'Empfänger des Eintrags',
-          //           validators: {
-          //             onChange: z.string({ message: 'Ein Empfänger wird benötigt' }).min(0),
-          //           },
-          //           items: fahrzeugeAsItems,
-          //           width: 'half',
-          //         },
-          //         {
-          //           name: 'content',
-          //           label: 'Inhalt',
-          //           type: 'textarea',
-          //           placeholder: 'Inhalt des Eintrags',
-          //           validators: {
-          //             onChange: z.string().min(0, { message: 'Ein Inhalt wird für den Einsatztagebucheintrag benötigt' }),
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   ]}
-          // />
-        }
+        {editingEintrag && (
+          <FormLayout<JournalEntryDto>
+            form={{
+              initialValues: {
+                ...editingEintrag,
+                sender:
+                  [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.fullOpta ??
+                  editingEintrag.sender,
+                receiver:
+                  [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.fullOpta ??
+                  editingEintrag.receiver,
+              },
+              onFinish: async (data) => {
+                await createEinsatztagebuchEintrag.mutateAsync({
+                  ...data,
+                  timestamp: editingEintrag.timestamp,
+                  absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
+                  empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
+                });
+                await archiveEinsatztagebuchEintrag.mutateAsync({ nummer: editingEintrag?.nummer });
+                setIsOpen(false);
+                setEditingEintrag(null);
+              },
+            }}
+            buttons={{
+              submit: {
+                children: 'Eintrag ändern',
+                icon: <PiSwap />,
+              },
+            }}
+          >
+            <InputWrapper label="Absender" name="sender">
+              <Select
+                showSearch
+                loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+                options={[
+                  {
+                    label: 'Fahrzeuge im Einsatz',
+                    options: fahrzeugeImEinsatzAsItems ?? [],
+                  },
+                  {
+                    label: 'Verfügbare Fahrzeuge',
+                    options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                  },
+                ]}
+              />
+            </InputWrapper>
+            <InputWrapper label="Empfänger" name="receiver">
+              <Select
+                showSearch
+                loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+                options={[
+                  {
+                    label: 'Fahrzeuge im Einsatz',
+                    options: fahrzeugeImEinsatzAsItems ?? [],
+                  },
+                  {
+                    label: 'Verfügbare Fahrzeuge',
+                    options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                  },
+                ]}
+              />
+            </InputWrapper>
+            <InputWrapper label="Notiz" name="content">
+              <Input.TextArea rows={5} />
+            </InputWrapper>
+          </FormLayout>
+        )}
       </Drawer>
     </div>
   );
 }
+
 function smallOpta({ sender }: JournalEntryDto) {
   return (() => {
     const optaMatch = sender.match(/(?:.*?)(\d+-\d+(?:-\d+)?)(.*)?$/);
     return optaMatch ? `${optaMatch[1]}${optaMatch[2] || ''}` : sender;
   })();
 }
-

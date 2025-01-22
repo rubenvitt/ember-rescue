@@ -5,7 +5,7 @@ import { StatusRepository } from '@templates/status/status.repository';
 
 @Injectable()
 export class StatusService {
-  constructor(private readonly repository: StatusRepository) {}
+  constructor(private readonly repository: StatusRepository) { }
 
   findAll() {
     return this.repository.findActive();
@@ -25,7 +25,7 @@ export class StatusService {
       items: {
         type: 'object',
         properties: {
-          code: { type: 'string', pattern: '^[0-9]$' },
+          code: { type: 'number', minimum: 0, maximum: 9 },
           label: { type: 'string' },
           description: { type: 'string' },
         },

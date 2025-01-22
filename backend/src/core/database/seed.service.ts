@@ -47,7 +47,7 @@ export class SeedService implements OnModuleInit {
     private readonly statusRepository: StatusRepository,
     private readonly einsatzRepository: EinsatzRepository,
     private readonly fahrzeugTemplateRepository: VehiclesRepository,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.logger.log('🌱 Start Seeding');
