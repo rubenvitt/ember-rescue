@@ -27,7 +27,7 @@ export interface StatusDto {
   id: string;
   /**
    *
-   * @type {string}
+   * @type {number}
    * @memberof StatusDto
    */
   code: number;

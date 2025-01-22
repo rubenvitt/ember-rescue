@@ -1,6 +1,3 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as process from 'node:process';
 import {
   HttpStatus,
   Logger,
@@ -8,9 +5,29 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError as ClassValidatorError } from 'class-validator';
+import * as process from 'node:process';
+import { AppModule } from './app.module';
 
 const logger = new Logger('main.ts');
+
+function formatValidationError(errors: ClassValidatorError[]): string[] {
+  return errors.reduce((acc: string[], error: ClassValidatorError) => {
+    if (error.constraints) {
+      // Füge alle Fehlermeldungen für diese Property hinzu
+      acc.push(...Object.values(error.constraints));
+    }
+
+    // Rekursiv verschachtelte Fehler verarbeiten
+    if (error.children?.length) {
+      acc.push(...formatValidationError(error.children));
+    }
+
+    return acc;
+  }, []);
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,18 +43,15 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
-      enableDebugMessages: true, // FIXME[ember-rescue-68](rubeen, 23.12.24): remove this in prod
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       exceptionFactory: (errors) => {
-        const formattedErrors = errors.reduce((acc, err) => {
-          acc[err.property] = Object.values(err.constraints || {});
-          return acc;
-        }, {});
+        const formattedErrors = formatValidationError(errors);
 
-        return new UnprocessableEntityException(
-          'Validation failed',
-          formattedErrors,
-        );
+        return new UnprocessableEntityException({
+          message: 'Validation failed',
+          errors: formattedErrors,
+          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        });
       },
     }),
   );

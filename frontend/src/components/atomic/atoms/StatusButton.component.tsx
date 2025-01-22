@@ -1,11 +1,11 @@
+import { ChangeStatusDto, StatusDto } from '@bluelight-hub/shared/client/index.ts';
+import { Button } from 'antd';
 import React, { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { statusLabel } from './StatusLabel.component.js';
-import { Button } from 'antd';
-import { ChangeStatusDto, StatusDto } from '@bluelight-hub/shared/client/index.js';
 
 interface StatusButtonProps {
-  onClick: (props: ChangeStatusDto) => unknown;
+  onClick: (props: Pick<ChangeStatusDto, 'code'>) => unknown;
   item: StatusDto;
   className: string;
 }

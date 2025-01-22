@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { EinsatzRepository } from './einsatz.repository';
-import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
-import { Einsatz } from './einsatz.schema';
 import {
   Counter,
   CounterSchema,
 } from '@core/database/mongo/schemas/counter.schema';
-import { Model } from 'mongoose';
+import { Logger, Module } from '@nestjs/common';
+import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
+import { Model, UpdateQuery } from 'mongoose';
+import { EinsatzRepository } from './einsatz.repository';
+import { Einsatz } from './einsatz.schema';
 
 @Module({
   providers: [EinsatzRepository],
@@ -32,10 +32,10 @@ import { Model } from 'mongoose';
               );
 
               this.einsatznummer = counter.seq;
-              next();
             }
-          });
 
+            next();
+          });
           return schema;
         },
         inject: [getModelToken(Counter.name)],

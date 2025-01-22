@@ -13,6 +13,9 @@
  */
 
 import { mapValues } from '../runtime';
+import type { StatusDto } from './StatusDto';
+import { StatusDtoFromJSON, StatusDtoFromJSONTyped, StatusDtoToJSON, StatusDtoToJSONTyped } from './StatusDto';
+
 /**
  *
  * @export
@@ -61,6 +64,12 @@ export interface VehicleOnMissionDto {
    * @memberof VehicleOnMissionDto
    */
   statusHistory: Array<string>;
+  /**
+   *
+   * @type {StatusDto}
+   * @memberof VehicleOnMissionDto
+   */
+  currentStatus: StatusDto;
 }
 
 /**
@@ -74,6 +83,7 @@ export function instanceOfVehicleOnMissionDto(value: object): value is VehicleOn
   if (!('personal' in value) || value['personal'] === undefined) return false;
   if (!('kapazitaet' in value) || value['kapazitaet'] === undefined) return false;
   if (!('statusHistory' in value) || value['statusHistory'] === undefined) return false;
+  if (!('currentStatus' in value) || value['currentStatus'] === undefined) return false;
   return true;
 }
 
@@ -93,6 +103,7 @@ export function VehicleOnMissionDtoFromJSONTyped(json: any, ignoreDiscriminator:
     personal: json['personal'],
     kapazitaet: json['kapazitaet'],
     statusHistory: json['status_history'],
+    currentStatus: StatusDtoFromJSON(json['currentStatus']),
   };
 }
 
@@ -116,5 +127,6 @@ export function VehicleOnMissionDtoToJSONTyped(
     personal: value['personal'],
     kapazitaet: value['kapazitaet'],
     status_history: value['statusHistory'],
+    currentStatus: StatusDtoToJSON(value['currentStatus']),
   };
 }

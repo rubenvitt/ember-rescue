@@ -25,6 +25,12 @@ export interface ChangeStatusDto {
    * @memberof ChangeStatusDto
    */
   code: number;
+  /**
+   *
+   * @type {string}
+   * @memberof ChangeStatusDto
+   */
+  fahrzeugOpta: string;
 }
 
 /**
@@ -32,6 +38,7 @@ export interface ChangeStatusDto {
  */
 export function instanceOfChangeStatusDto(value: object): value is ChangeStatusDto {
   if (!('code' in value) || value['code'] === undefined) return false;
+  if (!('fahrzeugOpta' in value) || value['fahrzeugOpta'] === undefined) return false;
   return true;
 }
 
@@ -45,6 +52,7 @@ export function ChangeStatusDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
   }
   return {
     code: json['code'],
+    fahrzeugOpta: json['fahrzeugOpta'],
   };
 }
 
@@ -59,5 +67,6 @@ export function ChangeStatusDtoToJSONTyped(value?: ChangeStatusDto | null, ignor
 
   return {
     code: value['code'],
+    fahrzeugOpta: value['fahrzeugOpta'],
   };
 }

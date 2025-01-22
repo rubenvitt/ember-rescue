@@ -1,17 +1,17 @@
-import * as mongoose from 'mongoose';
-import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   Alarmstichwort,
   AlarmstichwortDto,
 } from '@templates/alarmstichworte/alarmstichwort.schema';
-import { Notiz } from '../notes/notiz.schema';
-import { Reminder } from '../reminders/reminder.schema';
-import { Status } from '@templates/status/status.schema';
 import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
+import { Status } from '@templates/status/status.schema';
 import { VehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
+import * as mongoose from 'mongoose';
+import { Document } from 'mongoose';
 import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
 import { JournalEntryType } from '../journal/journal.dto';
+import { Notiz } from '../notes/notiz.schema';
+import { Reminder } from '../reminders/reminder.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -53,6 +53,9 @@ export class FahrzeugOnEinsatz extends VehiclesTemplate {
 
   @Prop({ required: true, default: [] })
   status_history: StatusHistoryEntry[];
+
+  @Prop()
+  currentStatus?: Status;
 }
 
 /**

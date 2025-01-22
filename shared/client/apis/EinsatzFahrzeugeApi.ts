@@ -30,7 +30,6 @@ export interface EinsatzFahrzeugeControllerAddFahrzeugToEinsatzV1Request {
 
 export interface EinsatzFahrzeugeControllerChangeStatusV1Request {
   einsatzId: string;
-  fullOpta: string;
   changeStatusDto: ChangeStatusDto;
 }
 
@@ -112,13 +111,6 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
       );
     }
 
-    if (requestParameters['fullOpta'] == null) {
-      throw new runtime.RequiredError(
-        'fullOpta',
-        'Required parameter "fullOpta" was null or undefined when calling einsatzFahrzeugeControllerChangeStatusV1().',
-      );
-    }
-
     if (requestParameters['changeStatusDto'] == null) {
       throw new runtime.RequiredError(
         'changeStatusDto',
@@ -134,9 +126,10 @@ export class EinsatzFahrzeugeApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/v1/missions/{einsatzId}/vehicles/{fullOpta}/status`
-          .replace(`{${'einsatzId'}}`, encodeURIComponent(String(requestParameters['einsatzId'])))
-          .replace(`{${'fullOpta'}}`, encodeURIComponent(String(requestParameters['fullOpta']))),
+        path: `/v1/missions/{einsatzId}/vehicles/status`.replace(
+          `{${'einsatzId'}}`,
+          encodeURIComponent(String(requestParameters['einsatzId'])),
+        ),
         method: 'POST',
         headers: headerParameters,
         query: queryParameters,

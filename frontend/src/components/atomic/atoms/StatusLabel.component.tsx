@@ -1,7 +1,8 @@
-import React from 'react';
-import { cva } from 'class-variance-authority';
-import { SmallStatusDto } from '../../../types/app/status.types.js';
+import { StatusDto } from '@bluelight-hub/shared/client/index.ts';
 import { Tag } from 'antd';
+import { cva } from 'class-variance-authority';
+import React from 'react';
+import { SmallStatusDto } from '../../../types/app/status.types.js';
 
 export const statusLabel = cva<{ status: any }>('rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset', {
   variants: {
@@ -38,13 +39,13 @@ export const statusRgbColors: Record<string, string> = {
 };
 
 interface StatusLabelProps {
-  status: SmallStatusDto;
+  status: StatusDto;
 }
 
 export const StatusLabel: React.FC<StatusLabelProps> = ({ status }) => {
   return (
     <Tag className={statusLabel({ status: status.code as SmallStatusDto['code'] })}>
-      {status.code} ({status.bezeichnung})
+      {status.code} ({status.label})
     </Tag>
   );
 };

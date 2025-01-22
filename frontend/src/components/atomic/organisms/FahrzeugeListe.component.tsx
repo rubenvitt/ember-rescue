@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react';
-import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
+import { ChangeStatusDto, StatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
 import { Button, Card, Dropdown, List, Modal } from 'antd';
+import React, { useCallback } from 'react';
 import { PiCaretRight, PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useStatus } from '../../../hooks/status.hook.js';
 import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
 import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
-import { StatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
+import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
 
 interface FahrzeugelisteComponentProps {
   fahrzeuge?: VehiclesDto;
@@ -17,7 +17,7 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
   const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fullOpta: fahrzeug.fullOpta });
 
   const onStatusButtonClick = useCallback(
-    async (item: { code: number }) => {
+    async (item: ChangeStatusDto) => {
       await changeStatus.mutateAsync(item);
       return Modal.destroyAll();
     },
@@ -56,7 +56,10 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
                 },
                 content: (
                   <div className="min-h-32">
-                    <DynamicGrid<StatusDto> items={status.data?.data} render={(item, className) => <StatusButtonComponent onClick={onStatusButtonClick} item={item} className={className} />} />
+                    <DynamicGrid<StatusDto>
+                      items={status.data?.data}
+                      render={(item, className) => <StatusButtonComponent onClick={({ code }) => onStatusButtonClick({ code, fahrzeugOpta: fahrzeug.fullOpta })} item={item} className={className} />}
+                    />
                   </div>
                 ),
               });

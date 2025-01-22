@@ -1,5 +1,6 @@
-import React from 'react';
 import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import React from 'react';
+import { StatusLabel } from '../atoms/StatusLabel.component.tsx';
 
 interface FahrzeugListItemProps {
   fahrzeug: VehicleOnMissionDto;
@@ -14,7 +15,9 @@ export const FahrzeugListItemComponent: React.FC<FahrzeugListItemProps> = ({ fah
           <dd className="text-gray-700 dark:text-gray-300">{fahrzeug.kapazitaet} Personen möglich</dd>
         </div>
         <div className="flex justify-between gap-x-4 py-3">
-          <dd className="flex items-start gap-x-2">{/*<StatusLabel status={} /> /!* FIXME[ember-rescue-68](rubeen, 30.11.24): ADD STATUS *!/*/}</dd>
+          <dd className="flex items-start gap-x-2">
+            <StatusLabel status={fahrzeug.currentStatus} />
+          </dd>
         </div>
       </dl>
     </>

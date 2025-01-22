@@ -8,7 +8,6 @@ import * as optaDistricts from './seeds/opta/districts.json';
 import * as optaLocalCodes from './seeds/opta/local-codes.json';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Status } from '@templates/status/status.schema';
 import { Bearbeiter } from '../../user/bearbeiter/core/bearbeiter.schema';
 import { Counter } from './mongo/schemas/counter.schema';
 import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.repository';

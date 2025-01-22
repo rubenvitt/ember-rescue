@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PersonalDto } from '../personal/personal.dto';
-import { ApiResponse } from '../../types';
 import { FahrzeugTemplateDto } from '@templates/vehicles/fahrzeuge.dto';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ApiResponse } from '../../types';
+import { PersonalDto } from '../personal/personal.dto';
 
 export class AddVehicleToMissionDto {
   @ApiProperty({ required: true })
@@ -32,7 +32,13 @@ export class StatusHistoryEntryDto {
 
 export class ChangeStatusDto {
   @ApiProperty({ required: true })
+  @IsNumber()
   code: number;
+
+  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  fahrzeugOpta: string;
 }
 
 export class VehicleOnMissionDto {
@@ -57,6 +63,9 @@ export class VehicleOnMissionDto {
 
   @ApiProperty({ required: true, default: [] })
   status_history: StatusHistoryEntryDto[];
+
+  @ApiProperty({})
+  currentStatus?: StatusDto;
 }
 
 export class VehiclesDto {

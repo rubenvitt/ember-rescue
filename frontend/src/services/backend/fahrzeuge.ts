@@ -94,7 +94,6 @@ export const postStatusForFahrzeug = {
 
         return einsatzFahrzeugeApi.einsatzFahrzeugeControllerChangeStatusV1({
           einsatzId: einsatzId,
-          fullOpta: fullOpta,
           changeStatusDto
         });
       },

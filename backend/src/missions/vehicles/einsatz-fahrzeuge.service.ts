@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
-import { StatusService } from '@templates/status/status.service';
-import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
-import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
-import { EinsatzRepository } from '../schema/einsatz.repository';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
-import { VehicleOnMissionDto } from './vehicle.dto';
+import { StatusService } from '@templates/status/status.service';
 import { FahrzeugTemplateDto } from '@templates/vehicles/fahrzeuge.dto';
+import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
+import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
+import { EinsatzRepository } from '../schema/einsatz.repository';
+import { FahrzeugOnEinsatzDto } from '../schema/einsatz.schema';
+import { ChangeStatusDto, VehicleOnMissionDto } from './vehicle.dto';
 
 @Injectable()
 export class EinsatzFahrzeugeService {
@@ -78,7 +78,7 @@ export class EinsatzFahrzeugeService {
     });
 
     // Status ändern
-    await this.changeStatus(fullOpta, einsatzId, bearbeiterId, { code: 3 });
+    await this.changeStatus(einsatzId, bearbeiterId, { code: 3, fahrzeugOpta: fullOpta });
   }
 
   async findAktiveFahrzeugeImEinsatz(
@@ -115,6 +115,7 @@ export class EinsatzFahrzeugeService {
             timestamp: entry.timestamp?.toISOString(),
             status: entry.status
           })),
+          currentStatus: fahrzeug.currentStatus,
         };
       })
     );
@@ -180,30 +181,17 @@ export class EinsatzFahrzeugeService {
   }
 
   async changeStatus(
-    fullOpta: string,
     einsatzId: string,
     bearbeiterId: string,
-    { code }: { code: number },
+    { code, fahrzeugOpta }: ChangeStatusDto,
   ) {
-    this.logger.log(`Change status for ${fullOpta} to ${code}`);
+    this.logger.log(`Change status for ${fahrzeugOpta} to ${code}`);
 
     const status = await this.statusService.findStatusByCode(code);
 
-    const updateResult = await this.repository.findOneByIdAndUpdate(
-      einsatzId,
-      {
-        $push: {
-          'fahrzeuge.$[elem].status_history': {
-            statusId: status!!.id,
-            zeitpunkt: new Date(),
-            bearbeiterId: bearbeiterId,
-          },
-        },
-      },
-      {
-        arrayFilters: [{ 'elem.fullOpta': fullOpta }],
-      },
-    );
+    if (!status) {
+      throw new NotFoundException('Status not found');
+    }
 
     const mission = await this.repository.findById(einsatzId);
     if (!mission) {
@@ -211,7 +199,7 @@ export class EinsatzFahrzeugeService {
     }
 
     const vehicle = mission.fahrzeuge.find(
-      (f) => f.fullOpta.toString() == fullOpta,
+      (f) => f.fullOpta.toString() == fahrzeugOpta,
     );
     if (!vehicle) {
       throw new NotFoundException('Vehicle not found in Mission');
@@ -223,7 +211,21 @@ export class EinsatzFahrzeugeService {
       type: 'RESSOURCEN',
       absender: mission!!.aufnehmendesRettungsmittel,
       empfaenger: vehicle.fullOpta,
-      content: `${vehicle.fullOpta} wechselt in Status${status!!.code} (${status!!.description}).`,
+      content: `${vehicle.fullOpta} wechselt in Status ${status.code} - ${status.label} (${status.description}).`,
+    });
+
+    await this.repository.findOneByIdAndUpdate(einsatzId, {
+      $set: {
+        'fahrzeuge.$[elem].currentStatus': status,
+      },
+      $push: {
+        'fahrzeuge.$[elem].status_history': {
+          timestamp: new Date(),
+          status: status.code,
+        },
+      },
+    }, {
+      arrayFilters: [{ 'elem.fullOpta': fahrzeugOpta }],
     });
   }
 

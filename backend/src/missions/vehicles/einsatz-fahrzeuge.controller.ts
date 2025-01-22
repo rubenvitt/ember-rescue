@@ -8,12 +8,12 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
-import { MissionCoreController } from '../core/mission-core.controller';
-import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
-import { BearbeiterDto } from '../../types';
-import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
 import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { BearbeiterDto } from '../../types';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { MissionCoreController } from '../core/mission-core.controller';
+import { EinsatzFahrzeugeService } from './einsatz-fahrzeuge.service';
 import {
   AddVehicleToMissionDto,
   ChangeStatusDto,
@@ -73,18 +73,12 @@ export class EinsatzFahrzeugeController {
     return { status: 'ok' };
   }
 
-  @Post(':fullOpta/status')
+  @Post('status')
   @ApiOkResponse({
     description: 'Change vehicle status',
   })
   @ApiBody({
     type: ChangeStatusDto,
-  })
-  @ApiParam({
-    name: 'fullOpta',
-    required: true,
-    type: String,
-    description: 'Fahrzeug ID',
   })
   @ApiParam({
     name: 'einsatzId',
@@ -94,13 +88,11 @@ export class EinsatzFahrzeugeController {
   })
   async changeStatus(
     @Param('einsatzId') einsatzId: string,
-    @Param('fullOpta') fullOpta: string,
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: ChangeStatusDto,
   ) {
-    this.logger.log('Change status', { fullOpta, einsatzId, body });
+    this.logger.log('Change status', { einsatzId, body });
     await this.fahrzeugeService.changeStatus(
-      fullOpta,
       einsatzId,
       bearbeiter.name,
       body,
