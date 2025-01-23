@@ -78,7 +78,7 @@ const IconComponent: React.FC = () => {
     <>
       <button
         title={`Katwarnungen ${katwarnungenSichtbar ? 'entfernen' : 'hinzufügen'}`}
-        className={clsx('cursor-pointer rounded p-2', katwarnungenSichtbar && 'text-primary-500', !katwarnungenSichtbar && 'hover:bg-gray-100')}
+        className={clsx('cursor-pointer rounded-sm p-2', katwarnungenSichtbar && 'text-primary-500', !katwarnungenSichtbar && 'hover:bg-gray-100')}
         onClick={() => {
           if (!katwarnungenSichtbar) {
             map?.addLayer(katwarnLayer);
@@ -168,7 +168,7 @@ function AddFahrzeugComponent() {
         <button className="absolute right-0 top-0 m-2" onClick={toggleShowFahrzeugeList}>
           <PiX />
         </button>
-        <div className="flex max-h-48 flex-col gap-2 overflow-y-scroll rounded p-2">
+        <div className="flex max-h-48 flex-col gap-2 overflow-y-scroll rounded-sm p-2">
           {fahrzeuge.data?.data.fahrzeugeImEinsatz.map((fahrzeug) => {
             return (
               <button onClick={() => addFahrzeugToMap(fahrzeug)} className="p-2">
@@ -186,7 +186,7 @@ function AddFahrzeugComponent() {
       onClick={() => {
         toggleShowFahrzeugeList();
       }}
-      className="cursor-pointer rounded p-2"
+      className="cursor-pointer rounded-sm p-2"
     >
       <PiAmbulance size={20} />
     </button>
@@ -293,11 +293,11 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
         </p>
       </div>
 
-      <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+      <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
         <IconComponent />
       </div>
 
-      <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+      <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
         <AddFahrzeugComponent />
       </div>
     </>

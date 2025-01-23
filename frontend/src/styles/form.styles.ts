@@ -22,7 +22,7 @@ export const fieldContainerStyles = cva('', {
   variants: {
     layout: {
       simple: '',
-      complex: 'bg-gray-50 dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2',
+      complex: 'bg-gray-50 dark:bg-gray-800 shadow-xs ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2',
     },
   },
 });

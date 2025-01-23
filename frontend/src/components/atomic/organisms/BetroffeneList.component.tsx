@@ -72,7 +72,7 @@ export function BetroffeneList() {
   return (
     <ul
       role="list"
-      className="divide-y divide-gray-100 overflow-hidden shadow-sm ring-1 ring-gray-900/5 dark:divide-gray-700 dark:bg-gray-950/25"
+      className="divide-y divide-gray-100 overflow-hidden shadow-xs ring-1 ring-gray-900/5 dark:divide-gray-700 dark:bg-gray-950/25"
     >
       {people.map((person) => (
         <li

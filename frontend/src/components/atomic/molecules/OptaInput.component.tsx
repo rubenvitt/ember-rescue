@@ -150,7 +150,7 @@ export const OptaInput = ({ onChange, value }: { onChange?: (value: OptaInput) =
 
   return (
     <Space size="small" direction="vertical">
-      <Space size="small" className="rounded">
+      <Space size="small" className="rounded-sm">
         {isFreetext ? (
           <Input value={freetext} onChange={(e) => handleFreetextChange(e.target.value)} placeholder="NI DRK Uelzen 40-12-1" style={{ width: 240 }} size="middle" />
         ) : (

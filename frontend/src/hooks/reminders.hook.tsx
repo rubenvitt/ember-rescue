@@ -1,17 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEinsatz } from './einsatz.hook.js';
-import { services } from '../services/index.js';
-import { useCallback, useEffect, useMemo } from 'react';
-import { Bounce, toast } from 'react-toastify';
-import { twConfig } from '../styles/tailwindcss.styles.js';
-import { PiAlarmBold, PiNote } from 'react-icons/pi';
-import { Button, DatePicker, Input, Modal } from 'antd';
-import { FormLayout } from '../components/atomic/organisms/form/FormLayout.comonent.js';
-import { InputWrapper } from '../components/atomic/atoms/InputWrapper.component.js';
-import { addDays, addMinutes, formatISO } from 'date-fns';
 import { EinsatzNoteDto, ManyReminderResponse } from '@bluelight-hub/shared/client/index.js';
-import { natoDateTimeAnt } from '../utils/time.js';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button, DatePicker, Input, Modal } from 'antd';
+import { addDays, addMinutes, formatISO } from 'date-fns';
 import dayjs from 'dayjs';
+import { useCallback, useEffect, useMemo } from 'react';
+import { PiNote } from 'react-icons/pi';
+import { InputWrapper } from '../components/atomic/atoms/InputWrapper.component.js';
+import { FormLayout } from '../components/atomic/organisms/form/FormLayout.comonent.js';
+import { services } from '../services/index.js';
+import { natoDateTimeAnt } from '../utils/time.js';
+import { useEinsatz } from './einsatz.hook.js';
 
 export function useReminders() {
   const queryClient = useQueryClient();
@@ -110,38 +108,6 @@ export function useReminders() {
   }, []);
 
   useEffect(() => {
-    //if ((dueReminders.data?.meta.pagination.total ?? 0) > 0) {
-    if (false) {
-      dueReminders.data?.data.forEach((reminder) => {
-        toast.info(
-          <div>
-            <strong>{reminder.title}</strong>
-            <p>{reminder.content}</p>
-          </div>,
-          {
-            toastId: reminder.id,
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            style: { background: twConfig.theme.colors.primary['500'], color: twConfig.theme.colors.white },
-            draggable: true,
-            progress: undefined,
-            data: reminder,
-            theme: 'light',
-            transition: Bounce,
-            icon: <PiAlarmBold size={24} />,
-            onClose: () => {
-              markAsNotified.mutate({
-                reminderId: reminder.id,
-              });
-            },
-          },
-        );
-      });
-      new Audio('/sounds/notification.mp3').play();
-    }
   }, [dueReminders.data]);
 
   return {

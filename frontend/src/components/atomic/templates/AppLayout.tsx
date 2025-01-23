@@ -1,21 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
-import { useTheme } from '../../../hooks/theme.hook.js';
-import { SidebarComponent } from './Sidebar.component.js';
-import { PiNotification, PiNotificationBold, PiRabbit, PiSpinner } from 'react-icons/pi';
-import { twMerge } from 'tailwind-merge';
-import { CommandPalette, useCommandPalette } from '../organisms/CommandPalette.component.js';
-import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
 import { useNavigate } from '@tanstack/react-router';
-import { MenuItem } from '../../../types/ui/menu.types.js';
 import { Dropdown } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { PiNotification, PiNotificationBold, PiRabbit, PiSpinner } from 'react-icons/pi';
+import { useNotificationCenter } from 'react-toastify/addons/use-notification-center';
+import { twMerge } from 'tailwind-merge';
+import { resetApp, useBackend } from '../../../hooks/backend.hook.js';
+import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useReminders } from '../../../hooks/reminders.hook.js';
+import { useTheme } from '../../../hooks/theme.hook.js';
+import { MenuItem } from '../../../types/ui/menu.types.js';
 import { ButtonWithShortcut } from '../atoms/ButtonWithShortcut.component.js';
 import { userNavigation } from '../molecules/Navigation.js';
-import { resetApp, useBackend } from '../../../hooks/backend.hook.js';
+import { UserProfileMenu } from '../molecules/UserProfileMenu.component.js';
+import { CommandPalette, useCommandPalette } from '../organisms/CommandPalette.component.js';
+import { SidebarComponent } from './Sidebar.component.js';
 
 export function AppLayout({ children }: React.PropsWithChildren<{}>) {
   const { isAvailable } = useBackend();
@@ -40,7 +40,7 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
       <CommandPalette />
       <SidebarComponent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <div className={twMerge('transition-all duration-300 ease-in-out', isCollapsed ? 'lg:pl-16' : 'lg:pl-72')}>
-        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-900/80">
+        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-900/80">
           <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-300" onClick={() => setSidebarOpen(true)}>
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -49,14 +49,14 @@ export function AppLayout({ children }: React.PropsWithChildren<{}>) {
           <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <form className="relative flex flex-1" action="#" method="GET">
+            <form className="flex flex-1 h-full" action="#" method="GET">
               <ButtonWithShortcut
                 shortcut={navigator.userAgent.toLowerCase().includes('mac') ? '⌘ K' : 'STRG K'}
                 id="search-field"
                 onClick={openPalette}
                 icon={<PiRabbit className="h-6 w-6" />}
                 type="text"
-                className="flex h-full w-full items-center justify-start bg-transparent"
+                className="flex h-full w-full items-center justify-start min-h-full bg-transparent"
                 name="search"
               >
                 Schnellzugriff

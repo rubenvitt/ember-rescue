@@ -72,8 +72,8 @@ export function NewSetupEinsatzForm() {
         searchString: fahrzeug.fullOpta?.toLowerCase() ?? '' + fahrzeugFunctionOpta?.label.toLowerCase(),
         label: (
           <div className="flex justify-between gap-4">
-            <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
-            <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeugFunctionOpta?.label}</span>
+            <span className="shrink-0 truncate">{fahrzeug.fullOpta}</span>
+            <span className="ml-2 shrink truncate text-gray-500 dark:text-gray-300">{fahrzeugFunctionOpta?.label}</span>
           </div>
         ),
         item: fahrzeug,
@@ -89,8 +89,8 @@ export function NewSetupEinsatzForm() {
           searchString: (stichwort.code + stichwort.description).toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{stichwort.code}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{stichwort.description}</span>
+              <span className="shrink-0 truncate">{stichwort.code}</span>
+              <span className="ml-2 shrink truncate text-gray-500 dark:text-gray-300">{stichwort.description}</span>
             </div>
           ),
         }) as DefaultOptionType,

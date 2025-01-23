@@ -14,10 +14,10 @@ const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; lab
     <button
       type="button"
       onClick={() => onAdd(fahrzeug.item.fullOpta)}
-      className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
+      className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-xs hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
     >
       <span className="flex min-w-0 flex-1 items-center space-x-3">
-        <span className="block flex-shrink-0">
+        <span className="block shrink-0">
           <div className="h-10 w-10 rounded-full bg-green-500 dark:bg-green-800"></div>
         </span>
         <span className="block min-w-0 flex-1">
@@ -25,7 +25,7 @@ const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; lab
           <span className="block truncate text-sm font-medium text-gray-600 dark:text-gray-400">{fahrzeug.secondary}</span>
         </span>
       </span>
-      <span className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center">
+      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center">
         <PiPlus className="h-5 w-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-600" aria-hidden="true" />
       </span>
     </button>
@@ -52,8 +52,8 @@ export function AddFahrzeuge({ classNameContainer }: Props) {
       searchString: fahrzeug.fullOpta.toLowerCase() + fahrzeug.optaFunktion?.toLowerCase?.(),
       label: (
         <div className="flex justify-between gap-4">
-          <span className="flex-shrink-0 truncate">{fahrzeug.fullOpta}</span>
-          <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
+          <span className="shrink-0 truncate">{fahrzeug.fullOpta}</span>
+          <span className="ml-2 shrink truncate text-gray-500 dark:text-gray-300">{fahrzeug.optaFunktion}</span>
         </div>
       ),
       item: fahrzeug,

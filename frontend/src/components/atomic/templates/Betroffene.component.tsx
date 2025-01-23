@@ -6,7 +6,7 @@ import { Button } from 'antd';
 export function BetroffeneTemplate() {
   return (
     <div className="flex h-[calc(100vh-9rem)] overflow-hidden">
-      <aside className="hidden w-96 flex-shrink-0 overflow-hidden border-r border-gray-200 xl:block dark:border-gray-700">
+      <aside className="hidden w-96 shrink-0 overflow-hidden border-r border-gray-200 xl:block dark:border-gray-700">
         <div className="h-full overflow-y-auto py-6">
           <h2 className="mb-2 px-4 text-lg">Aufgenommene Betroffene</h2>
           <BetroffeneList />

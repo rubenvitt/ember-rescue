@@ -8,12 +8,12 @@ export function WarningsOptions({}: { map: Map }) {
   return (
     <QueryClientProvider client={queryClient}>
       <Tooltip title="Wetterwarnungen">
-        <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+        <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
           <button
             onClick={(e) => {
               e.preventDefault();
             }}
-            className="cursor-pointer rounded p-2"
+            className="cursor-pointer rounded-sm p-2"
           >
             <PiBellSimple size={20} /> {/* keine aktive Warnung vorhanden */}
             <PiBellSimpleRinging size={20} /> {/* Aktive Warnungen vorhanden */}
