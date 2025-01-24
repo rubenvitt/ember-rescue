@@ -1,12 +1,12 @@
+import { useLocation, useNavigate } from '@tanstack/react-router';
+import { ConfigProvider, Menu } from 'antd';
 import React, { useMemo } from 'react';
-import { SidebarContentProps } from '../../../../types/ui/nav.types.js';
-import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
-import { WindowOptions, Windows } from '../../../../utils/window.js';
 import { PiFadersHorizontal, PiQuestion } from 'react-icons/pi';
 import { useAppWindow } from '../../../../hooks/window.hook.js';
 import { MenuItem } from '../../../../types/ui/menu.types.ts';
-import { useLocation, useNavigate } from '@tanstack/react-router';
-import { ConfigProvider, Menu } from 'antd';
+import { SidebarContentProps } from '../../../../types/ui/nav.types.js';
+import { WindowOptions, Windows } from '../../../../utils/window.js';
+import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
 import { navigation } from '../../molecules/Navigation.js';
 
 export const SidebarContentComponent: React.FC<

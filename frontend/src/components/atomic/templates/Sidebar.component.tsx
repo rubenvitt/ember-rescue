@@ -1,9 +1,9 @@
+import { ConfigProvider, theme } from 'antd';
 import React from 'react';
-import { MobileSidebarComponent } from '../organisms/sidebar/MobileSidebar.component.js';
+import { _useTheme } from '../../../hooks/theme.hook.js';
 import { SidebarComponentProps } from '../../../types/ui/nav.types.js';
 import { DesktopSidebarComponent } from '../organisms/sidebar/DesktopSidebar.component.js';
-import { _useTheme } from '../../../hooks/theme.hook.js';
-import { ConfigProvider, theme } from 'antd';
+import { MobileSidebarComponent } from '../organisms/sidebar/MobileSidebar.component.js';
 
 export const SidebarComponent: React.FC<SidebarComponentProps> = ({
                                                                     sidebarOpen,
