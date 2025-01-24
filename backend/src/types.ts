@@ -54,6 +54,7 @@ export enum EinsatztagebuchEintragEnum {
   KOMMUNIKATION = 'KOMMUNIKATION',
   LAGE = 'LAGE',
   BETROFFENE = 'BETROFFENE',
+  KORREKTUR = 'KORREKTUR',
 }
 
 /**

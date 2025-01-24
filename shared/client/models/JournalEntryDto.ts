@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  *
  * @export
@@ -97,6 +96,7 @@ export const JournalEntryDtoTypeEnum = {
   Kommunikation: 'KOMMUNIKATION',
   Lage: 'LAGE',
   Betroffene: 'BETROFFENE',
+  Korrektur: 'KORREKTUR',
 } as const;
 export type JournalEntryDtoTypeEnum = (typeof JournalEntryDtoTypeEnum)[keyof typeof JournalEntryDtoTypeEnum];
 

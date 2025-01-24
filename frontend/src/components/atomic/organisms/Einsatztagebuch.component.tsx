@@ -1,7 +1,7 @@
 import { Input as AntInput, Button, Drawer, Empty, Input, InputRef, Select, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
+import { PiAmbulance, PiEmpty, PiMagnifyingGlass, PiPencil, PiPictureInPicture, PiPlus, PiSwap, PiTextStrikethrough, PiUser } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
@@ -109,6 +109,37 @@ export function EinsatztagebuchComponent() {
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
+        title: 'Typ',
+        dataIndex: 'type',
+        key: 'type',
+        width: 50,
+        filters: [
+          { text: 'Meldung', value: 'USER' },
+          { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
+          { text: 'Ressourcen', value: 'RESSOURCEN' },
+          { text: 'Betroffene | Patienten', value: 'BETROFFENE_PATIENTEN' },
+          { text: 'Korrektur', value: 'KORREKTUR' },
+        ],
+        render: (value) => {
+          switch (value) {
+            case 'USER':
+              return <PiUser size={24} className="text-primary-500" />;
+            case 'LAGEMELDUNG':
+              return <PiPictureInPicture size={24} className="text-red-500" />;
+            case 'RESSOURCEN':
+              return <PiAmbulance size={24} className="text-primary-500" />;
+            case 'BETROFFENE_PATIENTEN':
+              return <PiPlus size={24} className="text-primary-500" />;
+            case 'KORREKTUR':
+              return <PiPencil size={24} className="text-orange-500" />;
+            default:
+              return value;
+          }
+        },
+        filterMultiple: true,
+        onFilter: (value, record) => record.type === value,
+      },
+      {
         title: 'Zeitpunkt',
         key: 'timestamp',
         width: 200,
@@ -159,7 +190,7 @@ export function EinsatztagebuchComponent() {
         dataIndex: 'sender',
         key: 'sender',
         width: 120,
-        render: (_value, record) => smallOpta(record),
+        render: (_value, record) => smallOpta(record.sender),
         filters: rufnahmeFilter,
         onFilter: (value, record) => record.sender === value,
         filterMultiple: true,
@@ -171,7 +202,7 @@ export function EinsatztagebuchComponent() {
         dataIndex: 'receiver',
         key: 'receiver',
         width: 120,
-        render: (_value, record) => smallOpta(record),
+        render: (_value, record) => smallOpta(record.receiver),
         filters: rufnahmeFilter,
         onFilter: (value, record) => record.receiver === value,
         filterMultiple: true,
@@ -189,20 +220,6 @@ export function EinsatztagebuchComponent() {
           </span>
         ),
         ...getColumnSearchProps('content'),
-      },
-      {
-        title: 'Typ',
-        dataIndex: 'type',
-        key: 'type',
-        width: 100,
-        filters: [
-          { text: 'Meldung', value: 'USER' },
-          { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
-          { text: 'Ressourcen', value: 'RESSOURCEN' },
-          { text: 'Betroffene | Patienten', value: 'BETROFFENE_PATIENTEN' },
-        ],
-        filterMultiple: true,
-        onFilter: (value, record) => record.type === value,
       },
       {
         render: (_, record) => (
@@ -249,7 +266,7 @@ export function EinsatztagebuchComponent() {
           </div>
         </div>
       </div>
-      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
+      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag ${editingEintrag.nummer} von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
         {editingEintrag && (
           <FormLayout<JournalEntryDto>
             form={{
@@ -265,6 +282,7 @@ export function EinsatztagebuchComponent() {
               onFinish: async (data) => {
                 await createEinsatztagebuchEintrag.mutateAsync({
                   ...data,
+                  type: 'KORREKTUR',
                   timestamp: editingEintrag.timestamp,
                   absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
                   empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
@@ -281,9 +299,10 @@ export function EinsatztagebuchComponent() {
               },
             }}
           >
-            <InputWrapper label="Absender" name="sender">
+            <InputWrapper label="Absender" name="sender" rules={[{ required: true, message: 'Es sollte ein Absender angegeben werden' }]}>
               <Select
                 showSearch
+                placeholder="Absender auswählen"
                 loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
                 options={[
                   {
@@ -297,9 +316,10 @@ export function EinsatztagebuchComponent() {
                 ]}
               />
             </InputWrapper>
-            <InputWrapper label="Empfänger" name="receiver">
+            <InputWrapper label="Empfänger" name="receiver" rules={[{ required: true, message: 'Es sollte ein Empfänger angegeben werden' }]}>
               <Select
                 showSearch
+                placeholder="Empfänger auswählen"
                 loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
                 options={[
                   {
@@ -323,9 +343,7 @@ export function EinsatztagebuchComponent() {
   );
 }
 
-function smallOpta({ sender }: JournalEntryDto) {
-  return (() => {
-    const optaMatch = sender.match(/(?:.*?)(\d+-\d+(?:-\d+)?)(.*)?$/);
-    return optaMatch ? `${optaMatch[1]}${optaMatch[2] || ''}` : sender;
-  })();
+function smallOpta(fullOpta: string) {
+  const optaMatch = fullOpta.match(/(?:.*?)(\d+-\d+(?:-\d+)?)(.*)?$/);
+  return optaMatch ? `${optaMatch[1]}${optaMatch[2] || ''}` : fullOpta;
 }

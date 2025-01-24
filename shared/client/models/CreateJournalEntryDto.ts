@@ -61,6 +61,7 @@ export const CreateJournalEntryDtoTypeEnum = {
   Kommunikation: 'KOMMUNIKATION',
   Lage: 'LAGE',
   Betroffene: 'BETROFFENE',
+  Korrektur: 'KORREKTUR',
 } as const;
 export type CreateJournalEntryDtoTypeEnum =
   (typeof CreateJournalEntryDtoTypeEnum)[keyof typeof CreateJournalEntryDtoTypeEnum];

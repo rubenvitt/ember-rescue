@@ -1,7 +1,7 @@
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { useMemo } from 'react';
 import { useFahrzeuge } from './fahrzeuge.hook.js';
-import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 interface Props {
   fahrzeuge?: VehicleOnMissionDto[];
@@ -55,7 +55,7 @@ export function useFahrzeugeItems({ fahrzeuge, include }: Props) {
     return [...customFahrzeugeItems, ...fahrzeugeImEinsatzItems, ...fahrzeugeNichtImEinsatzItems, ...allFahrzeugeItems].filter(
       (item, index, self) => index === self.findIndex((t) => t.value === item.value),
     );
-  }, []) as DefaultOptionType[];
+  }, [customFahrzeugeItems, fahrzeugeImEinsatzItems, fahrzeugeNichtImEinsatzItems, allFahrzeugeItems]) as DefaultOptionType[];
 
   console.log({ fahrzeugeAsItems, allFahrzeugeItems, fahrzeugeImEinsatzItems, fahrzeugeNichtImEinsatzItems, customFahrzeugeItems });
 
