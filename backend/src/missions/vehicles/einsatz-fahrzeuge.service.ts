@@ -25,11 +25,6 @@ export class EinsatzFahrzeugeService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    this.logger.log('Adding Fahrzeug to Einsatz', {
-      fullOpta,
-      einsatzId,
-      bearbeiterId,
-    });
     // Fahrzeug template finden
     const existingFahrzeug = await this.fahrzeugeService.findFahrzeug(fullOpta);
     if (!existingFahrzeug) {
@@ -185,8 +180,6 @@ export class EinsatzFahrzeugeService {
     bearbeiterId: string,
     { code, fahrzeugOpta }: ChangeStatusDto,
   ) {
-    this.logger.log(`Change status for ${fahrzeugOpta} to ${code}`);
-
     const status = await this.statusService.findStatusByCode(code);
 
     if (!status) {

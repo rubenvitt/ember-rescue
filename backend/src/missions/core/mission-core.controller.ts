@@ -1,28 +1,12 @@
+import { CacheKey } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
   Get,
   Logger,
-  Param,
-  ParseBoolPipe,
-  Post,
-  Put,
-  Query,
-  UseGuards,
+  Param, ParseBoolPipe, Post,
+  Put, Query, UseGuards
 } from '@nestjs/common';
-import { EinsatzCoreService } from './einsatz-core.service';
-import { BearbeiterDto, UpdateEinsatzDto } from '../../types';
-import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
-import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
-import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
-import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
-import { CacheKey } from '@nestjs/cache-manager';
-import {
-  CreateMissionDto,
-  ManyMissionsResponse,
-  OneMissionResponse,
-  UpdateMissionDto,
-} from './mission-core.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -30,6 +14,18 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
+import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
+import { BearbeiterDto } from '../../types';
+import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
+import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
+import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
+import { EinsatzCoreService } from './einsatz-core.service';
+import {
+  CreateMissionDto,
+  ManyMissionsResponse,
+  OneMissionResponse,
+  UpdateMissionDto,
+} from './mission-core.dto';
 
 @Controller('missions')
 @UseGuards(BearbeiterGuard)
@@ -140,7 +136,6 @@ export class MissionCoreController {
     @Param('id') einsatzId: string,
     @Body() updateMissionDto: UpdateMissionDto,
   ) {
-    this.logger.log('Change EinsatzDaten', { einsatzId });
     this.logger.debug('UpdateEinsatzDto', {
       updateEinsatzDto: updateMissionDto,
     });

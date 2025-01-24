@@ -1,11 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
+import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
+import { FilterQuery } from 'mongoose';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
-import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
-import { Einsatz } from '../schema/einsatz.schema';
-import { FilterQuery } from 'mongoose';
-import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { EinsatzRepository } from '../schema/einsatz.repository';
+import { Einsatz } from '../schema/einsatz.schema';
 import { CreateEinsatzParams, EinsatzDto } from './dto/einsatz.dto';
 import { EinsatzMapper } from './einsatz.mapper';
 
@@ -93,8 +93,6 @@ export class EinsatzCoreService {
    * @param updateEinsatzDto
    */
   async changeEinsatz(einsatzId: string, updateEinsatzDto: UpdateEinsatzDto) {
-    this.logger.log('changeEinsatz', { einsatzId, updateEinsatzDto });
-
     const einsatz = await this.getEinsatz(einsatzId);
 
     return await Promise.all([
@@ -128,12 +126,10 @@ export class EinsatzCoreService {
         },
       });
     } else {
-      this.logger.log('Einsatzort hat sich nicht geändert.');
     }
   }
 
   private einsatzortChanged(currentOrt: string, updatedOrt: string) {
-    this.logger.log('einsatzortChanged?', { currentOrt, updatedOrt });
     return currentOrt !== updatedOrt;
   }
 
@@ -151,8 +147,6 @@ export class EinsatzCoreService {
       const alarmstichwort = await this.alarmstichwortService.findActiveById(
         updateEinsatzDto.alarmstichwort,
       );
-      //const aufnehmendesRettungsmittel = await this.fahrzeugeService.findFahrzeugeinsatz.aufnehmendes_rettungsmittel['id']        });
-
       await this.einsatztagebuchService.createEinsatztagebuchEintrag(
         einsatzId,
         {
@@ -171,7 +165,6 @@ export class EinsatzCoreService {
       });
     } else {
       // Kein Update erforderlich, da das alarmstichwort nicht geändert wurde
-      this.logger.log('Alarmstichwort hat sich nicht geändert.');
       return einsatz;
     }
   }

@@ -10,12 +10,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { NotizenService } from './notizen.service';
+import { ApiBody, ApiOkResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { BearbeiterDto } from '../../types';
 import { CurrentBearbeiter } from '../../user/bearbeiter/core/bearbeiter.decorator';
 import { BearbeiterGuard } from '../../user/bearbeiter/core/bearbeiter.guard';
-import { ApiBody, ApiOkResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { CreateNotizDto, ManyNoteResponse, OneNoteResponse } from './notes.dto';
+import { NotizenService } from './notizen.service';
 
 @Controller(`/missions/:missionId/notes`)
 @UseGuards(BearbeiterGuard)
@@ -70,7 +70,6 @@ export class NotizenController {
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() notizDto: CreateNotizDto,
   ) {
-    this.logger.log('Creating new notiz', { notizDto });
     return this.notizenService.createNotiz({
       einsatzId,
       bearbeiterName: bearbeiter.name,
@@ -104,7 +103,6 @@ export class NotizenController {
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() notizDto: CreateNotizDto,
   ) {
-    this.logger.log('Update notiz', { notizDto, notizId });
     return await this.notizenService.updateNotiz({
       bearbeiterName: bearbeiter.name,
       einsatzId,

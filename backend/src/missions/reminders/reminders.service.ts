@@ -16,7 +16,6 @@ export class RemindersService {
     einsatzId: string,
     bearbeiterId: string,
   ) {
-    this.logger.log(`Creating reminder for ${einsatzId}`);
     return this.repository.create({
       timestamp: reminderTime,
       title: note,
@@ -37,7 +36,6 @@ export class RemindersService {
   }
 
   async markAsNotified(id: string, einsatzId?: string, bearbeiterId?: string) {
-    this.logger.log(`Mark reminder as notified ${einsatzId}`);
     return this.repository.findOneAndUpdate(
       {
         _id: id,
@@ -69,7 +67,6 @@ export class RemindersService {
 
   @Cron('0 10 * * * *')
   async cleanup() {
-    this.logger.log('Reminders cleanup');
 
     await this.repository.updateMany(
       {

@@ -1,9 +1,10 @@
-import { TemplateRepository } from '@templates/template.repository';
-import { VehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
 import { Injectable } from '@nestjs/common';
-import { AnyKeys, FilterQuery, Model, QueryOptions } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { generateFullOpta } from '@templates/opta/utils/opta.utils';
+import { TemplateRepository } from '@templates/template.repository';
 import { CreateUpdateFahrzeugDto } from '@templates/vehicles/fahrzeuge.dto';
+import { VehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
+import { AnyKeys, FilterQuery, Model, QueryOptions } from 'mongoose';
 
 @Injectable()
 export class VehiclesRepository extends TemplateRepository<VehiclesTemplate> {
@@ -13,26 +14,38 @@ export class VehiclesRepository extends TemplateRepository<VehiclesTemplate> {
     super(model, VehiclesRepository.name);
   }
 
-  // TODO: refactor this
   upsertMany(fahrzeuge: CreateUpdateFahrzeugDto[]) {
     const operations = fahrzeuge.map(async ({ _id, ...fahrzeug }) => {
-      this.logger.debug(`upserting vehicle ${_id || 'new'}`);
+      this.logger.debug(`upserting vehicle ${_id ?? JSON.stringify(fahrzeug.opta)}`);
+
+      // Generate fullOpta
+      const fullOpta = generateFullOpta({
+        district: fahrzeug.opta.district,
+        bosCode: fahrzeug.opta.bosCode,
+        ort: fahrzeug.opta.ort,
+        localCode: fahrzeug.opta.localCode,
+        functionCode: fahrzeug.opta.functionCode,
+        orderNumber: fahrzeug.opta.orderNumber,
+        fullOpta: fahrzeug.opta.fullOpta,
+      });
 
       const updateData = {
         ...fahrzeug,
         opta: {
           ...fahrzeug.opta,
+          fullOpta,
         },
+        fullOpta
       };
 
-      this.logger.debug(updateData);
+      // Find by fullOpta
+      const existingDoc = await this.model.findById(_id);
 
-      if (_id) {
-        const doc = await this.model.findById(_id);
-        if (doc) {
-          Object.assign(doc, updateData);
-          return doc.save();
-        }
+      this.logger.debug(`existingDoc: ${JSON.stringify(existingDoc)}`);
+
+      if (existingDoc) {
+        Object.assign(existingDoc, updateData);
+        return existingDoc.save();
       } else {
         return this.model.create(updateData);
       }

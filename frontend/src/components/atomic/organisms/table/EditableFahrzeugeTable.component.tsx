@@ -1,19 +1,19 @@
-import { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { FahrzeugTemplateDto } from '@bluelight-hub/shared/client/index.js';
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { Button, Collapse, Form, Input, InputNumber, Select, Switch, Table, Tooltip, Typography } from 'antd';
-import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { create } from 'zustand';
-import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiTrash, PiX } from 'react-icons/pi';
 import type { AnyObject } from 'antd/es/_util/type.js';
+import { Rule } from 'antd/es/form/index.js';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { HTMLAttributes, PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { PiCheck, PiCode, PiFingerprint, PiPencil, PiPlus, PiTrash, PiX } from 'react-icons/pi';
 import { toast } from 'react-toastify';
-import { FormLayout } from '../form/FormLayout.comonent.js';
-import { writeText } from '@tauri-apps/plugin-clipboard-manager';
-import { OptaInput } from '../../molecules/OptaInput.component.js';
-import { FahrzeugTemplateDto } from '@bluelight-hub/shared/client/index.js';
-import { Rule } from 'antd/es/form/index.js';
+import { create } from 'zustand';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useOpta } from '../../../../hooks/opta.hook.js';
+import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { OptaInput } from '../../molecules/OptaInput.component.js';
+import { FormLayout } from '../form/FormLayout.comonent.js';
 
 type EditingStore = {
   id: null | string;
@@ -382,15 +382,13 @@ export function EditableFahrzeugeTable() {
       <Form<EditableFahrzeugType>
         form={form}
         validateTrigger={['onBlur', 'onSubmit']}
-        onFinishFailed={(errorInfo) => {
-          console.log('Failed:', errorInfo);
+        onFinishFailed={() => {
           toast.error('Fehler beim Bearbeiten des Fahrzeugs');
-          // TODO[ember-rescue-68](rubeen, 30.12.24): das hier wird nicht aufgerufen, aber das Form auch nicht korrekt abgeschickt. Was da los
         }}
         onFinish={async (data) => {
-          console.log('submitting with data', { data });
           await patchFahrzeuge.mutateAsync({ items: [{ ...data, id: id === fahrzeugCreateId ? undefined : (id as string) }] });
           resetEditingId();
+          toast.success('Fahrzeug erfolgreich gespeichert');
         }}
         initialValues={{
           id: editingFahrzeugTemplate?.id ?? '',

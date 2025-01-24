@@ -30,7 +30,9 @@ function formatValidationError(errors: ClassValidatorError[]): string[] {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug'],
+  });
   // FIXME: This should probable be changed: 🙂
   app.enableCors({
     origin: '*',

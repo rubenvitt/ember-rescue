@@ -1,8 +1,8 @@
-import { ApiResponse } from '../../types';
 import { ApiProperty } from '@nestjs/swagger';
 import { FunctionGroup, OptaType } from '@templates/opta/constants';
 import { OptaDto } from '@templates/opta/dtos/opta.dto';
 import { IsArray, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
+import { ApiResponse } from '../../types';
 
 export class IconDefinitionDto {
   @ApiProperty({ required: false })

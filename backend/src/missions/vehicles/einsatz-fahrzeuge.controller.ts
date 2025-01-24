@@ -36,15 +36,12 @@ export class EinsatzFahrzeugeController {
   async findFahrzeugeImEinsatz(
     @Param('einsatzId') einsatzId: string,
   ): Promise<VehiclesDto> {
-    this.logger.log('Find fahrzeuge im Einsatz', einsatzId);
-
     const [aktiveFahrzeuge, verfuegbareFahrzeuge] = await Promise.all([
       this.fahrzeugeService.findAktiveFahrzeugeImEinsatz(einsatzId),
       this.fahrzeugeService.findVerfuegbareFahrzeuge(einsatzId),
     ]);
 
     const resolvedAktiveFahrzeuge = await Promise.all(aktiveFahrzeuge);
-    this.logger.log({ verfuegbareFahrzeuge });
 
     return {
       fahrzeugeImEinsatz: resolvedAktiveFahrzeuge,
@@ -91,7 +88,6 @@ export class EinsatzFahrzeugeController {
     @CurrentBearbeiter() bearbeiter: BearbeiterDto,
     @Body() body: ChangeStatusDto,
   ) {
-    this.logger.log('Change status', { einsatzId, body });
     await this.fahrzeugeService.changeStatus(
       einsatzId,
       bearbeiter.name,

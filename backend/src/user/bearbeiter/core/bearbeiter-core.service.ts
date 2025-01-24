@@ -15,7 +15,6 @@ export class BearbeiterCoreService {
   ) {}
 
   async findAll(): Promise<BearbeiterDto[]> {
-    this.logger.log('BearbeiterController.findAll()');
     return await this.bearbeiterModel
       .find({ active: true })
       .select('name')
@@ -23,17 +22,14 @@ export class BearbeiterCoreService {
   }
 
   async findByNameOrCreate(name: string) {
-    this.logger.log('BearbeiterController.findByNameOrCreate() name:' + name);
     let bearbeiter = await this.bearbeiterModel.findOne({ name }).exec();
 
     if (!bearbeiter) {
-      this.logger.log(`Create new Bearbeiter named: ${name}`);
       bearbeiter = await this.bearbeiterModel.create({
         name,
         active: true,
       });
     } else {
-      this.logger.log(`Found Bearbeiter`, { bearbeiter });
       bearbeiter = await this.bearbeiterModel
         .findOneAndUpdate(
           { name },
@@ -51,11 +47,9 @@ export class BearbeiterCoreService {
 
   @CacheKey('bearbeiter')
   async findOne(name: string) {
-    this.logger.log(`BearbeiterController.findOne() ${name}`);
     let bearbeiter = await this.bearbeiterModel
       .findOne({ name, active: true })
       .exec();
-    this.logger.log(`Found Bearbeiter`, { bearbeiter });
     return bearbeiter;
   }
 }

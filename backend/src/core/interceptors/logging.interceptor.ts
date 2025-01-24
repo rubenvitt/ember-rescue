@@ -18,7 +18,7 @@ export class LoggingInterceptor implements NestInterceptor {
       tap(() => {
         const delay = Date.now() - now;
         if (!url.includes('ping'))
-          Logger.log(`${method} ${url} ${delay}ms`, 'HTTP');
+          Logger.debug(`${method} ${url} ${delay}ms`, 'HTTP');
       }),
     );
   }

@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateNotizDto, UpdateNotizDto } from '../../types';
-import { NotizenRepository } from './notizen.repository';
-import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
 import mongoose from 'mongoose';
+import { CreateNotizDto, UpdateNotizDto } from '../../types';
+import { BearbeiterCoreService } from '../../user/bearbeiter/core/bearbeiter-core.service';
+import { NotizenRepository } from './notizen.repository';
 
 @Injectable()
 export class NotizenService {
@@ -15,11 +15,9 @@ export class NotizenService {
 
   async findAllNotizen(
     einsatzId: string,
-    bearbeiterName: string,
+    _bearbeiterName: string,
     done: boolean,
   ) {
-    this.logger.log('Find all notizen for einsatz', einsatzId, bearbeiterName);
-
     const result = await this.repository.model.aggregate([
       {
         $lookup: {
@@ -46,7 +44,6 @@ export class NotizenService {
         },
       },
     ]);
-    this.logger.log('Found notizen', result);
 
     return result;
   }
@@ -61,9 +58,6 @@ export class NotizenService {
     notizDto: CreateNotizDto;
   }) {
     const bearbeiter = await this.bearbeiterCoreService.findOne(bearbeiterName);
-
-    this.logger.log('Create notiz for bearbeiter with id', bearbeiter?.id);
-
     const saveResult = await this.repository.create({
       einsatz: einsatzId,
       bearbeiter: bearbeiter,
