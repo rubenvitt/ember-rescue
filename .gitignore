@@ -27,3 +27,4 @@ dist-ssr
 *.blob
 
 repopack-output.txt
+node_modules
