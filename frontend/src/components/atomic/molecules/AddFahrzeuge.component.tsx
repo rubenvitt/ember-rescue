@@ -1,5 +1,4 @@
-dwimport { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
-import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.ts';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useForm } from '@tanstack/react-form';
 import { Form, Select } from 'antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
