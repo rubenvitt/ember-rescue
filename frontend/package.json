@@ -7,12 +7,13 @@
     "dev": "vite --host",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
-    "build": "tsc && vite build",
+    "build": "pnpm build:shared && tsc && vite build",
+    "build:shared": "tsc -p tsconfig.shared.json",
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "test": "vitest"
   },
   "dependencies": {
@@ -95,7 +96,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "rc-collapse": "^4.0.0",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.3",
+    "typescript": "5.3.3",
     "vite": "^6.0.11",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.0.4"

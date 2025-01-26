@@ -1,10 +1,10 @@
+import { TemplateDocument } from '@core/database';
 import { Prop, Schema } from '@nestjs/mongoose';
 import {
   FachaufgabeId,
   OrganisationId,
   VerwaltungsstufeId,
 } from 'taktische-zeichen-core';
-import { TemplateDocument } from '@core/database';
 
 // TODO: remove this:
 export type FahrzeugIconDefinitionDto = {

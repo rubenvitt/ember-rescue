@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
-import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
-import { createRoot } from 'react-dom/client';
-import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
+import { NinaApi, VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useToggle } from '@reactuses/core';
-import { create } from 'zustand';
-import clsx from 'clsx';
-import { getAPIConfig } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { queryClient } from '../../../../routes/__root.js';
-import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import clsx from 'clsx';
+import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
+import { create } from 'zustand';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import { queryClient } from '../../../../routes/__root.js';
+import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
+import { getAPIConfig } from '../../../../utils/http.js';
 import { MapLayerOptions } from './MapLayerOptions.component.tsx';
 import { WarningsOptions } from './WeatherOptions.component.js';
-import { NinaApi, VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 export const useMapStore = create<{
   map?: Map;
@@ -335,7 +335,7 @@ export class WarningsControl implements IControl {
   getDefaultPosition?: () => 'top-right';
   private container: HTMLElement | null = null;
 
-  onRemove(map: mapboxgl.Map): void {
+  onRemove(_map: mapboxgl.Map): void { // TODO: map is unused
     if (this.container?.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }

@@ -172,6 +172,10 @@ function JsonImExport() {
   );
 }
 
+function filterDataSource(data: (FahrzeugTemplateDto | undefined)[]): FahrzeugTemplateDto[] {
+  return data.filter((item): item is FahrzeugTemplateDto => item !== undefined);
+}
+
 export function EditableFahrzeugeTable() {
   const [form] = Form.useForm<EditableFahrzeugType>();
   const { templateFahrzeuge, patchFahrzeuge, removeVehicleTemplate, fahrzeugeTypen } = useFahrzeuge();
@@ -373,7 +377,7 @@ export function EditableFahrzeugeTable() {
   );
 
   const dataSource = useMemo(
-    () => [id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, templateFahrzeuge.data?.data].filter((value) => value !== undefined).flat(),
+    () => filterDataSource([id === newFahrzeugTemplate.id ? [newFahrzeugTemplate] : undefined, templateFahrzeuge.data?.data].filter((value) => value !== undefined).flat()),
     [newFahrzeugTemplate, id, templateFahrzeuge.data?.data],
   );
   return (
@@ -414,7 +418,7 @@ export function EditableFahrzeugeTable() {
             },
           }}
           bordered
-          dataSource={dataSource} // FIXME[ember-rescue-68](rubeen, 30.11.24): This must be fixed
+          dataSource={dataSource}
           loading={templateFahrzeuge.isLoading}
           // @ts-ignore
           columns={mergedColumns}

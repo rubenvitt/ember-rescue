@@ -27,6 +27,9 @@
   "references": [
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.shared.json"
     }
   ]
 }

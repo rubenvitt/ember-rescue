@@ -1,9 +1,9 @@
-import { ClientOptions, fetch as tauriFetch } from '@tauri-apps/plugin-http';
-import storage from './storage.js';
+import { Configuration, FetchParams, RequestContext } from '@bluelight-hub/shared/client';
 import { isTauri } from '@tauri-apps/api/core';
+import { ClientOptions, fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 import { Bearbeiter } from '../types/app/bearbeiter.types.js';
-import { Configuration, FetchParams, RequestContext } from '@bluelight-hub/shared/client';
+import storage from './storage.js';
 
 export function getAPIConfig(): Configuration {
   return new Configuration({
@@ -57,8 +57,7 @@ async function makeRequest(
         integrity?: string | undefined;
         keepalive?: boolean | undefined;
         method?: string | undefined;
-        mode?: RequestMode | undefined;
-        priority?: RequestPriority | undefined;
+      mode?: RequestMode | undefined;
         redirect?: RequestRedirect | undefined;
         referrer?: string | undefined;
         referrerPolicy?: ReferrerPolicy | undefined;

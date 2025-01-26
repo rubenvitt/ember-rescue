@@ -10,7 +10,7 @@ import { DependencyList, useEffect, useRef, useState } from 'react';
  */
 export function useInterval<T>(callback: () => T, delay: number, dependencies: DependencyList): T | undefined {
   const [value, setValue] = useState<T | undefined>(undefined);
-  const savedCallback = useRef<() => T>();
+  const savedCallback = useRef<() => T>(null);
 
   // Remember the latest callback.
   useEffect(() => {

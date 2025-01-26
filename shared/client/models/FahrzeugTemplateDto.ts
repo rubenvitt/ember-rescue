@@ -12,15 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { OptaDto } from './OptaDto';
-import { OptaDtoFromJSON, OptaDtoFromJSONTyped, OptaDtoToJSON, OptaDtoToJSONTyped } from './OptaDto';
+import { OptaDtoFromJSON, OptaDtoToJSON } from './OptaDto';
 import type { IconDefinitionDto } from './IconDefinitionDto';
 import {
-  IconDefinitionDtoFromJSON,
-  IconDefinitionDtoFromJSONTyped,
-  IconDefinitionDtoToJSON,
-  IconDefinitionDtoToJSONTyped,
+  IconDefinitionDtoFromJSON, IconDefinitionDtoToJSON
 } from './IconDefinitionDto';
 
 /**

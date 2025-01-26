@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
-import { Button, Input, Select, Space } from 'antd';
-import { PiPen } from 'react-icons/pi';
 import { useToggle } from '@reactuses/core';
+import { Button, Input, Select, Space } from 'antd';
+import { useMemo, useState } from 'react';
+import { PiPen } from 'react-icons/pi';
 import { useOpta } from '../../../hooks/opta.hook.js';
 
 export type OptaDto = {
@@ -110,22 +110,21 @@ export const OptaInput = ({ onChange, value }: { onChange?: (value: OptaInput) =
       district: districtOpta.data?.data.map((d) => ({
         code: d.code,
         description: d.label,
-      })),
+      })) ?? [],
       bosCode: bosOpta.data?.data.map((b) => ({
         code: b.code,
         description: b.label,
-      })),
+      })) ?? [],
       localCode: localCodeOpta.data?.data.map((l) => ({
         code: l.code,
         description: l.label,
-      })),
-      functionCode:
-        functionOpta.data?.data.map((f) => ({
-          code: f.code,
-          description: f.label,
-        })) ?? [],
+      })) ?? [],
+      functionCode: functionOpta.data?.data.map((f) => ({
+        code: f.code,
+        description: f.label,
+      })) ?? [],
     }),
-    [functionOpta.data?.data],
+    [functionOpta.data?.data, districtOpta.data?.data, bosOpta.data?.data, localCodeOpta.data?.data],
   );
 
   const handleInputChange = (name: keyof Omit<OptaDto, 'id' | 'fullOpta'>, newValue: string) => {

@@ -2,6 +2,7 @@ import { ChangeStatusDto, StatusDto } from '@bluelight-hub/shared/client/index.t
 import { Button } from 'antd';
 import React, { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { StatusCode } from '../../../types/app/status.types.ts';
 import { statusLabel } from './StatusLabel.component.js';
 
 interface StatusButtonProps {
@@ -14,7 +15,7 @@ export const StatusButtonComponent: React.FC<StatusButtonProps> = ({ onClick, it
   const onClickHandler = useCallback(() => onClick({ code: item.code }), [onClick, item.code]);
 
   return (
-    <Button onClick={onClickHandler} type="text" className={twMerge('h-full w-full flex-col border border-gray-500', statusLabel({ status: item.code }), className)}>
+    <Button onClick={onClickHandler} type="text" className={twMerge('h-full w-full flex-col border border-gray-500', statusLabel(item.code as StatusCode), className)}>
       <p className="text-xl font-bold">{item.code}</p>
       <p className="text-wrap text-xs font-light">{item.label}</p>
     </Button>
