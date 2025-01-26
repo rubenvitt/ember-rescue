@@ -1,20 +1,21 @@
-import { useRecommendedFahrzeuge } from '../../../hooks/fahrzeuge/recommended-fahrzeuge.hook.js';
-import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { PiAmbulance, PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
-import React, { useCallback, useMemo } from 'react';
+dwimport { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.ts';
 import { useForm } from '@tanstack/react-form';
-import { twMerge } from 'tailwind-merge';
-import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
-import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { Form, Select } from 'antd';
-import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
+import React, { useCallback, useMemo } from 'react';
+import { PiAmbulance, PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
+import { twMerge } from 'tailwind-merge';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import { useRecommendedFahrzeuge } from '../../../hooks/fahrzeuge/recommended-fahrzeuge.hook.js';
+import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 
 const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; label: string; secondary: string }; onAdd: (fullOpta: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
     <button
       type="button"
       onClick={() => onAdd(fahrzeug.item.fullOpta)}
-      className="group flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-xs hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
+      className="group cursor-pointer flex w-full items-center justify-between space-x-3 rounded-full border border-gray-300 p-2 text-left shadow-xs hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:hover:bg-gray-800"
     >
       <span className="flex min-w-0 flex-1 items-center space-x-3">
         <span className="block shrink-0">
