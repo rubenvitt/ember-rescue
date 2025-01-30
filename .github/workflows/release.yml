@@ -127,19 +127,29 @@ jobs:
         if: matrix.platform == 'windows-latest'
         shell: pwsh
         run: |
-          $content = Get-Content frontend/src-tauri/tauri.conf.json -Raw
-          $json = $content | ConvertFrom-Json
-          # Extract alpha number if it exists, otherwise use 0
-          if ($json.version -match '-alpha\.(\d+)') {
-              $alphaNum = [int]$matches[1]
-              # Ensure the number doesn't exceed 65535
-              $alphaNum = [Math]::Min($alphaNum, 65535)
-              $version = $json.version -replace '-alpha\.\d+', ".$alphaNum"
-          } else {
-              $version = $json.version -replace '-.*', '.0'
+          # Function to convert version
+          function Convert-Version {
+              param($version)
+              if ($version -match '-alpha\.(\d+)') {
+                  $alphaNum = [int]$matches[1]
+                  $alphaNum = [Math]::Min($alphaNum, 65535)
+                  return $version -replace '-alpha\.\d+', ".$alphaNum"
+              } else {
+                  return $version -replace '-.*', '.0'
+              }
           }
-          $json.version = $version
-          $json | ConvertTo-Json -Depth 32 | Set-Content frontend/src-tauri/tauri.conf.json
+
+          # Update tauri.conf.json
+          $tauriContent = Get-Content frontend/src-tauri/tauri.conf.json -Raw
+          $tauriJson = $tauriContent | ConvertFrom-Json
+          $tauriJson.version = Convert-Version $tauriJson.version
+          $tauriJson | ConvertTo-Json -Depth 32 | Set-Content frontend/src-tauri/tauri.conf.json
+
+          # Update package.json
+          $packageContent = Get-Content frontend/package.json -Raw
+          $packageJson = $packageContent | ConvertFrom-Json
+          $packageJson.version = Convert-Version $packageJson.version
+          $packageJson | ConvertTo-Json -Depth 32 | Set-Content frontend/package.json
 
       - name: Build Tauri
         uses: tauri-apps/tauri-action@v0
