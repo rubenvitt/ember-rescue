@@ -1,31 +1,31 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { TemplateDocument } from '@core/database/base-documents';
 import * as alarmstichworte from '@core/database/seeds/alarmstichworte.json';
-import * as statusItems from '@core/database/seeds/status.json';
 import * as qualifikationItems from '@core/database/seeds/qualifikationen.json';
-import * as optaFunktionen from './seeds/opta/funktionen.json';
-import * as optaBos from './seeds/opta/bos.json';
-import * as optaDistricts from './seeds/opta/districts.json';
-import * as optaLocalCodes from './seeds/opta/local-codes.json';
-import { Model } from 'mongoose';
+import * as statusItems from '@core/database/seeds/status.json';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Bearbeiter } from '../../user/bearbeiter/core/bearbeiter.schema';
-import { Counter } from './mongo/schemas/counter.schema';
+import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
 import { BosOptaRepository } from '@templates/opta/repositories/bos-opta.repository';
-import { OptaRepository } from '@templates/opta/repositories/opta.repository';
+import { DistrictOptaRepository } from '@templates/opta/repositories/district-opta.repository';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';
 import { LocalCodeOptaRepository } from '@templates/opta/repositories/local-code-opta.repository';
-import { DistrictOptaRepository } from '@templates/opta/repositories/district-opta.repository';
-import { FunctionOptaTemplate } from '@templates/opta/schemas/function-opta.schema';
-import { TemplateRepository } from '@templates/template.repository';
+import { OptaRepository } from '@templates/opta/repositories/opta.repository';
 import { BosOptaTemplate } from '@templates/opta/schemas/bos-opta.schema';
 import { DistrictOptaTemplate } from '@templates/opta/schemas/district-opta.schema';
+import { FunctionOptaTemplate } from '@templates/opta/schemas/function-opta.schema';
 import { LocalCodeOptaTemplate } from '@templates/opta/schemas/local-code-opta.schema';
-import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
-import { TemplateDocument } from '@core/database/base-documents';
 import { QualifikationenRepository } from '@templates/qualifications/qualifikationen.repository';
 import { StatusRepository } from '@templates/status/status.repository';
-import { EinsatzRepository } from '../../missions/schema/einsatz.repository';
+import { TemplateRepository } from '@templates/template.repository';
 import { VehiclesRepository } from '@templates/vehicles/vehicles.repository';
+import { Model } from 'mongoose';
+import { EinsatzRepository } from '../../missions/schema/einsatz.repository';
+import { Bearbeiter } from '../../user/bearbeiter/core/bearbeiter.schema';
+import { Counter } from './mongo/schemas/counter.schema';
+import * as optaBos from './seeds/opta/bos.json';
+import * as optaDistricts from './seeds/opta/districts.json';
+import * as optaFunktionen from './seeds/opta/funktionen.json';
+import * as optaLocalCodes from './seeds/opta/local-codes.json';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -132,23 +132,6 @@ export class SeedService implements OnModuleInit {
 
     if (!(await this.einsatzRepository.anyActive())) {
       try {
-        let newVar = await this.einsatzRepository.create({
-          bearbeiter: await this.bearbeiterModel.findOne({ name: 'Hans' }),
-          aufnehmendesRettungsmittel: 'Testfahrzeug',
-          einsatzMeta: {},
-          einsatzAlarmstichwort: {
-            code: 'B2',
-            description: 'Brand',
-          },
-          einsatznummer: (
-            await this.counterModel.findOneAndUpdate(
-              { name: 'einsatznummer' },
-              { $inc: { seq: 1 } },
-              { new: true, upsert: true },
-            )
-          ).seq,
-          beginn: new Date(),
-        });
       } catch (e) {
         this.logger.error('Error while seeding einsatz: ' + e.message);
       }

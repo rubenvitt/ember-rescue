@@ -1,9 +1,9 @@
+import { MetaModule } from '@core/meta/meta.module';
+import { SettingsModule } from '@core/settings/settings.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from './database/database.module';
 import * as Joi from 'joi';
-import { SettingsModule } from '@core/settings/settings.module';
-import { MetaModule } from '@core/meta/meta.module';
+import { DatabaseModule } from './database/database.module';
 import { ExceptionsModule } from './exceptions/exceptions.module';
 
 let configModule = ConfigModule.forRoot({
@@ -19,12 +19,18 @@ let configModule = ConfigModule.forRoot({
       .when('NODE_ENV', {
         is: Joi.string().not('development', 'test'),
         then: Joi.string()
-          .pattern(/^(mongodb:\/\/(?!user:pass@)[^:\/]+(:[0-9]+)?(\/.*)?$)/)
-          .message(
-            'MONGODB_URL must be a valid url with the following format: mongodb://<user>:<password>@<host>:<port>/<database>?<options> and must not contain default credentials user:pass',
-          ),
+          .custom((value) => {
+            if (value.includes('user:pass@')) {
+              throw new Error('MONGODB_URL must not contain default credentials user:pass');
+            }
+            const pattern = /^mongodb:\/\/([^:]+):([^@]+)@([^:\/]+)(:[0-9]+)?(\/[^?]+)(\?.*)?$/;
+            if (!pattern.test(value)) {
+              throw new Error('MONGODB_URL must be a valid url with the following format: mongodb://<user>:<password>@<host>:<port>/<database>?<options>');
+            }
+            return value;
+          }, 'MongoDB URL validation'),
         otherwise: Joi.string().pattern(
-          /^(mongodb:\/\/(([^:]+:[^@]+)@)?[^:\/]+(:[0-9]+)?(\/.*)?$)/,
+          /^mongodb:\/\/([^:]+):([^@]+)@([^:\/]+)(:[0-9]+)?(\/[^?]+)(\?.*)?$/,
         ),
       })
       .required(),
