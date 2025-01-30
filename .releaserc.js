@@ -8,7 +8,7 @@ module.exports = {
         releaseRules: {
           major: ['💥'],
           minor: ['✨'],
-          patch: ['🐛', '🚑', '🔒', '🧹'],
+          patch: ['🐛', '🚑', '🔒', '🧹', '♻️'],
         },
         releaseNotes: {
           template: `{{#if compareUrl}}

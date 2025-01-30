@@ -4,34 +4,58 @@ services:
     restart: unless-stopped
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh --quiet
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      interval: 5s
+      timeout: 5s
+      retries: 10
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
-      DB_USER: ${MONGO_USER:-user}
-      DB_PASS: ${MONGO_PASSWORD:-pass}
       MONGO_INITDB_DATABASE: bluelight-hub
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-user}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-pass}
+      DB_USER: ${DB_USER:-user}
+      DB_PASS: ${DB_PASS:-pass}
     volumes:
       - mongo:/data/db
       - ./backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - bluelight-hub-network
+    command: ["mongod", "--auth", "--bind_ip_all"]
 
   backend:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
+    build:
+      context: backend
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "10007:3000"
+      - "127.0.0.1:10007:3000"
     environment:
-      MONGODB_URL: mongodb://${DB_USER:-user}:${DB_PASS:-pass}@mongodb:27017/ember-rescue
+      MONGODB_URL: mongodb://${DB_USER:-user}:${DB_PASS:-pass}@mongodb:27017/bluelight-hub?authSource=bluelight-hub
       SERVER_NAME: ${SERVER_NAME}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       AUTH_TOKEN: ${AUTH_TOKEN}
-    env_file:
-      - .env
     depends_on:
       mongodb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/core/meta"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    networks:
+      - bluelight-hub-network
+
+networks:
+  bluelight-hub-network:
+    driver: bridge
+    internal: true
 
 volumes:
   mongo:
