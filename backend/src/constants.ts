@@ -1,0 +1,4 @@
+export const STATUS_MODEL = 'STATUS_MODEL';
+export const OPTA_ORT_MODEL = 'OPTA_ORT_MODEL';
+export const ALARMSTICHWORT_MODEL = 'ALARMSTICHWORT_MODEL';
+export const OPTA_FUNKTION_MODEL = 'OPTA_Funktion_MODEL';

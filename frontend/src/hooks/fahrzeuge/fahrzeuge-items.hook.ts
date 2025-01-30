@@ -1,22 +1,22 @@
-import { FahrzeugDto } from '../../types/app/fahrzeug.types.js';
+import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { useMemo } from 'react';
 import { useFahrzeuge } from './fahrzeuge.hook.js';
-import { DefaultOptionType } from 'antd/lib/select/index.js';
 
 interface Props {
-  fahrzeuge?: FahrzeugDto[];
+  fahrzeuge?: VehicleOnMissionDto[];
   include?: ('fahrzeugeImEinsatz' | 'fahrzeugeNichtImEinsatz' | 'alleFahrzeuge' | 'custom' | 'einsatztagebuch')[];
 }
 
-function convertToItems(fahrzeuge?: FahrzeugDto[]) {
+function convertToItems(fahrzeuge?: VehicleOnMissionDto[]) {
   if (!fahrzeuge) {
     return [];
   } else {
     return fahrzeuge.map((item) => {
       return {
-        label: item.funkrufname,
-        value: item.id,
-        title: item.funkrufname,
+        label: item.optaFunktion,
+        value: item.fullOpta,
+        title: item.optaFunktion,
         item,
         // item,
         // label: item.funkrufname,
@@ -36,29 +36,28 @@ export function useFahrzeugeItems({ fahrzeuge, include }: Props) {
     }
     return include;
   }, [include, fahrzeuge]);
-  const { fahrzeuge: allFahrzeuge, fahrzeugeImEinsatz, fahrzeugeNichtImEinsatz } = useFahrzeuge();
+  const { fahrzeuge: allFahrzeuge } = useFahrzeuge();
 
   const allFahrzeugeItems = useMemo<DefaultOptionType[]>(() => {
-    return _include.includes('alleFahrzeuge') ? convertToItems(allFahrzeuge.data) : [];
+    return _include.includes('alleFahrzeuge') ? convertToItems([...(allFahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(allFahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])]) : [];
   }, [_include, allFahrzeuge.data]);
   const fahrzeugeImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
-    return _include.includes('fahrzeugeImEinsatz') ? convertToItems(fahrzeugeImEinsatz.data) : [];
-  }, [_include, fahrzeugeImEinsatz]);
+    return _include.includes('fahrzeugeImEinsatz') ? convertToItems(allFahrzeuge.data?.data.fahrzeugeImEinsatz) : [];
+  }, [_include, allFahrzeuge.data]);
   const fahrzeugeNichtImEinsatzItems = useMemo<DefaultOptionType[]>(() => {
-    return _include.includes('fahrzeugeNichtImEinsatz') ? convertToItems(fahrzeugeNichtImEinsatz) : [];
-  }, [_include, fahrzeugeNichtImEinsatz]);
+    return _include.includes('fahrzeugeNichtImEinsatz') ? convertToItems(allFahrzeuge.data?.data.verfuegbareFahrzeuge) : [];
+  }, [_include, allFahrzeuge.data]);
   const customFahrzeugeItems = useMemo<DefaultOptionType[]>(() => {
     return _include.includes('custom') ? convertToItems(fahrzeuge) : [];
   }, [_include, fahrzeuge]);
 
   const fahrzeugeAsItems = useMemo<DefaultOptionType[]>(() => {
-    return [
-      ...customFahrzeugeItems,
-      ...fahrzeugeImEinsatzItems,
-      ...fahrzeugeNichtImEinsatzItems,
-      ...allFahrzeugeItems,
-    ].filter((item, index, self) => index === self.findIndex((t) => t.value === item.value));
-  }, []) as DefaultOptionType[];
+    return [...customFahrzeugeItems, ...fahrzeugeImEinsatzItems, ...fahrzeugeNichtImEinsatzItems, ...allFahrzeugeItems].filter(
+      (item, index, self) => index === self.findIndex((t) => t.value === item.value),
+    );
+  }, [customFahrzeugeItems, fahrzeugeImEinsatzItems, fahrzeugeNichtImEinsatzItems, allFahrzeugeItems]) as DefaultOptionType[];
 
-  return { fahrzeugeAsItems, loading: allFahrzeuge.isLoading || fahrzeugeImEinsatz.isLoading };
+  console.log({ fahrzeugeAsItems, allFahrzeugeItems, fahrzeugeImEinsatzItems, fahrzeugeNichtImEinsatzItems, customFahrzeugeItems });
+
+  return { fahrzeugeAsItems, loading: allFahrzeuge.isLoading };
 }

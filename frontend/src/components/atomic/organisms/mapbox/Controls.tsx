@@ -1,27 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
-import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
-import { createRoot } from 'react-dom/client';
-import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
+import { NinaApi, VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useToggle } from '@reactuses/core';
-import { create } from 'zustand';
-import clsx from 'clsx';
-import { backendFetchJson } from '../../../../utils/http.js';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { queryClient } from '../../../../routes/__root.js';
-import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import clsx from 'clsx';
+import mapboxgl, { IControl, LayerSpecification, Map, Marker } from 'mapbox-gl';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { PiAmbulance, PiMapPin, PiMouse, PiWarningDiamond, PiX } from 'react-icons/pi';
 import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
-import { statusRgbColors } from '../../atoms/StatusLabel.component.js';
-import { FahrzeugDto } from '../../../../types/app/fahrzeug.types.js';
+import { create } from 'zustand';
+import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import { queryClient } from '../../../../routes/__root.js';
+import { formatMGRS, mgrs } from '../../../../utils/coordinates.js';
+import { getAPIConfig } from '../../../../utils/http.js';
 import { MapLayerOptions } from './MapLayerOptions.component.tsx';
+import { WarningsOptions } from './WeatherOptions.component.js';
 
 export const useMapStore = create<{
   map?: Map;
   setMap: (map: Map) => void;
-  markerPerFahrzeug: { [fahrzeugId: string]: Marker };
-  addMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
-  removeMarkerForFahrzeug: (fahrzeugId: string) => void;
-  updateMarkerForFahrzeug: (fahrzeugId: string, marker: Marker) => void;
+  markerPerFahrzeug: { [fullOpta: string]: Marker };
+  addMarkerForFahrzeug: (fullOpta: string, marker: Marker) => void;
+  removeMarkerForFahrzeug: (fullOpta: string) => void;
+  updateMarkerForFahrzeug: (fullOpta: string, marker: Marker) => void;
 }>((set, get) => ({
   setMap: (map) => set({ map: map }),
   markerPerFahrzeug: {},
@@ -34,12 +34,9 @@ export const useMapStore = create<{
     }),
   removeMarkerForFahrzeug: (fahrzeug) =>
     set({
-      markerPerFahrzeug: Object.fromEntries(
-        Object.entries(get().markerPerFahrzeug).filter(([key]) => key !== fahrzeug),
-      ),
+      markerPerFahrzeug: Object.fromEntries(Object.entries(get().markerPerFahrzeug).filter(([key]) => key !== fahrzeug)),
     }),
-  updateMarkerForFahrzeug: (fahrzeug, marker) =>
-    set({ markerPerFahrzeug: get().markerPerFahrzeug, [fahrzeug]: marker }),
+  updateMarkerForFahrzeug: (fahrzeug, marker) => set({ markerPerFahrzeug: get().markerPerFahrzeug, [fahrzeug]: marker }),
 }));
 
 // React-Komponente mit Icon
@@ -62,10 +59,13 @@ const katwarnLayer: LayerSpecification = {
 const IconComponent: React.FC = () => {
   const [katwarnungenSichtbar, toggleKatwarnungen] = useToggle(false);
   const { map } = useMapStore();
+  const ninaApi = useMemo(() => {
+    return new NinaApi(getAPIConfig());
+  }, []);
   const warnDetails = useQuery<any[]>({
     queryKey: ['warnings', 'details'],
-    queryFn: () => {
-      return backendFetchJson<any[]>('/apis/bund/nina/warnings');
+    queryFn: async () => {
+      return (await ninaApi.ninaControllerGetAllWarningDetailsV1()).data;
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,
@@ -78,11 +78,7 @@ const IconComponent: React.FC = () => {
     <>
       <button
         title={`Katwarnungen ${katwarnungenSichtbar ? 'entfernen' : 'hinzufügen'}`}
-        className={clsx(
-          'cursor-pointer rounded p-2',
-          katwarnungenSichtbar && 'text-primary-500',
-          !katwarnungenSichtbar && 'hover:bg-gray-100',
-        )}
+        className={clsx('cursor-pointer rounded-sm p-2', katwarnungenSichtbar && 'text-primary-500', !katwarnungenSichtbar && 'hover:bg-gray-100')}
         onClick={() => {
           if (!katwarnungenSichtbar) {
             map?.addLayer(katwarnLayer);
@@ -127,31 +123,35 @@ interface MyControlComponentProps {
 }
 
 function AddFahrzeugComponent() {
-  const { fahrzeugeImEinsatz } = useFahrzeuge();
+  const { fahrzeuge } = useFahrzeuge();
   const { map } = useMapStore();
-  const randomFahrzeug = useMemo<FahrzeugDto | undefined>(() => {
-    return fahrzeugeImEinsatz.data?.find(() => true);
-  }, [fahrzeugeImEinsatz.data]);
+  const randomFahrzeug = useMemo<VehicleOnMissionDto | undefined>(() => {
+    return fahrzeuge.data?.data.fahrzeugeImEinsatz.find(() => true);
+  }, [fahrzeuge.data]);
   const [showFahrzeugeList, toggleShowFahrzeugeList] = useToggle(false);
 
   const addFahrzeugToMap = useCallback(
-    (fahrzeug: FahrzeugDto) => {
+    (fahrzeug: VehicleOnMissionDto) => {
       let element = document.createElement('div');
+      console.log('adding marker for', fahrzeug);
       let svg = erzeugeTaktischesZeichen({
-        grundzeichen: 'fahrzeug',
-        organisation: 'hilfsorganisation',
-        fachaufgabe: 'iuk',
-        name: fahrzeug.funkrufname,
-        farbe: statusRgbColors[fahrzeug.status.code],
+        // FIXME[ember-rescue-68](rubeen, 30.11.24): This must be fixed
+        // grundzeichen: convertGrundzeichen(fahrzeug.optaFunktion?.grundzeichen),
+        // organisation: convertOrganisation(fahrzeug.optaFunktion?.organisation),
+        // fachaufgabe: convertFachaufgabe(fahrzeug.optaFunktion?.fachaufgabe as FachaufgabeId),
+        // funktion: convertFunktion(fahrzeug.optaFunktion?.funktion as FunktionId),
+        // symbol: convertSymbol(fahrzeug.optaFunktion?.symbol as SymbolId),
+        // name: fahrzeug.funkrufname,
+        // farbe: statusRgbColors[fahrzeug.status.code],
       }).svg;
       element.innerHTML = svg.render();
       element.className = 'w-20 h-20 text-red-500';
-      element.id = `fahrzeug-${fahrzeug.funkrufname}`;
+      element.id = `fahrzeug-${fahrzeug.fullOpta}`;
       map &&
         new mapboxgl.Marker({ element, draggable: true })
           .setPopup(
             new mapboxgl.Popup().setHTML(
-              `<div>${fahrzeug.optaFunktion?.label} ${fahrzeug.funkrufname} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
+              `<div>${fahrzeug.optaFunktion} ${fahrzeug.fullOpta} | ${formatMGRS(mgrs(map.getCenter())!)} <button onclick="console.log('should delete...')">Löschen</button></div>`,
             ),
           )
           .setLngLat(map.getCenter())
@@ -168,11 +168,11 @@ function AddFahrzeugComponent() {
         <button className="absolute right-0 top-0 m-2" onClick={toggleShowFahrzeugeList}>
           <PiX />
         </button>
-        <div className="flex max-h-48 flex-col gap-2 overflow-y-scroll rounded p-2">
-          {fahrzeugeImEinsatz.data?.map((fahrzeug) => {
+        <div className="flex max-h-48 flex-col gap-2 overflow-y-scroll rounded-sm p-2">
+          {fahrzeuge.data?.data.fahrzeugeImEinsatz.map((fahrzeug) => {
             return (
               <button onClick={() => addFahrzeugToMap(fahrzeug)} className="p-2">
-                {fahrzeug.funkrufname}
+                {fahrzeug.fullOpta}
               </button>
             );
           })}
@@ -186,7 +186,7 @@ function AddFahrzeugComponent() {
       onClick={() => {
         toggleShowFahrzeugeList();
       }}
-      className="cursor-pointer rounded p-2"
+      className="cursor-pointer rounded-sm p-2"
     >
       <PiAmbulance size={20} />
     </button>
@@ -206,10 +206,13 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   const [mouseLngLat, setMouseLngLat] = useState(map.getCenter());
   const [mapCenterLngLat, setMapCenterLngLat] = useState(map.getCenter());
   const { setMap } = useMapStore();
+  const ninaApi = useMemo(() => {
+    return new NinaApi(getAPIConfig());
+  }, []);
   const geoJson = useQuery<GeoJSON.GeoJSON>({
     queryKey: ['warnings', 'geojson'],
     queryFn: async () => {
-      const d = await backendFetchJson<GeoJSON.GeoJSON>('/apis/bund/nina/warnings.geojson');
+      const d = (await ninaApi.ninaControllerGetGeoJsonV1()).data as GeoJSON.GeoJSON;
       await queryClient.invalidateQueries({
         queryKey: ['warnings', 'details'],
       });
@@ -223,8 +226,8 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
   });
   useQuery<unknown[]>({
     queryKey: ['warnings', 'details'],
-    queryFn: () => {
-      return backendFetchJson<unknown[]>('/apis/bund/nina/warnings');
+    queryFn: async () => {
+      return (await ninaApi.ninaControllerGetAllWarningDetailsV1()).data;
     },
     staleTime: 30 * 60 * 1000, // 30 Minuten
     refetchOnMount: false,
@@ -290,11 +293,11 @@ const MyControlComponent: React.FC<MyControlComponentProps> = ({ map }) => {
         </p>
       </div>
 
-      <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+      <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
         <IconComponent />
       </div>
 
-      <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+      <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
         <AddFahrzeugComponent />
       </div>
     </>
@@ -326,6 +329,27 @@ export class RescueControl implements IControl {
     }
     this.container = null;
   };
+}
+
+export class WarningsControl implements IControl {
+  getDefaultPosition?: () => 'top-right';
+  private container: HTMLElement | null = null;
+
+  onRemove(_map: mapboxgl.Map): void { // TODO: map is unused
+    if (this.container?.parentNode) {
+      this.container.parentNode.removeChild(this.container);
+    }
+    this.container = null;
+  }
+
+  onAdd(map: Map): HTMLElement {
+    this.container = document.createElement('div');
+    const root = createRoot(this.container);
+
+    root.render(<WarningsOptions map={map} />);
+
+    return this.container;
+  }
 }
 
 export class LayersControl implements IControl {

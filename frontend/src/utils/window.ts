@@ -12,13 +12,12 @@ export const WindowUrls: Readonly<Record<Windows, string>> = {
   [Windows.MAIN]: '/signin',
   [Windows.APP]: '/app',
   [Windows.ADMIN]: '/admin',
-  [Windows.DOCS]:
-    process.env.NODE_ENV !== 'development' ? 'http://localhost:3001' : 'https://project-rescue-docs.vercel.app',
+  [Windows.DOCS]: process.env.NODE_ENV !== 'development' ? 'http://localhost:3001' : 'https://project-rescue-docs.vercel.app',
 };
 
 export const WindowOptions: Readonly<Record<Windows, AppWindowOptions & { size?: LogicalSize }>> = {
   [Windows.MAIN]: {
-    title: 'Project Rescue • Anmelden',
+    title: 'Bluelight Hub • Anmelden',
     center: true,
     maximizable: false,
     minimizable: false,
@@ -33,16 +32,16 @@ export const WindowOptions: Readonly<Record<Windows, AppWindowOptions & { size?:
     width: 1600,
     height: 1200,
     resizable: true,
-    title: 'Project Rescue',
+    title: 'Bluelight Hub',
   },
   [Windows.ADMIN]: {
-    title: 'Project Rescue • Admin-Tools',
+    title: 'Bluelight Hub • Admin-Tools',
     center: true,
     maximizable: false,
     minimizable: false,
   },
   [Windows.DOCS]: {
-    title: 'Project Rescue • Dokumentation',
+    title: 'Bluelight Hub • Dokumentation',
     center: true,
     maximizable: true,
     minimizable: false,

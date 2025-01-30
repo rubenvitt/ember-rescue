@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 
 export const listStyles = cva(
-  'divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden shadow-sm dark:shadow-gray-950 ring-1 ring-gray-900/5 sm:rounded-xl',
+  'divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden shadow-xs dark:shadow-gray-950 ring-1 ring-gray-900/5 sm:rounded-xl',
   {
     variants: {},
     defaultVariants: {},

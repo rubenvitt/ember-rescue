@@ -35,6 +35,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           },
         }}
         theme={{
+          token: {
+            // fontFamily: 'DepartureMono',
+            fontFamily: 'Nunito Variable',
+            fontFamilyCode: 'DepartureMono',
+          },
+          components: {
+            Menu: {
+              itemSelectedBg: 'transparent',
+              colorPrimary: 'rgba(255, 255, 255, 0.75)',
+            },
+          },
           algorithm: themeUtils.isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         }}
       >

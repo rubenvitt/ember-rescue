@@ -1,33 +1,37 @@
 services:
-  postgres:
-    image: postgres:13
+  mongodb:
+    image: mongo:8
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user}" ]
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
       interval: 30s
       timeout: 10s
       retries: 5
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_DB: ${POSTGRES_DB:-project-rescue}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+      DB_USER: ${MONGO_USER:-user}
+      DB_PASS: ${MONGO_PASSWORD:-pass}
+      MONGO_INITDB_DATABASE: bluelight-hub
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - mongo:/data/db
+      - ./backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
   backend:
     image: ghcr.io/rubenvitt/ember-rescue:alpha
     restart: unless-stopped
     ports:
       - "10007:3000"
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgres://user:password@postgres:5432/project-rescue}
+      MONGODB_URL: mongodb://${DB_USER:-user}:${DB_PASS:-pass}@mongodb:27017/ember-rescue
       SERVER_NAME: ${SERVER_NAME}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       AUTH_TOKEN: ${AUTH_TOKEN}
     env_file:
       - .env
     depends_on:
-      postgres:
+      mongodb:
         condition: service_healthy
 
 volumes:
-  postgres:
+  mongo:

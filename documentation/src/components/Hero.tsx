@@ -1,9 +1,9 @@
-import { Fragment } from 'react'
-import clsx from 'clsx'
-import { Highlight } from 'prism-react-renderer'
+import { Fragment } from 'react';
+import clsx from 'clsx';
+import { Highlight } from 'prism-react-renderer';
 
-import { Button } from '@/components/Button'
-import { HeroBackground } from '@/components/HeroBackground'
+import { Button } from '@/components/Button';
+import { HeroBackground } from '@/components/HeroBackground';
 
 const codeLanguage = 'javascript'
 const code = `export default {
@@ -37,7 +37,7 @@ export function Hero() {
           <div className="relative z-10 md:text-center lg:text-left">
             <div className="relative">
               <p className="inline bg-gradient-to-r from-orange-200 via-red-400 to-orange-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-                Benutzerhandbuch • EmberRescue
+                Benutzerhandbuch • Bluelight Hub
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
                 Benutzerhandbuch der Software zur Einsatzführung im

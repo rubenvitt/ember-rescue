@@ -5,34 +5,31 @@ import { useBearbeiter } from '../../../hooks/bearbeiter.hook.js';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { ActionButton } from '../../../types/ui/expandableList.types.js';
-import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { List, Tag } from 'antd';
 import { ExpandableListItem } from '../molecules/ExpandableListItem.component.js';
 import { listStyles } from '../../../styles/expandableList.styles.js';
 import { PiNetwork } from 'react-icons/pi';
+import { SmallMissionDto } from '@bluelight-hub/shared/client/index.js';
 
 export const OffeneEinsaetzeList: React.FC = () => {
-  const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz();
+  const { offeneEinsaetze, einsatzAbschliessen, saveEinsatz } = useEinsatz(false);
   const { fahrzeuge } = useFahrzeuge();
   const { allBearbeiter } = useBearbeiter();
 
-  const renderEinsatz = useCallback((einsatz: Einsatz) => {
+  const renderEinsatz = useCallback((einsatz: SmallMissionDto) => {
     const beginnToNow = formatDistanceToNow(einsatz.beginn);
 
     return (
       <div className="flex flex-col">
         <div className="flex items-start gap-x-3">
-          <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">
-            Stichwort: {einsatz.einsatz_alarmstichwort?.bezeichnung ?? 'Unbekanntes Alarmstichwort'}
-          </p>
+          <p className="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Stichwort: {einsatz.einsatzAlarmstichwort.code}</p>
           <Tag icon={<PiNetwork className="mr-1 inline" />} color="blue">
             Remote-Einsatz
           </Tag>
         </div>
         <div className="mt-1 flex flex-col text-right text-xs leading-5 text-blue-800 dark:text-blue-300">
           <p>
-            Beginn: <time dateTime={formatISO(einsatz.beginn)}>{formatNatoDateTime(einsatz.beginn)}</time> (Laufzeit
-            bisher: {beginnToNow})
+            Beginn: <time dateTime={formatISO(einsatz.beginn)}>{formatNatoDateTime(einsatz.beginn)}</time> (Laufzeit bisher: {beginnToNow})
           </p>
         </div>
       </div>
@@ -40,9 +37,9 @@ export const OffeneEinsaetzeList: React.FC = () => {
   }, []);
 
   const renderExpandedContent = useCallback(
-    (einsatz: Einsatz) => {
-      const fahrzeug = fahrzeuge.data?.find((value) => value.id === einsatz.aufnehmendesRettungsmittelId)?.funkrufname;
-      const bearbeiter = allBearbeiter.data?.find((value) => value.id === einsatz.bearbeiterId)?.name;
+    (einsatz: SmallMissionDto) => {
+      const fahrzeug = einsatz.aufnehmendesRettungsmittel;
+      const bearbeiter = einsatz.bearbeiter.name;
 
       return (
         <div className="text-sm text-gray-700 dark:text-gray-300">
@@ -54,15 +51,14 @@ export const OffeneEinsaetzeList: React.FC = () => {
     [fahrzeuge.data, allBearbeiter.data],
   );
 
-  const actionButtons: ActionButton<Einsatz>[] = useMemo(
+  const actionButtons: ActionButton<SmallMissionDto>[] = useMemo(
     () => [
       {
         label: 'Archivieren',
         danger: true,
         dialog: {
           title: 'Laufenden Einsatz wirklich archivieren?',
-          message:
-            'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
+          message: 'Der Einsatz wird archiviert und in den Read-Only Modus versetzt. Dies kann nicht rückgängig gemacht werden. Der Einsatz wird in dieser Ansicht versteckt.',
           confirmLabel: 'Einsatz archivieren',
           cancelLabel: 'Abbrechen',
           onConfirm: (einsatz) => einsatzAbschliessen.mutate(einsatz),
@@ -82,15 +78,8 @@ export const OffeneEinsaetzeList: React.FC = () => {
       <List
         className={listStyles()}
         itemLayout="horizontal"
-        dataSource={offeneEinsaetze.data}
-        renderItem={(item) => (
-          <ExpandableListItem
-            item={item}
-            renderContent={renderEinsatz}
-            renderExpandedContent={renderExpandedContent}
-            actionButtons={actionButtons}
-          />
-        )}
+        dataSource={offeneEinsaetze.data?.data}
+        renderItem={(item) => <ExpandableListItem item={item} renderContent={renderEinsatz} renderExpandedContent={renderExpandedContent} actionButtons={actionButtons} />}
       />
     </>
   );

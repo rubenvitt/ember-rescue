@@ -7,7 +7,7 @@ export const EinsatztagebuchFormWrapperComponent: React.FC<{ inputVisible: boole
   closeForm,
 }) => (
   <Transition show={inputVisible}>
-    <div className="duration-50 mt-4 max-w-4xl border-t border-gray-200 pt-4 transition ease-in data-[closed]:opacity-0">
+    <div className="duration-50 mt-4 max-w-4xl border-t border-gray-200 pt-4 transition ease-in data-closed:opacity-0">
       <EinsatztagebuchForm closeForm={closeForm} />
     </div>
   </Transition>

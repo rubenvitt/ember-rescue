@@ -1,13 +1,38 @@
+import {
+  HttpStatus,
+  Logger,
+  UnprocessableEntityException,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as process from 'node:process';
-import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError as ClassValidatorError } from 'class-validator';
+import * as process from 'node:process';
+import { AppModule } from './app.module';
 
 const logger = new Logger('main.ts');
 
+function formatValidationError(errors: ClassValidatorError[]): string[] {
+  return errors.reduce((acc: string[], error: ClassValidatorError) => {
+    if (error.constraints) {
+      // Füge alle Fehlermeldungen für diese Property hinzu
+      acc.push(...Object.values(error.constraints));
+    }
+
+    // Rekursiv verschachtelte Fehler verarbeiten
+    if (error.children?.length) {
+      acc.push(...formatValidationError(error.children));
+    }
+
+    return acc;
+  }, []);
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug'],
+  });
   // FIXME: This should probable be changed: 🙂
   app.enableCors({
     origin: '*',
@@ -17,17 +42,49 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      exceptionFactory: (errors) => {
+        const formattedErrors = formatValidationError(errors);
+
+        return new UnprocessableEntityException({
+          message: 'Validation failed',
+          errors: formattedErrors,
+          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        });
+      },
     }),
   );
+
   const config = {
     ...new DocumentBuilder()
-      .setTitle('Project Rescue Backend API')
-      .setVersion('0.0.1-alpha')
+      .setTitle('Bluelight Hub Backend API')
+      .setVersion(process.env.VERSION || 'unknown')
+      .addApiKey(
+        {
+          type: 'apiKey',
+          in: 'header',
+          name: 'bearbeiter',
+          description: 'Aktuell eingeloggter Bearbeiter (einfacher Name)',
+        },
+        'Bearbeiter',
+      )
       .build(),
   };
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+    prefix: 'v',
+  });
+
   const document = SwaggerModule.createDocument(app, config);
+  document.servers = [
+    { url: 'http://localhost:3000', description: 'Local Environment' },
+    { url: 'https://ember-rescue.rubeen.dev', description: 'Dev Environment' },
+  ];
   SwaggerModule.setup('api', app, document, {});
   if (process.env.AUTH_TOKEN) {
     logger.log('AUTH_TOKEN is required', process.env.AUTH_TOKEN);

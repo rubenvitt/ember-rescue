@@ -178,12 +178,12 @@ export const MapLayerOptions: React.FC<{ map: Map }> = ({ map }) => {
     <QueryClientProvider client={queryClient}>
       <Tooltip title="Map Layer umschalten">
         <Dropdown menu={{ items }}>
-          <div className="mapboxgl-ctrl rounded bg-white dark:bg-gray-900">
+          <div className="mapboxgl-ctrl rounded-sm bg-white dark:bg-gray-900">
             <button
               onClick={(e) => {
                 e.preventDefault();
               }}
-              className="cursor-pointer rounded p-2"
+              className="cursor-pointer rounded-sm p-2"
             >
               <PiMapPinThin size={20} />
             </button>

@@ -1,51 +1,121 @@
 [
   {
-    "funkrufname": "40-10-1",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "10",
+      "orderNumber": "01",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "KdoW",
     "kapazitaet": 1
   },
   {
-    "funkrufname": "40-12-1",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "12",
+      "orderNumber": "01",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "FüKW",
     "kapazitaet": 4
   },
   {
-    "funkrufname": "40-15-1",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "15",
+      "orderNumber": "01",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "AufklSt Luft",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-1",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "01",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-2",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "02",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-3",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "03",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-4",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "04",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-5",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "05",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-83-6",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "83",
+      "orderNumber": "06",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "RTW",
     "kapazitaet": 2
   },
   {
-    "funkrufname": "40-66-1",
+    "opta": {
+      "district": "NI",
+      "bosCode": "DRK",
+      "localCode": "40",
+      "functionCode": "66",
+      "orderNumber": "01",
+      "ort": "Uelzen"
+    },
     "fahrzeugTyp": "Wechsellader",
     "kapazitaet": 0
   }

@@ -4,6 +4,9 @@ import { Bearbeiter } from './bearbeiter.types.js';
 
 export type EinsatztagebuchTypes = 'USER' | 'GENERISCH' | 'RESSOURCEN' | 'KOMMUNIKATION' | 'LAGE' | 'BETROFFENE';
 
+/**
+ * @deprecated
+ */
 export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   fortlaufende_nummer: number;
   bearbeiter: Bearbeiter;
@@ -16,7 +19,4 @@ export type EinsatztagebuchEintrag = IdentifiableWithTimestampAndBearbeiter & {
   updatedAt: string;
 };
 
-export type CreateEinsatztagebuchEintrag = Omit<
-  EinsatztagebuchEintrag,
-  'id' | 'bearbeiter' | 'archived' | 'createdAt' | 'updatedAt' | 'fortlaufende_nummer'
->;
+export type CreateEinsatztagebuchEintrag = Omit<EinsatztagebuchEintrag, 'id' | 'bearbeiter' | 'archived' | 'createdAt' | 'updatedAt' | 'fortlaufende_nummer'>;

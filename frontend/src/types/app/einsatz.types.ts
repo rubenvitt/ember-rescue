@@ -1,25 +1,34 @@
-import { Identifiable } from '../utils/common.types.js';
+import { Identifiable, WithCreatedUpdatedAt } from '../utils/common.types.js';
+import { Bearbeiter } from './bearbeiter.types.js';
 
-export type Einsatz = Identifiable & {
-  id: string;
-  beginn: string;
-  ende: string | null;
-  abgeschlossen: string | null;
-  aufnehmendesRettungsmittelId: string;
-  bearbeiterId: string;
-  createdAt: string;
-  updatedAt: string;
-  einsatz_alarmstichwort?: {
-    beschreibung: string;
-    bezeichnung: string;
+/**
+ * @deprecated
+ */
+export type Einsatz = Identifiable &
+  WithCreatedUpdatedAt & {
+    beginn: string;
+    ende: string | null;
+    abgeschlossen: string | null;
+    einsatzAlarmstichwort?: {
+      description: string;
+      code: string;
+    };
+    bearbeiter: Bearbeiter;
+    aufnehmendesRettungsmittel: string;
+
+    einsatz_meta: EinsatzMeta;
   };
-  einsatz_meta: EinsatzMeta;
-};
 
+/**
+ * @deprecated
+ */
 export type EinsatzMeta = Identifiable & {
   ort: string;
 };
 
+/**
+ * @deprecated
+ */
 export interface CreateEinsatz {
   erstAlarmiert: string;
   alarmstichwort?: string;
@@ -28,6 +37,9 @@ export interface CreateEinsatz {
   adresse?: string;
 }
 
+/**
+ * @deprecated
+ */
 export interface UpdateEinsatz {
   alarmstichwort: string;
 }

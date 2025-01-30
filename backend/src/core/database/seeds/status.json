@@ -1,0 +1,52 @@
+[
+  {
+    "code": 1,
+    "label": "Einsatzbereit auf Funk",
+    "description": "Einheit ist verfügbar und kann über Funk für neue Einsätze angefordert werden"
+  },
+  {
+    "code": 2,
+    "label": "Einsatzbereit auf Wache / Standort",
+    "description": "Einheit befindet sich einsatzbereit auf der Wache oder am zugewiesenen Standort"
+  },
+  {
+    "code": 3,
+    "label": "Einsatzübernahme (ausgerückt)",
+    "description": "Einheit hat einen Einsatz übernommen und befindet sich auf dem Weg zum Einsatzort"
+  },
+  {
+    "code": 4,
+    "label": "Einsatzort (vor Ort)",
+    "description": "Einheit ist am Einsatzort eingetroffen und führt den Einsatz durch"
+  },
+  {
+    "code": 5,
+    "label": "Sprechwunsch",
+    "description": "Einheit wünscht Kontakt zur Leitstelle für nicht dringende Kommunikation"
+  },
+  {
+    "code": 6,
+    "label": "Nicht einsatzbereit / außer Dienst",
+    "description": "Einheit ist vorübergehend nicht verfügbar oder außer Dienst gestellt"
+  },
+  {
+    "code": 7,
+    "label": "Einsatzgebunden",
+    "description": "Rettungsdiensteinheit ist in einem laufenden Einsatz gebunden, z.B. während der Patientenversorgung"
+  },
+  {
+    "code": 8,
+    "label": "Bedingt verfügbar / am Zielort",
+    "description": "Rettungsdiensteinheit ist am Zielort (z.B. Krankenhaus) und könnte bedingt für neue Einsätze verfügbar sein"
+  },
+  {
+    "code": 9,
+    "label": "Quittung / Datenabfrage (nur besondere Fahrzeuge)",
+    "description": "Spezialeinheit führt Datenabfrage durch oder quittiert einen Auftrag, gilt nur für bestimmte Fahrzeuge"
+  },
+  {
+    "code": 0,
+    "label": "Priorisierter Sprechwunsch",
+    "description": "Einheit benötigt dringend Kontakt zur Leitstelle, hat Priorität vor normalen Sprechwünschen"
+  }
+]

@@ -86,7 +86,7 @@ const hoverColorVariants: ColorVariants = Object.fromEntries(
   ]),
 );
 
-export const modalCloseButton = cva('rounded-md focus:outline-none focus:ring-2 focus:ring-white/20', {
+export const modalCloseButton = cva('rounded-md focus:outline-hidden focus:ring-2 focus:ring-white/20', {
   variants: {
     panelColor: hoverColorVariants,
   },
@@ -95,7 +95,7 @@ export const modalCloseButton = cva('rounded-md focus:outline-none focus:ring-2 
 export type ModalCloseButtonProps = VariantProps<typeof modalCloseButton>;
 
 export const modalActionButton = cva(
-  'inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
+  'inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
   {
     variants: {
       intent: {

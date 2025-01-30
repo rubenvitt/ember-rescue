@@ -1,24 +1,23 @@
-import React, { useCallback } from 'react';
-import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
-import { FahrzeugDto } from '../../../types/app/fahrzeug.types.js';
+import { ChangeStatusDto, StatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
 import { Button, Card, Dropdown, List, Modal } from 'antd';
+import React, { useCallback } from 'react';
 import { PiCaretRight, PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useStatus } from '../../../hooks/status.hook.js';
-import { StatusDto } from '../../../types/app/status.types.js';
 import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
 import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
+import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
 
 interface FahrzeugelisteComponentProps {
-  fahrzeuge?: FahrzeugDto[];
+  fahrzeuge?: VehiclesDto;
 }
 
-function FahrzeugExtra({ fahrzeug }: { fahrzeug: FahrzeugDto }) {
+function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
   const { status } = useStatus();
-  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fahrzeugId: fahrzeug.id });
+  const { changeStatus, removeFahrzeugFromEinsatz } = useFahrzeuge({ fullOpta: fahrzeug.fullOpta });
 
   const onStatusButtonClick = useCallback(
-    async (item: { statusId: string }) => {
+    async (item: ChangeStatusDto) => {
       await changeStatus.mutateAsync(item);
       return Modal.destroyAll();
     },
@@ -47,7 +46,7 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: FahrzeugDto }) {
                 icon: <PiNumpad className="text-primary-500" size={24} />,
                 closable: true,
                 maskClosable: true,
-                title: `Status ändern von ${fahrzeug.funkrufname}`,
+                title: `Status ändern von ${fahrzeug.fullOpta}`,
                 width: '70%',
                 okButtonProps: {
                   className: 'hidden',
@@ -58,10 +57,8 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: FahrzeugDto }) {
                 content: (
                   <div className="min-h-32">
                     <DynamicGrid<StatusDto>
-                      items={status.data}
-                      render={(item, className) => (
-                        <StatusButtonComponent onClick={onStatusButtonClick} item={item} className={className} />
-                      )}
+                      items={status.data?.data}
+                      render={(item, className) => <StatusButtonComponent onClick={({ code }) => onStatusButtonClick({ code, fahrzeugOpta: fahrzeug.fullOpta })} item={item} className={className} />}
                     />
                   </div>
                 ),
@@ -97,16 +94,12 @@ export const FahrzeugelisteComponent: React.FC<FahrzeugelisteComponentProps> = (
       xxl: 3,
     }}
     loading={!fahrzeuge}
-    dataSource={fahrzeuge}
+    dataSource={fahrzeuge?.fahrzeugeImEinsatz}
     renderItem={(fahrzeug) => {
       return (
         <List.Item>
-          <Card
-            type="inner"
-            extra={<FahrzeugExtra fahrzeug={fahrzeug} />}
-            title={`${fahrzeug.funkrufname} (${fahrzeug.optaFunktion?.label})`}
-          >
-            <FahrzeugListItemComponent key={fahrzeug.id} fahrzeug={fahrzeug} />
+          <Card type="inner" extra={<FahrzeugExtra fahrzeug={fahrzeug} />} title={`${fahrzeug.fullOpta} (${fahrzeug.optaFunktion})`}>
+            <FahrzeugListItemComponent key={fahrzeug.fullOpta} fahrzeug={fahrzeug} />
           </Card>
         </List.Item>
       );

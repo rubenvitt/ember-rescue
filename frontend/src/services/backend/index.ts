@@ -8,6 +8,7 @@ import * as qualifikationen from './qualifikationen.js';
 import * as settings from './settings.js';
 import * as secrets from './secrets.js';
 import * as notizen from './notizen.js';
+import * as opta from './opta.js';
 import * as reminders from './reminders.js';
 
 export default {
@@ -22,4 +23,5 @@ export default {
   settings,
   secrets,
   notizen,
+  opta,
 };

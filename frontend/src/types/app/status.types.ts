@@ -7,7 +7,3 @@ export type SmallStatusDto = Identifiable & {
   code: StatusCode;
   bezeichnung: string;
 };
-
-export type StatusDto = SmallStatusDto & {
-  beschreibung: string;
-};

@@ -14,7 +14,7 @@ import ZoomControl from '@mapbox-controls/zoom';
 import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
 import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
-import { LayersControl, RescueControl } from './mapbox/Controls.js';
+import { LayersControl, RescueControl, WarningsControl } from './mapbox/Controls.js';
 import { Button } from 'antd';
 
 interface Props {
@@ -61,6 +61,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
       collapsed: true,
     });
     const layerControl = new LayersControl();
+    const warningsControl = new WarningsControl();
     const stylesControl = new StylesControl({
       styles: [
         { styleName: 'Outdoor', styleUrl: 'mapbox://styles/mapbox/outdoors-v12', label: 'Outdoor' },
@@ -102,6 +103,8 @@ function _MapboxComponent({ mapboxToken }: Props) {
     map.addControl(stylesControl, 'bottom-left');
     map.addControl(layerControl, 'bottom-left');
 
+    map.addControl(warningsControl, 'top-right');
+
     map.addControl(new RescueControl());
 
     map.on('load', () => {
@@ -128,22 +131,20 @@ function _MapboxComponent({ mapboxToken }: Props) {
     setMap(map);
   }, [mapDiv, mapboxToken]);
 
-  const { fahrzeugeImEinsatz } = useFahrzeuge();
+  const { fahrzeuge } = useFahrzeuge();
 
   return (
     <>
       <div className="mb-2 border border-gray-500 px-6 py-2 dark:text-white">
         Fahrzeuge der Karte hinzufügen (DEBUG)
         <div className="flex flex-nowrap gap-2 overflow-scroll">
-          {fahrzeugeImEinsatz.data?.map((fahrzeug) => (
+          {fahrzeuge.data?.data.fahrzeugeImEinsatz.map((fahrzeug) => (
             <Button
-              key={fahrzeug.id}
+              key={fahrzeug.fullOpta}
               type="link"
               className="break-keep"
               onClick={() => {
-                let presentMarker = map?._markers?.find(
-                  (m) => m.getElement().id === `fahrzeug-${fahrzeug.funkrufname}`,
-                );
+                let presentMarker = map?._markers?.find((m) => m.getElement().id === `fahrzeug-${fahrzeug.fullOpta}`);
                 if (presentMarker) {
                   alert('found item');
                   map?.setCenter(presentMarker.getLngLat());
@@ -154,24 +155,20 @@ function _MapboxComponent({ mapboxToken }: Props) {
                     organisation: 'hilfsorganisation',
                     einheit: 'zug',
                     fachaufgabe: 'iuk',
-                    name: fahrzeug.funkrufname,
+                    name: fahrzeug.fullOpta,
                   }).svg;
                   element.innerHTML = svg.render();
                   element.className = 'w-20 h-20';
-                  element.id = `fahrzeug-${fahrzeug.funkrufname}`;
+                  element.id = `fahrzeug-${fahrzeug.fullOpta}`;
                   map &&
                     new mapboxgl.Marker({ element, draggable: true })
-                      .setPopup(
-                        new mapboxgl.Popup().setText(
-                          `Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter())!)}`,
-                        ),
-                      )
+                      .setPopup(new mapboxgl.Popup().setText(`Führungskraftwagen 40-12-1 | ${formatMGRS(mgrs(map.getCenter())!)}`))
                       .setLngLat(map.getCenter())
                       .addTo(map);
                 }
               }}
             >
-              {fahrzeug.funkrufname}
+              {fahrzeug.fullOpta}
             </Button>
           ))}
         </div>
