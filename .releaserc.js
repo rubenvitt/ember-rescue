@@ -1,4 +1,3 @@
-const path = require('path');
 
 module.exports = {
   repositoryUrl: 'https://github.com/rubenvitt/ember-rescue',
@@ -97,12 +96,35 @@ WIP Änderungen:
         changelogFile: 'CHANGELOG.md',
       },
     ],
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: [
+          'jq \'.version="${nextRelease.version}"\' frontend/src-tauri/tauri.conf.json > frontend/src-tauri/tauri.conf.json.tmp && mv frontend/src-tauri/tauri.conf.json.tmp frontend/src-tauri/tauri.conf.json',
+          'jq \'.version="${nextRelease.version}"\' frontend/package.json > frontend/package.json.tmp && mv frontend/package.json.tmp frontend/package.json',
+          'jq \'.version="${nextRelease.version}"\' backend/package.json > backend/package.json.tmp && mv backend/package.json.tmp backend/package.json',
+          'jq \'.version="${nextRelease.version}"\' shared/package.json > shared/package.json.tmp && mv shared/package.json.tmp shared/package.json',
+        ].join(' && '),
+      },
+    ],
+    [
+      '@semantic-release/git',
+      {
+        assets: [
+          'CHANGELOG.md',
+          'frontend/src-tauri/tauri.conf.json',
+          'frontend/package.json',
+          'backend/package.json',
+          'shared/package.json',
+        ],
+        message: '🔖 chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+      },
+    ],
     // [
     //   '@semantic-release/github',
     //   {
     //     assets: [
     //       'CHANGELOG.md',
-    //       'RELEASE_NOTES.md',
     //       'frontend-artifacts/**/*.dmg',
     //       'frontend-artifacts/**/*.AppImage',
     //       'frontend-artifacts/**/*.msi',

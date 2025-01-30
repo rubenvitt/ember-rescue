@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { getVersion } from '@tauri-apps/api/app';
 import { Button, Form, Image, Input, Modal } from 'antd';
 import { cva } from 'class-variance-authority';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -13,10 +14,15 @@ import { FormLayout } from './form/FormLayout.comonent.js';
 export const SignIn: React.FC = () => {
   const navigate = useNavigate({ from: '/signin' });
   const formInstance = Form.useFormInstance();
+  const [version, setVersion] = useState<string>('');
 
   useWindowSetup(WindowOptions.main);
   const navigateToSettings = useCallback(() => navigate({ to: '/prestart/settings' }), [navigate]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    getVersion().then(setVersion);
+  }, []);
 
   const handleRequestAccessToken = useCallback(() => {
     if (!isModalOpen) {
@@ -96,6 +102,10 @@ export const SignIn: React.FC = () => {
           </Modal>
         )}
       </FormLayout>
+
+      <div className="mt-8 text-center text-gray-500 text-sm">
+        Version {version}
+      </div>
     </div>
   );
 };
