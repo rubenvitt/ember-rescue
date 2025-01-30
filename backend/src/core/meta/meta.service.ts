@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createId } from '@paralleldrive/cuid2';
-import { config } from '@core';
+import * as packageJson from '../../../package.json';
 
 @Injectable()
 export class MetaService {
@@ -13,8 +13,7 @@ export class MetaService {
 
   findAppMetadata() {
     return {
-      version:
-        this.configService.get<string>(config.version) ?? '0.0.0-development',
+      version: packageJson.version,
       serverName: this.configService.getOrThrow<string>('SERVER_NAME'),
       serverId: this.serverId,
     };
