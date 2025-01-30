@@ -126,9 +126,9 @@ WIP Änderungen:
       {
         assets: [
           'CHANGELOG.md',
-          'frontend/src-tauri/target/release/**/*.dmg',
-          'frontend/src-tauri/target/release/**/*.AppImage',
-          'frontend/src-tauri/target/release/**/*.msi',
+          'frontend-artifacts/**/*.dmg',
+          'frontend-artifacts/**/*.AppImage',
+          'frontend-artifacts/**/*.msi',
         ],
         releaseAssets: true,
         releaseNotesFile: 'RELEASE.md'
