@@ -1,10 +1,11 @@
+import { BaseRepository } from '@core/database/repositories/base.repository';
+import { NotFoundException } from '@nestjs/common';
 import {
   isCurrentlyActiveFilter,
   ITemplate,
 } from '@templates/core/interfaces/template.interface';
 import { AnyKeys, Document, FilterQuery, Model, QueryOptions } from 'mongoose';
-import { NotFoundException } from '@nestjs/common';
-import { BaseRepository } from '@core/database/repositories/base.repository';
+import { validateKey } from 'src/utils/validation.utils';
 
 export abstract class TemplateRepository<
   T extends Document & ITemplate,
@@ -31,7 +32,7 @@ export abstract class TemplateRepository<
   async findActiveById(id: string): Promise<T> {
     try {
       return (await this.model.findOne({
-        _id: id,
+        _id: validateKey(id),
         ...isCurrentlyActiveFilter,
       }))!!;
     } catch (e) {
@@ -42,7 +43,7 @@ export abstract class TemplateRepository<
   }
 
   async deactivate(id: string): Promise<void> {
-    await this.findOneAndUpdate({ _id: id } as FilterQuery<T>, {
+    await this.findOneAndUpdate({ _id: validateKey(id) } as FilterQuery<T>, {
       $set: {
         isActive: false,
         validTo: new Date(),

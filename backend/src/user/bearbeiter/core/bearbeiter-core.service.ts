@@ -1,12 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Bearbeiter } from './bearbeiter.schema';
 import { Model } from 'mongoose';
+import { Bearbeiter } from './bearbeiter.schema';
 
-import { BearbeiterDto } from './bearbeiter.dto';
 import { CacheKey } from '@nestjs/cache-manager';
+import { BearbeiterDto } from './bearbeiter.dto';
 
-@Injectable()
 export class BearbeiterCoreService {
   private logger = new Logger(BearbeiterCoreService.name);
 
@@ -22,17 +21,17 @@ export class BearbeiterCoreService {
   }
 
   async findByNameOrCreate(name: string) {
-    let bearbeiter = await this.bearbeiterModel.findOne({ name }).exec();
+    let bearbeiter = await this.bearbeiterModel.findOne({ name: this.validateName(name) }).exec();
 
     if (!bearbeiter) {
       bearbeiter = await this.bearbeiterModel.create({
-        name,
+        name: this.validateName(name),
         active: true,
       });
     } else {
       bearbeiter = await this.bearbeiterModel
         .findOneAndUpdate(
-          { name },
+          { name: this.validateName(name) },
           {
             $set: {
               active: true,
@@ -43,6 +42,19 @@ export class BearbeiterCoreService {
     }
 
     return bearbeiter;
+  }
+
+  private validateName(name: string): string {
+    if (!name || typeof name !== 'string') {
+      throw new BadRequestException('Invalid name format');
+    }
+    if (name.length > 100) {
+      throw new BadRequestException(`Name length must not exceed 100 characters`);
+    }
+    if (!/^[a-zA-Z0-9\-_]+$/.test(name)) {
+      throw new BadRequestException('Name must only contain alphanumeric characters, hyphens and underscores');
+    }
+    return name.toString();
   }
 
   @CacheKey('bearbeiter')

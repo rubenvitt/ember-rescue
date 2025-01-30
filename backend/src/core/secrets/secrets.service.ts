@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NullableType } from 'joi';
 import { InjectModel } from '@nestjs/mongoose';
-import { Secret } from './secret.schema';
+import { NullableType } from 'joi';
 import { Model } from 'mongoose';
+import { validateKey } from 'src/utils/validation.utils';
+import { Secret } from './secret.schema';
 
 @Injectable()
 export class SecretsService {
@@ -15,12 +16,12 @@ export class SecretsService {
   async save(key: string, value: NullableType<string>): Promise<void> {
     if (!value) {
       this.logger.warn('Removing secret', key);
-      this.secretModel.deleteOne({ key });
+      await this.secretModel.deleteOne({ key: validateKey(key) });
       return;
     }
 
     await this.secretModel.updateOne(
-      { key },
+      { key: validateKey(key) },
       { $set: { value: value } },
       { upsert: true },
     );
@@ -28,7 +29,7 @@ export class SecretsService {
 
   async read(key: string): Promise<string | null> {
     return await this.secretModel
-      .findOne({ key })
+      .findOne({ key: validateKey(key) })
       .then((s) => s?.value || null);
   }
 }
