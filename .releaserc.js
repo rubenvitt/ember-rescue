@@ -1,4 +1,3 @@
-
 module.exports = {
   repositoryUrl: 'https://github.com/rubenvitt/ember-rescue',
   plugins: [
@@ -105,6 +104,7 @@ WIP Änderungen:
           'jq \'.version="${nextRelease.version}"\' backend/package.json > backend/package.json.tmp && mv backend/package.json.tmp backend/package.json',
           'jq \'.version="${nextRelease.version}"\' shared/package.json > shared/package.json.tmp && mv shared/package.json.tmp shared/package.json',
         ].join(' && '),
+        successCmd: 'cat RELEASE_NOTES.md >> $GITHUB_STEP_SUMMARY && echo "$(cat RELEASE_NOTES.md)\n\n$(cat RELEASE.md)" > RELEASE.md'
       },
     ],
     [
@@ -116,6 +116,7 @@ WIP Änderungen:
           'frontend/package.json',
           'backend/package.json',
           'shared/package.json',
+          'RELEASE.md'
         ],
         message: '🔖 chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
       },
@@ -130,6 +131,7 @@ WIP Änderungen:
           'frontend/src-tauri/target/release/**/*.msi',
         ],
         releaseAssets: true,
+        releaseNotesFile: 'RELEASE.md'
       },
     ],
   ],

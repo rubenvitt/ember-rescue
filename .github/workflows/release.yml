@@ -195,13 +195,18 @@ jobs:
 
       - name: Prepare Release Notes
         run: |
-          echo "Backend Docker Image Tags:" >> RELEASE_NOTES.md
+          echo "## Docker Image Tags" >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
           cat backend-image-tags.txt >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
-          echo "Frontend Artifacts:" >> RELEASE_NOTES.md
-          find frontend-artifacts -type f >> RELEASE_NOTES.md
+          echo "## Frontend Artifacts" >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
+          ls -R frontend-artifacts/frontend-artifact-* >> RELEASE_NOTES.md
+          echo '```' >> RELEASE_NOTES.md
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES: ${{ github.workspace }}/RELEASE_NOTES.md
         run: npx semantic-release
