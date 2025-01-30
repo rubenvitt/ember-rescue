@@ -84,12 +84,16 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target aarch64-apple-darwin'
+            artifact_suffix: 'macos-arm64'
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
+            artifact_suffix: 'macos-x64'
           - platform: 'ubuntu-22.04'
             args: ''
+            artifact_suffix: 'ubuntu'
           - platform: 'windows-latest'
             args: ''
+            artifact_suffix: 'windows'
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
@@ -119,6 +123,24 @@ jobs:
       - name: Install frontend dependencies
         run: cd frontend && pnpm install
 
+      - name: Prepare Windows Version (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          $content = Get-Content frontend/src-tauri/tauri.conf.json -Raw
+          $json = $content | ConvertFrom-Json
+          # Extract alpha number if it exists, otherwise use 0
+          if ($json.version -match '-alpha\.(\d+)') {
+              $alphaNum = [int]$matches[1]
+              # Ensure the number doesn't exceed 65535
+              $alphaNum = [Math]::Min($alphaNum, 65535)
+              $version = $json.version -replace '-alpha\.\d+', ".$alphaNum"
+          } else {
+              $version = $json.version -replace '-.*', '.0'
+          }
+          $json.version = $version
+          $json | ConvertTo-Json -Depth 32 | Set-Content frontend/src-tauri/tauri.conf.json
+
       - name: Build Tauri
         uses: tauri-apps/tauri-action@v0
         env:
@@ -130,7 +152,7 @@ jobs:
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-artifact-${{ matrix.platform }}
+          name: frontend-artifact-${{ matrix.artifact_suffix }}
           path: frontend/src-tauri/target
 
   release:
