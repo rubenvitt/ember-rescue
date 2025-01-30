@@ -8,7 +8,7 @@ module.exports = {
         releaseRules: {
           major: ['💥'],
           minor: ['✨'],
-          patch: ['🐛', '🚑', '🔒'],
+          patch: ['🐛', '🚑', '🔒', '🧹'],
         },
         releaseNotes: {
           template: `{{#if compareUrl}}
@@ -120,16 +120,17 @@ WIP Änderungen:
         message: '🔖 chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
       },
     ],
-    // [
-    //   '@semantic-release/github',
-    //   {
-    //     assets: [
-    //       'CHANGELOG.md',
-    //       'frontend-artifacts/**/*.dmg',
-    //       'frontend-artifacts/**/*.AppImage',
-    //       'frontend-artifacts/**/*.msi',
-    //     ],
-    //   },
-    // ],
+    [
+      '@semantic-release/github',
+      {
+        assets: [
+          'CHANGELOG.md',
+          'frontend/src-tauri/target/release/**/*.dmg',
+          'frontend/src-tauri/target/release/**/*.AppImage',
+          'frontend/src-tauri/target/release/**/*.msi',
+        ],
+        releaseAssets: true,
+      },
+    ],
   ],
 };
