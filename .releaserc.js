@@ -1,3 +1,6 @@
+/**
+ * @type {import('semantic-release').GlobalConfig}
+ */
 module.exports = {
   repositoryUrl: 'https://github.com/rubenvitt/ember-rescue',
   plugins: [
@@ -11,12 +14,14 @@ module.exports = {
         },
         releaseNotes: {
           template: `{{#if compareUrl}}
-# Version [v{{nextRelease.version}}]({{compareUrl}}) veröffentlicht am {{datetime "UTC:yyyy-mm-dd"}}
+## Version [v{{nextRelease.version}}]({{compareUrl}}) – Veröffentlicht am {{datetime "yyyy-mm-dd"}}
 {{else}}
-# Version v{{nextRelease.version}} veröffentlicht am {{datetime "UTC:yyyy-mm-dd"}}
+## Version v{{nextRelease.version}} – Veröffentlicht am {{datetime "yyyy-mm-dd"}}
 {{/if}}
 
 {{#with commits}}
+
+{{!-- Neue Funktionen (✨) --}}
 {{#if sparkles}}
 ## ✨ Neue Funktionen
 Die folgenden neuen Features wurden hinzugefügt:
@@ -25,6 +30,7 @@ Die folgenden neuen Features wurden hinzugefügt:
 {{/each}}
 {{/if}}
 
+{{!-- Fehlerbehebungen (🐛) --}}
 {{#if bug}}
 ## 🐛 Fehlerbehebungen
 Diese Probleme wurden behoben:
@@ -33,6 +39,7 @@ Diese Probleme wurden behoben:
 {{/each}}
 {{/if}}
 
+{{!-- Dringende Hotfixes (🚑) --}}
 {{#if ambulance}}
 ## 🚑 Hotfixes
 Dringende Hotfixes:
@@ -41,6 +48,7 @@ Dringende Hotfixes:
 {{/each}}
 {{/if}}
 
+{{!-- Sicherheitsverbesserungen (🔒) --}}
 {{#if lock}}
 ## 🔒 Sicherheitsverbesserungen
 Sicherheitsrelevante Änderungen:
@@ -49,13 +57,33 @@ Sicherheitsrelevante Änderungen:
 {{/each}}
 {{/if}}
 
+{{!-- Code-Aufräumarbeiten (🧹) --}}
+{{#if broom}}
+## 🧹 Codebereinigungen
+Aufräumarbeiten und kleinere Verbesserungen:
+{{#each broom}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{!-- Refactoring (♻) --}}
+{{#if recycle}}
+## ♻ Refactoring
+Struktur- oder Code-Verbesserungen:
+{{#each recycle}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{!-- Breaking Changes (💥) --}}
 {{#if boom}}
 ## 💥 Breaking Changes
-Bitte beachten Sie die folgenden Änderungen, die möglicherweise zu Anpassungen führen:
+Bitte beachtet folgende Änderungen, die möglicherweise Anpassungen erfordern:
 {{#each boom}}
 - {{> commitTemplate}}
 {{/each}}
 {{/if}}
+
 {{/with}}`,
           partials: {
             commitTemplate: `[\`{{commit.short}}\`](https://github.com/{{owner}}/{{repo}}/commit/{{commit.short}}) {{subject}} 
