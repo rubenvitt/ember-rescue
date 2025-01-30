@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { services } from '../services/index.js';
-import { QualifikationTypes } from '../types/app/qualifikation.types.js';
+import { ManyQualificationsResponse } from '@bluelight-hub/shared/client/index.js';
 
 export const useQualifikationen = () => {
-  const qualifikationen = useQuery<QualifikationTypes[]>({
+  const qualifikationen = useQuery<ManyQualificationsResponse>({
     queryKey: services.backend.qualifikationen.fetchAllQualifikationen.queryKey,
     queryFn: services.backend.qualifikationen.fetchAllQualifikationen.queryFn,
   });

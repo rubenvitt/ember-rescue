@@ -115,10 +115,10 @@ const CommandList: React.FC<{ items: CommandItem[]; title: string }> = ({ items,
             as="li"
             key={item.id}
             value={item}
-            className="flex cursor-default select-none items-center px-4 py-2 data-[focus]:bg-indigo-600 data-[focus]:text-white"
+            className="flex cursor-default select-none items-center px-4 py-2 data-focus:bg-indigo-600 data-focus:text-white"
           >
             {item.icon && (
-              <span className="mr-3 flex-shrink-0 text-gray-400 group-data-[focus]:text-white">{item.icon}</span>
+              <span className="mr-3 shrink-0 text-gray-400 group-data-focus:text-white">{item.icon}</span>
             )}
             <span className="flex-auto truncate">{item.name}</span>
           </ComboboxOption>

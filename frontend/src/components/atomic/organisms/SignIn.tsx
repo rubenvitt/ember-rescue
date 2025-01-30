@@ -1,29 +1,34 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { PiGear, PiSecurityCamera, PiSkipBack } from 'react-icons/pi';
+import { getVersion } from '@tauri-apps/api/app';
+import { Button, Form, Image, Input, Modal } from 'antd';
 import { cva } from 'class-variance-authority';
+import React, { useCallback, useEffect, useState } from 'react';
+import { PiGear, PiSecurityCamera, PiSkipBack } from 'react-icons/pi';
 import { useWindowSetup } from '../../../hooks/window.hook.ts';
-import { WindowOptions } from '../../../utils/window.js';
 import storage from '../../../utils/storage.js';
-import { Button, Image, Modal } from 'antd';
+import { WindowOptions } from '../../../utils/window.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { LoginForm } from '../molecules/LoginForm.component.tsx';
 import { FormLayout } from './form/FormLayout.comonent.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Input } from 'formik-antd';
 
 export const SignIn: React.FC = () => {
   const navigate = useNavigate({ from: '/signin' });
+  const formInstance = Form.useFormInstance();
+  const [version, setVersion] = useState<string>('');
 
   useWindowSetup(WindowOptions.main);
   const navigateToSettings = useCallback(() => navigate({ to: '/prestart/settings' }), [navigate]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const password = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    getVersion().then(setVersion);
+  }, []);
 
   const handleRequestAccessToken = useCallback(() => {
     if (!isModalOpen) {
       setIsModalOpen(true);
       setTimeout(() => {
-        password.current?.focus();
+        formInstance.focusField('password');
       }, 100);
       storage().writeLocalStorage('backendAccessToken', null);
     }
@@ -50,29 +55,22 @@ export const SignIn: React.FC = () => {
         />
       </div>
       <div className="flex flex-col sm:mx-auto sm:w-full sm:max-w-sm">
-        <Image
-          src="/logo.png"
-          preview={false}
-          wrapperClassName="bg-green-500 w-36 mx-auto h-36"
-          alt="EmberRescue Logo"
-        />
-        <h2
-          className={cva(
-            'mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white',
-          )()}
-        >
-          Project Rescue • Anmelden
-        </h2>
+        <div className="hidden dark:block w-36 mx-auto h-36 relative">
+          <Image src="/brandbook/mobile-white.png" preview={false} wrapperClassName="h-full w-full" alt="Bluelight Hub Logo" />
+        </div>
+        <div className="block dark:hidden w-36 mx-auto h-36 relative">
+          <Image src="/brandbook/mobile-logo.png" preview={false} wrapperClassName="h-full w-full" alt="Bluelight Hub Logo" />
+        </div>
+        <h2 className={cva('mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white')()}>Bluelight Hub • Anmelden</h2>
       </div>
       <div className={'mt-10 sm:mx-auto sm:w-full sm:max-w-sm'}>
         <LoginForm />
       </div>
 
       <FormLayout<{ accessToken: string }>
-        formik={{
-          initialValues: { accessToken: '' },
-          onSubmit: (data) => {
-            storage().writeLocalStorage('backendAccessToken', data.accessToken);
+        form={{
+          onFinish: async () => {
+            storage().writeLocalStorage('backendAccessToken', null);
             setIsModalOpen(false);
             window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
           },
@@ -85,8 +83,8 @@ export const SignIn: React.FC = () => {
       >
         {(props) => (
           <Modal
-            onClose={() => props.resetForm()}
-            onCancel={() => props.resetForm()}
+            onClose={() => props?.resetFields()}
+            onCancel={() => props?.resetFields()}
             okText="Speichern"
             okButtonProps={{
               icon: <PiSecurityCamera />,
@@ -94,22 +92,20 @@ export const SignIn: React.FC = () => {
             cancelButtonProps={{
               icon: <PiSkipBack />,
             }}
-            onOk={props.submitForm}
+            onOk={props?.submit}
             open={isModalOpen}
             title="Access Token"
           >
             <InputWrapper name="accessToken">
-              <Input.Password
-                ref={password}
-                autoFocus={true}
-                size="large"
-                placeholder="Access Token benötigt"
-                name="accessToken"
-              />
+              <Input.Password autoFocus={true} size="large" placeholder="Access Token benötigt" name="accessToken" />
             </InputWrapper>
           </Modal>
         )}
       </FormLayout>
+
+      <div className="mt-8 text-center text-gray-500 text-sm">
+        Version {version}
+      </div>
     </div>
   );
 };

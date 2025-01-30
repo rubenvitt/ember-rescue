@@ -1,0 +1,110 @@
+[
+  {
+    "code": "MANV7",
+    "description": "Massenanfall von 7 Verletzten/Erkrankten"
+  },
+  {
+    "code": "MANV15",
+    "description": "Massenanfall von 15 Verletzten/Erkrankten"
+  },
+  {
+    "code": "MANV25",
+    "description": "Massenanfall von 25 Verletzten/Erkrankten"
+  },
+  {
+    "code": "Drohne",
+    "description": "Einsatz mit der Drohne"
+  },
+  {
+    "code": "RTW",
+    "description": "Einsatz für einen RTW zur Gebietsabdeckung (erweiterter RD)"
+  },
+  {
+    "code": "RHS",
+    "description": "Rettungshundestaffeleinsatz (Landkreis)"
+  },
+  {
+    "code": "WY",
+    "description": "Wasserrettungslage mit Menschenleben in Gefahr"
+  },
+  {
+    "code": "Betreuungseinsatz",
+    "description": "Einsatz zur Betreuung von Personen"
+  },
+  {
+    "code": "LEBEL",
+    "description": "Lebensbedrohliche Einsatzlage"
+  },
+  {
+    "code": "MANV S",
+    "description": "MANV sofort (Überregional)"
+  },
+  {
+    "code": "MANV T",
+    "description": "MANV Transport (Überregional)"
+  },
+  {
+    "code": "MANV PA",
+    "description": "MANV Patientenablage (Überregional)"
+  },
+  {
+    "code": "MANV BHP",
+    "description": "MANV Behandlungsplatz (Überregional)"
+  },
+  {
+    "code": "B2",
+    "description": "Brand 2 - Mittlerer Brand"
+  },
+  {
+    "code": "B2Y",
+    "description": "Brand 2 - Mittlerer Brand mit Menschenleben in Gefahr"
+  },
+  {
+    "code": "B3",
+    "description": "Brand 3 - Großbrand"
+  },
+  {
+    "code": "B3Y",
+    "description": "Brand 3 - Großbrand mit Menschenleben in Gefahr"
+  },
+  {
+    "code": "B4",
+    "description": "Brand 4 - Großbrand, erweiterte Anforderung"
+  },
+  {
+    "code": "B4Y",
+    "description": "Brand 4 - Großbrand, erweiterte Anforderung mit Menschenleben in Gefahr"
+  },
+  {
+    "code": "H3",
+    "description": "Hilfeleistung 3 - Größere technische Hilfeleistung"
+  },
+  {
+    "code": "H3Y",
+    "description": "Hilfeleistung 3 - Größere technische Hilfeleistung mit Menschenleben in Gefahr"
+  },
+  {
+    "code": "ABC2",
+    "description": "ABC-Einsatz 2 - Mittlerer Gefahrstoffeinsatz"
+  },
+  {
+    "code": "ABC3",
+    "description": "ABC-Einsatz 3 - Großer Gefahrstoffeinsatz"
+  },
+  {
+    "code": "ABC4",
+    "description": "ABC-Einsatz 4 - Großer Gefahrstoffeinsatz, erweiterte Anforderung"
+  },
+  {
+    "code": "WB3",
+    "description": "Waldbrand 3 - Großer Waldbrand"
+  },
+  {
+    "code": "WB4",
+    "description": "Waldbrand 4 - Großer Waldbrand, erweiterte Anforderung"
+  },
+  {
+    "code": "PSNV E",
+    "description": "Psychosoziale Notfallversorgung Einsatzkräfte"
+  }
+]

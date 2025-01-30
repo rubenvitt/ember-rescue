@@ -1,0 +1,482 @@
+[
+  {
+    "code": "01",
+    "label": "oberste Landesbehörde",
+    "group": "Ministerium für Inneres und Sport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "02",
+    "label": "Einsatzverwendungen",
+    "group": "Ministerium für Inneres und Sport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "03",
+    "label": "Sonderbedarf",
+    "group": "Ministerium für Inneres und Sport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "04",
+    "label": "Nicht belegt",
+    "group": "Ministerium für Inneres und Sport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "05",
+    "label": "Nicht belegt",
+    "group": "Ministerium für Inneres und Sport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "06",
+    "label": "obere Katastrophenschutzbehörde",
+    "group": "Niedersächsisches Landesamt für Brand- und Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "07",
+    "label": "Einheiten des Katastrophenschutzes",
+    "group": "Niedersächsisches Landesamt für Brand- und Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "08",
+    "label": "Akademiebetrieb",
+    "group": "Niedersächsisches Landesamt für Brand- und Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "09",
+    "label": "Institutionen oder Teile von Institutionen",
+    "group": "Sonstige",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "10",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "11",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "12",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "13",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "14",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "15",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "16",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "17",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "18",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "19",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "20",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "21",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "22",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "23",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "24",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "25",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "26",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "27",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "28",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "29",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "30",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "31",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "32",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "33",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "34",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "35",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "36",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "37",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "38",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "39",
+    "label": "Gemeinde / FF",
+    "group": "Gemeinde / FF",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "40",
+    "label": "Deutsches Rotes Kreuz, Landesverband Niedersachsen (LV NDS)",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "41",
+    "label": "Deutsches Rotes Kreuz, LV NDS – Ausbildung",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "42",
+    "label": "Deutsches Rotes Kreuz, LV NDS – Einsatzstab",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "43",
+    "label": "Deutsches Rotes Kreuz, LV NDS – Reserve",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "44",
+    "label": "Deutsches Rotes Kreuz, LV NDS – BTP 500",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "45",
+    "label": "Deutsches Rotes Kreuz, LV NDS – Reserve",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "46",
+    "label": "Deutsches Rotes Kreuz, LV NDS – Fachdienstbereitschaft",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "47",
+    "label": "Deutsches Rotes Kreuz, Landesverband Oldenburg",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "48",
+    "label": "Deutsches Rotes Kreuz, Landesverband Oldenburg",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "49",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Reserve",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "50",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Landesgeschäftsstelle",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "51",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Akademie",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "52",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Bremen-Verden",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "53",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Harz-Heide",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "54",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Niedersachsen-Mitte",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "55",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Südniedersachsen",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "56",
+    "label": "Johanniter-Unfall-Hilfe, Landesverband – Weser-Ems",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "60",
+    "label": "Malteser Hilfsdienst",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "61",
+    "label": "Malteser Hilfsdienst – Ausbildung –",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "65",
+    "label": "Arbeiter-Samariter-Bund",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "71",
+    "label": "Deutsche Lebensrettungsgesellschaft",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "72",
+    "label": "Deutsche Lebensrettungsgesellschaft – Ausbildung –",
+    "group": "Hilfsorganisationen auf Landesebene",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "78",
+    "label": "-",
+    "group": "Beauftragte für RD ohne Hilfsorganisation",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "79",
+    "label": "-",
+    "group": "Beauftragte für RD ohne Hilfsorganisation",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "80",
+    "label": "Fachdienste Führungsdienst und Fernmeldedienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "81",
+    "label": "Fachdienst CBRN-Dienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "82",
+    "label": "Fachdienst Betreuungsdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "83",
+    "label": "Fachdienste Logistikdienst und Versorgungsdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "84",
+    "label": "Fachdienst Sanitätsdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "85",
+    "label": "Fachdienst Brandschutzdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "86",
+    "label": "Fachdienst Brandschutzdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "87",
+    "label": "Fachdienst Wasserrettungsdienst",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "88",
+    "label": "sonstige Fachdienste",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "89",
+    "label": "sonstige Fachdienste",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "90",
+    "label": "sonstige Fachdienste",
+    "group": "Landeseinheiten im Katastrophenschutz",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "91",
+    "label": "Intensivtransport",
+    "group": "Intensivtransport",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "92",
+    "label": "Waldbrandbeauftragte",
+    "group": "Waldbrandbeauftragte",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "93",
+    "label": "Werkfeuerwehr",
+    "group": "Werkfeuerwehr",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "94",
+    "label": "Werkfeuerwehr",
+    "group": "Werkfeuerwehr",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "97",
+    "label": "Führungskräfte Rettungsdienst",
+    "group": "Führungskräfte Rettungsdienst",
+    "type": "LOCAL_CODE"
+  },
+  {
+    "code": "99",
+    "label": "Führungskräfte Feuerwehr",
+    "group": "Führungskräfte Feuerwehr",
+    "type": "LOCAL_CODE"
+  }
+]

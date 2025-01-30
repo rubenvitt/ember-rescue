@@ -1,31 +1,22 @@
-import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export type BearbeiterDto = {
-  id: string;
   name: string;
 };
 
-export class CreateBearbeiterDto {
-  @IsNotEmpty()
-  name: string;
-}
-export type QualifikationDto = {
-  id: string;
-  bezeichnung: string;
-  abkuerzung: string;
-};
-
+/**
+ * @deprecated
+ */
 export type SmallStatusDto = {
   id: string;
-  code: string;
-  bezeichnung: string;
+  code: number;
+  label: string;
 };
 
-export type StatusDto = SmallStatusDto & {
-  beschreibung: string;
-};
-
+/**
+ * @deprecated
+ */
 export type FahrzeugDto = {
   id: string;
   funkrufname: string;
@@ -47,12 +38,9 @@ export class FahrzeugImportDto {
   kapazitaet: number;
 }
 
-export type CreateEinsatzDto = {
-  erstAlarmiert: string;
-  aufnehmendesRettungsmittel: string;
-  alarmstichwort?: string;
-};
-
+/**
+ * @deprecated
+ */
 export type UpdateEinsatzDto = {
   alarmstichwort: string;
   ort: string;
@@ -66,35 +54,12 @@ export enum EinsatztagebuchEintragEnum {
   KOMMUNIKATION = 'KOMMUNIKATION',
   LAGE = 'LAGE',
   BETROFFENE = 'BETROFFENE',
+  KORREKTUR = 'KORREKTUR',
 }
 
-export type EinsatztagebuchEintragType =
-  keyof typeof EinsatztagebuchEintragEnum;
-
-const EinsatztagebuchEintragTypesArray: EinsatztagebuchEintragType[] =
-  Object.values(EinsatztagebuchEintragEnum) as EinsatztagebuchEintragType[];
-
-export class CreateEinsatztagebuchDto {
-  id?: never;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  content: string;
-  @IsOptional()
-  @IsIn(EinsatztagebuchEintragTypesArray)
-  @ApiProperty({ enum: EinsatztagebuchEintragEnum })
-  type?: EinsatztagebuchEintragType;
-  @IsNotEmpty()
-  @ApiProperty()
-  absender: string;
-  @IsNotEmpty()
-  @ApiProperty()
-  empfaenger: string;
-  @IsNotEmpty()
-  @ApiProperty({ pattern: 'YYYY-MM-ddThh:mm:ss' })
-  timestamp: string;
-}
-
+/**
+ * @deprecated
+ */
 export class CreateNotizDto {
   id?: never;
 
@@ -107,6 +72,31 @@ export class UpdateNotizDto {
   id?: never;
 
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({})
   content: string;
+}
+
+class ApiPagination {
+  @ApiProperty({})
+  page: number;
+  @ApiProperty({})
+  limit: number;
+  @ApiProperty({})
+  total: number;
+  @ApiProperty({})
+  totalPages: number;
+}
+
+class ApiMeta {
+  @ApiProperty({})
+  pagination?: ApiPagination;
+  @ApiProperty({})
+  timestamp: string;
+}
+
+export abstract class ApiResponse<T> {
+  data: T;
+  @ApiProperty({})
+  meta?: ApiMeta;
+  message?: string;
 }

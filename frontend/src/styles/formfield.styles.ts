@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 
-export const inputStyles = cva('block w-full rounded-md shadow-sm sm:text-sm', {
+export const inputStyles = cva('block w-full rounded-md shadow-xs sm:text-sm', {
   variants: {
     layout: {
       complex:

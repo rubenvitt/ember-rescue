@@ -16,7 +16,7 @@ function Index() {
   useEffect(() => {
     if (bearbeiter.isLoading) {
       // do nothing
-    } else if (bearbeiter.data?.id) {
+    } else if (bearbeiter.data?.data.id) {
       openApp({ closeOnNavigate: true });
     } else {
       navigate({ to: '/auth/signout' });

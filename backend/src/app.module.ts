@@ -1,72 +1,69 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
-import { BearbeiterModule } from './bearbeiter/bearbeiter.module';
-import { ConfigModule } from '@nestjs/config';
-import { EinsatztagebuchModule } from './einsatztagebuch/einsatztagebuch.module';
-import { QualifikationenModule } from './qualifikationen/qualifikationen.module';
-import { FahrzeugeModule } from './fahrzeuge/fahrzeuge.module';
-import { StatusModule } from './status/status.module';
-import { EinsatzModule } from './einsatz/einsatz.module';
-import * as Joi from 'joi';
-import { AlarmstichwortModule } from './alarmstichwort/alarmstichwort.module';
-import { SecretsModule } from './secrets/secrets.module';
-import { SettingsModule } from './settings/settings.module';
-import { MetaModule } from './meta/meta.module';
-import { NinaModule } from './apis/bund/nina/nina.module';
-import { MapModule } from './map/map.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/auth.guard';
-import { AuthMiddleware } from './auth/auth.middleware';
-import { ExportModule } from './export/export.module';
-import { PdfModule } from './pdf/pdf.module';
-import { NotizenModule } from './notizen/notizen.module';
-import { RemindersModule } from './reminders/reminders.module';
+import { SettingsModule } from '@core/settings/settings.module';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthGuard } from '@core/auth/auth.guard';
+import { AuthMiddleware } from '@core/auth/auth.middleware';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CoreModule } from '@core/core.module';
+import { TemplateModule } from '@templates/template.module';
+import { FeaturesModule } from './features/features.module';
+import { UserModule } from './user/user.module';
+import { MissionsModule } from './missions/missions.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+import { TransformInterceptor } from '@core/interceptors/transform.interceptor';
+import { LoggingInterceptor } from '@core/interceptors/logging.interceptor';
+import { PingController } from './ping/ping.controller';
+import { AppCacheInterceptor } from '@core/interceptors/cache.interceptor';
 
 @Module({
   imports: [
-    DatabaseModule,
-    BearbeiterModule,
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string()
-          .valid('development', 'production', 'test')
-          .default('development'),
-        PORT: Joi.number().default(3000),
-      }),
-      envFilePath: ['.env.development.local', '.dev.env', '.env'],
+    MissionsModule,
+    SettingsModule,
+    CoreModule,
+    TemplateModule,
+    FeaturesModule,
+    UserModule,
+    CacheModule.register({
+      ttl: 10000,
+      max: 100,
       isGlobal: true,
     }),
-    EinsatztagebuchModule,
-    QualifikationenModule,
-    FahrzeugeModule,
-    StatusModule,
-    EinsatzModule,
-    AlarmstichwortModule,
-    SecretsModule,
-    SettingsModule,
-    MetaModule,
-    NinaModule,
-    MapModule,
-    ExportModule,
-    PdfModule,
-    NotizenModule,
-    RemindersModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 600,
+        limit: 10,
+      },
+    ]),
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AppCacheInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
   ],
+  controllers: [PingController],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
+  // noinspection JSUnusedGlobalSymbols
+  configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }

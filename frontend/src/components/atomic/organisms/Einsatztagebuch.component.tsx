@@ -1,37 +1,33 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { Input as AntInput, Button, Drawer, Empty, Input, InputRef, Select, Space, Table, TableColumnsType, TableColumnType, Tooltip } from 'antd';
 import { format } from 'date-fns';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { PiAmbulance, PiEmpty, PiMagnifyingGlass, PiPencil, PiPictureInPicture, PiPlus, PiSwap, PiTextStrikethrough, PiUser } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { useEinsatztagebuch } from '../../../hooks/einsatztagebuch.hook.js';
-import { natoDateTime } from '../../../utils/time.js';
-import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
-import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
-import { EinsatztagebuchEintrag } from '../../../types/app/einsatztagebuch.types.js';
-import { PiEmpty, PiMagnifyingGlass, PiSwap, PiTextStrikethrough } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import {
-  Button,
-  Drawer,
-  Empty,
-  Input as AntInput,
-  InputRef,
-  Space,
-  Table,
-  TableColumnsType,
-  TableColumnType,
-  Tooltip,
-} from 'antd';
-import { FormLayout } from './form/FormLayout.comonent.js';
+import { natoDateTime } from '../../../utils/time.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { Input, Select } from 'formik-antd';
+import { EinsatztagebuchFormWrapperComponent } from '../molecules/EinsatztagebuchFormWrapper.component.js';
+import { EinsatztagebuchHeaderComponent } from '../molecules/EinsatztagebuchHeader.component.js';
+import { FormLayout } from './form/FormLayout.comonent.js';
+
+import { JournalEntryDto } from '@bluelight-hub/shared/client/index.js';
 import dayjs from 'dayjs';
+import { useFahrzeugeItems } from '../../../hooks/fahrzeuge/fahrzeuge-items.hook.ts';
 
 export function EinsatztagebuchComponent() {
   const { einsatztagebuch, archiveEinsatztagebuchEintrag, createEinsatztagebuchEintrag } = useEinsatztagebuch();
   const [inputVisible, setInputVisible] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingEintrag, setEditingEintrag] = useState<EinsatztagebuchEintrag | null>(null);
+  const [editingEintrag, setEditingEintrag] = useState<JournalEntryDto | null>(null);
   const { fahrzeuge } = useFahrzeuge();
+  const { fahrzeugeAsItems: fahrzeugeImEinsatzAsItems, loading: fahrzeugeImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeImEinsatz'],
+  });
+  const { fahrzeugeAsItems: fahrzeugeNichtImEinsatzAsItems, loading: fahrzeugeNichtImEinsatzLoading } = useFahrzeugeItems({
+    include: ['fahrzeugeNichtImEinsatz'],
+  });
   const onDrawerClose = useCallback(() => {
     setEditingEintrag(null);
     setIsOpen(false);
@@ -39,7 +35,7 @@ export function EinsatztagebuchComponent() {
 
   const searchInput = useRef<InputRef>(null);
 
-  const getColumnSearchProps = (dataIndex: keyof EinsatztagebuchEintrag): TableColumnType<EinsatztagebuchEintrag> => ({
+  const getColumnSearchProps = (dataIndex: keyof JournalEntryDto): TableColumnType<JournalEntryDto> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <AntInput
@@ -51,13 +47,7 @@ export function EinsatztagebuchComponent() {
           style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<PiMagnifyingGlass />}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button type="primary" onClick={() => confirm()} icon={<PiMagnifyingGlass />} size="small" style={{ width: 90 }}>
             Filtern
           </Button>
           <Button type="link" size="small" onClick={close}>
@@ -72,53 +62,108 @@ export function EinsatztagebuchComponent() {
         ?.toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()) ?? false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+    filterDropdownProps: {
+      onOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
       }
     },
   });
 
-  const modifyEntry = useCallback((entry: EinsatztagebuchEintrag) => {
+  const modifyEntry = useCallback((entry: JournalEntryDto) => {
     setIsOpen(true);
     setEditingEintrag(entry);
   }, []);
 
-  const columns = useMemo<TableColumnsType<EinsatztagebuchEintrag>>(() => {
-    const fahrzeugTypen = fahrzeuge.data?.reduce(
+  const columns = useMemo<TableColumnsType<JournalEntryDto>>(() => {
+    const fahrzeugTypen = (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).reduce(
       (acc, e) => {
-        if (!e.optaFunktion?.label) {
+        if (!e.optaFunktion) {
           return acc;
         }
-        if (!acc[e.optaFunktion!!.label]) {
-          acc[e.optaFunktion!!.label] = [];
+        if (!acc[e.optaFunktion]) {
+          acc[e.optaFunktion] = [];
         }
-        acc[e.optaFunktion?.label].push({ text: e.funkrufname, value: e.funkrufname });
+        acc[e.optaFunktion].push({ text: e.fullOpta, value: e.fullOpta });
         return acc;
       },
       {} as Record<string, { text: string; value: string }[]>,
     );
     const rufnahmeFilter = fahrzeugTypen
       ? Object.entries(fahrzeugTypen).map(([key, value]) => ({
-          text: key,
-          value: key,
-          children: value,
-        }))
+        text: key,
+        value: key,
+        children: value,
+      }))
       : [];
 
     return [
       {
         title: '#',
-        dataIndex: 'fortlaufende_nummer',
-        key: 'fortlaufende_nummer',
+        dataIndex: 'nummer',
+        key: 'nummer',
         fixed: true,
         width: 80,
-        sorter: (a, b) => a.fortlaufende_nummer - b.fortlaufende_nummer,
+        sorter: (a, b) => a.nummer - b.nummer,
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: 'Typ',
+        dataIndex: 'type',
+        key: 'type',
+        width: 50,
+        filters: [
+          { text: 'Meldung', value: 'USER' },
+          { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
+          { text: 'Ressourcen', value: 'RESSOURCEN' },
+          { text: 'Betroffene | Patienten', value: 'BETROFFENE_PATIENTEN' },
+          { text: 'Korrektur', value: 'KORREKTUR' },
+        ],
+        render: (value) => {
+          switch (value) {
+            case 'USER':
+              return <PiUser size={24} className="text-primary-500" />;
+            case 'LAGEMELDUNG':
+              return <PiPictureInPicture size={24} className="text-red-500" />;
+            case 'RESSOURCEN':
+              return <PiAmbulance size={24} className="text-primary-500" />;
+            case 'BETROFFENE_PATIENTEN':
+              return <PiPlus size={24} className="text-primary-500" />;
+            case 'KORREKTUR':
+              return <PiPencil size={24} className="text-orange-500" />;
+            default:
+              return value;
+          }
+        },
+        filterMultiple: true,
+        onFilter: (value, record) => record.type === value,
       },
       {
         title: 'Zeitpunkt',
         key: 'timestamp',
         width: 200,
+        filters: [
+          { text: 'Alle Einträge', value: 'timestamp' },
+          { text: 'Bearbeitete Einträge', value: 'createdAt' },
+          { text: 'Gelöschte Einträge', value: 'updatedAt' },
+        ],
+        filterMode: 'menu',
+        filterMultiple: false,
+        defaultFilteredValue: ['timestamp'],
+        sortDirections: ['ascend', 'descend', 'ascend'],
+        defaultSortOrder: 'descend',
+        onFilter: (value, record) => {
+          const timestampAsNato = format(record.timestamp, natoDateTime);
+          const createdAsNato = format(record.createdAt, natoDateTime);
+          const updatedAsNato = format(record.updatedAt, natoDateTime);
+          const selectedField = value as keyof Pick<JournalEntryDto, 'timestamp' | 'createdAt' | 'updatedAt'>;
+          return selectedField === 'timestamp' || (selectedField === 'createdAt' ? createdAsNato !== timestampAsNato : (record.archived && updatedAsNato !== timestampAsNato));
+        },
+        sorter: (a, b) => {
+          const selectedFilter = (columns.find(col => col.key === 'timestamp')?.filteredValue?.[0] ?? 'timestamp') as keyof Pick<JournalEntryDto, 'timestamp' | 'createdAt' | 'updatedAt'>;
+          return dayjs(a[selectedFilter] as any).diff(dayjs(b[selectedFilter] as any), 'milliseconds');
+        },
         render: (_, record) => {
           const timestampAsNato = format(record.timestamp, natoDateTime);
           const createdAsNato = format(record.createdAt, natoDateTime);
@@ -139,26 +184,27 @@ export function EinsatztagebuchComponent() {
             </>
           );
         },
-        sorter: (a, b) => dayjs(a.timestamp).unix() - dayjs(b.timestamp).unix(),
       },
       {
         title: 'Absender',
-        dataIndex: 'absender',
-        key: 'absender',
-        width: 100,
+        dataIndex: 'sender',
+        key: 'sender',
+        width: 120,
+        render: (_value, record) => smallOpta(record.sender),
         filters: rufnahmeFilter,
-        onFilter: (value, record) => record.absender === value,
+        onFilter: (value, record) => record.sender === value,
         filterMultiple: true,
         filterSearch: true,
         filterMode: 'tree',
       },
       {
         title: 'Empfänger',
-        dataIndex: 'empfaenger',
-        key: 'empfaenger',
+        dataIndex: 'receiver',
+        key: 'receiver',
         width: 120,
+        render: (_value, record) => smallOpta(record.receiver),
         filters: rufnahmeFilter,
-        onFilter: (value, record) => record.empfaenger === value,
+        onFilter: (value, record) => record.receiver === value,
         filterMultiple: true,
         filterSearch: true,
         filterMode: 'tree',
@@ -169,30 +215,11 @@ export function EinsatztagebuchComponent() {
         key: 'content',
         width: 500,
         render: (value, record) => (
-          <span
-            className={twMerge(
-              record.type !== 'USER' && 'text-gray-400 dark:text-gray-200/65',
-              record.archived && 'text-gray-400 line-through decoration-red-500/75 dark:text-gray-200/65',
-            )}
-          >
+          <span className={twMerge(record.type !== 'USER' && 'text-gray-400 dark:text-gray-200/65', record.archived && 'text-gray-400 line-through decoration-red-500/75 dark:text-gray-200/65')}>
             {value}
           </span>
         ),
         ...getColumnSearchProps('content'),
-      },
-      {
-        title: 'Typ',
-        dataIndex: 'type',
-        key: 'type',
-        width: 100,
-        filters: [
-          { text: 'Meldung', value: 'USER' },
-          { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
-          { text: 'Ressourcen', value: 'RESSOURCEN' },
-          { text: 'Betroffene | Patienten', value: 'BETROFFENE_PATIENTEN' },
-        ],
-        filterMultiple: true,
-        onFilter: (value, record) => record.type === value,
       },
       {
         render: (_, record) => (
@@ -200,21 +227,13 @@ export function EinsatztagebuchComponent() {
             {!record.archived && (
               <>
                 <Tooltip title="Eintrag überschreiben">
-                  <Button
-                    onClick={() => !isOpen && modifyEntry(record)}
-                    type="dashed"
-                    shape="circle"
-                    icon={<PiSwap />}
-                  />
+                  <Button onClick={() => !isOpen && modifyEntry(record)} type="dashed" shape="circle" icon={<PiSwap />} />
                 </Tooltip>
                 <Tooltip title="Eintrag streichen">
-                  <Button
-                    onClick={() => archiveEinsatztagebuchEintrag.mutate({ einsatztagebuchEintragId: record.id })}
-                    type="default"
-                    danger
-                    shape="circle"
-                    icon={<PiTextStrikethrough />}
-                  />
+                  <Button onClick={() => {
+                    console.log('mutating', { record });
+                    return archiveEinsatztagebuchEintrag.mutate({ nummer: record.nummer });
+                  }} type="default" danger shape="circle" icon={<PiTextStrikethrough />} />
                 </Tooltip>
               </>
             )}
@@ -234,10 +253,11 @@ export function EinsatztagebuchComponent() {
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="w-full py-2 align-middle sm:px-6 lg:px-8">
             <Table
-              dataSource={einsatztagebuch}
+              dataSource={einsatztagebuch?.data.items}
+              loading={!einsatztagebuch}
               columns={columns}
               virtual
-              scroll={{ x: true }}
+              scroll={{ y: 1000 }}
               pagination={false}
               locale={{
                 emptyText: <Empty image={<PiEmpty size={48} />} description="Keine Einträge verfügbar" />,
@@ -246,95 +266,84 @@ export function EinsatztagebuchComponent() {
           </div>
         </div>
       </div>
-      <Drawer
-        open={isOpen}
-        onClose={onDrawerClose}
-        title={editingEintrag && `Eintrag von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}
-      >
-        {
-          editingEintrag && (
-            <FormLayout<EinsatztagebuchEintrag>
-              formik={{
-                initialValues: {
-                  ...editingEintrag,
-                  absender:
-                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.absender)?.id ??
-                    editingEintrag.absender,
-                  empfaenger:
-                    fahrzeuge.data?.find((e) => e.funkrufname === editingEintrag.empfaenger)?.id ??
-                    editingEintrag.empfaenger,
-                },
-                onSubmit: async (data) => {
-                  await createEinsatztagebuchEintrag.mutateAsync({
-                    ...data,
-                    absender: fahrzeuge.data?.find((e) => e.id === data.absender)?.funkrufname ?? data.absender,
-                    empfaenger: fahrzeuge.data?.find((e) => e.id === data.empfaenger)?.funkrufname ?? data.empfaenger,
-                  });
-                  await archiveEinsatztagebuchEintrag.mutateAsync({ einsatztagebuchEintragId: editingEintrag?.id });
-                  setIsOpen(false);
-                  setEditingEintrag(null);
-                },
-              }}
-            >
-              <InputWrapper label="Absender" name="absender">
-                <Select name="absender" />
-              </InputWrapper>
-              <InputWrapper label="Empfänger" name="empfaenger">
-                <Select name="empfaenger" />
-              </InputWrapper>
-              <InputWrapper label="Notiz" name="content">
-                <Input.TextArea name="content" rows={5} />
-              </InputWrapper>
-            </FormLayout>
-          )
-          // <GenericForm<EinsatztagebuchEintrag>
-          //   defaultValues={{
-          //     ...editingEintrag,
-          //     absender: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.absender)?.id ?? editingEintrag.absender,
-          //     empfaenger: fahrzeuge.data?.find(e => e.funkrufname === editingEintrag.empfaenger)?.id ?? editingEintrag.empfaenger,
-          //   }}
-          //   submitText="Eintrag ändern"
-          //   submitIcon={PiGitPullRequest}
-          //   sections={[
-          //     {
-          //       fields: [
-          //         {
-          //           name: 'absender',
-          //           label: 'Absender',
-          //           type: 'combo',
-          //           placeholder: 'Empfänger des Eintrags',
-          //           validators: {
-          //             onChange: z.string({ message: 'Ein Absender wird benötigt' }).min(0),
-          //           },
-          //           items: fahrzeugeAsItems,
-          //           width: 'half',
-          //         },
-          //         {
-          //           name: 'empfaenger',
-          //           label: 'Empfänger',
-          //           type: 'combo',
-          //           placeholder: 'Empfänger des Eintrags',
-          //           validators: {
-          //             onChange: z.string({ message: 'Ein Empfänger wird benötigt' }).min(0),
-          //           },
-          //           items: fahrzeugeAsItems,
-          //           width: 'half',
-          //         },
-          //         {
-          //           name: 'content',
-          //           label: 'Inhalt',
-          //           type: 'textarea',
-          //           placeholder: 'Inhalt des Eintrags',
-          //           validators: {
-          //             onChange: z.string().min(0, { message: 'Ein Inhalt wird für den Einsatztagebucheintrag benötigt' }),
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   ]}
-          // />
-        }
+      <Drawer open={isOpen} onClose={onDrawerClose} title={editingEintrag && `Eintrag ${editingEintrag.nummer} von ${format(editingEintrag.timestamp, natoDateTime)} bearbeiten`}>
+        {editingEintrag && (
+          <FormLayout<JournalEntryDto>
+            form={{
+              initialValues: {
+                ...editingEintrag,
+                sender:
+                  [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.sender)?.fullOpta ??
+                  editingEintrag.sender,
+                receiver:
+                  [...(fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []), ...(fahrzeuge.data?.data.verfuegbareFahrzeuge ?? [])].find((e) => e.fullOpta === editingEintrag.receiver)?.fullOpta ??
+                  editingEintrag.receiver,
+              },
+              onFinish: async (data) => {
+                await createEinsatztagebuchEintrag.mutateAsync({
+                  ...data,
+                  type: 'KORREKTUR',
+                  timestamp: editingEintrag.timestamp,
+                  absender: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.sender)?.fullOpta ?? data.sender,
+                  empfaenger: (fahrzeuge.data?.data.fahrzeugeImEinsatz ?? []).find((e) => e.fullOpta === data.receiver)?.fullOpta ?? data.receiver,
+                });
+                await archiveEinsatztagebuchEintrag.mutateAsync({ nummer: editingEintrag?.nummer });
+                setIsOpen(false);
+                setEditingEintrag(null);
+              },
+            }}
+            buttons={{
+              submit: {
+                children: 'Eintrag ändern',
+                icon: <PiSwap />,
+              },
+            }}
+          >
+            <InputWrapper label="Absender" name="sender" rules={[{ required: true, message: 'Es sollte ein Absender angegeben werden' }]}>
+              <Select
+                showSearch
+                placeholder="Absender auswählen"
+                loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+                options={[
+                  {
+                    label: 'Fahrzeuge im Einsatz',
+                    options: fahrzeugeImEinsatzAsItems ?? [],
+                  },
+                  {
+                    label: 'Verfügbare Fahrzeuge',
+                    options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                  },
+                ]}
+              />
+            </InputWrapper>
+            <InputWrapper label="Empfänger" name="receiver" rules={[{ required: true, message: 'Es sollte ein Empfänger angegeben werden' }]}>
+              <Select
+                showSearch
+                placeholder="Empfänger auswählen"
+                loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
+                options={[
+                  {
+                    label: 'Fahrzeuge im Einsatz',
+                    options: fahrzeugeImEinsatzAsItems ?? [],
+                  },
+                  {
+                    label: 'Verfügbare Fahrzeuge',
+                    options: fahrzeugeNichtImEinsatzAsItems ?? [],
+                  },
+                ]}
+              />
+            </InputWrapper>
+            <InputWrapper label="Notiz" name="content">
+              <Input.TextArea rows={5} />
+            </InputWrapper>
+          </FormLayout>
+        )}
       </Drawer>
     </div>
   );
+}
+
+function smallOpta(fullOpta: string) {
+  const optaMatch = fullOpta.match(/(?:.*?)(\d+-\d+(?:-\d+)?)(.*)?$/);
+  return optaMatch ? `${optaMatch[1]}${optaMatch[2] || ''}` : fullOpta;
 }

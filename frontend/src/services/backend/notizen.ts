@@ -1,94 +1,100 @@
-import { backendFetchJson } from '../../utils/http.js';
-import { createInvalidateQueries, requireParams } from '../../utils/queries.js';
+import { getAPIConfig } from '../../utils/http.js';
+import { createInvalidateQueries } from '../../utils/queries.js';
 import { QueryClient } from '@tanstack/react-query';
-import { CreateNotizDto, NotizDto, UpdateNotizDto } from '../../types/app/notes.types.js';
+import { CreateNotizDto, NotizenApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'notizen';
 
 export const invalidateQueries = (queryClient: QueryClient) => createInvalidateQueries([queryKey], queryClient);
 
+const api = new NotizenApi(getAPIConfig());
+
 /// fetch
 
 export const fetchNotizenUndoneForEinsatz = {
-  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'archived=false'],
-  queryFn: ({ einsatzId }: { einsatzId: string | null }) =>
+  queryKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'archived=false'],
+  queryFn: ({ missionId }: { missionId: string | null }) =>
     function () {
-      requireParams(einsatzId);
-      return backendFetchJson<NotizDto[]>(`/notizen?done=false`);
+      if (!missionId) throw new Error('NotizId or missionId not given. Please provide both.');
+
+      return api.notizenControllerGetNotizenV1({
+        done: false,
+        missionId: missionId,
+      });
     },
 };
 
 export const fetchNotizenDoneForEinsatz = {
-  queryKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'archived=true'],
-  queryFn: ({ einsatzId }: { einsatzId: string | null }) =>
+  queryKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'archived=true'],
+  queryFn: ({ missionId }: { missionId: string | null }) =>
     function () {
-      requireParams(einsatzId);
-      return backendFetchJson<NotizDto[]>(`/notizen?done=true`);
+      if (!missionId) throw new Error('NotizId or missionId not given. Please provide both.');
+
+      return api.notizenControllerGetNotizenV1({
+        done: true,
+        missionId: missionId,
+      });
     },
 };
 
 // mutate
 
 export const postAddNotizToEinsatz = {
-  mutationKey: ({ einsatzId }: { einsatzId: unknown }) => [queryKey, einsatzId, 'add'],
+  mutationKey: ({ missionId }: { missionId: unknown }) => [queryKey, missionId, 'add'],
   mutationFn:
-    ({ einsatzId }: { einsatzId: string | null }) =>
+    ({ missionId }: { missionId: string | null }) =>
     async (notiz: CreateNotizDto) => {
-      console.log('Add notiz to einsatz', { notiz, einsatzId });
-      return await backendFetchJson<NotizDto>(`/notizen`, {
-        body: JSON.stringify(notiz),
-        method: 'POST',
+      console.log('Add notiz to einsatz', { notiz, missionId });
+
+      if (!missionId) throw new Error('NotizId or missionId not given. Please provide both.');
+
+      return api.notizenControllerCreateNotizV1({
+        missionId: missionId,
+        createNotizDto: notiz,
       });
     },
 };
 
 export const updateNotiz = {
-  mutationKey: ({ einsatzId, notizId }: { einsatzId: unknown; notizId: unknown }) => [
-    queryKey,
-    einsatzId,
-    notizId,
-    'update',
-  ],
+  mutationKey: ({ missionId, notizId }: { missionId: unknown; notizId: unknown }) => [queryKey, missionId, notizId, 'update'],
   mutationFn:
-    ({ einsatzId, notizId }: { einsatzId: string | null; notizId: string | undefined }) =>
-    async (notiz: UpdateNotizDto) => {
-      console.log('Update notiz in einsatz', { notiz, einsatzId });
-      requireParams(einsatzId);
-      return await backendFetchJson<NotizDto>(`/notizen/${notizId}`, {
-        body: JSON.stringify(notiz),
-        method: 'PUT',
+    ({ missionId, notizId }: { missionId: string | null; notizId: string | undefined }) =>
+    async (notiz: CreateNotizDto) => {
+      console.log('Update notiz in einsatz', { notiz, missionId });
+      if (!missionId || !notizId) throw new Error('NotizId or missionId not given. Please provide both.');
+
+      return api.notizenControllerUpdateNotizV1({
+        notizId,
+        missionId: missionId,
+        createNotizDto: notiz,
       });
     },
 };
 
 export const deleteNotizFromEinsatz = {
-  mutationKey: ({ einsatzId, notizId }: { einsatzId: unknown; notizId: unknown }) => [
-    queryKey,
-    einsatzId,
-    notizId,
-    'remove',
-  ],
-  mutationFn: ({ notizId, einsatzId }: { notizId?: string; einsatzId: string | null }) =>
+  mutationKey: ({ missionId, notizId }: { missionId: unknown; notizId: unknown }) => [queryKey, missionId, notizId, 'remove'],
+  mutationFn: ({ notizId, missionId }: { notizId?: string; missionId: string | null }) =>
     async function () {
-      requireParams(notizId, einsatzId);
-      return await backendFetchJson<NotizDto>(`/notizen/${notizId}`, {
-        method: 'DELETE',
+      if (!notizId || !missionId) throw new Error('NotizId or missionId not given. Please provide both.');
+      console.log('Remove notiz from einsatz', notizId, missionId);
+
+      return api.notizenControllerDeleteNotizV1({
+        notizId,
+        missionId: missionId,
       });
     },
 };
 
 export const toggleCompleteNotizInEinsatz = {
-  mutationKey: ({ einsatzId, notizId }: { einsatzId: unknown; notizId: unknown }) => [
-    queryKey,
-    einsatzId,
-    notizId,
-    'complete',
-  ],
-  mutationFn: ({ notizId, einsatzId }: { notizId?: string; einsatzId: string | null }) =>
+  mutationKey: ({ missionId, notizId }: { missionId: unknown; notizId: unknown }) => [queryKey, missionId, notizId, 'complete'],
+  mutationFn: ({ notizId, missionId }: { notizId?: string; missionId: string | null }) =>
     async function () {
-      requireParams(notizId, einsatzId);
-      return await backendFetchJson<NotizDto>(`/notizen/${notizId}/toggle-complete`, {
-        method: 'POST',
+      if (!notizId || !missionId) throw new Error('NotizId or missionId not given. Please provide both.');
+      console.log('Toggle complete notiz in einsatz', notizId, missionId);
+
+      return api.notizenControllerCompleteNotizV1({
+        notizId,
+        missionId: missionId,
       });
     },
 };

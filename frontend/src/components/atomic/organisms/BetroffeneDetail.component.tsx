@@ -6,7 +6,7 @@ import { PiAddressBook, PiAmbulance, PiCake, PiCheck, PiEye, PiFlag, PiMapPin, P
 
 export function BetroffeneDetail() {
   return (
-    <div className="col-span-12 overflow-hidden bg-white shadow sm:rounded-lg dark:bg-gray-950/25">
+    <div className="col-span-12 overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-950/25">
       <div className="px-4 py-6 sm:px-6">
         <h3 className="text-base font-semibold leading-7 text-gray-900">Patientenkarte</h3>
         <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Patient wurde angelegt (todo)</p>
@@ -34,7 +34,7 @@ export function Patientenbox() {
   return (
     <div className="">
       <h2 className="sr-only">Summary</h2>
-      <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5">
+      <div className="rounded-lg bg-gray-50 shadow-xs ring-1 ring-gray-900/5">
         <dl className="flex flex-wrap px-4">
           <div className="flex flex-auto items-end px-6 pt-4">
             <dt className="sr-only">Status</dt>

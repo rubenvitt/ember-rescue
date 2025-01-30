@@ -1,44 +1,28 @@
 import { useEinsatz } from '../../../hooks/einsatz.hook.js';
 import { useMemo, useReducer, useState } from 'react';
 import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
-import { Einsatz } from '../../../types/app/einsatz.types.js';
 import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
 import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
 import { format } from 'date-fns';
 import { backendFetchBlob } from '../../../utils/http.js';
 import { isTauri } from '@tauri-apps/api/core';
-import { Button, ConfigProvider, Modal, Tooltip } from 'antd';
+import { AutoComplete, Button, ConfigProvider, DatePicker, Modal, Select, Tooltip } from 'antd';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { AutoComplete, DatePicker, Select } from 'formik-antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
-import * as Yup from 'yup';
-import { Dayjs } from 'dayjs';
-import { RangeValue } from '../../../types/ui/inputs.types.js';
-import { Secret } from '../../../hooks/secrets.hook.js';
 import { useSearchBoxCore } from '@mapbox/search-js-react';
+import { MissionDto, SecretsDto, UpdateMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { RangeValue } from '../../../types/ui/inputs.types.js';
+import dayjs, { Dayjs } from 'dayjs';
 
-interface Einsatzdaten {
-  alarmstichwort: string;
-  einsatzleiter: { id?: string; name: string };
-  ort: string;
-  timeframe: [string, string | null];
-}
+type UpdateMissionFormData = UpdateMissionDto & {
+  timeframe: [Dayjs, Dayjs];
+};
 
-const EinsatzdatenValidationSchema = Yup.object().shape({
-  alarmstichwort: Yup.string().required('Alarmstichwort ist ein Pflichtfeld'),
-  einsatzleiter: Yup.object().shape({
-    id: Yup.string().nullable(),
-    name: Yup.string().required('Einsatzleiter ist ein Pflichtfeld'),
-  }),
-  ort: Yup.string().required('Ort ist ein Pflichtfeld'),
-  timeframe: Yup.array().required('Alarmierungszeit ist ein Pflichtfeld'),
-});
-
-function FinishEinsatz(props: { einsatz: Einsatz }) {
+function FinishEinsatz(props: { einsatz: MissionDto }) {
   const [etbExported, setEtbExported] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -87,7 +71,7 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
                 setExporting(true);
                 try {
                   const fileContent = await backendFetchBlob('/export/pdf');
-                  const fileName = `${props.einsatz.einsatz_alarmstichwort?.bezeichnung}-${format(props.einsatz.beginn, natoDateTime)}.pdf`;
+                  const fileName = `${props.einsatz.einsatzAlarmstichwort?.code}-${format(props.einsatz.beginn, natoDateTime)}.pdf`;
                   if (isTauri()) {
                     console.log('Größe der heruntergeladenen Datei:', fileContent.size);
                     const arrayBuffer = await fileContent.arrayBuffer();
@@ -135,7 +119,7 @@ function FinishEinsatz(props: { einsatz: Einsatz }) {
 interface EinsatzdatenFormProps {}
 
 interface EinsatzdatenFormProps {
-  mapboxApiKey?: Secret;
+  mapboxApiKey?: SecretsDto;
 }
 
 export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.Element {
@@ -144,15 +128,15 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
 
   const alarmstichworteItems = useMemo<DefaultOptionType[]>(() => {
     return (
-      alarmstichworte.data?.map(
+      alarmstichworte.data?.data.map(
         (item) =>
           ({
             item,
             label: (
               <div className="flex justify-between gap-4">
-                <span>{item.bezeichnung}</span>
-                <Tooltip title={item.beschreibung}>
-                  <span className="truncate">{item.beschreibung}</span>
+                <span>{item.code}</span>
+                <Tooltip title={item.description}>
+                  <span className="truncate">{item.description}</span>
                 </Tooltip>
               </div>
             ),
@@ -163,27 +147,15 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
   }, [alarmstichworte.data]);
 
   const defaultStichwort = useMemo<string | undefined>(() => {
-    return alarmstichworte.data?.find((a) => a.bezeichnung === einsatz.data?.einsatz_alarmstichwort?.bezeichnung)?.id;
+    return alarmstichworte.data?.data.find((a) => a.code === einsatz.data?.einsatzAlarmstichwort.code)?.id;
   }, [alarmstichworte.data, einsatz.data]);
 
   const searchBoxCore = useSearchBoxCore({
-    accessToken: mapboxApiKey?.value,
+    accessToken: mapboxApiKey?.value || '',
     language: 'de',
     country: 'de',
     // @ts-ignore api is newer
-    types: new Set([
-      'country',
-      'region',
-      'postcode',
-      'district',
-      'place',
-      'city',
-      'locality',
-      'neighborhood',
-      'street',
-      'address',
-      'poi',
-    ]),
+    types: new Set(['country', 'region', 'postcode', 'district', 'place', 'city', 'locality', 'neighborhood', 'street', 'address', 'poi']),
   });
 
   // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): Places should be saved on submit
@@ -228,38 +200,42 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
   return (
     <section>
       <h1 className="">Einsatzdaten</h1>
-      <FormLayout<Einsatzdaten>
+      <FormLayout<UpdateMissionFormData>
         type="sectioned"
-        formik={{
-          validationSchema: EinsatzdatenValidationSchema,
-          validateOnBlur: true,
+        form={{
+          className: 'space-y-4',
+          validateTrigger: 'onBlur',
           initialValues: {
             alarmstichwort: defaultStichwort,
-            // einsatzleiter: { id: einsatz.data.einsatzleiter.id, name: einsatz.data.einsatzleiter.name },
-            // ort: einsatz.data.ort,
-            einsatzleiter: { name: 'Peter Müller' },
-            ort: einsatz.data.einsatz_meta.ort,
-            timeframe: [einsatz.data.beginn, einsatz.data.ende],
+            einsatzleiter: { name: 'Peter Müller', ort: einsatz.data.einsatzMeta?.ort },
+            timeframe: [einsatz.data.beginn, einsatz.data.ende].filter((time) => time).map((t) => dayjs(t)),
           },
-          onSubmit: (data) => {
+          async onFinish(data) {
             console.log('submitting einsatzdaten', { data });
-            updateEinsatz.mutate({ id: einsatz.data!!.id, data });
+            await updateEinsatz.mutateAsync({
+              id: einsatz.data!!.id,
+              data: {
+                ...data,
+                timeframe: [data.timeframe[0]?.toISOString(), data.timeframe[1]?.toISOString()],
+              },
+            });
+          },
+          validateMessages: {
+            required: '${label} ist ein Pflichtfeld',
           },
         }}
-        form={{ className: 'space-y-4' }}
       >
         {(props) => (
           <>
             <FormSection heading="Alarmierung">
               <FormContentBox>
-                <InputWrapper name="alarmstichwort" label="Alarmstichwort">
-                  <Select name="alarmstichwort" loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
+                <InputWrapper name="alarmstichwort" label="Alarmstichwort" rules={[{ required: true }]}>
+                  <Select loading={alarmstichworte.isLoading} options={alarmstichworteItems} />
                 </InputWrapper>
-                <InputWrapper name="beginn" label="Alarmierungszeit">
+                <InputWrapper name="timeframe" label="Alarmierungszeit" rules={[{ required: true }]}>
                   <DatePicker.RangePicker
-                    name="timeframe"
                     showTime
-                    format={{ format: natoDateTimeAnt }}
+                    format={natoDateTimeAnt}
                     showSecond={false}
                     placeholder={['', 'Laufend']}
                     allowEmpty={[false, true]}
@@ -268,21 +244,21 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
                     }}
                   />
                 </InputWrapper>
-                <InputWrapper name="ort" label="Ort">
-                  {/* todo connect mapbox api */}
-                  <AutoComplete onSearch={handleSearch} options={options} name="ort" />
+                <InputWrapper name="ort" label="Ort" rules={[{ required: true }]}>
+                  {/* TODO: connect mapbox api */}
+                  <AutoComplete onSearch={handleSearch} options={options} />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
             <FormSection heading="Laufender Einsatz">
               {JSON.stringify(einsatz.data)}
               <FormContentBox>
-                <InputWrapper name="einsatzleiter" label="Einsatzleiter">
-                  <Select name="einsatzleiter" disabled />
+                <InputWrapper name="einsatzleiter" label="Einsatzleiter" rules={[{ required: true }]}>
+                  <Select disabled />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
-            <Button onClick={props.submitForm} type="primary" htmlType="submit">
+            <Button onClick={props?.submit} type="primary" htmlType="submit" loading={updateEinsatz.isPending}>
               Speichern
             </Button>
           </>

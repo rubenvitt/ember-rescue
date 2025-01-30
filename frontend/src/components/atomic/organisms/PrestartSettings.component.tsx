@@ -4,8 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useLocalServer } from '../../../hooks/local-network.hook.js';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { AutoComplete } from 'formik-antd';
-import { Button } from 'antd';
+import { AutoComplete, Button } from 'antd';
 import { PiClock, PiCloudArrowDown } from 'react-icons/pi';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 
@@ -17,6 +16,7 @@ export type LocalSettings = {
 export const PrestartSettings: React.FC = () => {
   const localSettings = storage().readLocalStorage<LocalSettings>('localSettings');
   const queryClient = useQueryClient();
+  const [loading, setLoading] = useState(false);
 
   const { localServers } = useLocalServer();
   const [servers, setServers] = useState<DefaultOptionType[]>([]);
@@ -70,11 +70,12 @@ export const PrestartSettings: React.FC = () => {
 
   return (
     <FormLayout<Pick<LocalSettings, 'baseUrl'>>
-      formik={{
+      form={{
         initialValues: {
-          baseUrl: localSettings?.baseUrl ?? '',
+          baseUrl: localSettings?.baseUrl,
         },
-        onSubmit: async (data) => {
+        onFinish: async (data) => {
+          setLoading(true);
           console.log('save baseUrl...', { data });
           const currentSettings = localSettings ?? { baseUrlHistory: [] };
           const updatedSettings = {
@@ -83,8 +84,8 @@ export const PrestartSettings: React.FC = () => {
           };
           storage().writeLocalStorage('localSettings', updatedSettings);
           queryClient.getQueryCache().clear();
-          queryClient.removeQueries();
           await queryClient.invalidateQueries({});
+          setLoading(false);
         },
       }}
     >
@@ -100,10 +101,9 @@ export const PrestartSettings: React.FC = () => {
                 filterOption={true}
                 optionFilterProp={'filter'}
                 options={serverOptions}
-                name="baseUrl"
               />
             </InputWrapper>
-            <Button type="primary" onClick={props.submitForm} icon={<PiCloudArrowDown size={24} />}>
+            <Button type="primary" onClick={props?.submit} icon={<PiCloudArrowDown size={24} />} loading={loading}>
               Speichern
             </Button>
           </>

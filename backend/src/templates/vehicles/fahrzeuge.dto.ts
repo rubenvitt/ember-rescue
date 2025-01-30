@@ -1,0 +1,108 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { FunctionGroup, OptaType } from '@templates/opta/constants';
+import { OptaDto } from '@templates/opta/dtos/opta.dto';
+import { IsArray, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
+import { ApiResponse } from '../../types';
+
+export class IconDefinitionDto {
+  @ApiProperty({ required: false })
+  organisation?: string;
+  @ApiProperty({ required: false })
+  fachaufgabe?: string;
+  @ApiProperty({ required: false })
+  verwaltungsstufe?: string;
+}
+
+export class FahrzeugTemplateDto {
+  @ApiProperty({ required: true })
+  _id?: string;
+
+  @ApiProperty()
+  opta: OptaDto;
+
+  @ApiProperty({
+    required: false,
+  })
+  fullOpta: string;
+
+  @ApiProperty({
+    type: IconDefinitionDto,
+  })
+  iconDefinition: IconDefinitionDto;
+
+  @ApiProperty()
+  kapazitaet?: number;
+}
+
+export class FahrzeugTypDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  code: string;
+
+  @ApiProperty()
+  label: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  description?: string;
+
+  @ApiProperty({
+    enum: OptaType,
+  })
+  type: OptaType;
+
+  @ApiProperty({
+    enum: FunctionGroup,
+  })
+  group: FunctionGroup;
+}
+
+export class ManyFahrzeugTypResponse extends ApiResponse<FahrzeugTypDto[]> {
+  @ApiProperty({
+    type: FahrzeugTypDto,
+    isArray: true,
+    description: 'List of vehicle types',
+  })
+  data: FahrzeugTypDto[];
+}
+
+export class CreateUpdateFahrzeugDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  _id?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNotEmpty()
+  opta: OptaDto;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  iconDefinition: IconDefinitionDto;
+
+  @ApiProperty({ required: false })
+  @Min(0)
+  @Max(1000)
+  @IsOptional()
+  kapazitaet?: number;
+}
+
+export class ImportManyFahrzeugeDto {
+  @ApiProperty({ required: true, type: CreateUpdateFahrzeugDto, isArray: true })
+  @IsArray()
+  items: CreateUpdateFahrzeugDto[];
+}
+
+export class ManyFahrzeugeTemplateResponse extends ApiResponse<
+  FahrzeugTemplateDto[]
+> {
+  @ApiProperty({
+    type: FahrzeugTemplateDto,
+    isArray: true,
+    description: 'List of vehicles',
+  })
+  data: FahrzeugTemplateDto[];
+}

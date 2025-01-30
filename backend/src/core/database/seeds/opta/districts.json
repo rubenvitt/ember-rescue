@@ -1,0 +1,87 @@
+[
+  {
+    "code": "BU",
+    "label": "Bund",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "BW",
+    "label": "Baden-Württemberg",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "BY",
+    "label": "Bayern",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "BE",
+    "label": "Berlin",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "BB",
+    "label": "Brandenburg",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "HB",
+    "label": "Bremen",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "HH",
+    "label": "Hamburg",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "HE",
+    "label": "Hessen",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "MV",
+    "label": "Mecklenburg-Vorpommern",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "NI",
+    "label": "Niedersachsen",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "NW",
+    "label": "Nordrhein-Westfalen",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "RP",
+    "label": "Rheinland-Pfalz",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "SL",
+    "label": "Saarland",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "SN",
+    "label": "Sachsen",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "ST",
+    "label": "Sachsen-Anhalt",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "SH",
+    "label": "Schleswig-Holstein",
+    "type": "DISTRICT"
+  },
+  {
+    "code": "TH",
+    "label": "Thüringen",
+    "type": "DISTRICT"
+  }
+]

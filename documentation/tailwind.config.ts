@@ -22,8 +22,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: 'var(--font-inter)',
-        display: ['var(--font-lexend)', { fontFeatureSettings: '"ss01"' }],
+        sans: 'FiraCode Nerd Font',
+        display: 'FiraCode Nerd Font',
       },
       maxWidth: {
         '8xl': '88rem',

@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import clsx from 'clsx'
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
-import { Hero } from '@/components/Hero'
-import { Logo } from '@/components/Logo'
-import { MobileNavigation } from '@/components/MobileNavigation'
-import { Navigation } from '@/components/Navigation'
-import { Search } from '@/components/Search'
-import { ThemeSelector } from '@/components/ThemeSelector'
+import { Hero } from '@/components/Hero';
+import { Logo } from '@/components/Logo';
+import { MobileNavigation } from '@/components/MobileNavigation';
+import { Navigation } from '@/components/Navigation';
+import { Search } from '@/components/Search';
+import { ThemeSelector } from '@/components/ThemeSelector';
 
 function GitHubIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -54,7 +54,7 @@ function Header() {
           className="hidden flex-row items-center gap-2 hover:text-red-500 lg:flex"
         >
           <Logo className="h-9 w-auto fill-slate-700 dark:fill-sky-100" />
-          EmberRescue (Anleitung)
+          Bluelight Hub (Anleitung)
         </Link>
       </div>
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
@@ -62,7 +62,7 @@ function Header() {
       </div>
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
         <ThemeSelector className="relative z-10" />
-        <Link href="https://github.com" className="group" aria-label="GitHub">
+        <Link href="https://github.com/rubenvitt/ember-rescue" className="group" aria-label="GitHub">
           <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
         </Link>
       </div>

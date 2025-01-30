@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import * as Yup from 'yup';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
 import dayjs from 'dayjs';
@@ -11,7 +10,9 @@ import { PiArrowCircleUpRight } from 'react-icons/pi';
 import { FormSection } from '../../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
 import { InputWrapper } from '../../atoms/InputWrapper.component.js';
-import { DatePicker, Select } from 'formik-antd';
+import { CreateMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { useOpta } from '../../../../hooks/opta.hook.js';
+import { DatePicker, Select } from 'antd';
 
 // const AddressAutocomplete: React.FC = () => {
 //   const { secret } = useSecret({ secretKey: 'mapboxApi' });
@@ -55,49 +56,41 @@ import { DatePicker, Select } from 'formik-antd';
 //   );
 // };
 
-const SetupEinsatzSchema = Yup.object().shape({
-  erstAlarmiert: Yup.string().required('Zeitpunkt der Erstalarmierung wird benötigt'),
-  aufnehmendesRettungsmittel: Yup.string().required('Das Aufnehmende Rettungsmittel wird benötigt'),
-  alarmstichwort: Yup.string().required('Geben Sie ein Einsatzstichwort an'),
-});
-
 export function NewSetupEinsatzForm() {
-  const { fahrzeuge } = useFahrzeuge();
+  // FIXME[ember-rescue-68](rubeen, 30.11.24): Use fahrzeugeTemplate
+  const { templateFahrzeuge } = useFahrzeuge();
+  const { functionOpta } = useOpta();
   const { alarmstichworte } = useAlarmstichworte();
-  const { createEinsatz, saveEinsatz } = useEinsatz();
+  const { createEinsatz, saveEinsatz } = useEinsatz(false);
   const navigate = useNavigate();
 
   const fahrzeugeItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return fahrzeuge.data?.map(
-      (fahrzeug) =>
-        ({
-          value: fahrzeug.id,
-          searchString: fahrzeug.funkrufname.toLowerCase() + fahrzeug.optaFunktion?.label.toLowerCase(),
-          label: (
-            <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{fahrzeug.funkrufname}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {fahrzeug.optaFunktion?.label}
-              </span>
-            </div>
-          ),
-          item: fahrzeug,
-        }) as DefaultOptionType,
-    );
-  }, [fahrzeuge.data]);
+    return templateFahrzeuge.data?.data.map((fahrzeug) => {
+      let fahrzeugFunctionOpta = functionOpta.data?.data.find((opta) => opta.code === fahrzeug.opta.functionCode);
+      return {
+        value: fahrzeug.fullOpta,
+        searchString: fahrzeug.fullOpta?.toLowerCase() ?? '' + fahrzeugFunctionOpta?.label.toLowerCase(),
+        label: (
+          <div className="flex justify-between gap-4">
+            <span className="shrink-0 truncate">{fahrzeug.fullOpta}</span>
+            <span className="ml-2 shrink truncate text-gray-500 dark:text-gray-300">{fahrzeugFunctionOpta?.label}</span>
+          </div>
+        ),
+        item: fahrzeug,
+      } as DefaultOptionType;
+    });
+  }, [templateFahrzeuge.data, functionOpta.data]);
 
   const alarmstichworteItems = useMemo<DefaultOptionType[] | undefined>(() => {
-    return alarmstichworte.data?.map(
+    return alarmstichworte.data?.data.map(
       (stichwort) =>
         ({
           value: stichwort.id,
-          searchString: (stichwort.bezeichnung + stichwort.beschreibung).toLowerCase(),
+          searchString: (stichwort.code + stichwort.description).toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
-              <span className="flex-shrink-0 truncate">{stichwort.bezeichnung}</span>
-              <span className="ml-2 flex-shrink truncate text-gray-500 dark:text-gray-300">
-                {stichwort.beschreibung}
-              </span>
+              <span className="shrink-0 truncate">{stichwort.code}</span>
+              <span className="ml-2 shrink truncate text-gray-500 dark:text-gray-300">{stichwort.description}</span>
             </div>
           ),
         }) as DefaultOptionType,
@@ -107,13 +100,14 @@ export function NewSetupEinsatzForm() {
   const handleAbbrechen = useCallback(() => navigate({ to: '/auth/signout' }), [navigate]);
 
   return (
-    <FormLayout
+    <FormLayout<CreateMissionDto>
       type="sectioned"
-      formik={{
-        validationSchema: SetupEinsatzSchema,
-        initialValues: { erstAlarmiert: dayjs().toISOString(), aufnehmendesRettungsmittel: '', alarmstichwort: '' },
-        onSubmit: async (data) => {
-          console.log('my data', { data });
+      form={{
+        initialValues: {
+          erstAlarmiert: dayjs(),
+        },
+        async onFinish(data) {
+          console.log('createMissionDto', { data });
           await createEinsatz.mutateAsync({ ...data }).then((einsatz) => {
             saveEinsatz(einsatz);
             navigate({ to: '/app/' });
@@ -133,9 +127,8 @@ export function NewSetupEinsatzForm() {
     >
       <FormSection heading="Einsatzdaten" subHeading="Grundlegende Daten zum Einsatz">
         <FormContentBox>
-          <InputWrapper label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel">
+          <InputWrapper label="Aufnehmendes Rettungsmittel" name="aufnehmendesRettungsmittel" rules={[{ required: true, message: 'Das aufnehmende Rettungsmittel wird benötigt' }]}>
             <Select
-              name="aufnehmendesRettungsmittel"
               placeholder="Aufnehmendes Rettungsmittel"
               className="w-full"
               showSearch
@@ -143,7 +136,7 @@ export function NewSetupEinsatzForm() {
               spellCheck={false}
               filterOption={(inputValue, option) => option?.searchString.includes(inputValue.toLowerCase())}
               options={fahrzeugeItems}
-              loading={fahrzeuge.isLoading}
+              loading={templateFahrzeuge.isLoading}
             />
           </InputWrapper>
         </FormContentBox>
@@ -151,12 +144,11 @@ export function NewSetupEinsatzForm() {
 
       <FormSection heading="Alarmierung" subHeading="Informationen zur Alarmierung">
         <FormContentBox>
-          <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert">
+          <InputWrapper label="Zeitpunkt der Erstalarmierung" name="erstAlarmiert" rules={[{ required: true, message: 'Zeitpunkt der Erstalarmierung wird benötigt' }]}>
             <DatePicker className="w-full" showTime showSecond={false} name="erstAlarmiert" />
           </InputWrapper>
-          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarm">
+          <InputWrapper label="Einsatzstichwort der Alarmierung" name="alarmstichwort" rules={[{ required: true, message: 'Geben Sie ein Einsatzstichwort an' }]}>
             <Select
-              name="alarmstichwort"
               placeholder="Einsatzstichwort der Alarmierung"
               className="w-full"
               showSearch

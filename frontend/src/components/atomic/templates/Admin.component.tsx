@@ -1,57 +1,49 @@
-import { Settings, useSettings } from '../../../hooks/settings.hook.js';
+import { useSettings } from '../../../hooks/settings.hook.js';
 import { EditableFahrzeugeTable } from '../organisms/table/EditableFahrzeugeTable.component.js';
-import { Input } from 'formik-antd';
-import * as Yup from 'yup';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormSection } from '../organisms/form/FormSection.component.js';
 import { FormContentBox } from '../organisms/form/FormContentBox.component.js';
-
-const ApiCredentialsSchema = Yup.object().shape({
-  mapboxApi: Yup.string()
-    .optional()
-    .matches(/^pk\.ey/, 'Mapbox API Key muss mit "pk.ey" beginnen.'),
-});
+import { SettingsDto } from '@bluelight-hub/shared/client/index.js';
+import { ButtonProps, Form, Input } from 'antd';
 
 export function AdminTemplate() {
   const { settings, save } = useSettings();
+
+  const buttons: { submit: ButtonProps; reset: ButtonProps } = {
+    submit: {
+      type: 'primary',
+      children: 'Speichern',
+      loading: save.isPending,
+    },
+    reset: {
+      type: 'default',
+      children: 'Formular zurücksetzen',
+    },
+  };
 
   if (!settings.isFetchedAfterMount || !settings.data) return null;
 
   return (
     <div className="space-y-4 p-6">
-      <FormLayout<Settings>
+      <FormLayout<SettingsDto>
         type="sectioned"
-        formik={{
-          validationSchema: ApiCredentialsSchema,
-          onSubmit: (data) => save.mutate(data),
-          initialValues: { mapboxApi: settings.data.mapboxApi ?? '' },
-        }}
-        buttons={{
-          submit: {
-            type: 'primary',
-            children: 'Speichern',
-            loading: save.isPending,
+        form={{
+          layout: 'vertical',
+          async onFinish(data) {
+            await save.mutateAsync(data);
           },
-          reset: {
-            type: 'default',
-            children: 'Formular zurücksetzen',
-          },
+          initialValues: settings.data.data,
         }}
+        buttons={buttons}
       >
-        <FormSection
-          className="w-full"
-          heading="API Keys"
-          subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung."
-        >
+        <FormSection className="w-full" heading="API Keys" subHeading="API Keys für externe Services. Verwendung möglich für jede Nutzer:in der Anwendung.">
           <FormContentBox>
-            <InputWrapper label="Mapbox Public API Key" name={'mapboxApi'}>
-              <Input.Password variant="filled" name="mapboxApi" />
-            </InputWrapper>
+            <Form.Item name="mapboxApi" label="Mapbox Public API Key" className="w-full" rules={[{ pattern: /^pk\.ey/, message: 'Mapbox API Key muss mit "pk.ey" beginnen.' }]}>
+              <Input.Password rootClassName="dark:bg-gray-600/50" variant="filled" />
+            </Form.Item>
           </FormContentBox>
         </FormSection>
       </FormLayout>
-
       <EditableFahrzeugeTable />
     </div>
   );

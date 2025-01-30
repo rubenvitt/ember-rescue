@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Ersthelfer",
+    "abkuerzung": "EH"
+  },
+  {
+    "label": "Sanitätshelfer",
+    "abkuerzung": "SH"
+  },
+  {
+    "label": "Sanitäter",
+    "abkuerzung": "SAN"
+  },
+  {
+    "label": "Sanitäter im Katastrophenschutz",
+    "abkuerzung": "SANK"
+  },
+  {
+    "label": "Rettungshelfer",
+    "abkuerzung": "RH"
+  },
+  {
+    "label": "Rettungssanitäter",
+    "abkuerzung": "RS"
+  },
+  {
+    "label": "Rettungsassistent",
+    "abkuerzung": "RA"
+  },
+  {
+    "label": "Notfallsanitäter",
+    "abkuerzung": "NFS"
+  },
+  {
+    "label": "Notarzt",
+    "abkuerzung": "NA"
+  }
+]

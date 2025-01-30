@@ -1,0 +1,22 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { createId } from '@paralleldrive/cuid2';
+import { config } from '@core';
+
+@Injectable()
+export class MetaService {
+  private readonly serverId: string;
+
+  constructor(private readonly configService: ConfigService) {
+    this.serverId = createId();
+  }
+
+  findAppMetadata() {
+    return {
+      version:
+        this.configService.get<string>(config.version) ?? '0.0.0-development',
+      serverName: this.configService.getOrThrow<string>('SERVER_NAME'),
+      serverId: this.serverId,
+    };
+  }
+}

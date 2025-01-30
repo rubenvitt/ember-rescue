@@ -22,9 +22,9 @@ export const ExpandableListItem = <T,>({
   return (
     <li className={listItemStyles({ isExpanded })}>
       <button onClick={toggleExpand} className={contentStyles()}>
-        <div className="flex-grow">{renderContent(item)}</div>
+        <div className="grow">{renderContent(item)}</div>
         {isExpandable && (
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <ExpandIcon isExpanded={isExpanded} />
           </div>
         )}

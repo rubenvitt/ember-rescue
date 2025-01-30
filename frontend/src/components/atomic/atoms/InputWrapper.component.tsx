@@ -1,18 +1,16 @@
-import { Form } from 'formik-antd';
+import { Form, FormItemProps } from 'antd';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface Props {
+type Props = {
   children: React.ReactNode;
-  label?: string;
   name: string;
   className?: string;
-}
+} & FormItemProps;
 
-export function InputWrapper({ label, children, name, className }: Props) {
+export function InputWrapper({ children, name, className, ...itemProps }: Props) {
   return (
-    <Form.Item className={twMerge('flex flex-col gap-2', className)} name={name}>
-      {label && <label htmlFor={name}>{label}</label>}
+    <Form.Item className={twMerge('flex flex-col gap-2', className)} name={name} {...itemProps}>
       {children}
     </Form.Item>
   );

@@ -1,0 +1,23 @@
+import { Module } from '@nestjs/common';
+import { MissionCoreController } from './mission-core.controller';
+import { EinsatzCoreService } from './einsatz-core.service';
+import { FahrzeugeModule } from '@templates/vehicles/fahrzeuge.module';
+import { TemplateModule } from '@templates/template.module';
+import { EinsatzSchemaModule } from '../schema/einsatz-schema.module';
+import { EinsatztagebuchModule } from '../journal/einsatztagebuch.module';
+import { UserModule } from '../../user/user.module';
+import { EinsatzMapper } from './einsatz.mapper';
+
+@Module({
+  controllers: [MissionCoreController],
+  providers: [EinsatzCoreService, EinsatzMapper],
+  exports: [EinsatzCoreService],
+  imports: [
+    UserModule,
+    EinsatzSchemaModule,
+    EinsatztagebuchModule,
+    FahrzeugeModule,
+    TemplateModule,
+  ],
+})
+export class EinsatzCoreModule {}

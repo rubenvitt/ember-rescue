@@ -7,6 +7,13 @@ export const navigation = [
     ],
   },
   {
+    title: 'Administration',
+    links: [
+      { title: 'Grundlagen', href: '/docs/administration/general' },
+      { title: 'Konfiguration', href: '/docs/administration/configuration' },
+    ],
+  },
+  {
     title: 'Core concepts',
     links: [
       { title: 'Understanding caching', href: '/docs/understanding-caching' },
@@ -53,4 +60,4 @@ export const navigation = [
       { title: 'Design principles', href: '/docs/design-principles' },
     ],
   },
-]
+];

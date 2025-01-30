@@ -1,4 +1,4 @@
-import { Button, Input, Select } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 import { PiLock, PiPlus } from 'react-icons/pi';
 import { useToggle } from '@reactuses/core';
 import { useCallback, useMemo, useState } from 'react';
@@ -17,7 +17,7 @@ export function LoginForm() {
 
   const onCreateNewBearbeiter = useCallback(async () => {
     setBearbeiter('');
-    await saveBearbeiter({ name: bearbeiter, id: null });
+    await saveBearbeiter({ name: bearbeiter });
     openWindow({ closeOnNavigate: true });
   }, [bearbeiter]);
 
@@ -30,7 +30,7 @@ export function LoginForm() {
 
   const allBearbeiterItems = useMemo<BaseOptionType[]>(() => {
     return (
-      allBearbeiter.data?.map(
+      allBearbeiter.data?.data.map(
         (b) =>
           ({
             title: b.name,
@@ -42,28 +42,20 @@ export function LoginForm() {
   }, [allBearbeiter.data]);
 
   return (
-    <form
-      className="space-y-6"
-      action="#"
-      onSubmit={(event) => {
-        event.preventDefault();
+    <Form<{ bearbeiter: string }>
+      onFinish={() => {
         isCreateUser ? onCreateNewBearbeiter() : onLoginBearbeiter();
       }}
+      className="space-y-6"
     >
       {isCreateUser ? (
-        <Input
-          value={bearbeiter}
-          onInput={(e) => setBearbeiter((e.target as any).value)}
-          placeholder="Name des neuen Bearbeiters"
-        />
+        <Form.Item name="bearbeiter" rules={[{ required: true, message: 'Bearbeiter benötigen einen Namen' }]}>
+          <Input value={bearbeiter} onInput={(e) => setBearbeiter((e.target as any).value)} placeholder="Name des neuen Bearbeiters" />
+        </Form.Item>
       ) : (
-        <Select
-          onSelect={(_, option) => setSelectedBearbeiter(option.item)}
-          options={allBearbeiterItems}
-          loading={allBearbeiter.isLoading}
-          placeholder="Bearbeiter auswählen"
-          className="w-full"
-        />
+        <Form.Item name="bearbeiter" rules={[{ required: true, message: 'Ein Bearbeiter muss ausgewählt sein' }]}>
+          <Select onSelect={(_, option) => setSelectedBearbeiter(option.item)} options={allBearbeiterItems} loading={allBearbeiter.isLoading} placeholder="Bearbeiter auswählen" className="w-full" />
+        </Form.Item>
       )}
       <div className="grid grid-cols-2 justify-items-stretch gap-4">
         {isCreateUser ? (
@@ -84,6 +76,6 @@ export function LoginForm() {
           </>
         )}
       </div>
-    </form>
+    </Form>
   );
 }

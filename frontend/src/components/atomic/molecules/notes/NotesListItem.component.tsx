@@ -1,19 +1,13 @@
-import { NotizDto } from '../../../../types/app/notes.types.js';
 import { useCallback, useMemo, useState } from 'react';
-import { Formik, FormikProps } from 'formik';
-import { Button, List, Tooltip } from 'antd';
+import { Button, Form, Input, List, Tooltip } from 'antd';
 import { PiCheck, PiClock, PiFloppyDisk, PiPencil, PiX } from 'react-icons/pi';
-import { Input } from 'formik-antd';
 import { useNotizen } from '../../../../hooks/notes.hook.js';
 import { formatNatoDateTime } from '../../../../utils/time.js';
 import { useReminders } from '../../../../hooks/reminders.hook.tsx';
+import { EinsatzNoteDto } from '@bluelight-hub/shared/client/index.js';
 
 interface Props {
-  notiz: NotizDto;
-}
-
-interface _NotesListItemProps {
-  props?: FormikProps<{ content: string }>;
+  notiz: EinsatzNoteDto;
 }
 
 export function NotizenListItem({ notiz }: Props) {
@@ -21,7 +15,8 @@ export function NotizenListItem({ notiz }: Props) {
   const { changeNotiz, toggleCompleteNotiz } = useNotizen({ notizId: notiz.id });
   const { actualCreateReminder } = useReminders();
 
-  function _NotesListItem({ props }: _NotesListItemProps) {
+  function _NotesListItem() {
+    let instance = Form.useFormInstance();
     const toggleEdit = useCallback(
       (fixed?: boolean) => {
         if (fixed !== undefined) {
@@ -29,13 +24,13 @@ export function NotizenListItem({ notiz }: Props) {
         } else {
           setIsEdit((prevState) => !prevState);
         }
-        props?.resetForm();
+        instance.resetFields();
       },
       [setIsEdit],
     );
 
     const saveNotiz = useCallback(() => {
-      props?.submitForm();
+      instance.resetFields();
       setIsEdit(false);
     }, [setIsEdit]);
 
@@ -50,7 +45,7 @@ export function NotizenListItem({ notiz }: Props) {
           <Tooltip title="Erinnerung anlegen">
             <Button
               onClick={() => {
-                actualCreateReminder(notiz.id);
+                actualCreateReminder(notiz);
               }}
               key="list-loadmore-more"
               icon={<PiClock />}
@@ -85,9 +80,7 @@ export function NotizenListItem({ notiz }: Props) {
               <p>
                 <span>{notiz.bearbeiter.name}</span>
                 <span className="text-gray-500"> (erstellt: {formatNatoDateTime(notiz.createdAt)})</span>
-                {notiz.doneAt && (
-                  <span className="text-primary-500/50"> (abgeschlossen: {formatNatoDateTime(notiz.doneAt)})</span>
-                )}
+                {notiz.doneAt && <span className="text-primary-500/50"> (abgeschlossen: {formatNatoDateTime(notiz.doneAt)})</span>}
               </p>
             }
           />
@@ -98,16 +91,13 @@ export function NotizenListItem({ notiz }: Props) {
   }
 
   return (
-    <Formik<{ content: string }>
-      onSubmit={(data) => {
-        console.log('my current data is', data);
-        changeNotiz.mutate(data);
-      }}
+    <Form<{ content: string }>
+      onFinish={changeNotiz.mutate}
       initialValues={{
         content: notiz.content,
       }}
     >
-      {(props) => <_NotesListItem props={props} />}
-    </Formik>
+      <_NotesListItem />
+    </Form>
   );
 }

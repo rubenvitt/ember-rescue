@@ -1,17 +1,19 @@
+import { useLocation, useNavigate } from '@tanstack/react-router';
+import { ConfigProvider, Menu } from 'antd';
 import React, { useMemo } from 'react';
-import { SidebarContentProps } from '../../../../types/ui/nav.types.js';
-import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
-import { WindowOptions, Windows } from '../../../../utils/window.js';
 import { PiFadersHorizontal, PiQuestion } from 'react-icons/pi';
 import { useAppWindow } from '../../../../hooks/window.hook.js';
 import { MenuItem } from '../../../../types/ui/menu.types.ts';
-import { useLocation, useNavigate } from '@tanstack/react-router';
-import { ConfigProvider, Menu } from 'antd';
+import { SidebarContentProps } from '../../../../types/ui/nav.types.js';
+import { WindowOptions, Windows } from '../../../../utils/window.js';
+import { EinsatzInfoComponent } from '../../molecules/EinsatzInfo.component.js';
 import { navigation } from '../../molecules/Navigation.js';
 
-export const SidebarContentComponent: React.FC<SidebarContentProps & {
-  isCollapsed?: boolean
-}> = ({ isCollapsed = false }) => {
+export const SidebarContentComponent: React.FC<
+  SidebarContentProps & {
+    isCollapsed?: boolean;
+  }
+> = ({ isCollapsed = false }) => {
   const openAdmin = useAppWindow({ appWindow: Windows.ADMIN, windowOptions: WindowOptions.admin });
   const openDocs = useAppWindow({ appWindow: Windows.DOCS, windowOptions: WindowOptions.docs });
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ export const SidebarContentComponent: React.FC<SidebarContentProps & {
       (item: MenuItem) =>
         ({
           onClick: async () => {
-            await navigate({ to: item!.key });
+            await navigate({ to: String(item!.key) });
           },
           ...item,
           // @ts-ignore its... complicated 🫣
@@ -52,20 +54,11 @@ export const SidebarContentComponent: React.FC<SidebarContentProps & {
           },
         }}
       >
-        <div className={`flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950 ${
-          isCollapsed ? 'items-center' : ''
-        }`}>
+        <div className={`flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 pb-4 dark:bg-primary-950 ${isCollapsed ? 'items-center' : ''}`}>
           <div className={isCollapsed ? 'hidden' : 'px-6 py-4'}>
             <EinsatzInfoComponent />
           </div>
-          <Menu
-            selectedKeys={[pathname]}
-            mode="inline"
-            items={navItems}
-            inlineCollapsed={isCollapsed}
-            style={menuStyle}
-            className={`border-none ${isCollapsed ? 'w-full' : ''}`}
-          />
+          <Menu selectedKeys={[pathname]} mode="inline" items={navItems} inlineCollapsed={isCollapsed} style={menuStyle} className={`border-none ${isCollapsed ? 'w-full' : ''}`} />
           <Menu
             className={`mt-auto border-none ${isCollapsed ? 'w-full' : ''}`}
             selectedKeys={[pathname]}

@@ -6,6 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
  *
  * @param {...unknown} elements - The parameters to be checked.
  * @throws {Error} If any required parameter is missing.
+ * @deprecated
  */
 export function requireParams(...elements: unknown[]) {
   elements.forEach((el) => {
@@ -24,8 +25,10 @@ export function requireParams(...elements: unknown[]) {
  * @return {() => Promise<void>} The function that invalidates the queries.
  */
 export function createInvalidateQueries(queryKey: unknown[], queryClient: QueryClient): () => Promise<void> {
-  return async () =>
+  return async () => {
+    console.log('invalidating queries:', { queryKey });
     await queryClient.invalidateQueries({
       queryKey,
     });
+  };
 }

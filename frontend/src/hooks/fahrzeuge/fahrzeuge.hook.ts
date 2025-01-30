@@ -1,72 +1,68 @@
+import { AddVehicleToMissionDto, ChangeStatusDto, ImportManyFahrzeugeDto, ManyFahrzeugeTemplateResponse, ManyFahrzeugTypResponse, type VehiclesResponse } from '@bluelight-hub/shared/client/index.js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEinsatz } from '../einsatz.hook.js';
-import { useMemo } from 'react';
-import { PatchFahrzeugeType } from '../../services/backend/fahrzeuge.js';
 import { services } from '../../services/index.js';
-import { FahrzeugDto, FahrzeugTypDto } from '../../types/app/fahrzeug.types.js';
+import { useEinsatz } from '../einsatz.hook.js';
 
-export function useFahrzeuge(props?: { fahrzeugId?: string }) {
+export function useFahrzeuge(props?: { fullOpta?: string }) {
   const queryClient = useQueryClient();
-  const { einsatzId } = useEinsatz();
-  const fahrzeuge = useQuery<FahrzeugDto[]>({
-    queryKey: services.backend.fahrzeuge.fetchAllFahrzeuge.queryKey,
-    queryFn: services.backend.fahrzeuge.fetchAllFahrzeuge.queryFn,
+  const { missionId } = useEinsatz();
+  // TODO: refactor this to use einsatzFahrzeugeController (and rename that). Controller needs to merge active vehicles and controller vehicles
+  const fahrzeuge = useQuery<VehiclesResponse>({
+    queryKey: services.backend.fahrzeuge.fetchAllFahrzeuge.queryKey({ missionId }),
+    queryFn: services.backend.fahrzeuge.fetchAllFahrzeuge.queryFn({ missionId }),
   });
   const fahrzeugeJson = useQuery<string>({
     queryKey: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryKey,
     queryFn: services.backend.fahrzeuge.fetchAllFahrzeugeJson.queryFn,
   });
-  const fahrzeugeImEinsatz = useQuery<FahrzeugDto[]>({
-    queryKey: services.backend.fahrzeuge.fetchAllFahrzeugeImEinsatz.queryKey({ einsatzId }),
-    queryFn: services.backend.fahrzeuge.fetchAllFahrzeugeImEinsatz.queryFn({ einsatzId }),
-    enabled: Boolean(einsatzId),
+  const templateFahrzeuge = useQuery<ManyFahrzeugeTemplateResponse>({
+    queryKey: services.backend.fahrzeuge.fetchAllTemplateFahrzeuge.queryKey,
+    queryFn: services.backend.fahrzeuge.fetchAllTemplateFahrzeuge.queryFn,
   });
 
-  const fahrzeugeNichtImEinsatz = useMemo(() => {
-    if (!fahrzeuge.data || !fahrzeugeImEinsatz.data) {
-      return [];
-    }
-    const einsatzFahrzeugeIds = new Set(fahrzeugeImEinsatz.data.map((fahrzeug) => fahrzeug.id));
-    return fahrzeuge.data.filter((fahrzeug) => !einsatzFahrzeugeIds.has(fahrzeug.id));
-  }, [fahrzeuge, fahrzeugeImEinsatz]);
-
-  const fahrzeugeTypen = useQuery<FahrzeugTypDto[]>({
+  const fahrzeugeTypen = useQuery<ManyFahrzeugTypResponse>({
     queryKey: services.backend.fahrzeuge.fetchFahrzeugTypen.queryKey,
     queryFn: services.backend.fahrzeuge.fetchFahrzeugTypen.queryFn,
   });
 
-  const patchFahrzeuge = useMutation<unknown, unknown, PatchFahrzeugeType>({
+  const patchFahrzeuge = useMutation<unknown, unknown, ImportManyFahrzeugeDto>({
     mutationKey: services.backend.fahrzeuge.patchFahrzeuge.mutationKey,
     mutationFn: services.backend.fahrzeuge.patchFahrzeuge.mutationFn,
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
-  const addFahrzeugToEinsatz = useMutation<unknown, unknown, { fahrzeugId: string }>({
-    mutationKey: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationKey({ einsatzId }),
-    mutationFn: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationFn({ einsatzId }),
+  const removeVehicleTemplate = useMutation<unknown, unknown, string>({
+    mutationKey: services.backend.fahrzeuge.removeVehicleTemplate.mutationKey,
+    mutationFn: services.backend.fahrzeuge.removeVehicleTemplate.mutationFn,
+    onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
+  });
+
+  const addFahrzeugToEinsatz = useMutation<unknown, unknown, AddVehicleToMissionDto>({
+    mutationKey: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationKey({ einsatzId: missionId }),
+    mutationFn: services.backend.fahrzeuge.postAddFahrzeugToEinsatz.mutationFn({ einsatzId: missionId }),
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
   const removeFahrzeugFromEinsatz = useMutation<unknown, unknown, {}>({
     mutationKey: services.backend.fahrzeuge.deleteFahrzeugFromEinsatz.mutationKey({
-      einsatzId,
-      fahrzeugId: props?.fahrzeugId,
+      einsatzId: missionId,
+      fullOpta: props?.fullOpta,
     }),
     mutationFn: services.backend.fahrzeuge.deleteFahrzeugFromEinsatz.mutationFn({
-      fahrzeugId: props?.fahrzeugId,
-      einsatzId,
+      fullOpta: props?.fullOpta,
+      einsatzId: missionId,
     }),
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
-  const changeStatus = useMutation<unknown, unknown, { statusId: string }>({
+  const changeStatus = useMutation<unknown, unknown, ChangeStatusDto>({
     mutationKey: services.backend.fahrzeuge.postStatusForFahrzeug.mutationKey({
-      einsatzId,
-      fahrzeuggId: props?.fahrzeugId,
+      einsatzId: missionId,
+      fahrzeuggId: props?.fullOpta,
     }),
     mutationFn: services.backend.fahrzeuge.postStatusForFahrzeug.mutationFn({
-      einsatzId,
-      fahrzeugId: props?.fahrzeugId,
+      einsatzId: missionId,
+      fullOpta: props?.fullOpta,
     }),
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
@@ -80,12 +76,12 @@ export function useFahrzeuge(props?: { fahrzeugId?: string }) {
   return {
     fahrzeuge,
     fahrzeugeJson,
-    fahrzeugeImEinsatz,
+    templateFahrzeuge,
     fahrzeugeTypen,
     patchFahrzeuge,
+    removeVehicleTemplate,
     addFahrzeugToEinsatz,
     removeFahrzeugFromEinsatz,
-    fahrzeugeNichtImEinsatz,
     changeStatus,
     updateFahrzeugeJson,
   };
