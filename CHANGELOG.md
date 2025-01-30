@@ -1,3 +1,9 @@
+# Version [v1.0.0-alpha.8](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) veröffentlicht am UTC:2025-01-30
+
+
+
+# [1.0.0-alpha.8](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2025-01-30)
+
 # Version [v1.0.0-alpha.7](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) veröffentlicht am UTC:2025-01-30
 
 ## ✨ Neue Funktionen
