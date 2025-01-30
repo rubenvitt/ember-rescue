@@ -84,12 +84,16 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target aarch64-apple-darwin'
+            artifact_suffix: 'macos-arm64'
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
+            artifact_suffix: 'macos-x64'
           - platform: 'ubuntu-22.04'
             args: ''
+            artifact_suffix: 'ubuntu'
           - platform: 'windows-latest'
             args: ''
+            artifact_suffix: 'windows'
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
@@ -130,7 +134,7 @@ jobs:
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-artifact-${{ matrix.platform }}
+          name: frontend-artifact-${{ matrix.artifact_suffix }}
           path: frontend/src-tauri/target
 
   release:
