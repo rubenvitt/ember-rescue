@@ -22,6 +22,7 @@ FROM node:22-alpine
 
 # pnpm installieren
 RUN npm install -g pnpm
+RUN apk add --no-cache curl
 
 # Arbeitsverzeichnis erstellen
 WORKDIR /usr/src/app

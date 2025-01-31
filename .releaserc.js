@@ -10,7 +10,7 @@ module.exports = {
         releaseRules: {
           major: ['💥'],
           minor: ['✨'],
-          patch: ['🐛', '🚑', '🔒', '🧹', '♻️'],
+          patch: ['🐛', '🚑', '🔒', '🧹', '♻️', '🔧'],
         },
         releaseNotes: {
           template: `{{#if compareUrl}}
@@ -74,6 +74,16 @@ Struktur- oder Code-Verbesserungen:
 - {{> commitTemplate}}
 {{/each}}
 {{/if}}
+
+{{!-- Tool Improvements (🔧) --}}
+{{#if wrench}}
+## 🔧 Tool Verbesserungen
+Verbesserungen an den Werkzeugen:
+{{#each wrench}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
 
 {{!-- Breaking Changes (💥) --}}
 {{#if boom}}
