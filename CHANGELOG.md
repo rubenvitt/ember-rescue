@@ -1,3 +1,25 @@
+## Version [v1.0.0-alpha.10](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) – Veröffentlicht am 2025-01-30
+
+## 🧹 Codebereinigungen
+Aufräumarbeiten und kleinere Verbesserungen:
+- [`7675684`](https://github.com/rubenvitt/ember-rescue/commit/7675684)  Refactor semantic-release configuration 
+
+
+
+# [1.0.0-alpha.10](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2025-01-30)
+
+# Version [v1.0.0-alpha.9](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) veröffentlicht am UTC:2025-01-30
+
+
+
+# [1.0.0-alpha.9](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2025-01-30)
+
+# Version [v1.0.0-alpha.8](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) veröffentlicht am UTC:2025-01-30
+
+
+
+# [1.0.0-alpha.8](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2025-01-30)
+
 # Version [v1.0.0-alpha.7](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) veröffentlicht am UTC:2025-01-30
 
 ## ✨ Neue Funktionen
