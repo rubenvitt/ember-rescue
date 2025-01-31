@@ -115,7 +115,6 @@ WIP Änderungen:
         },
       },
     ],
-    '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
     [
       '@semantic-release/changelog',
@@ -146,7 +145,7 @@ WIP Änderungen:
           'shared/package.json',
           'RELEASE.md'
         ],
-        message: '🔖 chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+        message: '🔖(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
       },
     ],
     [
