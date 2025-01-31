@@ -39,7 +39,7 @@ services:
       mongodb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/core/meta"]
+      test: ["CMD", "curl", "-f", "-H", "Authorization:Auth: ${AUTH_TOKEN}", "http://localhost:3000/v1/core/meta"]
       interval: 30s
       timeout: 10s
       retries: 3
