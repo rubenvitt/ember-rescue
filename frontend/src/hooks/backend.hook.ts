@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetch } from '@tauri-apps/plugin-http';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
+import { isTauri } from '@tauri-apps/api/core';
 import storage from '../utils/storage.js';
 import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
 import { useEffect } from 'react';
@@ -9,7 +10,9 @@ export const useBackend = () => {
   const backendPing = useQuery({
     queryKey: ['backend', 'ping'],
     queryFn: async () => {
-      const response = await fetch((storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000') + '/v1/ping', {});
+      const fetchFn = isTauri() ? tauriFetch : fetch;
+
+      const response = await fetchFn((storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000') + '/v1/ping', {});
       if (!response.ok) {
         throw new Error('Backend not available');
       }

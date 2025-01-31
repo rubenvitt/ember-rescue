@@ -8,7 +8,7 @@ import storage from './storage.js';
 export function getAPIConfig(): Configuration {
   return new Configuration({
     basePath: storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000',
-    fetchApi: tauriFetch,
+    fetchApi: isTauri() ? tauriFetch : fetch,
     middleware: [
       {
         pre(context: RequestContext): Promise<FetchParams | void> {
