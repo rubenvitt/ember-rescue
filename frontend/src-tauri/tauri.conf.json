@@ -1,6 +1,6 @@
 {
   "productName": "bluelight-hub",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "identifier": "dev.rubeen.bluelight-hub",
   "build": {
     "beforeDevCommand": "pnpm dev",
