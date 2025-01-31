@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "127.0.0.1:10007:3000"
+      - "${BACKEND_PORT:-3000}:3000"
     environment:
       MONGODB_URL: mongodb://${DB_USER:-user}:${DB_PASS:-pass}@mongodb:27017/bluelight-hub?authSource=bluelight-hub
       SERVER_NAME: ${SERVER_NAME}
