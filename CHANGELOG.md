@@ -1,3 +1,13 @@
+## Version [v1.0.0-alpha.11](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) – Veröffentlicht am 2025-01-31
+
+## 🧹 Codebereinigungen
+Aufräumarbeiten und kleinere Verbesserungen:
+- [`d8568b3`](https://github.com/rubenvitt/ember-rescue/commit/d8568b3) (docker-compose): Configure dynamic backend port in docker-compose 
+
+
+
+# [1.0.0-alpha.11](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2025-01-31)
+
 ## Version [v1.0.0-alpha.10](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) – Veröffentlicht am 2025-01-30
 
 ## 🧹 Codebereinigungen
