@@ -1,5 +1,16 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TemplateDocument } from '@core/database';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+export class EmbeddedStatus {
+  @Prop({ required: true })
+  code: number;
+
+  @Prop({ required: true })
+  label: string;
+
+  @Prop({ required: true })
+  description: string;
+}
 
 @Schema({ collection: 'status' })
 export class Status extends TemplateDocument {

@@ -1,60 +1,69 @@
-import { useCallback, useMemo } from 'react';
+import { CreateMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { useSearchBoxCore } from '@mapbox/search-js-react';
 import { useNavigate } from '@tanstack/react-router';
+import { AutoComplete, AutoCompleteProps, DatePicker, Select } from 'antd';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
+import dayjs from 'dayjs';
+import { useCallback, useMemo, useState } from 'react';
+import { PiArrowCircleUpRight } from 'react-icons/pi';
 import { useAlarmstichworte } from '../../../../hooks/alarmstichworte.hook.js';
 import { useEinsatz } from '../../../../hooks/einsatz.hook.js';
 import { useFahrzeuge } from '../../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
-import dayjs from 'dayjs';
-import { PiArrowCircleUpRight } from 'react-icons/pi';
-import { FormSection } from '../../organisms/form/FormSection.component.js';
-import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
-import { InputWrapper } from '../../atoms/InputWrapper.component.js';
-import { CreateMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { useOpta } from '../../../../hooks/opta.hook.js';
-import { DatePicker, Select } from 'antd';
+import { useSecret } from '../../../../hooks/secrets.hook.js';
+import { InputWrapper } from '../../atoms/InputWrapper.component.js';
+import { FormContentBox } from '../../organisms/form/FormContentBox.component.js';
+import { FormLayout } from '../../organisms/form/FormLayout.comonent.js';
+import { FormSection } from '../../organisms/form/FormSection.component.js';
 
-// const AddressAutocomplete: React.FC = () => {
-//   const { secret } = useSecret({ secretKey: 'mapboxApi' });
-//   const { retrieve } = useMapboxAutofill({
-//     accessToken: secret.data?.value,
-//     country: 'de',
-//     language: 'de-DE',
-//     streets: true,
-//   });
-//
-//   const [query, setQuery] = useState('');
-//   const [suggestions, setSuggestions] = useState<any>([]);
-//
-//   const handleChange = async (event: any) => {
-//     const value = event.target.value;
-//     setQuery(value);
-//     if (value) {
-//       const results = await retrieve(value, { sessionToken: 'test-asd' });
-//       setSuggestions(results);
-//     } else {
-//       setSuggestions([]);
-//     }
-//   };
-//
-//   return (
-//     <div>
-//       <input
-//         type="text"
-//         value={query}
-//         onChange={handleChange}
-//         placeholder="Adresse eingeben..."
-//       />
-//       {suggestions.length > 0 && (
-//         <ul>
-//           {suggestions.map((suggestion, index) => (
-//             <li key={index}>{suggestion.place_name}</li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
+const AddressAutocomplete = () => {
+  const { secret } = useSecret({ secretKey: 'mapboxApi' });
+  const searchBox = useSearchBoxCore({
+    accessToken: secret.data?.value ?? '',
+    country: 'de',
+    proximity: '10.55,52.96',
+    language: 'de',
+    // @ts-ignore api is newer
+    types: new Set(['country', 'region', 'postcode', 'district', 'place', 'locality', 'neighborhood', 'street', 'address']),
+  });
+
+  const [options, setOptions] = useState<AutoCompleteProps['options']>([]);
+
+  const handleSearch = async (value: string) => {
+    if (!value || !secret.data?.value) {
+      setOptions([]);
+      return;
+    }
+
+    try {
+      const results = await searchBox.suggest(value, { sessionToken: 'test-asd' });
+      console.log('results', results);
+      const formattedOptions = results.suggestions.map(result => ({
+        id: result.mapbox_id,
+        value: result.name + ', ' + result.place_formatted,
+        label: result.name + ", " + result.place_formatted,
+      } satisfies DefaultOptionType));
+      setOptions(formattedOptions);
+    } catch (error) {
+      console.error('Error fetching address suggestions:', error);
+      setOptions([]);
+    }
+  };
+
+  return (
+    <InputWrapper label="Einsatzadresse" name="ort" rules={[{ required: true, message: 'Die Einsatzadresse wird benötigt' }]}>
+      <AutoComplete
+        options={options}
+        onSearch={handleSearch}
+        placeholder="Adresse eingeben..."
+        allowClear
+        // @ts-ignore
+        spellCheck={false}
+        style={{ width: '100%' }}
+      />
+    </InputWrapper>
+  );
+};
 
 export function NewSetupEinsatzForm() {
   // FIXME[ember-rescue-68](rubeen, 30.11.24): Use fahrzeugeTemplate
@@ -85,7 +94,7 @@ export function NewSetupEinsatzForm() {
     return alarmstichworte.data?.data.map(
       (stichwort) =>
         ({
-          value: stichwort.id,
+          value: stichwort.code,
           searchString: (stichwort.code + stichwort.description).toLowerCase(),
           label: (
             <div className="flex justify-between gap-4">
@@ -110,7 +119,9 @@ export function NewSetupEinsatzForm() {
           console.log('createMissionDto', { data });
           await createEinsatz.mutateAsync({ ...data }).then((einsatz) => {
             saveEinsatz(einsatz);
-            navigate({ to: '/app/' });
+            setTimeout(() => {
+              navigate({ to: '/app/' });
+            }, 1000);
           });
         },
       }}
@@ -119,6 +130,7 @@ export function NewSetupEinsatzForm() {
         submit: {
           type: 'primary',
           htmlType: 'submit',
+          loading: createEinsatz.isPending,
           icon: <PiArrowCircleUpRight />,
           iconPosition: 'end',
           children: 'Einsatz anlegen',
@@ -139,6 +151,7 @@ export function NewSetupEinsatzForm() {
               loading={templateFahrzeuge.isLoading}
             />
           </InputWrapper>
+          <AddressAutocomplete />
         </FormContentBox>
       </FormSection>
 

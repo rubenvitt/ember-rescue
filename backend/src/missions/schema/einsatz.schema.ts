@@ -4,8 +4,8 @@ import {
   AlarmstichwortDto,
 } from '@templates/alarmstichworte/alarmstichwort.schema';
 import { QualifikationTemplate } from '@templates/qualifications/qualifikation.schema';
-import { Status } from '@templates/status/status.schema';
-import { VehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
+import { EmbeddedStatus, Status } from '@templates/status/status.schema';
+import { EmbeddedVehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
@@ -38,7 +38,7 @@ class Personal {
 }
 
 @Schema({ timestamps: true, _id: false })
-export class FahrzeugOnEinsatz extends VehiclesTemplate {
+export class FahrzeugOnEinsatz extends EmbeddedVehiclesTemplate {
   @Prop({ required: true })
   einsatzbeginn: Date;
 
@@ -55,7 +55,7 @@ export class FahrzeugOnEinsatz extends VehiclesTemplate {
   status_history: StatusHistoryEntry[];
 
   @Prop()
-  currentStatus?: Status;
+  currentStatus?: EmbeddedStatus;
 }
 
 /**
@@ -154,7 +154,7 @@ export class Einsatz extends Document {
   @Prop({ required: true })
   einsatzAlarmstichwort: Alarmstichwort;
 
-  @Prop({ required: true, type: [{ type: FahrzeugOnEinsatz }] })
+  @Prop({ required: true, type: [{ type: FahrzeugOnEinsatz }], default: [] })
   fahrzeuge: FahrzeugOnEinsatz[];
 
   @Prop({

@@ -69,7 +69,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
         },
       }}
     >
-      {(props) => (
+      {() => (
         <>
           <InputWrapper name="absender" label="Absender" rules={[{ required: true, message: 'Es sollte ein Absender angegeben werden' }]}>
             <Select
@@ -102,7 +102,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
                 },
               ]}
               loading={fahrzeugeImEinsatzLoading || fahrzeugeNichtImEinsatzLoading}
-              placeholder="Empfönger auswählen"
+              placeholder="Empfänger auswählen"
             />
           </InputWrapper>
           <InputWrapper name="content" className="col-span-2" label="Inhalt" rules={[{ required: true, message: 'Ein Eintrag benötigt eine Nachricht' }]}>
@@ -111,7 +111,7 @@ export function EinsatztagebuchForm({ closeForm }: Props) {
           <InputWrapper name="timestamp" label="Zeitpunkt der Meldung" rules={[{ required: true, message: 'Es wird ein Zeitpunkt der Meldung benötigt' }]}>
             <DatePicker className="w-full" showTime showSecond={false} name={'timestamp'} onChange={() => setHasUserChangedTimestamp(true)} />
           </InputWrapper>
-          <Button className="col-span-2" type="primary" onClick={props?.submit} htmlType="submit" icon={<PiCaretDown size={24} />}>
+          <Button className="col-span-2" type="primary" htmlType="submit" icon={<PiCaretDown size={24} />}>
             ETB Eintrag anlegen
           </Button>
         </>

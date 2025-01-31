@@ -33,7 +33,7 @@ export class VehiclesController {
   constructor(
     private readonly fahrzeugeService: FahrzeugeService,
     private readonly functionOptaRepository: FunctionOptaRepository,
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Get()
@@ -72,7 +72,7 @@ export class VehiclesController {
     @Res() response: Response,
   ) {
     await this.fahrzeugeService.updateMany(fahrzeuge);
-    await this.cacheManager.del('vehicles');
+    // await this.cacheManager.del('vehicles');
     response.status(HttpStatus.OK);
     response.send({ status: 'Fahrzeuge updated successfully' });
   }
@@ -89,7 +89,7 @@ export class VehiclesController {
   })
   async deleteVehicle(@Param('vehicleId') vehicleId: string) {
     await this.fahrzeugeService.deleteVehicle(vehicleId);
-    await this.cacheManager.del('vehicles');
+    // await this.cacheManager.del('vehicles');
   }
 
   @Get('/import/schema/v2')
