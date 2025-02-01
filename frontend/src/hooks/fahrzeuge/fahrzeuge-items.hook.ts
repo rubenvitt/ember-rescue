@@ -2,28 +2,11 @@ import { VehicleOnMissionDto } from '@bluelight-hub/shared/client/index.js';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { useMemo } from 'react';
 import { useFahrzeuge } from './fahrzeuge.hook.js';
+import { convertToItems } from '../../components/atomic/atoms/VehicleSelectItem.tsx';
 
 interface Props {
   fahrzeuge?: VehicleOnMissionDto[];
   include?: ('fahrzeugeImEinsatz' | 'fahrzeugeNichtImEinsatz' | 'alleFahrzeuge' | 'custom' | 'einsatztagebuch')[];
-}
-
-function convertToItems(fahrzeuge?: VehicleOnMissionDto[]) {
-  if (!fahrzeuge) {
-    return [];
-  } else {
-    return fahrzeuge.map((item) => {
-      return {
-        label: item.optaFunktion,
-        value: item.fullOpta,
-        title: item.optaFunktion,
-        item,
-        // item,
-        // label: item.funkrufname,
-        // secondary: item.fahrzeugTyp.label,
-      } satisfies DefaultOptionType;
-    });
-  }
 }
 
 export function useFahrzeugeItems({ fahrzeuge, include }: Props) {

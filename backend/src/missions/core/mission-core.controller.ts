@@ -4,8 +4,8 @@ import {
   Controller,
   Get,
   Logger,
-  Param, ParseBoolPipe, Post,
-  Put, Query, UseGuards
+  Param, Post,
+  Put, UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -66,10 +66,7 @@ export class MissionCoreController {
     type: ManyMissionsResponse,
     description: 'List of all missions',
   })
-  async getMissions(
-    @Query('abgeschlossen', new ParseBoolPipe({ optional: true }))
-    abgeschlossen?: boolean,
-  ) {
+  async getMissions() {
     let einsaetze = await this.einsatzService.getEinsaetze({
       abgeschlossen: null,
     });
@@ -100,21 +97,7 @@ export class MissionCoreController {
     @Body() body: CreateMissionDto,
   ) {
     console.log('createEinsatz', body);
-    return this.einsatzService.createEinsatz({
-      createEinsatzDto: {
-        bearbeiter: (await this.bearbeiterService.findByNameOrCreate(
-          bearbeiter.name,
-        ))!!,
-        beginn: new Date(),
-        aufnehmendesRettungsmittel: body.aufnehmendesRettungsmittel,
-        einsatzAlarmstichwort: (await this.alarmstichwortService.findActiveById(
-          body.alarmstichwort!!,
-        ))!!,
-        einsatzMeta: {
-          ort: 'UNKNOWN',
-        },
-      },
-    });
+    return this.einsatzService.createEinsatz(body, (await this.bearbeiterService.findByNameOrCreate(bearbeiter.name))!!);
   }
 
   @Put(':id')

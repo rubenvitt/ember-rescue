@@ -52,6 +52,24 @@ class EmbeddedOpta {
   fullOpta: string;
 }
 
+@Schema({ timestamps: true, _id: false })
+export class EmbeddedVehiclesTemplate extends TemplateDocument {
+  @Prop({ required: true })
+  fullOpta: string;
+
+  @Prop()
+  iconDefinition: FahrzeugIconDefinition;
+
+  @Prop({
+    required: true,
+    type: EmbeddedOpta,
+  })
+  opta: EmbeddedOpta;
+
+  @Prop()
+  kapazitaet?: number;
+}
+
 @Schema({ timestamps: true, collection: 'fahrzeug-templates' })
 export class VehiclesTemplate extends TemplateDocument {
   @Prop({ index: true, unique: true })

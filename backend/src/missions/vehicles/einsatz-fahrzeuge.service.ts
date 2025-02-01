@@ -111,7 +111,7 @@ export class EinsatzFahrzeugeService {
             status: entry.status
           })),
           currentStatus: fahrzeug.currentStatus,
-        };
+        } satisfies VehicleOnMissionDto;
       })
     );
 

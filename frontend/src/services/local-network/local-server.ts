@@ -1,9 +1,10 @@
+import { Configuration, MetaApi } from '@bluelight-hub/shared/client/index.js';
+import { QueryClient } from '@tanstack/react-query';
+import { isTauri } from '@tauri-apps/api/core';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 // @ts-ignore
 import { IpPortPair, scanLocalNetworkOnlineHostsByPort } from 'tauri-plugin-network-api';
 import { createInvalidateQueries } from '../../utils/queries.js';
-import { QueryClient } from '@tanstack/react-query';
-import { Configuration, MetaApi } from '@bluelight-hub/shared/client/index.js';
-import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 
 // Export des queryKey
 export const queryKey = (ip: string, port: number) => ['server', ip, port];
@@ -18,7 +19,7 @@ export const fetchLocalServerMeta = {
     const api = new MetaApi(
       new Configuration({
         basePath: ip + ':' + port,
-        fetchApi: tauriFetch,
+        fetchApi: isTauri() ? tauriFetch : fetch,
       }),
     );
 

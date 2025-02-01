@@ -1,18 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetch } from '@tauri-apps/plugin-http';
-import storage from '../utils/storage.js';
-import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
+import { isTauri } from '@tauri-apps/api/core';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { useEffect } from 'react';
+import { LocalSettings } from '../components/atomic/organisms/PrestartSettings.component.js';
+import storage from '../utils/storage.js';
 
 export const useBackend = () => {
   // check that backend is available and running
   const backendPing = useQuery({
     queryKey: ['backend', 'ping'],
     queryFn: async () => {
-      const response = await fetch((storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000') + '/v1/ping', {});
+      const fetchFn = isTauri() ? tauriFetch : fetch;
+
+      const response = await fetchFn((storage().readLocalStorage<LocalSettings>('localSettings')?.baseUrl ?? 'http://localhost:3000') + '/v1/ping', {
+        headers: {
+          Authorization: `Auth: ${storage().readLocalStorage('backendAccessToken')}`,
+        },
+      });
       if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          const event = new CustomEvent('requestAccessToken');
+          window.dispatchEvent(event);
+          throw new Error('Access token invalid');
+        }
         throw new Error('Backend not available');
       }
+      console.log('PING OK'.repeat(100));
       return response.json();
     },
     retry: true,
