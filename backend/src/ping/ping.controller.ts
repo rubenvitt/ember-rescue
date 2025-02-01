@@ -1,6 +1,8 @@
-import { Get, Res } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 
+
+@Controller('ping')
 export class PingController {
   @Get()
   ping(@Res() response: Response) {

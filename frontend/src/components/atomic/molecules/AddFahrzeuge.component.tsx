@@ -7,10 +7,12 @@ import { PiAmbulance, PiEmpty, PiPlus, PiShieldPlus } from 'react-icons/pi';
 import { twMerge } from 'tailwind-merge';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useRecommendedFahrzeuge } from '../../../hooks/fahrzeuge/recommended-fahrzeuge.hook.js';
+import { OptaTooltip } from '../atoms/OptaTooltip.component.tsx';
 import { FormLayout } from '../organisms/form/FormLayout.comonent.js';
 
 const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; label: string; secondary: string }; onAdd: (fullOpta: string) => void }> = ({ fahrzeug, onAdd }) => (
   <li>
+    <OptaTooltip fullOpta={fahrzeug.item.fullOpta}>
     <button
       type="button"
       onClick={() => onAdd(fahrzeug.item.fullOpta)}
@@ -27,8 +29,9 @@ const RecommendedFahrzeug: React.FC<{ fahrzeug: { item: VehicleOnMissionDto; lab
       </span>
       <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center">
         <PiPlus className="h-5 w-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-600" aria-hidden="true" />
-      </span>
-    </button>
+        </span>
+      </button>
+    </OptaTooltip>
   </li>
 );
 

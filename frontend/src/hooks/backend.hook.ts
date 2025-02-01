@@ -25,7 +25,6 @@ export const useBackend = () => {
         }
         throw new Error('Backend not available');
       }
-      console.log('PING OK'.repeat(100));
       return response.json();
     },
     retry: true,

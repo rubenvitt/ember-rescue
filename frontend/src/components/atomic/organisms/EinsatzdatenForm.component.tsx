@@ -1,22 +1,22 @@
-import { useEinsatz } from '../../../hooks/einsatz.hook.js';
-import { useMemo, useReducer, useState } from 'react';
-import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
-import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
-import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
-import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
-import { format } from 'date-fns';
-import { backendFetchBlob } from '../../../utils/http.js';
+import { MissionDto, SecretsDto, UpdateMissionDto } from '@bluelight-hub/shared/client/index.js';
+import { useSearchBoxCore } from '@mapbox/search-js-react';
 import { isTauri } from '@tauri-apps/api/core';
+import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
 import { AutoComplete, Button, ConfigProvider, DatePicker, Modal, Select, Tooltip } from 'antd';
+import { DefaultOptionType } from 'antd/lib/select/index.js';
+import { format } from 'date-fns';
+import dayjs, { Dayjs } from 'dayjs';
+import { useMemo, useReducer, useState } from 'react';
+import { PiCheck, PiConfetti, PiDownload, PiStopCircle, PiX } from 'react-icons/pi';
+import { useAlarmstichworte } from '../../../hooks/alarmstichworte.hook.js';
+import { useEinsatz } from '../../../hooks/einsatz.hook.js';
+import { RangeValue } from '../../../types/ui/inputs.types.js';
+import { backendFetchBlob } from '../../../utils/http.js';
+import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { FormContentBox } from './form/FormContentBox.component.js';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
-import { FormContentBox } from './form/FormContentBox.component.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { DefaultOptionType } from 'antd/lib/select/index.js';
-import { useSearchBoxCore } from '@mapbox/search-js-react';
-import { MissionDto, SecretsDto, UpdateMissionDto } from '@bluelight-hub/shared/client/index.js';
-import { RangeValue } from '../../../types/ui/inputs.types.js';
-import dayjs, { Dayjs } from 'dayjs';
 
 type UpdateMissionFormData = UpdateMissionDto & {
   timeframe: [Dayjs, Dayjs];
@@ -251,7 +251,6 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
               </FormContentBox>
             </FormSection>
             <FormSection heading="Laufender Einsatz">
-              {JSON.stringify(einsatz.data)}
               <FormContentBox>
                 <InputWrapper name="einsatzleiter" label="Einsatzleiter" rules={[{ required: true }]}>
                   <Select disabled />

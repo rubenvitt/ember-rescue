@@ -1,11 +1,11 @@
-import { ChangeStatusDto, StatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
+import { ChangeStatusDto, VehicleOnMissionDto, VehiclesDto } from '@bluelight-hub/shared/client/index.js';
 import { Button, Card, Dropdown, List, Modal } from 'antd';
 import React, { useCallback } from 'react';
 import { PiCaretRight, PiNumpad, PiStop, PiUsers } from 'react-icons/pi';
 import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
 import { useStatus } from '../../../hooks/status.hook.js';
-import { StatusButtonComponent } from '../atoms/StatusButton.component.js';
-import { DynamicGrid } from '../molecules/DynamicGrid.component.js';
+import { StatusCode } from '../../../types/app/status.types.ts';
+import { statusColors } from '../atoms/StatusLabel.component.tsx';
 import { FahrzeugListItemComponent } from '../molecules/FahrzeugListItem.component.js';
 
 interface FahrzeugelisteComponentProps {
@@ -40,30 +40,13 @@ function FahrzeugExtra({ fahrzeug }: { fahrzeug: VehicleOnMissionDto }) {
             label: 'Status wechseln',
             key: 'status',
             icon: <PiNumpad />,
-            onClick: () => {
-              Modal.confirm({
-                type: 'confirm',
-                icon: <PiNumpad className="text-primary-500" size={24} />,
-                closable: true,
-                maskClosable: true,
-                title: `Status ändern von ${fahrzeug.fullOpta}`,
-                width: '70%',
-                okButtonProps: {
-                  className: 'hidden',
-                },
-                cancelButtonProps: {
-                  className: 'hidden',
-                },
-                content: (
-                  <div className="min-h-32">
-                    <DynamicGrid<StatusDto>
-                      items={status.data?.data}
-                      render={(item, className) => <StatusButtonComponent onClick={({ code }) => onStatusButtonClick({ code, fahrzeugOpta: fahrzeug.fullOpta })} item={item} className={className} />}
-                    />
-                  </div>
-                ),
-              });
-            },
+            children: status.data?.data.map((status) => ({
+              label: status.code + ' - ' + status.label,
+              key: status.code,
+              className: statusColors(status.code as StatusCode),
+              icon: <PiNumpad />,
+              onClick: () => onStatusButtonClick({ code: status.code, fahrzeugOpta: fahrzeug.fullOpta }),
+            })) ?? [],
           },
           {
             label: 'Einsatz beenden',

@@ -1,21 +1,22 @@
-import { MapProvider } from 'react-map-gl';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { useTheme } from '../../../hooks/theme.hook.js';
-import mapboxgl from 'mapbox-gl';
-import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as turf from '@turf/turf';
-import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
-import ZoomControl from '@mapbox-controls/zoom';
-import '@mapbox-controls/styles/src/index.css';
 import StylesControl from '@mapbox-controls/styles';
-import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
-import { LayersControl, RescueControl, WarningsControl } from './mapbox/Controls.js';
+import '@mapbox-controls/styles/src/index.css';
+import ZoomControl from '@mapbox-controls/zoom';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import * as turf from '@turf/turf';
 import { Button } from 'antd';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { MapProvider } from 'react-map-gl';
+import { erzeugeTaktischesZeichen } from 'taktische-zeichen-core';
+import { useFahrzeuge } from '../../../hooks/fahrzeuge/fahrzeuge.hook.js';
+import { useTheme } from '../../../hooks/theme.hook.js';
+import { formatMGRS, mgrs } from '../../../utils/coordinates.js';
+import { OptaTooltip } from '../atoms/OptaTooltip.component.tsx';
+import { LayersControl, RescueControl, WarningsControl } from './mapbox/Controls.js';
 
 interface Props {
   mapboxToken: string;
@@ -59,6 +60,7 @@ function _MapboxComponent({ mapboxToken }: Props) {
       mapboxgl: mapboxgl,
       countries: 'de',
       collapsed: true,
+      language: 'de',
     });
     const layerControl = new LayersControl();
     const warningsControl = new WarningsControl();
@@ -168,7 +170,9 @@ function _MapboxComponent({ mapboxToken }: Props) {
                 }
               }}
             >
-              {fahrzeug.fullOpta}
+              <OptaTooltip fullOpta={fahrzeug.fullOpta}>
+                {fahrzeug.fullOpta}
+              </OptaTooltip>
             </Button>
           ))}
         </div>
