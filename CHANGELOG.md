@@ -1,3 +1,13 @@
+## Version [v1.0.0-alpha.12](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) – Veröffentlicht am 2025-01-31
+
+## 🔧 Tool Verbesserungen
+Verbesserungen an den Werkzeugen:
+- [`9b8d18f`](https://github.com/rubenvitt/ember-rescue/commit/9b8d18f) (docker): Enhance backend healthcheck and Dockerfile 
+
+
+
+# [1.0.0-alpha.12](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2025-01-31)
+
 ## Version [v1.0.0-alpha.11](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) – Veröffentlicht am 2025-01-31
 
 ## 🧹 Codebereinigungen
