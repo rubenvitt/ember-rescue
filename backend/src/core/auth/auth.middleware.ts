@@ -3,10 +3,10 @@ import { NextFunction, Response } from 'express';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
-    const token = req.headers['authorization'];
-    if (token) {
-      (req as any).accessToken = token.split(' ')[1];
+  use(req: Request, _res: Response, next: NextFunction): void {
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      (req as any).accessToken = authHeader.substring(7);
     }
     next();
   }

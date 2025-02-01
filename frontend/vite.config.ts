@@ -1,8 +1,11 @@
 import tailwindcss from '@tailwindcss/vite';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
+import { readFileSync } from 'fs';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
+
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -21,6 +24,9 @@ export default defineConfig(async () => ({
       },
     },
   ],
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(packageJson.version),
+  },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors

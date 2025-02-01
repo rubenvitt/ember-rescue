@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import storage from '../../../utils/storage.js';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocalServer } from '../../../hooks/local-network.hook.js';
-import { FormLayout } from './form/FormLayout.comonent.js';
-import { InputWrapper } from '../atoms/InputWrapper.component.js';
-import { AutoComplete, Button } from 'antd';
-import { PiClock, PiCloudArrowDown } from 'react-icons/pi';
+import { AutoComplete } from 'antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
+import React, { useEffect, useMemo, useState } from 'react';
+import { PiClock, PiCloudArrowDown } from 'react-icons/pi';
+import { useLocalServer } from '../../../hooks/local-network.hook.js';
+import storage from '../../../utils/storage.js';
+import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { FormLayout } from './form/FormLayout.comonent.js';
 
 export type LocalSettings = {
   baseUrl: string;
@@ -88,6 +88,14 @@ export const PrestartSettings: React.FC = () => {
           setLoading(false);
         },
       }}
+      buttons={{
+        submit: {
+          icon: <PiCloudArrowDown size={24} />,
+          loading: loading,
+          children: 'Speichern',
+          type: 'primary',
+        }
+      }}
     >
       {(props) => {
         return (
@@ -103,9 +111,6 @@ export const PrestartSettings: React.FC = () => {
                 options={serverOptions}
               />
             </InputWrapper>
-            <Button type="primary" onClick={props?.submit} icon={<PiCloudArrowDown size={24} />} loading={loading}>
-              Speichern
-            </Button>
           </>
         );
       }}

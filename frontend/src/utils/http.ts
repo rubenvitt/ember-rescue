@@ -12,6 +12,7 @@ export function getAPIConfig(): Configuration {
     middleware: [
       {
         pre(context: RequestContext): Promise<FetchParams | void> {
+          const backendAccessToken = storage().readLocalStorage<string>('backendAccessToken');
           return Promise.resolve({
             url: context.url,
             init: {
@@ -19,13 +20,13 @@ export function getAPIConfig(): Configuration {
               headers: {
                 ...context.init.headers,
                 bearbeiter: storage().readLocalStorage<Bearbeiter>('bearbeiter')?.name ?? '',
+                ...(backendAccessToken ? { Authorization: `Bearer ${backendAccessToken}` } : {}),
               },
             },
           });
         },
       },
     ],
-    apiKey: () => storage().readLocalStorage<string>('backendAccessToken') ?? '',
   });
 }
 
@@ -74,7 +75,7 @@ async function makeRequest(
 
   if (bearbeiter) additionalHeaders.Bearbeiter = `Bearbeiter: ${bearbeiter.name}`;
   if (einsatzId) additionalHeaders.Einsatz = `Einsatz-ID: ${einsatzId}`;
-  if (backendAccessToken) additionalHeaders.Authorization = `AUTH: ${backendAccessToken}`;
+  if (backendAccessToken) additionalHeaders.Authorization = `Bearer ${backendAccessToken}`;
 
   const requestInit: RequestInit & ClientOptions = {
     ...init,
