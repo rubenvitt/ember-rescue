@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { getVersion } from '@tauri-apps/api/app';
+import { isTauri } from '@tauri-apps/api/core';
 import { Button, Form, Image, Input, Modal } from 'antd';
 import { cva } from 'class-variance-authority';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,36 +11,37 @@ import { WindowOptions } from '../../../utils/window.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { LoginForm } from '../molecules/LoginForm.component.tsx';
 import { FormLayout } from './form/FormLayout.comonent.js';
+import { LocalSettings } from './PrestartSettings.component.tsx';
+
+const APP_VERSION = import.meta.env.VITE_APP_VERSION || 'unknown';
 
 export const SignIn: React.FC = () => {
   const navigate = useNavigate({ from: '/signin' });
-  const formInstance = Form.useFormInstance();
+  const [modalForm] = Form.useForm();
   const [version, setVersion] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useWindowSetup(WindowOptions.main);
   const navigateToSettings = useCallback(() => navigate({ to: '/prestart/settings' }), [navigate]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    getVersion().then(setVersion);
+    setVersion(isTauri() ? getVersion() : APP_VERSION);
   }, []);
 
   const handleRequestAccessToken = useCallback(() => {
     if (!isModalOpen) {
       setIsModalOpen(true);
-      setTimeout(() => {
-        formInstance.focusField('password');
-      }, 100);
       storage().writeLocalStorage('backendAccessToken', null);
     }
-  }, [setIsModalOpen]);
+  }, [isModalOpen]);
 
   useEffect(() => {
-    window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
+    const handler = () => handleRequestAccessToken();
+    window.addEventListener('requestAccessToken', handler);
     return () => {
-      window.removeEventListener('requestAccessToken', handleRequestAccessToken);
+      window.removeEventListener('requestAccessToken', handler);
     };
-  }, []);
+  }, [handleRequestAccessToken]);
 
   return (
     <div className={cva('relative flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8')()}>
@@ -68,23 +70,38 @@ export const SignIn: React.FC = () => {
       </div>
 
       <FormLayout<{ accessToken: string }>
+        formInstance={modalForm}
         form={{
-          onFinish: async () => {
-            storage().writeLocalStorage('backendAccessToken', null);
+          onFinish: async (values) => {
+            storage().writeLocalStorage('backendAccessToken', values.accessToken);
             setIsModalOpen(false);
-            window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
+            modalForm.resetFields();
+            window.location.reload();
           },
           onReset: async () => {
             await navigateToSettings();
-            window.addEventListener('requestAccessToken', handleRequestAccessToken, { once: true });
             setIsModalOpen(false);
+            modalForm.resetFields();
+
+            const localSettings = storage().readLocalStorage<LocalSettings>('localSettings');
+            if (localSettings) {
+              const { baseUrl, ...rest } = localSettings;
+              storage().writeLocalStorage('localSettings', rest);
+            }
           },
         }}
       >
-        {(props) => (
+        {() => (
           <Modal
-            onClose={() => props?.resetFields()}
-            onCancel={() => props?.resetFields()}
+            onCancel={() => {
+              const localSettings = storage().readLocalStorage<LocalSettings>('localSettings');
+              if (localSettings) {
+                const { baseUrl, ...rest } = localSettings;
+                storage().writeLocalStorage('localSettings', rest);
+              }
+              modalForm.resetFields();
+              setIsModalOpen(false);
+            }}
             okText="Speichern"
             okButtonProps={{
               icon: <PiSecurityCamera />,
@@ -92,12 +109,12 @@ export const SignIn: React.FC = () => {
             cancelButtonProps={{
               icon: <PiSkipBack />,
             }}
-            onOk={props?.submit}
+            onOk={() => modalForm.submit()}
             open={isModalOpen}
             title="Access Token"
           >
             <InputWrapper name="accessToken">
-              <Input.Password autoFocus={true} size="large" placeholder="Access Token benötigt" name="accessToken" />
+              <Input.Password autoFocus={true} size="large" placeholder="Access Token benötigt" />
             </InputWrapper>
           </Modal>
         )}

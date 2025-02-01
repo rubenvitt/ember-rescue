@@ -12,11 +12,15 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
 import type { ApiMeta } from './ApiMeta';
-import { ApiMetaFromJSON, ApiMetaToJSON } from './ApiMeta';
+import { ApiMetaFromJSON, ApiMetaFromJSONTyped, ApiMetaToJSON, ApiMetaToJSONTyped } from './ApiMeta';
 import type { VehiclesDto } from './VehiclesDto';
 import {
-  VehiclesDtoFromJSON, VehiclesDtoToJSON
+  VehiclesDtoFromJSON,
+  VehiclesDtoFromJSONTyped,
+  VehiclesDtoToJSON,
+  VehiclesDtoToJSONTyped,
 } from './VehiclesDto';
 
 /**

@@ -112,7 +112,7 @@ export function EinsatztagebuchComponent() {
         title: 'Typ',
         dataIndex: 'type',
         key: 'type',
-        width: 50,
+        width: 60,
         filters: [
           { text: 'Meldung', value: 'USER' },
           { text: 'Lagemeldung', value: 'LAGEMELDUNG' },
@@ -123,15 +123,15 @@ export function EinsatztagebuchComponent() {
         render: (value) => {
           switch (value) {
             case 'USER':
-              return <PiUser size={24} className="text-primary-500" />;
+              return <Tooltip placement='top' title="Meldung"><PiUser size={24} className="text-primary-500" /></Tooltip>;
             case 'LAGEMELDUNG':
-              return <PiPictureInPicture size={24} className="text-red-500" />;
+              return <Tooltip placement='top' title="Lagemeldung"><PiPictureInPicture size={24} className="text-red-500" /></Tooltip>;
             case 'RESSOURCEN':
-              return <PiAmbulance size={24} className="text-primary-500" />;
+              return <Tooltip placement='top' title="Ressourcen"><PiAmbulance size={24} className="text-primary-500" /></Tooltip>;
             case 'BETROFFENE_PATIENTEN':
-              return <PiPlus size={24} className="text-primary-500" />;
+              return <Tooltip placement='top' title="Betroffene | Patienten"><PiPlus size={24} className="text-primary-500" /></Tooltip>;
             case 'KORREKTUR':
-              return <PiPencil size={24} className="text-orange-500" />;
+              return <Tooltip placement='top' title="Korrektur"><PiPencil size={24} className="text-orange-500" /></Tooltip>;
             default:
               return value;
           }
@@ -250,13 +250,13 @@ export function EinsatztagebuchComponent() {
       <EinsatztagebuchHeaderComponent inputVisible={inputVisible} setInputVisible={setInputVisible} />
       <EinsatztagebuchFormWrapperComponent inputVisible={inputVisible} closeForm={() => setInputVisible(false)} />
       <div ref={parentRef} className="mt-8">
-        <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
           <div className="w-full py-2 align-middle sm:px-6 lg:px-8">
             <Table
+              className="mb"
               dataSource={einsatztagebuch?.data.items}
               loading={!einsatztagebuch}
               columns={columns}
-              virtual
               scroll={{ y: 1000 }}
               pagination={false}
               locale={{

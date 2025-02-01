@@ -1,13 +1,14 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { AlarmstichwortRepository } from '@templates/alarmstichworte/alarmstichwort.repository';
-import { FahrzeugeService } from '@templates/vehicles/fahrzeuge.service';
 import { FilterQuery } from 'mongoose';
+import { Bearbeiter } from 'src/user/bearbeiter/core/bearbeiter.schema';
 import { EinsatztagebuchEintragEnum, UpdateEinsatzDto } from '../../types';
 import { EinsatztagebuchService } from '../journal/einsatztagebuch.service';
 import { EinsatzRepository } from '../schema/einsatz.repository';
 import { Einsatz } from '../schema/einsatz.schema';
-import { CreateEinsatzParams, EinsatzDto } from './dto/einsatz.dto';
+import { EinsatzDto } from './dto/einsatz.dto';
 import { EinsatzMapper } from './einsatz.mapper';
+import { CreateMissionDto } from './mission-core.dto';
 
 @Injectable()
 export class EinsatzCoreService {
@@ -15,7 +16,6 @@ export class EinsatzCoreService {
 
   constructor(
     private readonly einsatztagebuchService: EinsatztagebuchService,
-    private readonly fahrzeugeService: FahrzeugeService,
     private readonly alarmstichwortService: AlarmstichwortRepository,
     private readonly repository: EinsatzRepository,
     private readonly einsatzMapper: EinsatzMapper,
@@ -31,23 +31,21 @@ export class EinsatzCoreService {
     return einsatz;
   }
 
-  async createEinsatz({
-    createEinsatzDto,
-  }: CreateEinsatzParams): Promise<EinsatzDto> {
+  async createEinsatz(createEinsatzDto: CreateMissionDto, bearbeiter: Bearbeiter): Promise<EinsatzDto> {
     const alarmstichwort = await this.alarmstichwortService.findActive({
-      code: createEinsatzDto.einsatzAlarmstichwort.code,
+      code: createEinsatzDto.alarmstichwort,
     });
 
     const einsatz = await this.repository.create({
-      bearbeiter: createEinsatzDto.bearbeiter,
-      beginn: new Date(),
+      bearbeiter: bearbeiter,
+      beginn: createEinsatzDto.erstAlarmiert,
       aufnehmendesRettungsmittel: createEinsatzDto.aufnehmendesRettungsmittel,
       einsatzAlarmstichwort: alarmstichwort.pop(),
       einsatzTagebuch: {
         items: [],
       },
       einsatzMeta: {
-        ort: 'asd', // FIXME[ember-rescue-68](rubeen, 31.12.24): needs valid ORT from frontend
+        ort: createEinsatzDto.ort,
       },
     });
 

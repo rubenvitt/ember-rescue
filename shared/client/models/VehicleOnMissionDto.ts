@@ -12,9 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { StatusDto } from './StatusDto';
-import { StatusDtoFromJSON, StatusDtoFromJSONTyped, StatusDtoToJSON, StatusDtoToJSONTyped } from './StatusDto';
+import { StatusDtoFromJSON, StatusDtoToJSON } from './StatusDto';
 
 /**
  *
@@ -34,6 +33,12 @@ export interface VehicleOnMissionDto {
    * @memberof VehicleOnMissionDto
    */
   optaFunktion: string;
+  /**
+   *
+   * @type {string}
+   * @memberof VehicleOnMissionDto
+   */
+  optaFunktionCode: string;
   /**
    *
    * @type {string}
@@ -78,6 +83,7 @@ export interface VehicleOnMissionDto {
 export function instanceOfVehicleOnMissionDto(value: object): value is VehicleOnMissionDto {
   if (!('fullOpta' in value) || value['fullOpta'] === undefined) return false;
   if (!('optaFunktion' in value) || value['optaFunktion'] === undefined) return false;
+  if (!('optaFunktionCode' in value) || value['optaFunktionCode'] === undefined) return false;
   if (!('einsatzbeginn' in value) || value['einsatzbeginn'] === undefined) return false;
   if (!('einsatzende' in value) || value['einsatzende'] === undefined) return false;
   if (!('personal' in value) || value['personal'] === undefined) return false;
@@ -98,6 +104,7 @@ export function VehicleOnMissionDtoFromJSONTyped(json: any, ignoreDiscriminator:
   return {
     fullOpta: json['fullOpta'],
     optaFunktion: json['optaFunktion'],
+    optaFunktionCode: json['optaFunktionCode'],
     einsatzbeginn: json['einsatzbeginn'],
     einsatzende: new Date(json['einsatzende']),
     personal: json['personal'],
@@ -122,6 +129,7 @@ export function VehicleOnMissionDtoToJSONTyped(
   return {
     fullOpta: value['fullOpta'],
     optaFunktion: value['optaFunktion'],
+    optaFunktionCode: value['optaFunktionCode'],
     einsatzbeginn: value['einsatzbeginn'],
     einsatzende: value['einsatzende'].toISOString(),
     personal: value['personal'],
