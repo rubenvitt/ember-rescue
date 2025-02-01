@@ -1,3 +1,23 @@
+## Version [v1.0.0-alpha.13](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) – Veröffentlicht am 2025-02-01
+
+## ✨ Neue Funktionen
+Die folgenden neuen Features wurden hinzugefügt:
+- [`2fc52ca`](https://github.com/rubenvitt/ember-rescue/commit/2fc52ca) (missions): Simplify mission creation and improve frontend components 
+
+- [`bab50d3`](https://github.com/rubenvitt/ember-rescue/commit/bab50d3) (auth): Improve token handling and access management 
+
+## 🐛 Fehlerbehebungen
+Diese Probleme wurden behoben:
+- [`ce0935b`](https://github.com/rubenvitt/ember-rescue/commit/ce0935b) (http): Add Tauri-specific fetch handling 
+
+## 🔧 Tool Verbesserungen
+Verbesserungen an den Werkzeugen:
+- [`f583c9e`](https://github.com/rubenvitt/ember-rescue/commit/f583c9e) (logging): Exclude meta endpoints from request logging 
+
+
+
+# [1.0.0-alpha.13](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2025-02-01)
+
 ## Version [v1.0.0-alpha.12](https://github.com/rubenvitt/ember-rescue/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) – Veröffentlicht am 2025-01-31
 
 ## 🔧 Tool Verbesserungen
