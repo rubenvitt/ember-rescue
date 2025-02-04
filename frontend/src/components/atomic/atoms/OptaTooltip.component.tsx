@@ -7,7 +7,7 @@ interface OptaTooltipProps {
     children?: React.ReactNode;
 }
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export const OptaTooltip = ({ fullOpta, children }: OptaTooltipProps) => {
     const { functionOpta, districtOpta, localCodeOpta, bosOpta } = useOpta();
@@ -31,53 +31,57 @@ export const OptaTooltip = ({ fullOpta, children }: OptaTooltipProps) => {
         const functionTemplate = functionOpta.data?.data.find(f => f.code === functionCode);
 
         return (
-            <div className="space-y-2 max-w-md">
-                <Title level={5} className="!mb-2">OPTA Details</Title>
-
-                {districtTemplate && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">Bezirk</Text>
-                        <Text strong>{districtTemplate.label}</Text>
+            <div className="space-y-4 max-w-md p-1">
+                {/* Hauptinformationen */}
+                <div className="border-b border-gray-200 dark:border-gray-700 pb-2">
+                    <div className="flex items-center gap-2">
+                        {districtTemplate && (
+                            <Text strong className="text-lg !text-gray-900 dark:!text-gray-100">{districtTemplate.label}</Text>
+                        )}
+                        {bosTemplate && (
+                            <Text strong className="text-lg !text-gray-900 dark:!text-gray-100">{bosTemplate.label}</Text>
+                        )}
                     </div>
-                )}
+                    {ort && (
+                        <Text className="text-base !text-gray-700 dark:!text-gray-300">{ort}</Text>
+                    )}
+                </div>
 
-                {bosTemplate && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">BOS</Text>
-                        <Text strong>{bosTemplate.label}</Text>
-                        <Text type="secondary" className="block text-xs">{bosTemplate.group}</Text>
-                    </div>
-                )}
+                {/* Funktionale Details */}
+                <div className="grid grid-cols-2 gap-4">
+                    {localCodeTemplate && (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-700">
+                            <Text type="secondary" className="block text-xs !text-gray-500 dark:!text-gray-400">Örtliche Kennung</Text>
+                            <Text strong className="block !text-gray-900 dark:!text-gray-100">{localCodeTemplate.label}</Text>
+                            <Text type="secondary" className="block text-xs mt-1 !text-gray-500 dark:!text-gray-400">{localCodeTemplate.group}</Text>
+                        </div>
+                    )}
 
-                {ort && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">Ort</Text>
-                        <Text strong>{ort}</Text>
-                    </div>
-                )}
+                    {functionTemplate && (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-700">
+                            <Text type="secondary" className="block text-xs !text-gray-500 dark:!text-gray-400">Funktionskennung</Text>
+                            <Text strong className="block !text-gray-900 dark:!text-gray-100">{functionTemplate.label}</Text>
+                            <Text type="secondary" className="block text-xs mt-1 !text-gray-500 dark:!text-gray-400">{functionTemplate.group}</Text>
+                        </div>
+                    )}
+                </div>
 
-                {localCodeTemplate && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">Örtliche Kennung</Text>
-                        <Text strong>{localCodeTemplate.label}</Text>
-                        <Text type="secondary" className="block text-xs">{localCodeTemplate.group}</Text>
-                    </div>
-                )}
+                {/* Zusätzliche Informationen */}
+                <div className="grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-700 pt-2">
+                    {bosTemplate?.group && (
+                        <div>
+                            <Text type="secondary" className="block text-xs !text-gray-500 dark:!text-gray-400">BOS Gruppe</Text>
+                            <Text className="!text-gray-700 dark:!text-gray-300">{bosTemplate.group}</Text>
+                        </div>
+                    )}
 
-                {functionTemplate && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">Funktionskennung</Text>
-                        <Text strong>{functionTemplate.label}</Text>
-                        <Text type="secondary" className="block text-xs">{functionTemplate.group}</Text>
-                    </div>
-                )}
-
-                {orderNumber && (
-                    <div>
-                        <Text type="secondary" className="block text-xs">Ordnungsnummer</Text>
-                        <Text strong>{orderNumber}</Text>
-                    </div>
-                )}
+                    {orderNumber && (
+                        <div>
+                            <Text type="secondary" className="block text-xs !text-gray-500 dark:!text-gray-400">Ordnungsnummer</Text>
+                            <Text className="!text-gray-700 dark:!text-gray-300">{orderNumber}</Text>
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }, [fullOpta, functionOpta.data, districtOpta.data, localCodeOpta.data, bosOpta.data]);
@@ -88,6 +92,7 @@ export const OptaTooltip = ({ fullOpta, children }: OptaTooltipProps) => {
             title={null}
             placement="top"
             trigger="hover"
+            overlayStyle={{ maxWidth: '500px' }}
         >
             {children ?? fullOpta}
         </Popover>

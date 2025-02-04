@@ -48,6 +48,18 @@ export interface SmallMissionDto {
    */
   id: string;
   /**
+   * Backend version of the server that created the mission
+   * @type {string}
+   * @memberof SmallMissionDto
+   */
+  backendVersion: string;
+  /**
+   * Whether the mission is compatible with the backend version
+   * @type {boolean}
+   * @memberof SmallMissionDto
+   */
+  backendCompatible: boolean;
+  /**
    *
    * @type {string}
    * @memberof SmallMissionDto
@@ -90,6 +102,8 @@ export interface SmallMissionDto {
  */
 export function instanceOfSmallMissionDto(value: object): value is SmallMissionDto {
   if (!('id' in value) || value['id'] === undefined) return false;
+  if (!('backendVersion' in value) || value['backendVersion'] === undefined) return false;
+  if (!('backendCompatible' in value) || value['backendCompatible'] === undefined) return false;
   if (!('aufnehmendesRettungsmittel' in value) || value['aufnehmendesRettungsmittel'] === undefined) return false;
   if (!('bearbeiter' in value) || value['bearbeiter'] === undefined) return false;
   if (!('beginn' in value) || value['beginn'] === undefined) return false;
@@ -109,6 +123,8 @@ export function SmallMissionDtoFromJSONTyped(json: any, ignoreDiscriminator: boo
   }
   return {
     id: json['_id'],
+    backendVersion: json['backendVersion'],
+    backendCompatible: json['backendCompatible'],
     aufnehmendesRettungsmittel: json['aufnehmendesRettungsmittel'],
     bearbeiter: BearbeiterWithStatusDtoFromJSON(json['bearbeiter']),
     beginn: json['beginn'],
@@ -129,6 +145,8 @@ export function SmallMissionDtoToJSONTyped(value?: SmallMissionDto | null, ignor
 
   return {
     _id: value['id'],
+    backendVersion: value['backendVersion'],
+    backendCompatible: value['backendCompatible'],
     aufnehmendesRettungsmittel: value['aufnehmendesRettungsmittel'],
     bearbeiter: BearbeiterWithStatusDtoToJSON(value['bearbeiter']),
     beginn: value['beginn'],

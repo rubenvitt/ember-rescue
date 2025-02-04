@@ -1,13 +1,14 @@
+import { VariantProps } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { buttonVariants } from '../../styles/button.styles.js';
-import { VariantProps } from 'class-variance-authority';
 
-export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
+export type ActionButton = VariantProps<typeof buttonVariants> & {
   label: string;
   danger?: boolean;
+  disabled?: boolean;
 } & (
     | {
-        onClick: (item: T) => void;
+    onClick: () => void;
         dialog?: never;
       }
     | {
@@ -16,7 +17,7 @@ export type ActionButton<T> = VariantProps<typeof buttonVariants> & {
           message: string;
           confirmLabel: string;
           cancelLabel: string;
-          onConfirm: (item: T) => void;
+        onConfirm: () => void;
         };
         onClick?: never;
       }
@@ -26,6 +27,6 @@ export type ExpandableListItemProps<T> = {
   item: T;
   renderContent: (item: T) => ReactNode;
   renderExpandedContent?: (item: T) => ReactNode;
-  actionButtons?: ActionButton<T>[];
+  actionButtons?: (item: T) => ActionButton[];
   isExpandable?: boolean;
 };

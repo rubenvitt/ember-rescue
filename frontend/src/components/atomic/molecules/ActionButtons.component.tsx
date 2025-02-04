@@ -1,11 +1,11 @@
-import { ActionButton } from '../../../types/ui/expandableList.types.js';
 import { Button, Modal } from 'antd';
+import { ActionButton } from '../../../types/ui/expandableList.types.js';
 
 const { confirm } = Modal;
 
-export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>[]; item: T }) => (
+export const ActionButtons = <T,>({ buttons, item }: { buttons: (item: T) => ActionButton[]; item: T }) => (
   <div className="mt-3 flex justify-end space-x-3">
-    {buttons.map((button) =>
+    {buttons(item).map((button) =>
       button.dialog ? (
         <Button
           danger={button.danger}
@@ -15,7 +15,7 @@ export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>
               content: button.dialog?.message,
               okText: button.dialog?.confirmLabel,
               cancelText: button.dialog?.cancelLabel,
-              onOk: () => button.dialog?.onConfirm(item),
+              onOk: () => button.dialog?.onConfirm(),
               type: 'warning',
               closable: true,
               maskClosable: true,
@@ -24,12 +24,13 @@ export const ActionButtons = <T, >({ buttons, item }: { buttons: ActionButton<T>
               },
             });
           }}
+          disabled={button.disabled}
           type="dashed"
         >
           {button.label}
         </Button>
       ) : (
-        <Button key={button.label} danger={button.danger} onClick={() => button.onClick(item)} type="primary">
+        <Button key={button.label} danger={button.danger} onClick={() => button.onClick()} type="primary" disabled={button.disabled}>
           {button.label}
         </Button>
       ),

@@ -8,7 +8,7 @@ import { EmbeddedStatus, Status } from '@templates/status/status.schema';
 import { EmbeddedVehiclesTemplate } from '@templates/vehicles/vehicles-template.schema';
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { BearbeiterDto } from '../../user/bearbeiter/core/bearbeiter.dto';
+import { BearbeiterDto, BearbeiterWithStatusDto } from '../../user/bearbeiter/core/bearbeiter.dto';
 import { JournalEntryType } from '../journal/journal.dto';
 import { Notiz } from '../notes/notiz.schema';
 import { Reminder } from '../reminders/reminder.schema';
@@ -133,6 +133,8 @@ export type CreateEinsatzDto = {
 
 @Schema({ timestamps: true, collection: 'einsaetze' })
 export class Einsatz extends Document {
+  @Prop({})
+  backendVersion: string;
   @Prop({ required: true })
   beginn: Date;
   @Prop()
@@ -143,7 +145,7 @@ export class Einsatz extends Document {
   einsatznummer: number;
 
   @Prop({ required: true })
-  bearbeiter: BearbeiterDto;
+  bearbeiter: BearbeiterWithStatusDto;
 
   @Prop({ required: true })
   aufnehmendesRettungsmittel: string;

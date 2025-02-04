@@ -1,10 +1,5 @@
-import { ApiResponse } from '../../types';
 import { ApiProperty } from '@nestjs/swagger';
-import { BearbeiterWithStatusDto } from '../../user/bearbeiter/core/bearbeiter.dto';
 import { EinsatzAlarmstichwortDto } from '@templates/alarmstichworte/alarmstichwort.dto';
-import { JournalDto } from '../journal/journal.dto';
-import { VehicleOnMissionDto } from '../vehicles/vehicle.dto';
-import { EinsatzNoteDto } from '../notes/notes.dto';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -14,7 +9,12 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ApiResponse } from '../../types';
+import { BearbeiterWithStatusDto } from '../../user/bearbeiter/core/bearbeiter.dto';
+import { JournalDto } from '../journal/journal.dto';
+import { EinsatzNoteDto } from '../notes/notes.dto';
 import { ReminderDto } from '../reminders/reminders.dto';
+import { VehicleOnMissionDto } from '../vehicles/vehicle.dto';
 
 export class MissionMetaDto {
   @ApiProperty({ required: true })
@@ -60,6 +60,10 @@ export class UpdateMissionDto {
 export class SmallMissionDto {
   @ApiProperty({})
   _id: string;
+  @ApiProperty({ description: 'Backend version of the server that created the mission' })
+  backendVersion: string;
+  @ApiProperty({ description: 'Whether the mission is compatible with the backend version' })
+  backendCompatible: boolean;
   @ApiProperty({})
   aufnehmendesRettungsmittel: string;
   @ApiProperty({

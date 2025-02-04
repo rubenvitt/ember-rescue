@@ -12,15 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 import type { ApiMeta } from './ApiMeta';
-import { ApiMetaFromJSON, ApiMetaFromJSONTyped, ApiMetaToJSON, ApiMetaToJSONTyped } from './ApiMeta';
+import { ApiMetaFromJSON, ApiMetaToJSON } from './ApiMeta';
 import type { SmallMissionDto } from './SmallMissionDto';
 import {
-  SmallMissionDtoFromJSON,
-  SmallMissionDtoFromJSONTyped,
-  SmallMissionDtoToJSON,
-  SmallMissionDtoToJSONTyped,
+  SmallMissionDtoFromJSON, SmallMissionDtoToJSON
 } from './SmallMissionDto';
 
 /**

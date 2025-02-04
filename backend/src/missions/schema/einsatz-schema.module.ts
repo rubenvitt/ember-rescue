@@ -2,9 +2,11 @@ import {
   Counter,
   CounterSchema,
 } from '@core/database/mongo/schemas/counter.schema';
+import { MetaModule } from '@core/meta/meta.module';
 import { Logger, Module } from '@nestjs/common';
 import { getModelToken, MongooseModule, SchemaFactory } from '@nestjs/mongoose';
-import { Model, UpdateQuery } from 'mongoose';
+import { Model } from 'mongoose';
+import * as packageJson from '../../../package.json';
 import { EinsatzRepository } from './einsatz.repository';
 import { Einsatz } from './einsatz.schema';
 
@@ -12,6 +14,7 @@ import { Einsatz } from './einsatz.schema';
   providers: [EinsatzRepository],
   exports: [EinsatzRepository],
   imports: [
+    MetaModule,
     MongooseModule.forFeatureAsync([
       {
         name: Einsatz.name,
@@ -32,6 +35,8 @@ import { Einsatz } from './einsatz.schema';
               );
 
               this.einsatznummer = counter.seq;
+              Logger.log('Create Einsatz', { einsatznummer: this.einsatznummer, backendVersion: packageJson.version });
+              this.backendVersion = packageJson.version;
             }
 
             next();

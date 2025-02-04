@@ -1,14 +1,14 @@
-import { contentStyles, expandedContentStyles, listItemStyles } from '../../../styles/expandableList.styles.ts';
-import { ActionButtons } from './ActionButtons.component.js';
-import { ExpandIcon } from '../atoms/ExpandIcon.component.js';
-import { ExpandableListItemProps } from '../../../types/ui/expandableList.types.ts';
 import { useCallback, useState } from 'react';
+import { contentStyles, expandedContentStyles, listItemStyles } from '../../../styles/expandableList.styles.ts';
+import { ExpandableListItemProps } from '../../../types/ui/expandableList.types.ts';
+import { ExpandIcon } from '../atoms/ExpandIcon.component.js';
+import { ActionButtons } from './ActionButtons.component.js';
 
 export const ExpandableListItem = <T,>({
   item,
   renderContent,
   renderExpandedContent,
-  actionButtons = [],
+  actionButtons = () => [],
   isExpandable = true,
 }: ExpandableListItemProps<T>) => {
   const [isExpanded, setIsExpanded] = useState(false);

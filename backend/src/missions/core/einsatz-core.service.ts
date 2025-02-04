@@ -8,7 +8,7 @@ import { EinsatzRepository } from '../schema/einsatz.repository';
 import { Einsatz } from '../schema/einsatz.schema';
 import { EinsatzDto } from './dto/einsatz.dto';
 import { EinsatzMapper } from './einsatz.mapper';
-import { CreateMissionDto } from './mission-core.dto';
+import { CreateMissionDto, SmallMissionDto } from './mission-core.dto';
 
 @Injectable()
 export class EinsatzCoreService {
@@ -56,9 +56,8 @@ export class EinsatzCoreService {
 
     return this.einsatzMapper.toDto(einsatz);
   }
-
-  getEinsaetze(filter: FilterQuery<Einsatz>) {
-    return this.repository.find(
+  async getEinsaetze(filter: FilterQuery<Einsatz>): Promise<SmallMissionDto[]> {
+    const einsaetze = await this.repository.find(
       filter,
       {
         id: true,
@@ -68,6 +67,7 @@ export class EinsatzCoreService {
         ende: true,
         einsatzAlarmstichwort: true,
         einsatzMeta: true,
+        backendVersion: true,
       },
       {
         sort: {
@@ -75,6 +75,8 @@ export class EinsatzCoreService {
         },
       },
     );
+
+    return einsaetze.map((einsatz) => this.einsatzMapper.toSmallDto(einsatz));
   }
 
   closeEinsatz(einsatzId: string) {
