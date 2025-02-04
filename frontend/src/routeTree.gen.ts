@@ -24,7 +24,6 @@ const SetupEinsatzLazyImport = createFileRoute('/setupEinsatz')()
 const IndexLazyImport = createFileRoute('/')()
 const AppIndexLazyImport = createFileRoute('/app/')()
 const PrestartSettingsLazyImport = createFileRoute('/prestart/settings')()
-const AppUavLazyImport = createFileRoute('/app/uav')()
 const AppSchadenLazyImport = createFileRoute('/app/schaden')()
 const AppNotizenLazyImport = createFileRoute('/app/notizen')()
 const AppLagekarteLazyImport = createFileRoute('/app/lagekarte')()
@@ -33,6 +32,8 @@ const AppFahrzeugeLazyImport = createFileRoute('/app/fahrzeuge')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
 const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
 const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')()
+const AppUavIndexLazyImport = createFileRoute('/app/uav/')()
+const AppUavProtokollLazyImport = createFileRoute('/app/uav/protokoll')()
 
 // Create/Update Routes
 
@@ -79,12 +80,6 @@ const PrestartSettingsLazyRoute = PrestartSettingsLazyImport.update({
 } as any).lazy(() =>
   import('./routes/prestart/settings.lazy').then((d) => d.Route),
 )
-
-const AppUavLazyRoute = AppUavLazyImport.update({
-  id: '/uav',
-  path: '/uav',
-  getParentRoute: () => AppRoute,
-} as any).lazy(() => import('./routes/app/uav.lazy').then((d) => d.Route))
 
 const AppSchadenLazyRoute = AppSchadenLazyImport.update({
   id: '/schaden',
@@ -145,6 +140,20 @@ const AuthSignoutRoute = AuthSignoutImport.update({
   path: '/auth/signout',
   getParentRoute: () => rootRoute,
 } as any)
+
+const AppUavIndexLazyRoute = AppUavIndexLazyImport.update({
+  id: '/uav/',
+  path: '/uav/',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/app/uav/index.lazy').then((d) => d.Route))
+
+const AppUavProtokollLazyRoute = AppUavProtokollLazyImport.update({
+  id: '/uav/protokoll',
+  path: '/uav/protokoll',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/app/uav/protokoll.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -241,13 +250,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSchadenLazyImport
       parentRoute: typeof AppImport
     }
-    '/app/uav': {
-      id: '/app/uav'
-      path: '/uav'
-      fullPath: '/app/uav'
-      preLoaderRoute: typeof AppUavLazyImport
-      parentRoute: typeof AppImport
-    }
     '/prestart/settings': {
       id: '/prestart/settings'
       path: '/prestart/settings'
@@ -269,6 +271,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexLazyImport
       parentRoute: typeof AppImport
     }
+    '/app/uav/protokoll': {
+      id: '/app/uav/protokoll'
+      path: '/uav/protokoll'
+      fullPath: '/app/uav/protokoll'
+      preLoaderRoute: typeof AppUavProtokollLazyImport
+      parentRoute: typeof AppImport
+    }
+    '/app/uav/': {
+      id: '/app/uav/'
+      path: '/uav'
+      fullPath: '/app/uav'
+      preLoaderRoute: typeof AppUavIndexLazyImport
+      parentRoute: typeof AppImport
+    }
   }
 }
 
@@ -283,8 +299,9 @@ interface AppRouteChildren {
   AppLagekarteLazyRoute: typeof AppLagekarteLazyRoute
   AppNotizenLazyRoute: typeof AppNotizenLazyRoute
   AppSchadenLazyRoute: typeof AppSchadenLazyRoute
-  AppUavLazyRoute: typeof AppUavLazyRoute
   AppIndexLazyRoute: typeof AppIndexLazyRoute
+  AppUavProtokollLazyRoute: typeof AppUavProtokollLazyRoute
+  AppUavIndexLazyRoute: typeof AppUavIndexLazyRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -296,8 +313,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppLagekarteLazyRoute: AppLagekarteLazyRoute,
   AppNotizenLazyRoute: AppNotizenLazyRoute,
   AppSchadenLazyRoute: AppSchadenLazyRoute,
-  AppUavLazyRoute: AppUavLazyRoute,
   AppIndexLazyRoute: AppIndexLazyRoute,
+  AppUavProtokollLazyRoute: AppUavProtokollLazyRoute,
+  AppUavIndexLazyRoute: AppUavIndexLazyRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -316,10 +334,11 @@ export interface FileRoutesByFullPath {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
   '/app/': typeof AppIndexLazyRoute
+  '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
+  '/app/uav': typeof AppUavIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -335,10 +354,11 @@ export interface FileRoutesByTo {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexLazyRoute
+  '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
+  '/app/uav': typeof AppUavIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -356,10 +376,11 @@ export interface FileRoutesById {
   '/app/lagekarte': typeof AppLagekarteLazyRoute
   '/app/notizen': typeof AppNotizenLazyRoute
   '/app/schaden': typeof AppSchadenLazyRoute
-  '/app/uav': typeof AppUavLazyRoute
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexLazyRoute
+  '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
+  '/app/uav/': typeof AppUavIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -378,10 +399,11 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/uav'
     | '/prestart/settings'
     | '/admin'
     | '/app/'
+    | '/app/uav/protokoll'
+    | '/app/uav'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -396,10 +418,11 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/uav'
     | '/prestart/settings'
     | '/admin'
     | '/app'
+    | '/app/uav/protokoll'
+    | '/app/uav'
   id:
     | '__root__'
     | '/'
@@ -415,10 +438,11 @@ export interface FileRouteTypes {
     | '/app/lagekarte'
     | '/app/notizen'
     | '/app/schaden'
-    | '/app/uav'
     | '/prestart/settings'
     | '/admin/'
     | '/app/'
+    | '/app/uav/protokoll'
+    | '/app/uav/'
   fileRoutesById: FileRoutesById
 }
 
@@ -475,8 +499,9 @@ export const routeTree = rootRoute
         "/app/lagekarte",
         "/app/notizen",
         "/app/schaden",
-        "/app/uav",
-        "/app/"
+        "/app/",
+        "/app/uav/protokoll",
+        "/app/uav/"
       ]
     },
     "/setupEinsatz": {
@@ -520,10 +545,6 @@ export const routeTree = rootRoute
       "filePath": "app/schaden.lazy.tsx",
       "parent": "/app"
     },
-    "/app/uav": {
-      "filePath": "app/uav.lazy.tsx",
-      "parent": "/app"
-    },
     "/prestart/settings": {
       "filePath": "prestart/settings.lazy.tsx"
     },
@@ -532,6 +553,14 @@ export const routeTree = rootRoute
     },
     "/app/": {
       "filePath": "app/index.lazy.tsx",
+      "parent": "/app"
+    },
+    "/app/uav/protokoll": {
+      "filePath": "app/uav/protokoll.lazy.tsx",
+      "parent": "/app"
+    },
+    "/app/uav/": {
+      "filePath": "app/uav/index.lazy.tsx",
       "parent": "/app"
     }
   }

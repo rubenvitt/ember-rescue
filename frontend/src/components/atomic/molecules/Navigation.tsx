@@ -1,9 +1,10 @@
 import { UseNavigateResult } from '@tanstack/react-router';
-import { MenuItem } from '../../../types/ui/menu.types.js';
+import { MenuItemType } from 'antd/lib/menu/interface.js';
 import {
   PiAmbulance,
   PiChartPie,
   PiChecks,
+  PiClipboardBold,
   PiClipboardText,
   PiClock,
   PiClockClockwise,
@@ -11,19 +12,26 @@ import {
   PiDrone,
   PiFirstAid,
   PiGauge,
+  PiGaugeBold,
   PiInfo,
+  PiMapPinLineBold,
   PiMapTrifold,
+  PiNavigationArrowBold,
   PiNotebook,
+  PiNotePencilBold,
   PiPersonSimpleCircle,
   PiPlus,
   PiSignOut,
+  PiSquaresFour,
   PiSun,
+  PiSunDimBold,
   PiUserFocus,
   PiUsers,
+  PiVideoCameraBold,
   PiWarningDiamond,
   PiWrench,
 } from 'react-icons/pi';
-import { MenuItemType } from 'antd/lib/menu/interface.js';
+import { MenuItem } from '../../../types/ui/menu.types.js';
 
 export function userNavigation(navigate: UseNavigateResult<string>, toggleTheme: () => unknown): MenuItemType[] {
   return [
@@ -60,6 +68,13 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
           children: [
             {
               type: 'item',
+              key: '/app/kräfte',
+              label: 'Kräfte Übersicht',
+              icon: <PiSquaresFour size={24} />,
+              onClick: () => navigate({ to: '/app/kräfte' }),
+            },
+            {
+              type: 'item',
               key: '/app/fahrzeuge',
               label: 'Fahrzeuge',
               icon: <PiAmbulance size={24} />,
@@ -90,8 +105,8 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
             {
               type: 'item',
               key: '/app/betroffene',
-              label: 'Übersicht',
-              icon: <PiFirstAid size={24} />,
+              label: 'Betroffene Übersicht',
+              icon: <PiSquaresFour size={24} />,
               onClick: () => navigate({ to: '/app/betroffene' }),
             },
             {
@@ -119,8 +134,8 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
             {
               type: 'item',
               key: '/app/anforderungen',
-              label: 'Übersicht',
-              icon: <PiClipboardText size={24} />,
+              label: 'Anforderungen Übersicht',
+              icon: <PiSquaresFour size={24} />,
               onClick: () => navigate({ to: '/app/anforderungen' }),
             },
             {
@@ -155,7 +170,7 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
               type: 'item',
               key: '/app/lagekarte',
               label: 'Lagekarte Übersicht',
-              icon: <PiMapTrifold size={24} />,
+              icon: <PiSquaresFour size={24} />,
               onClick: () => navigate({ to: '/app/lagekarte' }),
             },
             {
@@ -175,11 +190,75 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
           ],
         },
         {
-          type: 'item',
-          key: '/app/uav',
+          type: 'submenu',
+          key: 'uav',
           label: 'UAV',
           icon: <PiDrone size={24} />,
-          onClick: () => navigate({ to: '/app/uav' }),
+          children: [
+            {
+              type: 'item',
+              key: '/app/uav',
+              label: 'UAV Übersicht',
+              icon: <PiSquaresFour size={24} />,
+              onClick: () => navigate({ to: '/app/uav' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/flugaufträge',
+              label: 'Flugaufträge',
+              icon: <PiDrone size={24} />,
+              onClick: () => navigate({ to: '/app/uav/flugaufträge' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/flugzonen',
+              label: 'Flugzonen',
+              icon: <PiMapPinLineBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/flugzonen' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/routen',
+              label: 'Flugrouten',
+              icon: <PiNavigationArrowBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/routen' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/wetter',
+              label: 'Wetter',
+              icon: <PiSunDimBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/wetter' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/stream',
+              label: 'Live-Stream',
+              icon: <PiVideoCameraBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/stream' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/telemetrie',
+              label: 'Telemetrie',
+              icon: <PiGaugeBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/telemetrie' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/protokoll',
+              label: 'Flugprotokoll',
+              icon: <PiClipboardBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/protokoll' }),
+            },
+            {
+              type: 'item',
+              key: '/app/uav/bericht',
+              label: 'Flugbericht',
+              icon: <PiNotePencilBold size={24} />,
+              onClick: () => navigate({ to: '/app/uav/bericht' }),
+            },
+          ],
         },
       ],
     },
@@ -211,7 +290,7 @@ export function navigation(navigate: UseNavigateResult<string>): MenuItem[] {
               type: 'item',
               key: '/app/schaden',
               label: 'Schäden Übersicht',
-              icon: <PiWrench size={24} />,
+              icon: <PiSquaresFour size={24} />,
               onClick: () => navigate({ to: '/app/schaden' }),
             },
             {
