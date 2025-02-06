@@ -2,7 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { DrohnenEinsatzComponent } from '../../../components/atomic/organisms/DrohnenEinsatz.component.js';
-import { DrohnenEinsatz, DrohnenEinsatzStatus, FlugData, FlugStatus, PreFlightData } from '../../../types/app/flugprotokoll.types.js';
+import { CreateFlugDto, CreatePostFlightDto, CreatePreFlightDto, DrohnenEinsatz, DrohnenEinsatzStatus, FlugData, FlugStatus } from '../../../types/app/flugprotokoll.types.js';
 
 export const Route = createLazyFileRoute('/app/uav/protokoll')({
     component: UAVProtokoll,
@@ -101,15 +101,15 @@ function UAVProtokoll() {
         ],
     };
 
-    const handlePreFlightSubmit = useCallback((data: PreFlightData) => {
+    const handlePreFlightSubmit = useCallback((data: CreatePreFlightDto) => {
         console.log('Pre-Flight submitted:', data);
     }, []);
 
-    const handleFlugSubmit = useCallback((data: FlugData) => {
+    const handleFlugSubmit = useCallback((data: CreateFlugDto) => {
         console.log('Flug submitted:', data);
     }, []);
 
-    const handlePostFlightSubmit = useCallback((data: any) => {
+    const handlePostFlightSubmit = useCallback((data: CreatePostFlightDto) => {
         console.log('Post-Flight submitted:', data);
     }, []);
 

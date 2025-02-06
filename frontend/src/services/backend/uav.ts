@@ -1,5 +1,6 @@
 import { UAVApi } from '@bluelight-hub/shared/client/apis';
 import { ImportManyUAVsDto, UAVTemplateDto } from '@bluelight-hub/shared/client/index.js';
+import { QueryClient } from '@tanstack/react-query';
 import { getAPIConfig } from '../../utils/http.ts';
 import { createInvalidateQueries } from '../../utils/queries.js';
 

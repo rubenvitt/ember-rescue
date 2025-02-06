@@ -2,7 +2,7 @@ import { Button, Empty, Select, Steps, Table, Tag } from 'antd';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { PiAirplaneLanding, PiAirplaneTakeoff, PiClipboardText, PiEmpty, PiPlus } from 'react-icons/pi';
-import { DrohnenEinsatz, FlugData, FlugStatus, PreFlightData } from '../../../types/app/flugprotokoll.types.js';
+import { CreateFlugDto, CreatePostFlightDto, CreatePreFlightDto, DrohnenEinsatz, FlugData, FlugStatus } from '../../../types/app/flugprotokoll.types.js';
 import { natoDateTime } from '../../../utils/time.js';
 import { FlugForm } from './FlugForm.component.js';
 import { PostFlightForm } from './PostFlightForm.component.js';
@@ -14,9 +14,9 @@ interface Props {
     verfuegbarePiloten: Array<{ id: string; name: string }>;
     einsatzleiter: Array<{ id: string; name: string }>;
     verfuegbareDrohnen: Array<{ id: string; modell: string }>;
-    onPreFlightSubmit: (data: PreFlightData) => void;
-    onFlugSubmit: (data: FlugData) => void;
-    onPostFlightSubmit: (data: any) => void;
+    onPreFlightSubmit: (data: CreatePreFlightDto) => void;
+    onFlugSubmit: (data: CreateFlugDto) => void;
+    onPostFlightSubmit: (data: CreatePostFlightDto) => void;
     onFlugBeenden: (flugId: string) => void;
 }
 
@@ -25,7 +25,6 @@ export function DrohnenEinsatzComponent({
     fluege,
     verfuegbarePiloten,
     einsatzleiter,
-    verfuegbareDrohnen,
     onPreFlightSubmit,
     onFlugSubmit,
     onPostFlightSubmit,
@@ -136,8 +135,7 @@ export function DrohnenEinsatzComponent({
                     </div>
                     <PreFlightForm
                         onSubmit={onPreFlightSubmit}
-                        verfuegbareDrohnen={verfuegbareDrohnen}
-                        einsatzleiter={einsatzleiter}
+                        einsatzId=""
                     />
                 </div>
             );
@@ -151,9 +149,7 @@ export function DrohnenEinsatzComponent({
                     </div>
                     <PreFlightForm
                         onSubmit={onPreFlightSubmit}
-                        verfuegbareDrohnen={verfuegbareDrohnen}
-                        einsatzleiter={einsatzleiter}
-                        initialData={selectedEinsatz.preFlightData}
+                        einsatzId={selectedEinsatz.id}
                     />
                 </div>
             );
@@ -209,7 +205,6 @@ export function DrohnenEinsatzComponent({
                         onSubmit={onPostFlightSubmit}
                         einsatzId={selectedEinsatz.id}
                         einsatzleiter={einsatzleiter}
-                        initialData={selectedEinsatz.postFlightData}
                     />
                 </div>
             );
