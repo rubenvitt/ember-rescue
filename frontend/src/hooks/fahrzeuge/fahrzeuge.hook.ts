@@ -73,6 +73,18 @@ export function useFahrzeuge(props?: { fullOpta?: string }) {
     onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
   });
 
+  const createFahrzeugTemplate = useMutation({
+    mutationKey: services.backend.fahrzeuge.createFahrzeugTemplate.mutationKey,
+    mutationFn: services.backend.fahrzeuge.createFahrzeugTemplate.mutationFn,
+    onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
+  });
+
+  const updateFahrzeugTemplate = useMutation({
+    mutationKey: services.backend.fahrzeuge.updateFahrzeugTemplate.mutationKey,
+    mutationFn: services.backend.fahrzeuge.updateFahrzeugTemplate.mutationFn,
+    onSuccess: services.backend.fahrzeuge.invalidateQueries(queryClient),
+  });
+
   return {
     fahrzeuge,
     fahrzeugeJson,
@@ -84,5 +96,7 @@ export function useFahrzeuge(props?: { fullOpta?: string }) {
     removeFahrzeugFromEinsatz,
     changeStatus,
     updateFahrzeugeJson,
+    createFahrzeugTemplate,
+    updateFahrzeugTemplate,
   };
 }

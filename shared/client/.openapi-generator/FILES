@@ -15,6 +15,7 @@ apis/RemindersApi.ts
 apis/SecretsApi.ts
 apis/SettingsApi.ts
 apis/StatusApi.ts
+apis/UAVApi.ts
 apis/VehiclesApi.ts
 apis/index.ts
 index.ts
@@ -31,6 +32,7 @@ models/CreateMissionDto.ts
 models/CreateNotizDto.ts
 models/CreateReminderDto.ts
 models/CreateUpdateFahrzeugDto.ts
+models/CreateUpdateUAVDto.ts
 models/DistrictOpta.ts
 models/EinsatzAlarmstichwortDto.ts
 models/EinsatzNoteDto.ts
@@ -39,6 +41,7 @@ models/FahrzeugTypDto.ts
 models/FunctionOptaDto.ts
 models/IconDefinitionDto.ts
 models/ImportManyFahrzeugeDto.ts
+models/ImportManyUAVsDto.ts
 models/JournalDto.ts
 models/JournalEntryDto.ts
 models/JournalEntryResponse.ts
@@ -57,6 +60,7 @@ models/ManyNoteResponse.ts
 models/ManyQualificationsResponse.ts
 models/ManyReminderResponse.ts
 models/ManyStatusDtoReponse.ts
+models/ManyUAVTemplateResponse.ts
 models/MetaDto.ts
 models/MetaResponse.ts
 models/MissionDto.ts
@@ -76,6 +80,7 @@ models/SettingsDto.ts
 models/SettingsResponse.ts
 models/SmallMissionDto.ts
 models/StatusDto.ts
+models/UAVTemplateDto.ts
 models/UpdateMissionDto.ts
 models/VehicleOnMissionDto.ts
 models/VehiclesDto.ts

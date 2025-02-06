@@ -73,7 +73,7 @@ export function FlugForm({ onSubmit, einsatzId, preFlightData, verfuegbarePilote
                             </InputWrapper>
                             <div className="grid grid-cols-3 gap-4">
                                 <InputWrapper name="flughoehe" label="Maximale Flughöhe (m)" rules={[{ required: true }]}>
-                                    <InputNumber min={0} max={120} className="w-full" />
+                                    <InputNumber min={0} max={10000} className="w-full" />
                                 </InputWrapper>
                                 <InputWrapper name="anzahlStarts" label="Geplante Starts" rules={[{ required: true }]}>
                                     <InputNumber min={1} defaultValue={1} className="w-full" />

@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Error } from 'mongoose';
@@ -15,12 +16,21 @@ interface ErrorResponse {
   path: string;
   method: string;
   message: string;
-  details?: Record<string, any>;
+  errors?: string[];
+  fields?: Array<{
+    field: string;
+    value: any;
+    constraints: Record<string, string>;
+  }>;
+  details?: Array<{
+    property: string;
+    messages: string[];
+  }>;
   stack?: string;
 }
 
 @Catch()
-export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
+export class ExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(ExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
@@ -50,10 +60,21 @@ export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
       path: request.url,
       method: request.method,
       message: message,
-      ...(process.env.NODE_ENV === 'development' && {
-        stack: exception instanceof Error ? exception.stack : undefined,
-      }),
     };
+
+    if (exception instanceof UnprocessableEntityException) {
+      const exceptionResponse = exception.getResponse() as Record<string, any>;
+
+      if (exceptionResponse) {
+        errorResponse.errors = exceptionResponse.errors;
+        errorResponse.fields = exceptionResponse.fields;
+        errorResponse.details = exceptionResponse.details;
+      }
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      errorResponse.stack = exception instanceof Error ? exception.stack : undefined;
+    }
 
     this.logger.error('Error occurred:', {
       ...errorResponse,
@@ -63,10 +84,4 @@ export class ExceptionsFilter<T extends Error> implements ExceptionFilter {
     response.status(status).json(errorResponse);
   }
 
-  private logError(error: Error, errorResponse: ErrorResponse) {
-    this.logger.error('Error occurred:', {
-      error: error,
-      response: errorResponse,
-    });
-  }
 }

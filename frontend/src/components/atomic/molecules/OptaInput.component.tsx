@@ -1,6 +1,6 @@
 import { useToggle } from '@reactuses/core';
 import { Button, Input, Select, Space } from 'antd';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PiPen } from 'react-icons/pi';
 import { useOpta } from '../../../hooks/opta.hook.js';
 
@@ -94,14 +94,38 @@ export const OptaInput = ({ onChange, value }: { onChange?: (value: OptaInput) =
     ort: '',
     supplement: '',
     id: '',
-    ...value, // Überschreibe die Default-Werte mit den initialen Werten
   }));
 
-  // Prüfe ob fullOpta gesetzt ist und die anderen Felder leer sind
-  const shouldStartWithFreetext = value?.fullOpta && !value.district && !value.bosCode && !value.ort && !value.localCode && !value.functionCode && !value.orderNumber;
+  // Synchronisiere den internen State mit dem value-Prop
+  useEffect(() => {
+    const newFormData = {
+      bosCode: '',
+      district: '',
+      functionCode: '',
+      localCode: '',
+      orderNumber: '',
+      ort: '',
+      supplement: '',
+      id: '',
+      ...value
+    };
+    setFormData(newFormData);
+    setFreetext(value?.fullOpta || '');
+  }, [value]);
 
-  const [isFreetext, toggleFreetext] = useToggle(Boolean(shouldStartWithFreetext));
-  const [freetext, setFreetext] = useState(value?.fullOpta || '');
+  // Prüfe ob fullOpta gesetzt ist und die anderen Felder leer sind
+  const shouldStartWithFreetext = Boolean(
+    value?.fullOpta &&
+    !value?.district &&
+    !value?.bosCode &&
+    !value?.ort &&
+    !value?.localCode &&
+    !value?.functionCode &&
+    !value?.orderNumber
+  );
+
+  const [isFreetext, toggleFreetext] = useToggle(shouldStartWithFreetext);
+  const [freetext, setFreetext] = useState('');
 
   const { functionOpta, districtOpta, bosOpta, localCodeOpta } = useOpta();
 

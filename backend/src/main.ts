@@ -15,14 +15,23 @@ const logger = new Logger('main.ts');
 
 function formatValidationError(errors: ClassValidatorError[]): string[] {
   return errors.reduce((acc: string[], error: ClassValidatorError) => {
-    if (error.constraints) {
-      // Füge alle Fehlermeldungen für diese Property hinzu
-      acc.push(...Object.values(error.constraints));
+    if (!error.property && error.constraints?.unknownValue) {
+      acc.push('Die übergebenen Daten sind ungültig. Bitte überprüfen Sie das Format der Daten.');
+      return acc;
     }
 
-    // Rekursiv verschachtelte Fehler verarbeiten
+    if (error.constraints) {
+      const fieldErrors = Object.values(error.constraints).map(
+        (message) => `${error.property}: ${message}`
+      );
+      acc.push(...fieldErrors);
+    }
+
     if (error.children?.length) {
-      acc.push(...formatValidationError(error.children));
+      const childErrors = formatValidationError(error.children).map(
+        (childError) => `${error.property}.${childError}`
+      );
+      acc.push(...childErrors);
     }
 
     return acc;
@@ -33,7 +42,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug'],
   });
-  // FIXME: This should probable be changed: 🙂
+  // FIXME: This should probable be changed: 🤔
   app.enableCors({
     origin: '*',
     allowedHeaders: '*',
@@ -49,10 +58,28 @@ async function bootstrap() {
       exceptionFactory: (errors) => {
         const formattedErrors = formatValidationError(errors);
 
-        return new UnprocessableEntityException({
-          message: 'Validation failed',
+        if (!formattedErrors.length) {
+          formattedErrors.push('Die übergebenen Daten sind ungültig. Bitte überprüfen Sie das Format der Daten.');
+        }
+
+        const fields = errors.map((error) => ({
+          field: error.property || 'unknown',
+          value: error.value,
+          constraints: error.constraints || {},
+        }));
+
+        const details = errors.map(error => ({
+          property: error.property || 'unknown',
+          messages: error.constraints
+            ? Object.values(error.constraints)
+            : ['Ungültiges Datenformat']
+        }));
+
+        throw new UnprocessableEntityException({
+          message: 'Validierung fehlgeschlagen',
           errors: formattedErrors,
-          statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fields,
+          details
         });
       },
     }),

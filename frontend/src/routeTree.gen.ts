@@ -32,8 +32,10 @@ const AppFahrzeugeLazyImport = createFileRoute('/app/fahrzeuge')()
 const AppEinsatztagebuchLazyImport = createFileRoute('/app/einsatztagebuch')()
 const AppEinsatzdatenLazyImport = createFileRoute('/app/einsatzdaten')()
 const AppBetroffeneLazyImport = createFileRoute('/app/betroffene')()
+const AdminUavLazyImport = createFileRoute('/admin/uav')()
 const AppUavIndexLazyImport = createFileRoute('/app/uav/')()
 const AppUavProtokollLazyImport = createFileRoute('/app/uav/protokoll')()
+const AdminUavTemplatesLazyImport = createFileRoute('/admin/uav/templates')()
 
 // Create/Update Routes
 
@@ -135,6 +137,12 @@ const AppBetroffeneLazyRoute = AppBetroffeneLazyImport.update({
   import('./routes/app/betroffene.lazy').then((d) => d.Route),
 )
 
+const AdminUavLazyRoute = AdminUavLazyImport.update({
+  id: '/admin/uav',
+  path: '/admin/uav',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/admin/uav.lazy').then((d) => d.Route))
+
 const AuthSignoutRoute = AuthSignoutImport.update({
   id: '/auth/signout',
   path: '/auth/signout',
@@ -153,6 +161,14 @@ const AppUavProtokollLazyRoute = AppUavProtokollLazyImport.update({
   getParentRoute: () => AppRoute,
 } as any).lazy(() =>
   import('./routes/app/uav/protokoll.lazy').then((d) => d.Route),
+)
+
+const AdminUavTemplatesLazyRoute = AdminUavTemplatesLazyImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => AdminUavLazyRoute,
+} as any).lazy(() =>
+  import('./routes/admin/uav/templates.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -192,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/signout'
       fullPath: '/auth/signout'
       preLoaderRoute: typeof AuthSignoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/uav': {
+      id: '/admin/uav'
+      path: '/admin/uav'
+      fullPath: '/admin/uav'
+      preLoaderRoute: typeof AdminUavLazyImport
       parentRoute: typeof rootRoute
     }
     '/app/betroffene': {
@@ -271,6 +294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexLazyImport
       parentRoute: typeof AppImport
     }
+    '/admin/uav/templates': {
+      id: '/admin/uav/templates'
+      path: '/templates'
+      fullPath: '/admin/uav/templates'
+      preLoaderRoute: typeof AdminUavTemplatesLazyImport
+      parentRoute: typeof AdminUavLazyImport
+    }
     '/app/uav/protokoll': {
       id: '/app/uav/protokoll'
       path: '/uav/protokoll'
@@ -320,12 +350,25 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AdminUavLazyRouteChildren {
+  AdminUavTemplatesLazyRoute: typeof AdminUavTemplatesLazyRoute
+}
+
+const AdminUavLazyRouteChildren: AdminUavLazyRouteChildren = {
+  AdminUavTemplatesLazyRoute: AdminUavTemplatesLazyRoute,
+}
+
+const AdminUavLazyRouteWithChildren = AdminUavLazyRoute._addFileChildren(
+  AdminUavLazyRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/app': typeof AppRouteWithChildren
   '/setupEinsatz': typeof SetupEinsatzLazyRoute
   '/signin': typeof SigninLazyRoute
   '/auth/signout': typeof AuthSignoutRoute
+  '/admin/uav': typeof AdminUavLazyRouteWithChildren
   '/app/betroffene': typeof AppBetroffeneLazyRoute
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
@@ -337,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
   '/app/': typeof AppIndexLazyRoute
+  '/admin/uav/templates': typeof AdminUavTemplatesLazyRoute
   '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
   '/app/uav': typeof AppUavIndexLazyRoute
 }
@@ -346,6 +390,7 @@ export interface FileRoutesByTo {
   '/setupEinsatz': typeof SetupEinsatzLazyRoute
   '/signin': typeof SigninLazyRoute
   '/auth/signout': typeof AuthSignoutRoute
+  '/admin/uav': typeof AdminUavLazyRouteWithChildren
   '/app/betroffene': typeof AppBetroffeneLazyRoute
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
@@ -357,6 +402,7 @@ export interface FileRoutesByTo {
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexLazyRoute
+  '/admin/uav/templates': typeof AdminUavTemplatesLazyRoute
   '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
   '/app/uav': typeof AppUavIndexLazyRoute
 }
@@ -368,6 +414,7 @@ export interface FileRoutesById {
   '/setupEinsatz': typeof SetupEinsatzLazyRoute
   '/signin': typeof SigninLazyRoute
   '/auth/signout': typeof AuthSignoutRoute
+  '/admin/uav': typeof AdminUavLazyRouteWithChildren
   '/app/betroffene': typeof AppBetroffeneLazyRoute
   '/app/einsatzdaten': typeof AppEinsatzdatenLazyRoute
   '/app/einsatztagebuch': typeof AppEinsatztagebuchLazyRoute
@@ -379,6 +426,7 @@ export interface FileRoutesById {
   '/prestart/settings': typeof PrestartSettingsLazyRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexLazyRoute
+  '/admin/uav/templates': typeof AdminUavTemplatesLazyRoute
   '/app/uav/protokoll': typeof AppUavProtokollLazyRoute
   '/app/uav/': typeof AppUavIndexLazyRoute
 }
@@ -391,6 +439,7 @@ export interface FileRouteTypes {
     | '/setupEinsatz'
     | '/signin'
     | '/auth/signout'
+    | '/admin/uav'
     | '/app/betroffene'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
@@ -402,6 +451,7 @@ export interface FileRouteTypes {
     | '/prestart/settings'
     | '/admin'
     | '/app/'
+    | '/admin/uav/templates'
     | '/app/uav/protokoll'
     | '/app/uav'
   fileRoutesByTo: FileRoutesByTo
@@ -410,6 +460,7 @@ export interface FileRouteTypes {
     | '/setupEinsatz'
     | '/signin'
     | '/auth/signout'
+    | '/admin/uav'
     | '/app/betroffene'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
@@ -421,6 +472,7 @@ export interface FileRouteTypes {
     | '/prestart/settings'
     | '/admin'
     | '/app'
+    | '/admin/uav/templates'
     | '/app/uav/protokoll'
     | '/app/uav'
   id:
@@ -430,6 +482,7 @@ export interface FileRouteTypes {
     | '/setupEinsatz'
     | '/signin'
     | '/auth/signout'
+    | '/admin/uav'
     | '/app/betroffene'
     | '/app/einsatzdaten'
     | '/app/einsatztagebuch'
@@ -441,6 +494,7 @@ export interface FileRouteTypes {
     | '/prestart/settings'
     | '/admin/'
     | '/app/'
+    | '/admin/uav/templates'
     | '/app/uav/protokoll'
     | '/app/uav/'
   fileRoutesById: FileRoutesById
@@ -452,6 +506,7 @@ export interface RootRouteChildren {
   SetupEinsatzLazyRoute: typeof SetupEinsatzLazyRoute
   SigninLazyRoute: typeof SigninLazyRoute
   AuthSignoutRoute: typeof AuthSignoutRoute
+  AdminUavLazyRoute: typeof AdminUavLazyRouteWithChildren
   PrestartSettingsLazyRoute: typeof PrestartSettingsLazyRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -462,6 +517,7 @@ const rootRouteChildren: RootRouteChildren = {
   SetupEinsatzLazyRoute: SetupEinsatzLazyRoute,
   SigninLazyRoute: SigninLazyRoute,
   AuthSignoutRoute: AuthSignoutRoute,
+  AdminUavLazyRoute: AdminUavLazyRouteWithChildren,
   PrestartSettingsLazyRoute: PrestartSettingsLazyRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -481,6 +537,7 @@ export const routeTree = rootRoute
         "/setupEinsatz",
         "/signin",
         "/auth/signout",
+        "/admin/uav",
         "/prestart/settings",
         "/admin/"
       ]
@@ -512,6 +569,12 @@ export const routeTree = rootRoute
     },
     "/auth/signout": {
       "filePath": "auth/signout.tsx"
+    },
+    "/admin/uav": {
+      "filePath": "admin/uav.lazy.tsx",
+      "children": [
+        "/admin/uav/templates"
+      ]
     },
     "/app/betroffene": {
       "filePath": "app/betroffene.lazy.tsx",
@@ -554,6 +617,10 @@ export const routeTree = rootRoute
     "/app/": {
       "filePath": "app/index.lazy.tsx",
       "parent": "/app"
+    },
+    "/admin/uav/templates": {
+      "filePath": "admin/uav/templates.lazy.tsx",
+      "parent": "/admin/uav"
     },
     "/app/uav/protokoll": {
       "filePath": "app/uav/protokoll.lazy.tsx",

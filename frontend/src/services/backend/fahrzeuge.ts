@@ -1,7 +1,7 @@
+import { AddVehicleToMissionDto, ChangeStatusDto, EinsatzFahrzeugeApi, FahrzeugTemplateDto, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
+import { QueryClient } from '@tanstack/react-query';
 import { getAPIConfig } from '../../utils/http.js';
 import { createInvalidateQueries } from '../../utils/queries.js';
-import { QueryClient } from '@tanstack/react-query';
-import { AddVehicleToMissionDto, ChangeStatusDto, EinsatzFahrzeugeApi, ImportManyFahrzeugeDto, VehiclesApi } from '@bluelight-hub/shared/client/index.js';
 
 export const queryKey = 'fahrzeuge';
 
@@ -121,6 +121,24 @@ export const removeVehicleTemplate = {
   mutationFn: async (vehicleId: string) => {
     return await templateApi.vehiclesControllerDeleteVehicleV1({
       vehicleId,
+    });
+  },
+};
+
+export const createFahrzeugTemplate = {
+  mutationKey: [queryKey, 'create'],
+  mutationFn: async (data: Omit<FahrzeugTemplateDto, 'id'>) => {
+    return await templateApi.vehiclesControllerUpdateManyV1({
+      importManyFahrzeugeDto: { items: [data] }
+    });
+  },
+};
+
+export const updateFahrzeugTemplate = {
+  mutationKey: [queryKey, 'update'],
+  mutationFn: async (data: FahrzeugTemplateDto) => {
+    return await templateApi.vehiclesControllerUpdateManyV1({
+      importManyFahrzeugeDto: { items: [data] }
     });
   },
 };

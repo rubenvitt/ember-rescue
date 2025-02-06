@@ -1,17 +1,15 @@
-import { Cache, CACHE_MANAGER, CacheKey } from '@nestjs/cache-manager';
+import { CacheKey } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  HttpStatus,
-  Inject,
-  Logger,
+  HttpStatus, Logger,
   Param,
   Patch,
   Post,
   Res,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
 import { FunctionOptaRepository } from '@templates/opta/repositories/function-opta.repository';

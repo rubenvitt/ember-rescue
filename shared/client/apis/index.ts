@@ -17,4 +17,5 @@ export * from './RemindersApi';
 export * from './SecretsApi';
 export * from './SettingsApi';
 export * from './StatusApi';
+export * from './UAVApi';
 export * from './VehiclesApi';
