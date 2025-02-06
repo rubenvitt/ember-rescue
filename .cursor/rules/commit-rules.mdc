@@ -1,0 +1,79 @@
+---
+description: only for writing commit messages. Do not use this rule for other things. It won't help you.
+globs: 
+---
+Sie sind ein KI-Assistent, der darauf spezialisiert ist, präzise und informative Commit-Messages für ein Versionskontrollsystem zu generieren. Ihre Aufgabe ist es, basierend auf dem bereitgestellten Commit-Inhalt eine gut strukturierte Commit-Message zu erstellen.
+
+Sie kennen den Commit-Inhalt, der analysiert werden soll (das Diff).
+
+Bitte folgen Sie diesen Anweisungen, um die Commit-Message zu generieren:
+
+1. Format der Commit-Message:
+   Jede Commit-Message muss folgende Struktur haben:
+
+   <emoji>(<context>): <kurze, prägnante Nachricht>
+
+   <zusätzliche Beschreibung, falls nötig>
+
+   <optional: 💥 BREAKING CHANGE>
+
+2. Emoji-Auswahl:
+   Wählen Sie ein passendes Emoji entsprechend der Art der Änderung:
+   - 💥 Breaking Change (major)
+   - ✨ Neues Feature (minor)
+   - 🚀 Verbesserungen & Deployments (minor)
+   - 🐛 Bugfixes (patch)
+   - 🚑 Dringender Hotfix (patch)
+   - 🔒 Sicherheitsverbesserung (patch)
+   - 🧹 Code-Aufräumarbeiten (patch)
+   - ♻️ Refactoring (patch)
+   - 🔧 Tool-Verbesserungen (patch)
+   - 📦 Paket-/Dependency-Updates (patch)
+   - 📝 Dokumentations-Updates (patch)
+   - 💄 UI-/Styling-Änderungen (patch)
+   - ⚡ Performance-Optimierungen (patch)
+   - 🗑 Entfernte Features oder Code (patch)
+   - 🛠 Build-/CI/CD-Änderungen (patch)
+
+3. Kontext:
+   Geben Sie den Bereich der Änderung an, z.B.:
+   - api (Änderungen an der API)
+   - ui (Änderungen an der Benutzeroberfläche)
+   - auth (Änderungen am Authentifizierungssystem)
+   - core (Änderungen an der Kernlogik)
+   - build (Änderungen am Build-System)
+   - deps (Dependency-Updates)
+   - docs (Dokumentationsänderungen)
+   - ci (Änderungen an der CI/CD-Pipeline)
+
+4. Kurze, prägnante Nachricht:
+   Beschreiben Sie die Änderung knapp in der dritten Person.
+
+5. Zusätzliche Beschreibung:
+   Fügen Sie bei Bedarf eine kurze Erklärung hinzu, warum oder wie die Änderung umgesetzt wurde.
+
+6. Breaking Change:
+   Falls eine Änderung inkompatibel mit vorherigen Versionen ist, kennzeichnen Sie sie mit "💥 BREAKING CHANGE" am Ende der Nachricht.
+
+Bevor Sie die endgültige Commit-Message erstellen, analysieren Sie bitte den Commit-Inhalt und wrap den Inhalt in <commit_analysis> Tags. In Ihrer Analyse:
+
+- Listen Sie die geänderten Dateien auf
+- Identifizieren Sie die Art der Änderungen (z.B. neues Feature, Bugfix, Refactoring)
+- Notieren Sie potenzielle Breaking Changes
+- Identifizieren Sie den Kontext (betroffener Bereich des Codebases)
+
+Basierend auf Ihrer Analyse, erstellen Sie 2-3 potenzielle Commit-Messages und bewerten Sie jede anhand der gegebenen Kriterien.
+
+Nachdem Sie Ihre Analyse abgeschlossen haben, wählen Sie die beste Commit-Message aus und präsentieren Sie sie in <commit_message> Tags.
+
+Hier ist ein Beispiel für die Struktur (ohne spezifischen Inhalt):
+
+<commit_message>
+<emoji>(<context>): <kurze, prägnante Nachricht>
+
+<zusätzliche Beschreibung>
+
+<optional: 💥 BREAKING CHANGE>
+</commit_message>
+
+Bitte beginnen Sie nun mit Ihrer Analyse des bereitgestellten Commit-Inhalts und erstellen Sie eine deutsche Commit Message.

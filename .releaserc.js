@@ -9,8 +9,8 @@ module.exports = {
       {
         releaseRules: {
           major: ['💥'],
-          minor: ['✨'],
-          patch: ['🐛', '🚑', '🔒', '🧹', '♻️', '🔧'],
+          minor: ['✨', '🚀'],
+          patch: ['🐛', '🚑', '🔒', '🧹', '♻️', '🔧', '📦', '📝', '💄', '⚡', '🗑', '🛠'],
         },
         releaseNotes: {
           template: `{{#if compareUrl}}
@@ -21,78 +21,72 @@ module.exports = {
 
 {{#with commits}}
 
-{{!-- Neue Funktionen (✨) --}}
-{{#if sparkles}}
-## ✨ Neue Funktionen
-Die folgenden neuen Features wurden hinzugefügt:
+## ✨ Verbesserungen & neue Features
+{{#if sparkles}}Neue Funktionen:{{/if}}
+{{#if rocket}}Deployment-Optimierungen:{{/if}}
 {{#each sparkles}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
+{{#each rocket}}
+- {{> commitTemplate}}
+{{/each}}
 
-{{!-- Fehlerbehebungen (🐛) --}}
-{{#if bug}}
-## 🐛 Fehlerbehebungen
-Diese Probleme wurden behoben:
+## 🐛 Fehlerbehebungen & Sicherheit
+{{#if bug}}Behobene Bugs:{{/if}}
+{{#if ambulance}}Dringende Hotfixes:{{/if}}
+{{#if lock}}Sicherheitsupdates:{{/if}}
 {{#each bug}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
-
-{{!-- Dringende Hotfixes (🚑) --}}
-{{#if ambulance}}
-## 🚑 Hotfixes
-Dringende Hotfixes:
 {{#each ambulance}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
-
-{{!-- Sicherheitsverbesserungen (🔒) --}}
-{{#if lock}}
-## 🔒 Sicherheitsverbesserungen
-Sicherheitsrelevante Änderungen:
 {{#each lock}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
 
-{{!-- Code-Aufräumarbeiten (🧹) --}}
-{{#if broom}}
-## 🧹 Codebereinigungen
-Aufräumarbeiten und kleinere Verbesserungen:
+## 🛠 Code & Wartung
+{{#if broom}}Codebereinigungen:{{/if}}
+{{#if recycle}}Refactoring:{{/if}}
+{{#if wrench}}Tooling-Verbesserungen:{{/if}}
+{{#if wastebasket}}Entfernte Features:{{/if}}
 {{#each broom}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
-
-{{!-- Refactoring (♻) --}}
-{{#if recycle}}
-## ♻ Refactoring
-Struktur- oder Code-Verbesserungen:
 {{#each recycle}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
-
-{{!-- Tool Improvements (🔧) --}}
-{{#if wrench}}
-## 🔧 Tool Verbesserungen
-Verbesserungen an den Werkzeugen:
 {{#each wrench}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
+{{#each wastebasket}}
+- {{> commitTemplate}}
+{{/each}}
 
+## 📦 Abhängigkeiten & Performance
+{{#if package}}Updates von Paketen:{{/if}}
+{{#if zap}}Performance-Verbesserungen:{{/if}}
+{{#each package}}
+- {{> commitTemplate}}
+{{/each}}
+{{#each zap}}
+- {{> commitTemplate}}
+{{/each}}
 
-{{!-- Breaking Changes (💥) --}}
-{{#if boom}}
+## 📝 Sonstiges
+{{#if memo}}Dokumentationsupdates:{{/if}}
+{{#if lipstick}}UI-Anpassungen:{{/if}}
+{{#each memo}}
+- {{> commitTemplate}}
+{{/each}}
+{{#each lipstick}}
+- {{> commitTemplate}}
+{{/each}}
+
 ## 💥 Breaking Changes
-Bitte beachtet folgende Änderungen, die möglicherweise Anpassungen erfordern:
 {{#each boom}}
 - {{> commitTemplate}}
 {{/each}}
-{{/if}}
 
 {{/with}}`,
           partials: {
