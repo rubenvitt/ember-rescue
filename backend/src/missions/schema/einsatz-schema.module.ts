@@ -12,7 +12,7 @@ import { Einsatz } from './einsatz.schema';
 
 @Module({
   providers: [EinsatzRepository],
-  exports: [EinsatzRepository],
+  exports: [EinsatzRepository, MongooseModule],
   imports: [
     MetaModule,
     MongooseModule.forFeatureAsync([

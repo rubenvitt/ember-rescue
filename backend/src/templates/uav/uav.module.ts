@@ -19,6 +19,6 @@ import { UAVService } from './uav.service';
             },
         ]),
     ],
-    exports: [UAVService, UAVRepository],
+    exports: [UAVService, UAVRepository, MongooseModule],
 })
 export class UAVModule { } 

@@ -1,56 +1,74 @@
+import { CreateUAVMissionDto, FlightProtocolDto, FlightProtocolResponse, PostFlightChecksDto, PreFlightChecksDto, UAVMissionResponse, UAVMissionsResponse } from '@bluelight-hub/shared/client/index.js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import services from '../../services/backend/index.js';
+import { services } from '../../services/index.js';
+import { useEinsatz } from '../einsatz.hook.js';
 
-export function useUAV() {
+export function useUAV(props?: { uavIndex?: number }) {
     const queryClient = useQueryClient();
+    const { missionId } = useEinsatz();
+    const uavIndex = props?.uavIndex ?? 0;
+
+    const uavMissions = useQuery<UAVMissionsResponse>({
+        queryKey: services.backend.uav.fetchUAVMissions.queryKey({ missionId }),
+        queryFn: services.backend.uav.fetchUAVMissions.queryFn({ missionId }),
+        enabled: !!missionId,
+    });
 
     const templateUAVs = useQuery({
-        queryKey: services.uav.fetchAllUAVs.queryKey,
-        queryFn: services.uav.fetchAllUAVs.queryFn,
+        queryKey: services.backend.uav.fetchAllUAVs.queryKey,
+        queryFn: services.backend.uav.fetchAllUAVs.queryFn,
     });
 
-    const uavJson = useQuery({
-        queryKey: services.uav.fetchAllUAVsJson.queryKey,
-        queryFn: services.uav.fetchAllUAVsJson.queryFn,
+    const addUAVToEinsatz = useMutation<UAVMissionResponse, unknown, CreateUAVMissionDto>({
+        mutationKey: services.backend.uav.addUAVToEinsatz.mutationKey({ missionId }),
+        mutationFn: (data: CreateUAVMissionDto) => {
+            if (!missionId) {
+                throw new Error('Kein Einsatz ausgewählt');
+            }
+            return services.backend.uav.addUAVToEinsatz.mutationFn({ missionId })(data);
+        },
+        onSuccess: services.backend.uav.invalidateQueries(queryClient),
     });
 
-    const patchUAVs = useMutation({
-        mutationKey: services.uav.patchUAVs.mutationKey,
-        mutationFn: services.uav.patchUAVs.mutationFn,
-        onSuccess: services.uav.invalidateQueries(queryClient),
+    const submitPreFlightChecks = useMutation<UAVMissionResponse, unknown, { data: PreFlightChecksDto; uavIndex: number }>({
+        mutationKey: services.backend.uav.submitPreFlightChecks.mutationKey({ missionId, uavIndex }),
+        mutationFn: ({ data, uavIndex }) => {
+            if (!missionId) {
+                throw new Error('Kein Einsatz ausgewählt');
+            }
+            return services.backend.uav.submitPreFlightChecks.mutationFn({ missionId, uavIndex })(data);
+        },
+        onSuccess: services.backend.uav.invalidateQueries(queryClient),
     });
 
-    const updateUAVJson = useMutation({
-        mutationKey: services.uav.postAllUAVsJson.mutationKey,
-        mutationFn: services.uav.postAllUAVsJson.mutationFn,
-        onSuccess: services.uav.invalidateQueries(queryClient),
+    const addFlightProtocol = useMutation<FlightProtocolResponse, unknown, { data: FlightProtocolDto; uavIndex: number }>({
+        mutationKey: services.backend.uav.addFlightProtocol.mutationKey({ missionId, uavIndex }),
+        mutationFn: ({ data, uavIndex }) => {
+            if (!missionId) {
+                throw new Error('Kein Einsatz ausgewählt');
+            }
+            return services.backend.uav.addFlightProtocol.mutationFn({ missionId, uavIndex })(data);
+        },
+        onSuccess: services.backend.uav.invalidateQueries(queryClient),
     });
 
-    const removeUAVTemplate = useMutation({
-        mutationKey: services.uav.removeUAVTemplate.mutationKey,
-        mutationFn: services.uav.removeUAVTemplate.mutationFn,
-        onSuccess: services.uav.invalidateQueries(queryClient),
-    });
-
-    const createUAVTemplate = useMutation({
-        mutationKey: services.uav.createUAVTemplate.mutationKey,
-        mutationFn: services.uav.createUAVTemplate.mutationFn,
-        onSuccess: services.uav.invalidateQueries(queryClient),
-    });
-
-    const updateUAVTemplate = useMutation({
-        mutationKey: services.uav.updateUAVTemplate.mutationKey,
-        mutationFn: services.uav.updateUAVTemplate.mutationFn,
-        onSuccess: services.uav.invalidateQueries(queryClient),
+    const submitPostFlightChecks = useMutation<UAVMissionResponse, unknown, { data: PostFlightChecksDto; uavIndex: number }>({
+        mutationKey: services.backend.uav.submitPostFlightChecks.mutationKey({ missionId, uavIndex }),
+        mutationFn: ({ data, uavIndex }) => {
+            if (!missionId) {
+                throw new Error('Kein Einsatz ausgewählt');
+            }
+            return services.backend.uav.submitPostFlightChecks.mutationFn({ missionId, uavIndex })(data);
+        },
+        onSuccess: services.backend.uav.invalidateQueries(queryClient),
     });
 
     return {
+        uavMissions,
         templateUAVs,
-        uavJson,
-        patchUAVs,
-        updateUAVJson,
-        removeUAVTemplate,
-        createUAVTemplate,
-        updateUAVTemplate,
+        addUAVToEinsatz,
+        submitPreFlightChecks,
+        addFlightProtocol,
+        submitPostFlightChecks,
     };
 } 

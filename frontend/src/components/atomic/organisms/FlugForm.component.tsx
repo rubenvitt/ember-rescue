@@ -1,17 +1,17 @@
+import { FlightProtocolDto, PreFlightChecksDto } from '@bluelight-hub/shared/client/index.js';
 import { Button, Form, Input, InputNumber, Select } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { PiAirplaneTakeoff } from 'react-icons/pi';
-import { CreateFlugDto, PreFlightData } from '../../../types/app/flugprotokoll.types.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 
 interface Props {
-    onSubmit: (data: CreateFlugDto) => void;
+    onSubmit: (data: { data: FlightProtocolDto }) => void;
     einsatzId: string;
-    preFlightData: PreFlightData;
+    preFlightData: PreFlightChecksDto;
     verfuegbarePiloten: Array<{ id: string; name: string }>;
 }
 
@@ -20,8 +20,9 @@ export function FlugForm({ onSubmit, einsatzId, preFlightData, verfuegbarePilote
 
     const handleSubmit = useCallback(
         async (formData: any) => {
-            const data: CreateFlugDto = {
+            const data: { data: FlightProtocolDto } = {
                 data: {
+                    id: crypto.randomUUID(),
                     einsatzId,
                     preFlightId: preFlightData.id,
                     takeoff: dayjs(),
@@ -72,7 +73,7 @@ export function FlugForm({ onSubmit, einsatzId, preFlightData, verfuegbarePilote
                                 <Input.TextArea rows={2} placeholder="Beschreibung des Flugauftrags" />
                             </InputWrapper>
                             <div className="grid grid-cols-3 gap-4">
-                                <InputWrapper name="flughoehe" label="Maximale Flughöhe (m)" rules={[{ required: true }]}>
+                                <InputWrapper name="maxFlughoehe" label="Maximale Flughöhe (m)" rules={[{ required: true }]}>
                                     <InputNumber min={0} max={10000} className="w-full" />
                                 </InputWrapper>
                                 <InputWrapper name="anzahlStarts" label="Geplante Starts" rules={[{ required: true }]}>

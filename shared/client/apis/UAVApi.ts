@@ -15,10 +15,8 @@
 import * as runtime from '../runtime';
 import type { ImportManyUAVsDto, ManyUAVTemplateResponse } from '../models/index';
 import {
-  ImportManyUAVsDtoFromJSON,
   ImportManyUAVsDtoToJSON,
-  ManyUAVTemplateResponseFromJSON,
-  ManyUAVTemplateResponseToJSON,
+  ManyUAVTemplateResponseFromJSON
 } from '../models/index';
 
 export interface UAVControllerDeleteUAVV1Request {

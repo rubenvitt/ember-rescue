@@ -12,6 +12,7 @@ import { BearbeiterDto, BearbeiterWithStatusDto } from '../../user/bearbeiter/co
 import { JournalEntryType } from '../journal/journal.dto';
 import { Notiz } from '../notes/notiz.schema';
 import { Reminder } from '../reminders/reminder.schema';
+import { UAVMission } from './uav-mission.schema';
 
 @Schema({ timestamps: true })
 class StatusHistoryEntry {
@@ -159,6 +160,9 @@ export class Einsatz extends Document {
   @Prop({ required: true, type: [{ type: FahrzeugOnEinsatz }], default: [] })
   fahrzeuge: FahrzeugOnEinsatz[];
 
+  @Prop({ required: true, type: [UAVMission], default: [] })
+  uavMissions: UAVMission[];
+
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notiz' }],
     default: [],
@@ -175,10 +179,4 @@ export class Einsatz extends Document {
   einsatzMeta: EinsatzMetadaten;
 }
 
-// let schema = SchemaFactory.createForClass(Einsatz);
-// schema.index(
-//   { einsatznummer: 1, 'einsatzTagebuch.items.nummer': 1 },
-//   { unique: true },
-// );
-//
-// export const EinsatzSchema = schema;
+export const EinsatzSchema = SchemaFactory.createForClass(Einsatz);

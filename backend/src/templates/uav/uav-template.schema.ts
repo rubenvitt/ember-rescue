@@ -1,5 +1,5 @@
 import { TemplateDocument } from '@core/database';
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true, _id: false })
 export class EmbeddedUAVTemplate extends TemplateDocument {
@@ -59,4 +59,6 @@ export class UAVTemplate extends TemplateDocument {
 
     @Prop()
     gewicht?: number; // in kg
-} 
+}
+
+export const UAVTemplateSchema = SchemaFactory.createForClass(UAVTemplate); 

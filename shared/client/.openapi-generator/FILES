@@ -16,6 +16,7 @@ apis/SecretsApi.ts
 apis/SettingsApi.ts
 apis/StatusApi.ts
 apis/UAVApi.ts
+apis/UAVMissionsApi.ts
 apis/VehiclesApi.ts
 apis/index.ts
 index.ts
@@ -26,11 +27,13 @@ models/BearbeiterDto.ts
 models/BearbeiterWithStatusDto.ts
 models/BosOpta.ts
 models/ChangeStatusDto.ts
+models/ChecklisteDto.ts
 models/CreateBearbeiterDto.ts
 models/CreateJournalEntryDto.ts
 models/CreateMissionDto.ts
 models/CreateNotizDto.ts
 models/CreateReminderDto.ts
+models/CreateUAVMissionDto.ts
 models/CreateUpdateFahrzeugDto.ts
 models/CreateUpdateUAVDto.ts
 models/DistrictOpta.ts
@@ -38,6 +41,8 @@ models/EinsatzAlarmstichwortDto.ts
 models/EinsatzNoteDto.ts
 models/FahrzeugTemplateDto.ts
 models/FahrzeugTypDto.ts
+models/FlightProtocolDto.ts
+models/FlightProtocolResponse.ts
 models/FunctionOptaDto.ts
 models/IconDefinitionDto.ts
 models/ImportManyFahrzeugeDto.ts
@@ -72,6 +77,8 @@ models/OneMissionResponse.ts
 models/OneNoteResponse.ts
 models/OneReminderResponse.ts
 models/OptaDto.ts
+models/PostFlightChecksDto.ts
+models/PreFlightChecksDto.ts
 models/QualificationDto.ts
 models/ReminderDto.ts
 models/SecretsDto.ts
@@ -80,10 +87,15 @@ models/SettingsDto.ts
 models/SettingsResponse.ts
 models/SmallMissionDto.ts
 models/StatusDto.ts
+models/UAVMissionDto.ts
+models/UAVMissionResponse.ts
+models/UAVMissionsDto.ts
+models/UAVMissionsResponse.ts
 models/UAVTemplateDto.ts
 models/UpdateMissionDto.ts
 models/VehicleOnMissionDto.ts
 models/VehiclesDto.ts
 models/VehiclesResponse.ts
+models/WetterbedingungsDto.ts
 models/index.ts
 runtime.ts

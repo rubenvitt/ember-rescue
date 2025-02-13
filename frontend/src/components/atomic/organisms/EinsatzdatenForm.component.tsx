@@ -1,8 +1,7 @@
 import { MissionDto, SecretsDto, UpdateMissionDto } from '@bluelight-hub/shared/client/index.js';
-import { useSearchBoxCore } from '@mapbox/search-js-react';
 import { isTauri } from '@tauri-apps/api/core';
 import { BaseDirectory, writeFile } from '@tauri-apps/plugin-fs';
-import { AutoComplete, Button, ConfigProvider, DatePicker, Modal, Select, Tooltip } from 'antd';
+import { Button, ConfigProvider, DatePicker, Form, Modal, Select, Tooltip } from 'antd';
 import { DefaultOptionType } from 'antd/lib/select/index.js';
 import { format } from 'date-fns';
 import dayjs, { Dayjs } from 'dayjs';
@@ -14,6 +13,7 @@ import { RangeValue } from '../../../types/ui/inputs.types.js';
 import { backendFetchBlob } from '../../../utils/http.js';
 import { natoDateTime, natoDateTimeAnt } from '../../../utils/time.js';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
+import { AddressAutocomplete } from '../molecules/AddressAutocomplete.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
@@ -122,9 +122,10 @@ interface EinsatzdatenFormProps {
   mapboxApiKey?: SecretsDto;
 }
 
-export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.Element {
+export function EinsatzdatenForm(): JSX.Element {
   const { einsatz, updateEinsatz } = useEinsatz();
   const { alarmstichworte } = useAlarmstichworte();
+  const [form] = Form.useForm<UpdateMissionFormData>();
 
   const alarmstichworteItems = useMemo<DefaultOptionType[]>(() => {
     return (
@@ -150,14 +151,6 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
     return alarmstichworte.data?.data.find((a) => a.code === einsatz.data?.einsatzAlarmstichwort.code)?.id;
   }, [alarmstichworte.data, einsatz.data]);
 
-  const searchBoxCore = useSearchBoxCore({
-    accessToken: mapboxApiKey?.value || '',
-    language: 'de',
-    country: 'de',
-    // @ts-ignore api is newer
-    types: new Set(['country', 'region', 'postcode', 'district', 'place', 'city', 'locality', 'neighborhood', 'street', 'address', 'poi']),
-  });
-
   // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): Places should be saved on submit
   // TODO[feat/improve-einsatztagebuch](rubeen, 10.10.24): create a new component for this place-searching feat
   const optionsReducer = (state: DefaultOptionType[], action: { type: string; payload: any }): DefaultOptionType[] => {
@@ -176,23 +169,6 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
 
   const [options, dispatch] = useReducer(optionsReducer, []);
 
-  const sessionToken = useMemo(() => {
-    return Math.random().toString(36).slice(2, 9);
-  }, []);
-
-  const handleSearch = useMemo(
-    () => async (query: string) => {
-      console.log('search', query);
-      const response = await searchBoxCore.suggest(query, {
-        sessionToken,
-        proximity: '10.55,52.96',
-      });
-      const suggestions = response.suggestions;
-      dispatch({ type: 'SET_SUGGESTIONS', payload: suggestions });
-    },
-    [sessionToken, dispatch, searchBoxCore],
-  );
-
   if (!einsatz.data || !defaultStichwort) {
     return <>Einsatz laden...</>;
   }
@@ -202,6 +178,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
       <h1 className="">Einsatzdaten</h1>
       <FormLayout<UpdateMissionFormData>
         type="sectioned"
+        formInstance={form}
         form={{
           className: 'space-y-4',
           validateTrigger: 'onBlur',
@@ -225,7 +202,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
           },
         }}
       >
-        {(props) => (
+        {() => (
           <>
             <FormSection heading="Alarmierung">
               <FormContentBox>
@@ -245,8 +222,10 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
                   />
                 </InputWrapper>
                 <InputWrapper name="ort" label="Ort" rules={[{ required: true }]}>
-                  {/* TODO: connect mapbox api */}
-                  <AutoComplete onSearch={handleSearch} options={options} />
+                  <AddressAutocomplete
+                    defaultValue={einsatz.data?.einsatzMeta?.ort}
+                    onChange={(value) => form.setFieldsValue({ ort: value })}
+                  />
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
@@ -257,7 +236,7 @@ export function EinsatzdatenForm({ mapboxApiKey }: EinsatzdatenFormProps): JSX.E
                 </InputWrapper>
               </FormContentBox>
             </FormSection>
-            <Button onClick={props?.submit} type="primary" htmlType="submit" loading={updateEinsatz.isPending}>
+            <Button onClick={() => form.submit()} type="primary" htmlType="submit" loading={updateEinsatz.isPending}>
               Speichern
             </Button>
           </>

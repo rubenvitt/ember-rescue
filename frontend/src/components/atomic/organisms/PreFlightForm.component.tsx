@@ -1,26 +1,47 @@
-import { Button, Form, Input, Select } from 'antd';
+import { PreFlightChecksDto } from '@bluelight-hub/shared/client/index.js';
+import { AutoComplete, Button, Form, Input, InputNumber, Select } from 'antd';
 import { useCallback } from 'react';
 import { PiCheck } from 'react-icons/pi';
-import { CreatePreFlightDto } from '../../../types/app/flugprotokoll.types.js';
+import { useUAV } from '../../../hooks/uav/uav.hook.ts';
 import { InputWrapper } from '../atoms/InputWrapper.component.js';
 import { FormContentBox } from './form/FormContentBox.component.js';
 import { FormLayout } from './form/FormLayout.comonent.js';
 import { FormSection } from './form/FormSection.component.js';
 
 interface Props {
-    onSubmit: (data: CreatePreFlightDto) => void;
+    onSubmit: (data: { data: PreFlightChecksDto }) => void;
     einsatzId: string;
 }
 
 export function PreFlightForm({ onSubmit, einsatzId }: Props) {
     const [form] = Form.useForm();
+    const { templateUAVs } = useUAV();
 
     const handleSubmit = useCallback(
         async (formData: any) => {
-            const data: CreatePreFlightDto = {
+            const data: { data: PreFlightChecksDto } = {
                 data: {
+                    id: crypto.randomUUID(),
                     einsatzId,
-                    ...formData,
+                    pilot: formData.pilot,
+                    copilot: formData.copilot,
+                    einsatzleiter: formData.einsatzleiter,
+                    wetterbedingungen: {
+                        temperatur: formData.temperatur,
+                        windgeschwindigkeit: formData.windgeschwindigkeit,
+                        niederschlag: formData.niederschlag,
+                        sicht: formData.sicht,
+                    },
+                    checkliste: {
+                        akkuGeladen: formData.akkuGeladen,
+                        kameraCheck: formData.kameraCheck,
+                        propellerCheck: formData.propellerCheck,
+                        fernsteuerungCheck: formData.fernsteuerungCheck,
+                        kompassKalibriert: formData.kompassKalibriert,
+                        gpsVerfuegbar: formData.gpsVerfuegbar,
+                        notlandungspunkte: formData.notlandungspunkte,
+                    },
+                    drohnenmodell: formData.drohnenmodell,
                 },
             };
             onSubmit(data);
@@ -29,7 +50,7 @@ export function PreFlightForm({ onSubmit, einsatzId }: Props) {
     );
 
     return (
-        <FormLayout
+        <FormLayout<{ data: PreFlightChecksDto }>
             resetOnSubmit={false}
             formInstance={form}
             form={{
@@ -38,88 +59,123 @@ export function PreFlightForm({ onSubmit, einsatzId }: Props) {
         >
             {() => (
                 <div className="flex flex-col gap-4">
-                    <FormSection heading="Drohne und Ausrüstung" subHeading="Technische Details des Luftfahrzeugs">
+                    <FormSection heading="Personal" subHeading="Verantwortliche Personen">
                         <FormContentBox>
-                            <div className="grid grid-cols-2 gap-4">
-                                <InputWrapper name="drohnenmodell" label="Drohnenmodell" rules={[{ required: true }]}>
+                            <div className="grid grid-cols-3 gap-4">
+                                <InputWrapper name="pilot" label="Pilot" rules={[{ required: true }]}>
                                     <Input />
                                 </InputWrapper>
-                                <InputWrapper name="seriennummer" label="Seriennummer" rules={[{ required: true }]}>
+                                <InputWrapper name="copilot" label="Co-Pilot">
                                     <Input />
                                 </InputWrapper>
-                            </div>
-                            <InputWrapper name="konfiguration" label="Konfiguration" rules={[{ required: true }]}>
-                                <Input.TextArea rows={2} placeholder="Installierte Sensoren, Kameras, etc." />
-                            </InputWrapper>
-                            <div className="grid grid-cols-2 gap-4">
-                                <InputWrapper name="nutzlast" label="Nutzlast" rules={[{ required: true }]}>
-                                    <Input />
-                                </InputWrapper>
-                                <InputWrapper name="firmware" label="Firmware-Version" rules={[{ required: true }]}>
+                                <InputWrapper name="einsatzleiter" label="Einsatzleiter" rules={[{ required: true }]}>
                                     <Input />
                                 </InputWrapper>
                             </div>
                         </FormContentBox>
                     </FormSection>
 
-                    <FormSection heading="Einsatzgebiet" subHeading="Details zum Fluggebiet">
+                    <FormSection heading="Drohne" subHeading="Technische Details des Luftfahrzeugs">
                         <FormContentBox>
-                            <InputWrapper name="standort" label="Standort" rules={[{ required: true }]}>
-                                <Input placeholder="Koordinaten oder Adresse" />
+                            <InputWrapper name="drohnenmodell" label="Drohnenmodell" rules={[{ required: true }]}>
+                                <AutoComplete
+                                    showSearch
+                                    filterOption={(input, option) => (option?.label ?? '').toLocaleLowerCase().includes(input.toLocaleLowerCase())}
+                                    options={templateUAVs.data?.data.map(d => ({ value: d.modell, label: d.modell })) ?? []}
+                                />
                             </InputWrapper>
-                            <InputWrapper name="gelaendebeschreibung" label="Geländebeschreibung" rules={[{ required: true }]}>
-                                <Input.TextArea rows={3} placeholder="Besonderheiten des Geländes, Hindernisse, etc." />
-                            </InputWrapper>
+                        </FormContentBox>
+                    </FormSection>
+
+                    <FormSection heading="Wetterbedingungen" subHeading="Aktuelle Bedingungen am Startplatz">
+                        <FormContentBox>
                             <div className="grid grid-cols-2 gap-4">
-                                <InputWrapper name="luftraumklasse" label="Luftraumklasse" rules={[{ required: true }]}>
+                                <InputWrapper name="temperatur" label="Temperatur (°C)" rules={[{ required: true }]}>
+                                    <InputNumber className="w-full" />
+                                </InputWrapper>
+                                <InputWrapper name="windgeschwindigkeit" label="Windgeschwindigkeit (km/h)" rules={[{ required: true }]}>
+                                    <InputNumber min={0} className="w-full" />
+                                </InputWrapper>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputWrapper name="niederschlag" label="Niederschlag" rules={[{ required: true }]}>
                                     <Select
                                         options={[
-                                            { value: 'C', label: 'Luftraum C' },
-                                            { value: 'D', label: 'Luftraum D' },
-                                            { value: 'E', label: 'Luftraum E' },
-                                            { value: 'G', label: 'Luftraum G' },
+                                            { value: false, label: 'Kein Niederschlag' },
+                                            { value: true, label: 'Niederschlag' },
                                         ]}
                                     />
                                 </InputWrapper>
-                                <InputWrapper name="flugverbotszonen" label="Flugverbotszonen">
-                                    <Input placeholder="Bekannte Einschränkungen" />
+                                <InputWrapper name="sicht" label="Sicht (m)" rules={[{ required: true }]}>
+                                    <InputNumber min={0} className="w-full" />
                                 </InputWrapper>
                             </div>
                         </FormContentBox>
                     </FormSection>
 
-                    <FormSection heading="Vorflugkontrolle" subHeading="Checklisten und Sicherheit">
+                    <FormSection heading="Checkliste" subHeading="Vorflugkontrolle">
                         <FormContentBox>
-                            <InputWrapper name="checklistenAbgearbeitet" label="Checkliste" rules={[{ required: true }]}>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputWrapper name="akkuGeladen" label="Akku geladen" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                                <InputWrapper name="kameraCheck" label="Kamera geprüft" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputWrapper name="propellerCheck" label="Propeller geprüft" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                                <InputWrapper name="fernsteuerungCheck" label="Fernsteuerung geprüft" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputWrapper name="kompassKalibriert" label="Kompass kalibriert" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                                <InputWrapper name="gpsVerfuegbar" label="GPS verfügbar" rules={[{ required: true }]}>
+                                    <Select
+                                        options={[
+                                            { value: true, label: 'Ja' },
+                                            { value: false, label: 'Nein' },
+                                        ]}
+                                    />
+                                </InputWrapper>
+                            </div>
+                            <InputWrapper name="notlandungspunkte" label="Notlandungspunkte festgelegt" rules={[{ required: true }]}>
                                 <Select
                                     options={[
-                                        { value: true, label: 'Vollständig abgearbeitet' },
-                                        { value: false, label: 'Nicht vollständig' },
+                                        { value: true, label: 'Ja' },
+                                        { value: false, label: 'Nein' },
                                     ]}
                                 />
-                            </InputWrapper>
-                            <InputWrapper name="risikobeurteilung" label="Risikobeurteilung" rules={[{ required: true }]}>
-                                <Input.TextArea rows={3} placeholder="Zusammenfassung der Gefährdungsbeurteilung" />
-                            </InputWrapper>
-                            <InputWrapper name="wetterbedingungen" label="Wetterbedingungen" rules={[{ required: true }]}>
-                                <Input.TextArea rows={2} placeholder="Aktuelle Wetterlage und Vorhersage" />
-                            </InputWrapper>
-                            <InputWrapper name="notfallprozeduren" label="Notfallprozeduren" rules={[{ required: true }]}>
-                                <Input.TextArea rows={2} placeholder="Festgelegte Notfallmaßnahmen" />
-                            </InputWrapper>
-                        </FormContentBox>
-                    </FormSection>
-
-                    <FormSection heading="Genehmigungen & Dokumentation" subHeading="Rechtliche Anforderungen">
-                        <FormContentBox>
-                            <InputWrapper name="flugerlaubnis" label="Flugerlaubnis">
-                                <Input placeholder="Aktenzeichen oder Referenz" />
-                            </InputWrapper>
-                            <InputWrapper name="luftraumfreigabe" label="Luftraumfreigabe">
-                                <Input placeholder="NOTAM oder Freigabe" />
-                            </InputWrapper>
-                            <InputWrapper name="bemerkungen" label="Zusätzliche Bemerkungen">
-                                <Input.TextArea rows={2} />
                             </InputWrapper>
                         </FormContentBox>
                     </FormSection>
