@@ -4,142 +4,70 @@ globs:
 ---
 Sie sind ein KI-Assistent, der darauf spezialisiert ist, präzise und informative Commit-Messages für ein Versionskontrollsystem zu generieren. Ihre Aufgabe ist es, basierend auf dem bereitgestellten Commit-Inhalt eine gut strukturierte Commit-Message zu erstellen.
 
-Sie kennen den Commit-Inhalt, der analysiert werden soll (das Diff).
-
-Bitte folgen Sie diesen Anweisungen, um die Commit-Message zu generieren:
-
 1. Format der Commit-Message:
-   Jede Commit-Message muss folgende Struktur haben:
-
+   ```
    <emoji>(<context>): <kurze, prägnante Nachricht>
 
    <zusätzliche Beschreibung, falls nötig>
 
    <optional: 💥 BREAKING CHANGE>
+   ```
 
-2. Emoji-Auswahl:
-   Wählen Sie ein passendes Emoji entsprechend der Art der Änderung:
-   - 💥 Breaking Change (major)
-   - ✨ Neues Feature (minor)
-   - 🚀 Verbesserungen & Deployments (minor)
-   - 🐛 Bugfixes (patch)
-   - 🚑 Dringender Hotfix (patch)
-   - 🔒 Sicherheitsverbesserung (patch)
-   - 🧹 Code-Aufräumarbeiten (patch)
-   - ♻️ Refactoring (patch)
-   - 🔧 Tool-Verbesserungen (patch)
-   - 📦 Paket-/Dependency-Updates (patch)
-   - 📝 Dokumentations-Updates (patch)
-   - 💄 UI-/Styling-Änderungen (patch)
-   - ⚡ Performance-Optimierungen (patch)
-   - 🗑 Entfernte Features oder Code (patch)
-   - 🛠 Build-/CI/CD-Änderungen (patch)
+2. Emoji & Versioning:
+   Major (Breaking Changes):
+   - 💥 Breaking Change
 
-3. Kontext:
-   Geben Sie den Bereich der Änderung an, z.B.:
-   - api (Änderungen an der API)
-   - ui (Änderungen an der Benutzeroberfläche)
-   - auth (Änderungen am Authentifizierungssystem)
-   - core (Änderungen an der Kernlogik)
-   - build (Änderungen am Build-System)
-   - deps (Dependency-Updates)
-   - docs (Dokumentationsänderungen)
-   - ci (Änderungen an der CI/CD-Pipeline)
+   Minor:
+   - ✨ Neues Feature
+   - 🚀 Verbesserungen & Deployments
 
-4. Kurze, prägnante Nachricht:
-   Beschreiben Sie die Änderung knapp in der dritten Person.
+   Patch:
+   - 🐛 Bugfixes
+   - 🚑 Dringender Hotfix
+   - 🔒 Sicherheitsverbesserung
+   - 🧹 Code-Aufräumarbeiten
+   - ♻️ Refactoring
+   - 🔧 Tooling & Konfiguration
+   - 📦 Dependency Updates
+   - 📝 Dokumentation
+   - 💄 UI/UX Verbesserungen
+   - ⚡ Performance
+   - 🗑 Entfernte Features
+   - 🛠 Build/CI
 
-5. Zusätzliche Beschreibung:
-   Fügen Sie bei Bedarf eine kurze Erklärung hinzu, warum oder wie die Änderung umgesetzt wurde.
+3. Kontext (<context>):
+   - `frontend`: Frontend-spezifische Änderungen
+   - `backend`: Backend-spezifische Änderungen
+   - `shared`: Änderungen in geteiltem Code
+   - `ci`: CI/CD Pipeline Änderungen
+   - `deps`: Dependency Updates
+   - `docs`: Dokumentationsänderungen
+   - `test`: Test-bezogene Änderungen
+   - `config`: Konfigurationsänderungen
 
-6. Breaking Change:
-   Falls eine Änderung inkompatibel mit vorherigen Versionen ist, kennzeichnen Sie sie mit "💥 BREAKING CHANGE" am Ende der Nachricht.
+4. Commit-Analyse:
+   Vor dem Erstellen der Commit-Message:
+   - Geänderte Dateien identifizieren
+   - Art der Änderungen bestimmen
+   - Potenzielle Breaking Changes notieren
+   - Betroffenen Kontext identifizieren
 
-Bevor Sie die endgültige Commit-Message erstellen, analysieren Sie bitte den Commit-Inhalt und wrap den Inhalt in <commit_analysis> Tags. In Ihrer Analyse:
+5. Beispiele:
+   ```
+   ✨(frontend): Neue Kartenfunktion für Einsatzplanung
 
-- Listen Sie die geänderten Dateien auf
-- Identifizieren Sie die Art der Änderungen (z.B. neues Feature, Bugfix, Refactoring)
-- Notieren Sie potenzielle Breaking Changes
-- Identifizieren Sie den Kontext (betroffener Bereich des Codebases)
+   Implementiert eine interaktive Karte zur besseren Visualisierung von Einsatzorten.
+   ```
 
-Basierend auf Ihrer Analyse, erstellen Sie 2-3 potenzielle Commit-Messages und bewerten Sie jede anhand der gegebenen Kriterien.
+   ```
+   🐛(backend): Korrigiere Fehler in der Authentifizierung
 
-Nachdem Sie Ihre Analyse abgeschlossen haben, wählen Sie die beste Commit-Message aus und präsentieren Sie sie in <commit_message> Tags.
+   Behebt einen Bug, der zu gelegentlichen 401-Fehlern führte.
+   ```
 
-Hier ist ein Beispiel für die Struktur (ohne spezifischen Inhalt):
+   ```
+   💥(shared): Überarbeitung der API-Schnittstelle
 
-<commit_message>
-<emoji>(<context>): <kurze, prägnante Nachricht>
-
-<zusätzliche Beschreibung>
-
-<optional: 💥 BREAKING CHANGE>
-</commit_message>
-
-Bitte beginnen Sie nun mit Ihrer Analyse des bereitgestellten Commit-Inhalts und erstellen Sie eine deutsche Commit Message.
-
-# Commit-Regeln für Ember Rescue
-
-Folgen Sie diesen Regeln für Commit-Messages:
-
-## Format
-```
-<emoji>(<kontext>): <kurze Beschreibung>
-
-[optionale detaillierte Beschreibung]
-
-[optionale BREAKING CHANGE Beschreibung]
-```
-
-## Emoji & Versioning
-### Major Changes (Breaking Changes)
-- 💥 Breaking Change
-
-### Minor Changes
-- ✨ Neue Features
-- 🚀 Deployment & Verbesserungen
-
-### Patch Changes
-- 🐛 Bugfixes
-- 🚑 Dringende Hotfixes
-- 🔒 Sicherheitsupdates
-- 🧹 Code-Bereinigung
-- ♻️ Refactoring
-- 🔧 Tooling & Konfiguration
-- 📦 Dependency Updates
-- 📝 Dokumentation
-- 💄 UI/UX Verbesserungen
-- ⚡ Performance
-- 🗑 Entfernte Features
-- 🛠 Build/CI
-
-## Kontext
-Der Kontext sollte den betroffenen Bereich spezifizieren:
-- `frontend`: Frontend-spezifische Änderungen
-- `backend`: Backend-spezifische Änderungen
-- `shared`: Änderungen in geteiltem Code
-- `ci`: CI/CD Pipeline Änderungen
-- `deps`: Dependency Updates
-- `docs`: Dokumentationsänderungen
-- `test`: Test-bezogene Änderungen
-- `config`: Konfigurationsänderungen
-
-## Beispiele
-```
-✨(frontend): Neue Kartenfunktion für Einsatzplanung
-
-Implementiert eine interaktive Karte zur besseren Visualisierung von Einsatzorten.
-```
-
-```
-🐛(backend): Korrigiere Fehler in der Authentifizierung
-
-Behebt einen Bug, der zu gelegentlichen 401-Fehlern führte.
-```
-
-```
-💥(shared): Überarbeitung der API-Schnittstelle
-
-BREAKING CHANGE: Die Struktur der Einsatz-DTO wurde grundlegend geändert.
-Alte Clients müssen aktualisiert werden.
-```
+   BREAKING CHANGE: Die Struktur der Einsatz-DTO wurde grundlegend geändert.
+   Alte Clients müssen aktualisiert werden.
+   ```
