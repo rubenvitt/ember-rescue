@@ -77,3 +77,69 @@ Hier ist ein Beispiel für die Struktur (ohne spezifischen Inhalt):
 </commit_message>
 
 Bitte beginnen Sie nun mit Ihrer Analyse des bereitgestellten Commit-Inhalts und erstellen Sie eine deutsche Commit Message.
+
+# Commit-Regeln für Ember Rescue
+
+Folgen Sie diesen Regeln für Commit-Messages:
+
+## Format
+```
+<emoji>(<kontext>): <kurze Beschreibung>
+
+[optionale detaillierte Beschreibung]
+
+[optionale BREAKING CHANGE Beschreibung]
+```
+
+## Emoji & Versioning
+### Major Changes (Breaking Changes)
+- 💥 Breaking Change
+
+### Minor Changes
+- ✨ Neue Features
+- 🚀 Deployment & Verbesserungen
+
+### Patch Changes
+- 🐛 Bugfixes
+- 🚑 Dringende Hotfixes
+- 🔒 Sicherheitsupdates
+- 🧹 Code-Bereinigung
+- ♻️ Refactoring
+- 🔧 Tooling & Konfiguration
+- 📦 Dependency Updates
+- 📝 Dokumentation
+- 💄 UI/UX Verbesserungen
+- ⚡ Performance
+- 🗑 Entfernte Features
+- 🛠 Build/CI
+
+## Kontext
+Der Kontext sollte den betroffenen Bereich spezifizieren:
+- `frontend`: Frontend-spezifische Änderungen
+- `backend`: Backend-spezifische Änderungen
+- `shared`: Änderungen in geteiltem Code
+- `ci`: CI/CD Pipeline Änderungen
+- `deps`: Dependency Updates
+- `docs`: Dokumentationsänderungen
+- `test`: Test-bezogene Änderungen
+- `config`: Konfigurationsänderungen
+
+## Beispiele
+```
+✨(frontend): Neue Kartenfunktion für Einsatzplanung
+
+Implementiert eine interaktive Karte zur besseren Visualisierung von Einsatzorten.
+```
+
+```
+🐛(backend): Korrigiere Fehler in der Authentifizierung
+
+Behebt einen Bug, der zu gelegentlichen 401-Fehlern führte.
+```
+
+```
+💥(shared): Überarbeitung der API-Schnittstelle
+
+BREAKING CHANGE: Die Struktur der Einsatz-DTO wurde grundlegend geändert.
+Alte Clients müssen aktualisiert werden.
+```
